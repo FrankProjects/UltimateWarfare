@@ -1,0 +1,40 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - New message
+{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/Message/Inbox') }}">Inbox</a> - <a class="B" href="{{ path('Game/Message/Outbox') }}">Outbox</a> - <a class="B" href="{{ path('Game/Message/New') }}">New message</a>
+
+    <br />
+    <br />
+
+    <form method="post" action="{{ path('Game/Message/New') }}" >
+
+    <table border="1" cellspacing="0" cellpadding="0" width="700" class="table text">
+        <tr>
+            <td width=150>To:</td>
+            <td width=550><input type='text' value='{{ toPlayerName|escape }}' name='to' size='12' /></td>
+        </tr>
+        <tr>
+            <td width="150">Subject:</td>
+            <td width="550"><input name="subject" type="text" size="12" value="{{ subject|escape }}"></td>
+        </tr>
+        <tr>
+            <td width="150">Mod message:</td>
+            <td width="550">
+                <select name="admin"><option value="0">No</option><option value="1">Yes</option></select>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" align="center">
+                <textarea name="message" cols="60" rows="10" >{{ message|escape }}</textarea>
+                <br>
+                <div class="submit"><input type="submit" name="submit" value="Send"></div>
+            </td>
+        </tr>
+    </table>
+    </form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'game.html.twig' %}
+{% block content %}
+    <a class="B" href="{{ path('Game/Market') }}">Buy</a> - <a class="B" href="{{ path('Game/Market/Sell') }}">Sell</a> - <a class="B" href="{{ path('Game/Market/PlaceOffer') }}">Place offer</a> - <a class="B" href="{{ path('Game/Market/Offers') }}">Your offers</a>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td class="tabletop" colspan="5" align="center"><b>Your offers</b> </td>
+        </tr>
+        <tr>
+            <td class="col_center"><b>Type</b></td><td class="col_center"><b>Resource</b></td><td class="col_center"><b>Amount</b></td><td class="col_center"><b>Price</b></td><td class="col_center"><b>Cancel</b></td>
+        </tr>
+
+        {% for item in marketItems %}
+            <tr>
+                <td class="col_center">{{ item.marketItemType.name }}</td>
+                <td class="col_center">{{ item.gameResource.name }}</td>
+                <td class="col_center">{{ item.amount }}</td>
+                <td class="col_center">{{ item.price }}</td>
+                <td class="col_center"><a class="B" href="market.php?id={{ item.id }}&option=3&action=1"><b>Cancel</b></a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="col_center">No offers...</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Surrender?
+{% endblock title %}
+
+{% block content %}
+    <form method="get" action="">
+        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+            <tr>
+                <td class="tabletop" align="center"><b>Surrender</b></td>
+            </tr>
+            <tr>
+                <td align="center">
+                    You really want to surrender your empire?<br />
+                    You can not surrender for the first 48 Hours!
+
+                    <input type="hidden" name="confirming" value="1" />
+
+                    <br />
+                    <br />
+
+                    <div class="submit"><input type="submit" value="Surrender" /></div>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% macro tileSector(tileData, settings) %}
+    <td class="tile" width="119" height="103" background="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}">
+        {% if tileData.regionCount > 0 %}
+            {% if settings.searchPlayerName and settings.searchFound %}
+                <a href="{{ path('Game/World/Sector/Search/Player', {'sectorId': tileData.id, 'playerName': settings.searchPlayerName}) }}">
+                    <img src="{{ asset('images/player.gif') }}" alt="Sector {{ tileData.id }}" border="0" />
+                </a>
+            {% elseif settings.searchFree %}
+                <div class="worldmaptext">{{ tileData.regionCount }} free regions</div>
+                <a href="{{ path('Game/World/Sector/Search/Free', {'sectorId': tileData.id}) }}">
+                    <img src="{{ asset('images/you.png') }}" alt="Sector {{ tileData.id }}" border="0" />
+                </a>
+            {% else %}
+                <a href="{{ path('Game/World/Sector', {'sectorId': tileData.id}) }}">
+                    <img src="{{ asset('images/you.png') }}" alt="Sector {{ tileData.id }}" border="0" />
+                </a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('Game/World/Sector', {'sectorId': tileData.id}) }}">
+                <img src="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}" alt="Sector {{ tileData.id }}" border="0" />
+            </a>
+        {% endif %}
+    </td>
+{% endmacro %}
+
+{% macro tileCounty(tileData, settings) %}
+    <td class="tile" width="119" height="103" background="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}">
+        {% if tileData.regionCount > 0 %}
+            {% if settings.searchPlayerName and settings.searchFound %}
+                <a href="{{ path('Game/World/Country', {'countryId': tileData.id}) }}">
+                    <img src="{{ asset('images/player.gif') }}" alt="Sector {{ tileData.id }}" border="0" />
+                </a>
+            {% elseif settings.searchFree %}
+                <div class="worldmaptext">{{ tileData.regionCount }} free regions</div>
+                <a href="{{ path('Game/World/Country', {'countryId': tileData.id}) }}">
+                    <img src="{{ asset('images/you.png') }}" alt="Sector {{ tileData.id }}" border="0" />
+                </a>
+            {% else %}
+                <a href="{{ path('Game/World/Country', {'countryId': tileData.id}) }}">
+                    <img src="{{ asset('images/you.png') }}" alt="Sector {{ tileData.id }}" border="0" />
+                </a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('Game/World/Country', {'countryId': tileData.id}) }}">
+                <img src="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}" alt="Sector {{ tileData.id }}" border="0" />
+            </a>
+        {% endif %}
+    </td>
+{% endmacro %}
+
+{% macro tileRegion(tileData, settings, player) %}
+    {% if tileData.player.id is defined and tileData.player.id == player.id %}
+        <td class="tile" width="119" height="103" background="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}" title="XXX TODO: Fix units">
+    {% else %}
+        <td class="tile" width="119" height="103" background="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}">
+    {% endif %}
+
+        {% if tileData.state == 1 %}
+            <a href="{{ path('Game/World/Region', {'regionId': tileData.id}) }}">
+                <img src="{{ asset('images/world_nuclear.png') }}" alt="Nuclear blast" border="0" />
+            </a>
+        {% elseif tileData.player == null %}
+            <font color="#ffffff">{{ tileData.region }},</font><br />
+            <a class="A" href="{{ path('Game/World/Region/Buy', {'regionId': tileData.id}) }}">Buy</a>
+        {% elseif tileData.player.id is defined and tileData.player.id == player.id %}
+            <font color="#ffffff">{{ tileData.region }},</font><br />
+            <a href="{{ path('Game/World/Region', {'regionId': tileData.id}) }}">
+                <font color="gold"><b>Building<br />{{ player.name|escape }}</b></font>
+            </a>
+        {% else %}
+            <font color="#ffffff">{{ tileData.region }},</font><br />
+            <a class="A" href="{{ path('Game/World/Region', {'regionId': tileData.id}) }}">
+                <b>Attack<br />{{ tileData.player.name|escape }}</b>
+            </a>
+        {% endif %}
+    </td>
+{% endmacro %}

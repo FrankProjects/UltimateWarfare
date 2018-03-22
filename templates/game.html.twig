@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <tr>
+        <td id="container_bar" class="text2">
+            {% include 'game/navigation.html.twig' %}
+        </td>
+        <td id="container_content" align="center" class="text">
+            {% include 'game/resources.html.twig' %}
+
+            {% for msg in app.flashes('success') %}
+                <div class="success" id="success">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+
+            {% for msg in app.flashes('error') %}
+                <div class="error" id="error">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+
+            {% block content %}{% endblock %}
+        </td>
+    </tr>
+{% endblock %}

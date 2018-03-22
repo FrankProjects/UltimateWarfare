@@ -1,0 +1,204 @@
+{% extends 'site/guideBase.html.twig' %}
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td>
+                The attack system is a quite advanced system. When your attack fleet arrives and attacks there so no way
+                back. The results of the battle depends on many factors, we will run through them step by step now.<br/><br/>
+
+                <b>Small Player Protection:</b><br/>
+                Bigger players can't attack players that have 25% or less of their regions. This will prevent bigger
+                players from attacking new players. If a small player attacks a big player, the big player can attack
+                back for 24 hours.<br/><br/>
+
+                <b>Support:</b><br/>
+                First of all the defender is in a better position, because if he owns the regions around the region you
+                attack, and he has Train stations, airports or / and harbors in them, that regions will help him defend
+                his region!<br/><br/>
+
+                Look at the example below,<br/>
+                If "ATTACKER" attacks region 2,2 and the defender has a Train station, airport and harbor on 1,2, then
+                1,2 will send all his units to region 2,2 to defend it!<br/>
+                If region 2,3 has only 1 airfield, he will only send planes to 2,2 to defend it!<br/>
+                And same for region 3,2. The reinforcements to defend a region are based on the train stations, airports
+                and harbors from the surrounding regions and ofcource on the units that are located in those
+                regions.<br/><br/>
+            </td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+
+    <table width="360" border="1" cellspacing="0" cellpadding="0" class="worldtable text">
+        <tr>
+            <td width="15" align="center">x</td>
+            <td width="119" align="center">1</td>
+            <td width="119" align="center">2</td>
+            <td width="119" align="center">3</td>
+        </tr>
+        <tr>
+            <td width="15" align="center">1</td>
+            <td width="119" height="103" background="{{ asset('images/map/map15-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a href="{{ url('Guide/Attack') }}"><font color="gold"><b>Building<br/>ATTACKER</b></font></a>
+            </td>
+            <td width="119" height="103" background="{{ asset('images/map/map8-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map8-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Buy</a></td>
+        </tr>
+        <tr>
+            <td width="15" align="center">2</td>
+            <td width="119" height="103" background="{{ asset('images/map/map6-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a href="{{ url('Guide/Attack') }}"><font color="gold"><b>Building<br/>ATTACKER</b></font></a>
+            </td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
+        </tr>
+        <tr>
+            <td width="15" align="center">3</td>
+            <td width="119" height="103" background="{{ asset('images/map/map6-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a href="{{ url('Guide/Attack') }}"><font color="gold"><b>Building<br/>ATTACKER</b></font></a>
+            </td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font
+                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Buy</a></td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td>
+                <br/>
+                Some Limits:
+                <ul>
+
+                    <li>
+                        <b>Train stations:</b> Every train station can send max 25 soldiers and 1 tank (If you have
+                        that many on your region) as support.<br/>
+                    </li>
+                    <li>
+                        <b>Airport:</b> Every airport can send max 10 planes (If you have that many planes on your
+                        region) as support.
+                    </li>
+                    <li>
+                        <b>Harbor:</b> Every harbor can send max 1 ship (If you have that many ships on your region)
+                        as support.
+                    </li>
+                </ul>
+
+                <br/>
+                <br/>
+                <b>Battle Stages:</b><br/>
+                The battle takes place in 4 Battle Stages,<br/>
+                Air Battle<br/>
+                Sea Battle<br/>
+                Ground Battle<br/>
+                And then the Final Stage<br/><br/>
+
+                <b>Air Battle:</b><br/>
+                This is the first battle stage,<br/>
+                Your planes start with attacking the defenders Anti Air Missiles,
+                You need 10 planes to destroy 1 Anti Air Missile!<br/>
+                If you didn't killed all Anti Air Missiles, then every 2 Missiles will kill 1 plane of
+                you!<br/><br/>
+                Now the planes battle, every 5 planes you send will kill 1 enemy plane! After that you will lose 1
+                plane for every 5 planes that the defender has left from backfire!<br/><br/>
+
+                Then the planes you have left will move on to the defending ships, but cos of the strong armor you
+                need 100 planes to take out 1 warship!<br/>
+                This was the final stage of the Air battle<br/><br/>
+
+                <b>Sea Battle:</b><br/>
+                Your ships move through the heavy guarded sea, you will lose 1 ship for every 1000 sea mines. After
+                that you kill 1 enemy ship with every 2 ships you have, the defender kills 1 ship of you with every
+                2 ships that he has left.<br/><br/>
+
+                <b>Ground Battle:</b><br/>
+                The defender will use his planes to attack your soldiers! Every plane is able to kill 4 attacking
+                soldiers.<br/>
+                The attacking ships open fire at the enemy ground troops now, every ships is able to take down 9
+                defending soldiers.<br/>
+                After that the attacking will lose 1 soldier for every 20 land mines the defender has!<br/>
+                After that every 2 attacking tanks take down 1 defending tank, in return fire every 2 tanks that the
+                defender has left kills 1 attacking tank!<br/>
+                In the next stage every attacking tank kills 2 soldiers.<br/><br/>
+
+                <b>Final Stage:</b><br/>
+                Finally the final stage, in this stage the attacking soldiers will fight the defending soldiers,
+                every 2 attacking soldiers kill 1 defending soldier, and in backfire every 2 defending soldiers will
+                kill 1 attacking soldier.<br/><br/>
+                To win a battle the attacker needs to have 2 times the amount of soldiers after the final
+                stage!<br/>
+                The attacker gains the region WITH all buildings.<br/>
+                Look below for an example battle report:
+            </td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" width="600"><b>Ultimate Warfare Battle Report</b></td>
+        </tr>
+        <tr>
+            <td><b>Air Battle</b>
+                <br/>
+                You started with 21 planes...<br/>
+                You killed 0 enemy planes,<br/>
+                You lost 4 planes during the air battle.
+
+                <br/><br/>
+
+                After a while you saw 2 ships,<br/>
+                They couldn't protect theirself against your fast strike planes,<br/>
+                After your stikes there were 2 ships left.
+
+                <br/><br/>
+
+                You finally reached the land...<br/>
+                Your rader saw 250 soldiers, 14 tanks and 0 bunkers,<br/><br/>
+
+                <b>Sea Battle</b><br/>
+                You started with 3 ships,<br/>
+                Your enemy had 2 ships, <br/>
+                and 1 Support ships!<br/>
+                After a huge battle you had 2 ships left.<br/><br>
+
+                <br/>
+                <b>Ground Battle</b>
+                <br/>
+                You started with 734 soldiers,<br/>
+                5 enemy planes opent fire at your ground troops,<br/>
+                After the strikes from the enemy planes you had 714 soldiers left.<br/>
+                Your 2 ships opent fire and killed 18 soldiers.<br/>
+                Your 57 tanks were fighting against 14 tanks,<br/>
+                and 6 Support tanks!<br/>
+                After the battle you had 54 tanks left, your enemy had 0 tanks left.<br/><br/>
+
+                Your 54 tanks found a group of 232 enemy soldiers.<br/>
+                You managed to kill some enemy soldiers, your enemy had 124 soldiers left.<br/>
+                <br/><br/>
+
+                <b>The Final Stage</b><br/>
+                You have 714 soldiers left, your enemy had 124 soldiers left.<br/>
+                and 150 Support soldiers!<br/>
+                After the battle you had 639 left, your enemy had 0 soldiers left.<br/><br/>
+
+                YOU WON
+            </td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+{% endblock %}

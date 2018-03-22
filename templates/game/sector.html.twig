@@ -1,0 +1,100 @@
+{% import "game/macros/map.html.twig" as mapMacros %}
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - World Map
+{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/World') }}">World</a> -
+    <b>Sector {{ sector.id }}</b>
+
+    <br />
+    <br />
+
+    {% if not mapSettings.searchFound %}
+        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+            <tr>
+                <td align="center">
+                    <br />
+                    No such Player found!
+                    <br />
+                    <br />
+                </td>
+            </tr>
+        </table>
+        <br />
+    {% endif %}
+
+    {% if mapSettings.searchFree %}
+        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+            <tr>
+                <td align="center">
+                    <br />
+                    You are searching for free regions <a class="B" href="{{ path('Game/World/Sector', {'sectorId': sector.id}) }}">[Cancel Search]</a>
+                    <br />
+                    <br />
+                </td>
+            </tr>
+        </table>
+        <br />
+    {% endif %}
+
+    {% if mapSettings.searchPlayerName %}
+        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+            <tr>
+                <td align="center">
+                    <br />
+                    You are searching for player {{ mapSettings.playerName }} <a class="B" href="{{ path('Game/World/Sector', {'sectorId': sector.id}) }}">[Cancel Search]</a>
+                    <br />
+                    <br />
+                </td>
+            </tr>
+        </table>
+        <br />
+    {% endif %}
+
+    <table width="595" border="1" cellspacing="0" cellpadding="0" class="worldtable text">
+        <tr>
+            <td width="15" align="center">x</td>
+            {% for x in 1..5 %}
+                <td width="119" align="center">{{ (sector.x * 5) - 5 + x}}</td>
+            {% endfor %}
+        </tr>
+        {% for y in 1..5 %}
+            <tr>
+                <td>{{ (sector.y * 5) - 5 + y }}</td>
+                {% for x in 1..5 %}
+                    {{ mapMacros.tileCounty(countries[x][y], mapSettings) }}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <br />
+    <br />
+
+    <form method="post" action="{{ path('Game/World/Sector/Search/Player', {'sectorId': sector.id}) }}">
+        <table border="1" cellspacing="0" cellpadding="0" align="center" class="text table">
+            <tr>
+                <td class="tabletop" width="250"><b>UW Player Finder</b></td>
+            </tr>
+            <tr>
+                <td align="center" width="100">
+                    <div>
+                        <label for="playerName">Player name</label>
+                        <input type="text" id="playerName" name="playerName" />
+                    </div>
+                    <div class="submit">
+                        <input type="submit" name="submit" value="Search" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td align="center">OR <br />
+                    <a class="B" href="{{ path('Game/World/Sector/Search/Free', {'sectorId': sector.id}) }}">Show free regions</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

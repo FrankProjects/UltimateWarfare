@@ -1,0 +1,67 @@
+{% extends 'site/guideBase.html.twig' %}
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="3" align="center"><b>Regions</b></td>
+        </tr>
+
+        <tr>
+            <td width="120"><img src="{{ asset('images/map/map15-3.jpg') }}" width="120" height="100"></td>
+
+            <td width="370" align="left">
+                <ul>
+                    <li>Position: 3,3: 13<li>Built: 0 / 683<li>Population: 0 / 0<li>Click <a class="B" href="{{ url('Guide/Region') }}"><b>here</b></a> to go to this region.</ul>
+
+            </td>
+            <td width="210" align="left">
+                Soldiers: 0 <br />Tanks: 0 <br />Planes: 0 <br />Ships: 0 </td>
+        </tr>
+
+        <tr>
+            <td width="120"><img src="{{ asset('images/map/map18-3.jpg') }}" width="120" height="100"></td>
+
+            <td width="370" align="left">
+                <ul>
+                    <li>Position: 16,17: 7<li>Built: 162 / 2147<li>Population: 0 / 0<li>Click <a class="B" href="{{ url('Guide/Region') }}"><b>here</b></a> to go to this region.</ul>
+
+            </td>
+            <td width="210" align="left">
+                Soldiers: 0 <br />Tanks: 255 <br />Planes: 0 <br />Ships: 0 </td>
+        </tr>
+
+        <tr>
+            <td width="120"><img src="{{ asset('images/map/map18-3.jpg') }}" width="120" height="100"></td>
+
+            <td width="370" align="left">
+                <ul>
+                    <li>Position: 18,18: 12<li>Built: 0 / 1845<li>Population: 0 / 0<li>Click <a class="B" href="{{ url('Guide/Region') }}"><b>here</b></a> to go to this region.</ul>
+
+            </td>
+            <td width="210" align="left">
+                Soldiers: 0 <br />Tanks: 0 <br />Planes: 0 <br />Ships: 0 </td>
+        </tr>
+
+    </table>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td>
+                This is your region page, you will see a list of all the regions you own. From here you can control them, build on them and train units!
+                <ul>
+                    <li>
+                        <b>Position:</b> You can see your region position. (Position: 3,2) 3 = x coordinate and 2 = y coordinate.<br />
+                    </li>
+                    <li>
+                        <b>Built:</b> You can see the maximum building space here and also the amount of buildings you already have. (400/1000) means you have 400 buildings, so you can build 600 more on this region.
+                    </li>
+                    <li>
+                        <b>Population:</b> your population is working in your factories as well as other buildings. They also pay tax and are therefore very important for you. This figure shows how much population you have on each country.
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

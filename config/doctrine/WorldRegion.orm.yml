@@ -1,0 +1,112 @@
+FrankProjects\UltimateWarfare\Entity\WorldRegion:
+    type: entity
+    repositoryClass: FrankProjects\UltimateWarfare\Repository\WorldRegionRepository
+    table: world_region
+    indexes:
+        countryId:
+            columns:
+                - country_id
+        regionInSector:
+            columns:
+                - sector_id
+                - player_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        region:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        x:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        'y':
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        rX:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: r_x
+        rY:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: r_y
+        image:
+            type: string
+            nullable: false
+            length: 100
+            options:
+                fixed: false
+        state:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+        name:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+        space:
+            type: smallint
+            nullable: false
+            options:
+                unsigned: false
+                default: '1000'
+        population:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+    oneToMany:
+        worldRegionUnits:
+            targetEntity: WorldRegionUnit
+            mappedBy: worldRegion
+        constructions:
+            targetEntity: Construction
+            mappedBy: worldRegion
+        fleets:
+            targetEntity: Fleet
+            mappedBy: worldRegion
+        targetFleets:
+            targetEntity: Fleet
+            mappedBy: targetWorldRegion
+    manyToOne:
+       worldCountry:
+           targetEntity: WorldCountry
+           inversedBy: worldRegions
+           joinColumn:
+               name: country_id
+               referencedColumnName: id
+       worldSector:
+           targetEntity: WorldSector
+           inversedBy: worldRegions
+           joinColumn:
+               name: sector_id
+               referencedColumnName: id
+       player:
+           targetEntity: Player
+           inversedBy: worldRegions
+           joinColumn:
+               name: player_id
+               referencedColumnName: id
+    lifecycleCallbacks: {  }

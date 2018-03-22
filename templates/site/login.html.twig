@@ -1,0 +1,49 @@
+{% extends 'site.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Login
+{% endblock title %}
+
+{% block content %}
+    {% trans_default_domain 'login' %}
+
+    {% if error %}
+        <div class="error" id="error">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <fieldset>
+        <legend>Login Ultimate-Warfare Account</legend>
+        <form class="general" method="post" action="{{ path("Site/LoginCheck") }}">
+            <div>
+                <label for="username">{{ 'label.username'|trans }}:</label>
+                <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+            </div><br />
+
+            <div>
+                <label for="password">{{ 'label.password'|trans }}:</label>
+                <input autocomplete="off" type="password" id="password" name="_password" required="required" />
+            </div><br />
+
+            <div>
+                <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+                <label for="remember_me">{{ 'label.remember_me'|trans }}</label>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+            <div class="submit">
+                <input type="submit" id="_submit" name="_submit" value="{{ 'label.login'|trans }}" />
+            </div>
+        </form>
+
+    </fieldset>
+
+    <br />
+    <br />
+
+    <div>
+        <a class="B" href="{{ url('Site/LostPassword') }}">{{ 'label.lost_password'|trans({}, 'login') }}</a>
+    </div>
+{% endblock %}

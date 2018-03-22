@@ -1,0 +1,52 @@
+{% extends 'game.html.twig' %}
+{% block content %}
+    <a class="B" href="{{ path('Game/Reports') }}">All Reports</a> -
+    <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}">Battle Reports</a> -
+    <a class="B" href="{{ path('Game/Reports', {'type': 2}) }}">General Reports</a> -
+    <a class="B" href="{{ path('Game/Reports', {'type': 4}) }}">Market Reports</a> -
+    <a class="B" href="{{ path('Game/Reports', {'type': 5}) }}">Aid Reports</a>
+
+    <br />
+    <br />
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" align="center"><b>Reports</b></td>
+        </tr>
+        <tr>
+            <td align="center">
+                <b>Adviser:</b><br />
+                Welcome <strong>{{ player.name|escape }}</strong>,
+                <br />
+                {{ reportSummary }}
+                <br />
+                <br />
+            </td>
+        </tr>
+    </table>
+    <br /><br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" width="700" align="center" colspan="2"><b>{{ reportSubject }}</b></td>
+        </tr>
+
+        <tr>
+            <td width="150" align="center"><b>Date</b></td>
+            <td width="550" align="left"><b>Report</b></td>
+        </tr>
+
+        {% for report in reports %}
+            <tr>
+                <td align="center">
+                    {{ report.timestamp|date }}
+                </td>
+                <td align="left">
+                    {{ report.report|escape }}
+                </td>
+            </tr>
+
+        {% else %}
+            <tr><td align="center" colspan="2">No reports for you....</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

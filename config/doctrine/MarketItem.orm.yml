@@ -1,0 +1,50 @@
+FrankProjects\UltimateWarfare\Entity\MarketItem:
+    type: entity
+    repositoryClass: FrankProjects\UltimateWarfare\Repository\MarketItemRepository
+    table: market_item
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        amount:
+            type: bigint
+            nullable: false
+            options:
+                unsigned: false
+        price:
+            type: bigint
+            nullable: false
+            options:
+                unsigned: false
+    manyToOne:
+        player:
+            targetEntity: Player
+            inversedBy: marketItems
+            joinColumn:
+                name: player_id
+                referencedColumnName: id
+        world:
+            targetEntity: World
+            inversedBy: marketItems
+            joinColumn:
+                name: world_id
+                referencedColumnName: id
+        gameResource:
+            targetEntity: GameResource
+            inversedBy: marketItems
+            joinColumn:
+                name: game_resource_id
+                referencedColumnName: id
+        marketItemType:
+            targetEntity: MarketItemType
+            inversedBy: marketItems
+            joinColumn:
+                name: market_item_type_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

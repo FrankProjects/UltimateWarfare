@@ -1,0 +1,114 @@
+FrankProjects\UltimateWarfare\Entity\World:
+    type: entity
+    table: world
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        round:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        name:
+            type: string
+            nullable: false
+            length: 100
+            options:
+                fixed: false
+        image:
+            type: string
+            nullable: false
+            length: 100
+            options:
+                fixed: false
+        info:
+            type: text
+            nullable: false
+            length: 65535
+            options:
+                fixed: false
+        status:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        public:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        maxPlayers:
+            type: smallint
+            nullable: false
+            options:
+                unsigned: true
+            column: max_players
+        startTimestamp:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: start_timestamp
+        endTimestamp:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: end_timestamp
+        cash:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        wood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        steel:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        food:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        market:
+            type: boolean
+            nullable: false
+        federation:
+            type: boolean
+            nullable: false
+        fedLimit:
+            type: integer
+            nullable: false
+            options:
+                default: '0'
+            column: fed_limit
+    oneToMany:
+        players:
+            targetEntity: Player
+            mappedBy: world
+        worldSectors:
+            targetEntity: WorldSector
+            mappedBy: world
+        marketItems:
+            targetEntity: MarketItem
+            mappedBy: world
+        messages:
+            targetEntity: Message
+            mappedBy: world
+        federations:
+            targetEntity: Federation
+            mappedBy: world
+    lifecycleCallbacks: {  }

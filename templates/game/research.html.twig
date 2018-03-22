@@ -1,0 +1,71 @@
+{% extends 'game.html.twig' %}
+{% block content %}
+    <a class="B" href="{{ path('Game/Research/History') }}">Research History</a>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="4" align="center"><b>Researching</b></td>
+        </tr>
+        <tr>
+            <td class="col_center"><b>Name</b></td>
+            <td class="col_center"><b>Time left</b></td>
+            <td class="col_center"><b>Finished at</b></td>
+            <td class="col_center"><b>Option</b></td>
+        </tr>
+        {% for researchPlayer in ongoingResearch %}
+            {% set finish = researchPlayer.timestamp + researchPlayer.research.timestamp %}
+
+            <tr>
+                <td class="col_center">{{ researchPlayer.research.name|escape }}</td>
+                <td class="col_center"><span class="timer">timestamp_left</span></td>
+                <td class="col_center">{{ finish|date }}</td>
+                <td class="col_center"><a class="B" href="{{ path('Game/Research/Cancel', {'researchId': researchPlayer.research.id}) }}">Cancel</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" class="col_center">You are not researching anything right now!</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="3" align="center"><b>Research</b></td>
+        </tr>
+        {% for research in unresearched %}
+            <tr>
+                <td width="150" rowspan="2">
+                    <img src="{{ asset('images/research/' ~ research.pic ) }}" width="150" height="130">
+                </td>
+                <td width="550" align="left" colspan="2">{{ research.description|escape }}</td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <div><b>Name:</b> {{ research.name|escape }}</div>
+                    <div><b>Costs:</b> ${{ research.cost }}</div>
+                    <div><b>Duration:</b> {{ research.timestamp }}</div>
+                    <div class="submit"><a class="B" href="{{ path('Game/Research/Perform', {'researchId': research.id}) }}"><b>Research</b></a></div>
+                    </td><td align="center" valign="top">
+                    <b>Requirements:</b><br />
+                    {% for researchNeed in research.needs['notDone'] %}
+                        <div class="bad">{{ researchNeed.research.name|escape }}</div>
+                    {% endfor %}
+
+                    {% for researchNeed in research.needs['done'] %}
+                        <div class="good">{{ researchNeed.research.name|escape }}</div>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td align="center">No research options available for you right now!</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

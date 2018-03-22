@@ -1,0 +1,52 @@
+{% extends 'site.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Register
+{% endblock title %}
+
+{% block content %}
+    {% for msg in app.flashes('success') %}
+        <div class="success" id="success">
+            {{ msg }}
+        </div>
+    {% endfor %}
+
+    {% for msg in app.flashes('error') %}
+        <div class="error" id="error">
+            {{ msg }}
+        </div>
+    {% endfor %}
+
+    <br/>
+
+    <fieldset>
+        <legend>Register Ultimate Warfare Account</legend>
+
+        {{ form_start(form, {'method': 'post', 'action': path('Site/Register'), 'attr': {'class': 'register'}}) }}
+        <div>
+            {{ form_errors(form) }}
+        </div>
+
+        {{ form_row(form.username) }}
+        <br />
+        {{ form_row(form.email) }}
+        <br />
+        {{ form_row(form.plainPassword.first) }}
+        <br />
+        {{ form_row(form.plainPassword.second) }}
+        <br />
+
+        {{ form_rest(form) }}
+
+        <div class="submit">
+            <input type="submit" name="submit" value="Register"/>
+        </div>
+
+        {{ form_end(form) }}
+
+        <div>An email with an activation code will be sent to the email address<br/>
+            you register, so make sure you enter a correct address. <br/>
+        </div>
+
+    </fieldset>
+{% endblock %}

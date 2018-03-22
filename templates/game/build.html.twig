@@ -1,0 +1,62 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Build region
+{% endblock title %}
+
+{% block content %}
+    Go to: <a class="B" href="{{ path('Game/World/Region', {'regionId': region.id}) }}">Region</a>
+    {% for gameUnitType in gameUnitTypes %}
+        - <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">{{ gameUnitType.name }}</a>
+    {% endfor %}
+
+    <form method="post" action="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">
+        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+            <tr>
+                <td class="tabletop" align="center" colspan="4"><b>Units</b></td>
+            </tr>
+
+            {% if gameUnitType.id == 1 %}
+                <tr><td colspan="4">You have <b>{{ spaceLeft }}</b> building space left on this region.</td></tr>
+            {% endif %}
+            <tr>
+                <td></td>
+                <td>Costs</td>
+                <td>You have</td>
+                <td>Amount</td>
+            </tr>
+            {% for gameUnit in gameUnitType.gameUnits %}
+                <tr>
+                    <td width="150"><img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130"></td>
+
+                    <td width="150" align="center">
+                        <a class="B" href="{{ path('Guide/ListUnits', {'gameUnitTypeId': gameUnitType.id}) }}" ONCLICK="popup('{{ path('Guide/ListUnits', {'gameUnitTypeId': gameUnitType.id}) }}', 1000, 600);return false;" target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
+                            <b>{{ gameUnit.name }}</b>
+                        </a><br />
+                        <img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" />{{ gameUnit.priceCash }}<br />
+                        <img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood" />{{ gameUnit.priceWood }}<br />
+                        <img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" />{{ gameUnit.priceSteel }}<br />
+                        <img src="{{ asset('images/icons/time.gif') }}" width="25" height="25" alt="Construction time">{{ gameUnit.timestamp }}
+                    </td>
+                    <td width="100" align="center">
+                        {{ region.gameUnits[gameUnit.rowName] }}
+                        {% if region.construction[gameUnit.rowName] > 0 %}
+                            ({{ region.construction[gameUnit.rowName] }})
+                        {% endif %}
+                    </td>
+
+                    <td width="200" align="center">
+                        <input type="text" size="12" name="{{ gameUnit.id }}" />
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">No Units in the UW database!</td></tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4">
+                    <div class="submit"><input type="submit" name="submit" value="Build"></div>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

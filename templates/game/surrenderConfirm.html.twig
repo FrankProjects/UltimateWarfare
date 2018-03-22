@@ -1,0 +1,30 @@
+{% extends 'game.html.twig' %}
+{% block content %}
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td align="center">
+                <div>
+                    <b>Confirm Password</b>
+                    <br />
+                    Enter your password to officially delete your account from this world!<br />
+                    <b>Warning:</b> This can't be undone!
+                </div>
+
+                <br />
+                <br />
+
+                <form class="general" method="post" action="surrender.php?confirming=1">
+                    <div>
+                        <label for="pass">Password:</label>
+                        <input type="password" name="pass" id="pass" maxlength="16" />
+                    </div>
+
+                    <br />
+                    <br />
+                    <div class="submit"><input type="submit" name="submit" value="Surrender" /></div>
+                </form>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

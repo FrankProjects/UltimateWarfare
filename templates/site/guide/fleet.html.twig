@@ -1,0 +1,35 @@
+{% extends 'site/guideBase.html.twig' %}
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td>
+
+                You see a list of all attacks, and also all the reinforcements that you have send.
+
+                <ul>
+                    <li>
+                        <b>Time:</b> Time left before your fleets arrive.<br />
+                    </li>
+                    <li>
+                        <b>Soldiers/Tanks/Planes/Ships/:</b> The amount of units you have send.
+                    </li>
+
+                    <li>
+                        <b>From region ... To ....</b> The region you attack from and the region you are attacking.
+                    </li>
+                    <li>
+                        <b>Attack</b> Press this button to launch your attack.
+                    </li>
+                    <li>
+                        <b>Reinforce</b> Press this button to station your reinforcements on your country.
+                    </li>
+                    <li>
+                        <b>Recall</b> Press this button to recall your units.
+
+                    </li>
+                </ul>
+
+            </td>
+        </tr>
+    </table>
+{% endblock %}

@@ -1,0 +1,44 @@
+FrankProjects\UltimateWarfare\Entity\Construction:
+    type: entity
+    repositoryClass: FrankProjects\UltimateWarfare\Repository\ConstructionRepository
+    table: construction
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        number:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        timestamp:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+    manyToOne:
+       player:
+           targetEntity: Player
+           inversedBy: constructions
+           joinColumn:
+               name: player_id
+               referencedColumnName: id
+       worldRegion:
+           targetEntity: WorldRegion
+           inversedBy: constructions
+           joinColumn:
+               name: region_id
+               referencedColumnName: id
+       gameUnit:
+           targetEntity: GameUnit
+           inversedBy: constructions
+           joinColumn:
+               name: unit_id
+               referencedColumnName: id
+    lifecycleCallbacks: {  }

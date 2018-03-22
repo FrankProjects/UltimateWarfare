@@ -1,0 +1,60 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Message inbox
+{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/Message/Inbox') }}">Inbox</a> - <a class="B" href="{{ path('Game/Message/Outbox') }}">Outbox</a> - <a class="B" href="{{ path('Game/Message/New') }}">New message</a>
+
+    <br />
+    <br />
+
+    <form method="post" action="{{ path('Game/Message/Inbox') }}">
+    <table border="1" width="700" cellspacing="0" cellpadding="0" class="table text">
+        <tr class="tabletop">
+            <td width="400" align="left"><b>Subject</b></td>
+            <td width="200">From</td>
+            <td width="100">Date:</td>
+        </tr>
+
+        {% for message in messages %}
+            <tr>
+                <td align="left">
+                    <input type="checkbox" name="selected_messages[]" value="{{ message.id }}">
+                    {% if message.toStatus == 0 %}
+                        <img src="{{ asset('images/icons/pm_new.png') }}" width="17" height="15" alt="New message">
+                    {% elseif message.toStatus == 1 %}
+                        <img src="{{ asset('images/icons/pm_read.png') }}" width="17" height="15" alt="Read message">
+                    {% elseif message.toStatus == 2 %}
+                        <img src="{{ asset('images/icons/pm_reply.png') }}" width="17" height="15" alt="Message replied">
+                    {% endif %}
+                    <a class="B" href="{{ path('Game/Message/Inbox/Read', {'messageId': message.id}) }}">
+                        {% if message.adminMessage == 1 %}
+                            <b>ADMIN:</b>
+                        {% endif %}
+                        {{ message.subject|escape }}
+                    </a>
+                </td>
+                <td>
+                    {{ message.fromPlayer.name }}
+                </td>
+                <td>
+                    {{ message.timestamp|date }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3" align="center">
+                    No messages
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3" align="left">
+                <input type="checkbox" onclick="selectAll(this.form, this.checked)"><b>Select All</b>  Options: <span class="submit"><input type="submit" name="del" value="Delete Selected" /></span>
+            </td>
+        </tr>
+    </table>
+    </form>
+{% endblock %}

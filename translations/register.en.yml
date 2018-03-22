@@ -1,0 +1,8 @@
+label:
+  accept_rules: Accept the rules
+  email: Email
+  username: Username
+  password: Password
+  password_repeat: Repeat Password
+  register: Register
+

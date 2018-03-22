@@ -1,0 +1,66 @@
+{% extends 'site.html.twig' %}
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr class="tabletop">
+            <td colspan="4" align="center"><b>Federation Hall of Fame</b></td>
+        </tr>
+        <tr>
+            <td width="70" align="center"><b>Rank</b></td>
+            <td width="390" align="left"><b>Federation Name</b></td>
+            <td width="110" align="center"><b>Regions</b></td>
+            <td width="130" align="center"><b>Networth</b></td>
+        </tr>
+
+        {% for federation in federations %}
+            <tr>
+                <td align="center">
+                    {{ loop.index }}
+                </td>
+                <td align="left">
+                    {{ federation.federation }}
+                </td>
+                <td align="center">
+                    {{ federation.regions }}
+                </td>
+                <td align="center">
+                    {{ federation.networth }}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td align="center" colspan="4">No history available</td></tr>
+        {% endfor %}
+    </table>
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr class="tabletop">
+            <td colspan="4" align="center"><b>Player Hall of Fame</b></td>
+        </tr>
+        <tr>
+            <td width="70" align="center"><b>Rank</b></td>
+            <td width="350" align="left"><b>Player</b></td>
+            <td width="130" align="center"><b>Regions</b></td>
+            <td width="150" align="center"><b>Networth</b></td>
+        </tr>
+        {% for player in players %}
+            <tr>
+                <td align="center">
+                    {{ loop.index }}
+                </td>
+                <td align="left">
+                    {{ player.playerName }}
+                </td>
+                <td align="center">
+                    {{ player.regions }}
+                </td>
+                <td align="center">
+                    {{ player.networth }}
+                </td>
+            </tr>
+
+        {% else %}
+            <tr><td align="center" colspan="4">No history available</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

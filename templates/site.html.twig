@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<tr>
+    <td id="container_bar" class="text2">
+        {% include 'site/navigation.html.twig' %}
+    </td>
+    <td id="container_content" align="center" class="text">
+        {% block content %}{% endblock %}
+    </td>
+</tr>
+{% endblock %}

@@ -1,0 +1,215 @@
+{% extends 'game.html.twig' %}
+{% block content %}
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            {% if player.regions > 1 and region.player.id is defined and region.player.id == player.id %}
+            <td class="tabletop" colspan="3" align="center"><a class="B" href="region.php?region=$prev_id"><<</a> <b>Region</b> <a class="B" href="region.php?region=$next_id">>></a></td>
+            {% else %}
+            <td class="tabletop" colspan="3" align="center"><b>Region</b></td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td rowspan="3" width="120">
+                <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100"><br />
+            </td>
+            <td width="300" align="center">Location:</td>
+            <td width="280" align="center">
+                <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}
+            </td>
+        </tr>
+        <tr>
+            <td width="300" align="center">Owner:</td>
+            {% if region.player is not null %}
+                <td width="280" align="center"><a class="B" href="profile.php?user=$r_ownername">{{ region.player.name|escape }}</a></td>
+            {% else %}
+                <td width="280" align="center">Nobody</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td width="300" align="center">Space:</td>
+            <td width="280" align="center">{{ region.space }}</td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    {% if region.player.id is defined and region.player.id != player.id %}
+        <a class="B" href="pm_send.php?to=$r_ownername">Send message</a>
+    {% endif %}
+
+    {% if region.state == 1 %}
+        <br /><b>This region was hit by a nuclear blast.</b><br />
+        There is a huge amount of toxic radiation so this region will not be liveable for an unknown amount of time!
+    {% elseif region.player == null %}
+        <a class="B" href="buy.php?region=$region_id">Buy</a>
+    {% elseif region.player.id == player.id %}
+    <br /><br />
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td width="350" class="tabletop" colspan="2" align="center"><b>Region Infrastrucure</b></td>
+            <td width="350" class="tabletop" colspan="2" align="center"><b>Units</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Economic Centers:</td>
+            <td width="200" align="center">{{ region.gameUnits['economic'] }}</td>
+            <td width="150" align="center">Soldiers:</td>
+            <td width="200" align="center">{{ region.gameUnits['soldier'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Farms:</td>
+            <td width="200" align="center">{{ region.gameUnits['farm'] }}</td>
+            <td width="150" align="center">Tanks:</td>
+            <td width="200" align="center">{{ region.gameUnits['tank'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Mines:</td>
+            <td width="200" align="center">{{ region.gameUnits['mine'] }}</td>
+            <td width="150" align="center">Planes:</td>
+            <td width="200" align="center">{{ region.gameUnits['plane'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Woodcutters:</td>
+            <td width="200" align="center">{{ region.gameUnits['woodcutter'] }}</td>
+            <td width="150" align="center">Ships:</td>
+            <td width="200" align="center">{{ region.gameUnits['ship'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Houses:</td>
+            <td width="200" align="center">{{ region.gameUnits['house'] }}</td>
+            <td width="150" align="center">Minesweepers:</td>
+            <td width="200" align="center">{{ region.gameUnits['minesweeper'] }}</td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+            <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Building</a><br />
+            <a class="B" href="building_delete.php?region=$region_id&type=1">Demolish Buildings</a><br />
+            </td>
+
+            <td colspan="2" align="center">
+                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Building Units</a><br />
+                <a class="B" href="building_delete.php?region=$region_id&type=4">Disband Units</a><br />
+                <a class="B" href="send_units.php?region=$region_id">Send Units</a>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td width="350" class="tabletop" colspan="2" align="center"><b>Defence</b></td>
+            <td width="350" class="tabletop" colspan="2" align="center"><b>Special</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Sea Mines:</td>
+            <td width="200" align="center">{{ region.gameUnits['sea_mine'] }}</td>
+            <td width="150" align="center">Airfields:</td>
+            <td width="200" align="center">{{ region.gameUnits['airport'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Land Mines:</td>
+            <td width="200" align="center">{{ region.gameUnits['land_mine'] }}</td>
+            <td width="150" align="center">Harbors:</td>
+            <td width="200" align="center">{{ region.gameUnits['harbor'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Bunkers:</td>
+            <td width="200" align="center">{{ region.gameUnits['bunker'] }}</td>
+            <td width="150" align="center">Train Stations:</td>
+            <td width="200" align="center">{{ region.gameUnits['station'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Anti Air Missiles:</td>
+            <td width="200" align="center">{{ region.gameUnits['anti_air_missile'] }}</td>
+            <td width="150" align="center"></td>
+            <td width="200" align="center"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 2}) }}">Building Defences</a><br />
+                <a class="B" href="building_delete.php?region=$region_id&type=2">Demolish defensive buildings </a>
+            </td>
+
+            <td colspan="2" align="center">
+                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 3}) }}">Building Specials</a><br />
+                <a class="B" href="building_delete.php?region=$region_id&type=3">Demolish specials buildings</a>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <a name="bottom"></a>
+
+    <table width="350" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td width="350" class="tabletop" colspan="2" align="center"><b>Special Operation Units</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Guards:</td>
+            <td width="200" align="center">{{ region.gameUnits['guard'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Special ops:</td>
+            <td width="200" align="center">{{ region.gameUnits['sp_op'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Snipers:</td>
+            <td width="200" align="center">{{ region.gameUnits['sniper'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Submarines:</td>
+            <td width="200" align="center">{{ region.gameUnits['submarine'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Stealth Bombers:</td>
+            <td width="200" align="center">{{ region.gameUnits['stealth_bomber'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Rockets:</td>
+            <td width="200" align="center">{{ region.gameUnits['rocket'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Chemical Rockets:</td>
+            <td width="200" align="center">{{ region.gameUnits['chem_rocket'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Spies:</td>
+            <td width="200" align="center">{{ region.gameUnits['spy'] }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Nuclear Missiles:</td>
+            <td width="200" align="center">{{ region.gameUnits['nuclear_missile'] }}</td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 5}) }}">Build Special Units</a><br />
+                <a class="B" href="building_delete.php?region=$region_id&type=5">Demolish Special Units </a>
+            </td>
+        </tr>
+    </table>
+
+        {% if player.regions > 1 %}
+            <a class="B" href="region.php?region=$prev_id#bottom"><<</a> <b>Region</b> <a class="B" href="region.php?region=$next_id#bottom">>></a>
+        {% endif %}
+    {% else %}
+        <br /><br /><a class="B" href="attack.php?target=$region_id">Attack</a>
+
+    $checkop = "SELECT 1 FROM research_player where player_id = $player_id AND research_id = 100";
+    $result = $db->query($checkop);
+
+    if ($db->num_rows($result) == 1) {
+    echo "<br /><br /><a class=\"B\" href=\"special_op.php?target_id=$region_id\">Special Operation</a>";
+    }
+
+    {% endif %}
+
+    <br />
+    <br />
+{% endblock %}

@@ -1,0 +1,32 @@
+FrankProjects\UltimateWarfare\Entity\UnbanRequest:
+    type: entity
+    table: unban_request
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        post:
+            type: text
+            nullable: false
+            length: 65535
+            options:
+                fixed: false
+        status:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+                default: '0'
+    oneToOne:
+      gameAccount:
+        targetEntity: GameAccount
+        joinColumn:
+          name: game_account_id
+          referencedColumnName: id
+    lifecycleCallbacks: {  }

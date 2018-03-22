@@ -1,0 +1,35 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Construction summary
+{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/Construction') }}">Summary</a>
+    {% for gameUnitType in gameUnitTypes %}
+        - <a class="B" href="{{ path('Game/Construction', {'type': gameUnitType.id}) }}">{{ gameUnitType.name }}</a>
+    {% endfor %}
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="2" align="center"><b>Construction summary</b></td>
+        </tr>
+        {% for gameUnitType in gameUnitTypes %}
+            <tr>
+                <td width="700" colspan="2" class="tabletop"><b>{{ gameUnitType.name }}</b></td>
+            </tr>
+
+            {% for gameUnit in gameUnitType.gameUnits %}
+                <tr>
+                    <td width="350">{{ gameUnit.nameMulti }}:</td>
+                    <td width="350">
+                        {{ constructionData[gameUnit.rowName] }}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+{% endblock %}

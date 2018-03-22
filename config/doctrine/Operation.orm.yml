@@ -1,0 +1,71 @@
+FrankProjects\UltimateWarfare\Entity\Operation:
+    type: entity
+    table: operation
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        needs:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        name:
+            type: string
+            nullable: false
+            length: 100
+            options:
+                fixed: false
+        pic:
+            type: string
+            nullable: false
+            length: 100
+            options:
+                fixed: false
+        unitId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: unit_id
+        cost:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        tick:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        description:
+            type: text
+            nullable: false
+            length: 65535
+            options:
+                fixed: false
+        active:
+            type: boolean
+            nullable: false
+            options:
+                default: '1'
+        difficulty:
+            type: float
+            nullable: false
+            precision: 10
+            scale: 0
+            options:
+                default: '0.5'
+        maxDistance:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: max_distance
+    lifecycleCallbacks: {  }
