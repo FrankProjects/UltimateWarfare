@@ -1,6 +1,8 @@
 Ultimate Warfare
 ================
 
+![Ultimate Warfare](https://raw.githubusercontent.com/FrankProjects/UltimateWarfare/master/public/images/banner.jpg)
+
 *Note: Ultimate Warfare is still in development. Some features of the game have not been implemented yet.*
 
 
