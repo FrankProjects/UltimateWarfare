@@ -1,0 +1,58 @@
+{% extends 'game.html.twig' %}
+{% block content %}
+    Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="4" align="center"><b>Infrastructure</b></td>
+        </tr>
+        <tr><td width="350" colspan="2" class="tabletop"><b>Buildings</b></td><td width="350" colspan="2" class="tabletop"><b>Defences</b></td></tr>
+        <tr>
+            <td width="200"> Economic Centers:</td>
+            <td width="150">
+            </td>
+            <td width="200"> Land Mines:</td><td width="150">
+            </td>
+        </tr>
+        <tr>
+            <td width="200"> Farms:</td><td width="150">
+            </td>
+            <td width="200"> Sea Mines:</td><td width="150">
+            </td>
+        </tr>
+        <tr>
+            <td width="200"> Mines:</td><td width="150">
+            </td>
+            <td width="200"> Bunkers:</td><td width="150">
+            </td>
+        </tr>
+        <tr>
+            <td width="200"> Woodcutters:</td><td width="150">
+            </td>
+            <td width="200"> Anti Air Missiles:</td><td width="150">
+            </td>
+        </tr>
+        <tr>
+            <td width="200"> Houses:</td><td width="150">
+            </td>
+            <td width="350" colspan="2"></td>
+            </td>
+        </tr>
+
+        <tr><td width="350" colspan="2" class="tabletop"><b>Special Buildings</b></td><td width="350" colspan="2" class="tabletop"></td></tr>
+        <tr>
+            <td width="200"> Airports:</td>
+            <td width="150">
+            </td>
+            <td width="350" colspan="2" rowspan="3"></td>
+        </tr>
+        <tr>
+            <td width="200"> Harbors:</td><td width="150">
+            </td>
+        </tr>
+        <tr>
+            <td width="200"> Train Stations:</td><td width="150">
+            </td>
+        </tr>
+    </table>
+{% endblock %}

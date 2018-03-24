@@ -1,0 +1,213 @@
+FrankProjects\UltimateWarfare\Entity\Player:
+    type: entity
+    repositoryClass: FrankProjects\UltimateWarfare\Repository\PlayerRepository
+    table: player
+    indexes:
+        name:
+            columns:
+                - name
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        name:
+            type: string
+            nullable: false
+            length: 20
+            options:
+                fixed: false
+        timestampJoined:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: timestamp_joined
+        timestampUpdate:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: timestamp_update
+        cash:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        steel:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        wood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        food:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        regions:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+        networth:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+        general:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        attacked:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        message:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        market:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        aid:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        news:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        fedlvl:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        incomeCash:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: income_cash
+        incomeFood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: income_food
+        incomeWood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: income_wood
+        incomeSteel:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: income_steel
+        upkeepCash:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: upkeep_cash
+        upkeepFood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: upkeep_food
+        upkeepWood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: upkeep_wood
+        upkeepSteel:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: upkeep_steel
+        notepad:
+            type: text
+            nullable: false
+            length: 65535
+            options:
+                default: ''
+    oneToMany:
+        reports:
+            targetEntity: Report
+            mappedBy: player
+        constructions:
+            targetEntity: Construction
+            mappedBy: player
+        worldRegions:
+            targetEntity: WorldRegion
+            mappedBy: player
+        fleets:
+            targetEntity: Fleet
+            mappedBy: player
+        marketItems:
+            targetEntity: MarketItem
+            mappedBy: player
+        playerResearch:
+            targetEntity: ResearchPlayer
+            mappedBy: player
+        toMessages:
+            targetEntity: Message
+            mappedBy: toPlayer
+        fromMessages:
+            targetEntity: Message
+            mappedBy: fromPlayer
+        federationApplications:
+            targetEntity: FederationApplication
+            mappedBy: player
+    manyToOne:
+        gameAccount:
+            targetEntity: GameAccount
+            inversedBy: players
+            joinColumn:
+                name: game_account_id
+                referencedColumnName: id
+        world:
+            targetEntity: World
+            inversedBy: players
+            joinColumn:
+                name: world_id
+                referencedColumnName: id
+        federation:
+            targetEntity: Federation
+            inversedBy: players
+            joinColumn:
+                name: federation_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

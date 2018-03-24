@@ -1,0 +1,29 @@
+{% extends 'game.html.twig' %}
+{% block content %}
+    <a class="B" href="{{ path('Game/Research') }}">Research</a>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="2" align="center"><b>Research History</b></td>
+        </tr>
+        {% for research in finishedResearch %}
+            <tr>
+                <td width="150">
+                    <img src="{{ asset('images/research/' ~ research.pic ) }}" width="150" height="130">
+                </td>
+                <td width="550" align="left">
+                    <div><b>Name:</b> {{ research.name|escape }}</div>
+                    <div><b>Finished at:</b> {{ research.timestamp|date }}</div>
+                    <div>{{ research.description|escape }}</div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2" class="col_center">You have not researched anything.</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

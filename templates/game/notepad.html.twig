@@ -1,0 +1,22 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Notepad
+{% endblock title %}
+
+{% block content %}
+    <form method="post" action="{{ path('Game/Notepad') }}" >
+        <table border="1" cellspacing="0" cellpadding="0" width="700" class="table text">
+            <tr>
+                <td class="tabletop" width="700" align="center"><b>Notepad</b></td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <textarea name="message" cols="80" rows="15" >{{ player.notepad|escape }}</textarea>
+                    <br>
+                    <div class="submit"><input type="submit" name="submit" value="Send"></div>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

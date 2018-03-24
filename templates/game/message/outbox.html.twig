@@ -1,0 +1,56 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Message outbox
+{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/Message/Inbox') }}">Inbox</a> - <a class="B" href="{{ path('Game/Message/Outbox') }}">Outbox</a> - <a class="B" href="{{ path('Game/Message/New') }}">New message</a>
+
+    <br />
+    <br />
+
+
+
+    <form method="post" action="{{ path('Game/Message/Outbox') }}">
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr class="tabletop">
+            <td width="400">Subject</td>
+            <td width="200">To</td>
+            <td width="100">Date:</td>
+        </tr>
+
+        {% for message in messages %}
+            <tr>
+                <td align="left">
+                    <input type="checkbox" name="selected_messages[]" value="{{ message.id }}">
+                    <a class="B" href="{{ path('Game/Message/Outbox/Read', {'messageId': message.id}) }}">
+                        {% if message.adminMessage == 1 %}
+                            <b>ADMIN:</b>
+                        {% endif %}
+                        {{ message.subject|escape }}
+                    </a>
+                </td>
+                <td>
+                    {{ message.toPlayer.name }}
+                </td>
+                <td>
+                    {{ message.timestamp|date }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3" align="center">
+                    No messages
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3" align="left">
+                <input type="checkbox" onclick="selectAll(this.form, this.checked)">Select All <div class="submit"><input type="submit" name="del" value="Delete Selected" /></div>
+
+            </td>
+        </tr>
+    </table>
+    </form>
+{% endblock %}

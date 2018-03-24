@@ -1,0 +1,47 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Construction details
+{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/Construction') }}">Summary</a>
+    {% for gameUnitType in gameUnitTypes %}
+        - <a class="B" href="{{ path('Game/Construction', {'type': gameUnitType.id}) }}">{{ gameUnitType.name }}</a>
+    {% endfor %}
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="5" align="center"><b>Construction</b></td>
+        </tr>
+        <tr>
+            <td align="center">Building</td>
+            <td align="center">Region</td>
+            <td align="center">Time left</td>
+            <td align="center">Finishing at</td>
+            <td align="center">Option</td>
+        </tr>
+
+        {% for construction in constructions %}
+            <tr align="center">
+                {% set timestampFinished = construction.timestamp + construction.gameUnit.timestamp %}
+                {% set timestampLeft = timestampFinished - date().timestamp %}
+
+                {% if construction.number == 1 %}
+                    <td>{{ construction.number }} {{ construction.gameUnit.name }}</td>
+                {% else %}
+                    <td>{{ construction.number }} {{ construction.gameUnit.nameMulti }}</td>
+                {% endif %}
+                <td><a class="B" href="{{ path('Game/World/Region', {'regionId': construction.worldRegion.id}) }}">{{ construction.worldRegion.x }}, {{ construction.worldRegion.y }}: {{ construction.worldRegion.region }}</a></td>
+                <td><span class="timer">{{ timestampLeft }}</span></td>
+                <td>{{ construction.timestamp|date("Y-m-d H:i:s") }}</td>
+                <td><a class="B" href="{{ path('Game/Construction/Cancel', {'constructionId': construction.id}) }}">Cancel</a></td>
+            </tr>
+        {% else %}
+            <tr><td align="center" colspan="7">No {{ gameUnitType.name }} under construction....</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

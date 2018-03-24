@@ -1,0 +1,37 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Message outbox read
+{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/Message/Inbox') }}">Inbox</a> - <a class="B" href="{{ path('Game/Message/Outbox') }}">Outbox</a> - <a class="B" href="{{ path('Game/Message/New') }}">New message</a>
+
+    <br />
+    <br />
+
+    <table border="1" cellspacing="0" cellpadding="0" width="700" class="table text">
+        <tr>
+            <td align="left" class="tabletop">
+                <b>
+                    {% if message.adminMessage == 1 %}
+                        <font color="#CC0000">ADMIN:</font>
+                    {% endif %}
+                    {{ message.subject|escape }}
+                </b>
+            </td>
+        </tr>
+        <tr>
+            <td width="700" align="left">
+                <div class="pm_date">
+                    To {{ message.toPlayer.name|escape }} on {{ message.timestamp|date }}
+                </div>
+                {{ message.message|escape }}
+                <br />
+                <br />
+            </td>
+        </tr>
+    </table>
+    Options: <a class="B" href="pm_send.php?to=<?php echo $top; ?>">Send new message</a> - <a class="B" href="pm_outbox.php?action=delete&message=<?php echo $message_id; ?>">Delete</a>
+
+{% endblock %}

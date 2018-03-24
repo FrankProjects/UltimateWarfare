@@ -1,0 +1,153 @@
+FrankProjects\UltimateWarfare\Entity\GameUnit:
+    type: entity
+    table: game_unit
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        name:
+            type: string
+            nullable: false
+            length: 20
+            options:
+                fixed: false
+        nameMulti:
+            type: string
+            nullable: false
+            length: 50
+            options:
+                fixed: false
+            column: name_multi
+        rowName:
+            type: string
+            nullable: false
+            length: 20
+            options:
+                fixed: false
+            column: row_name
+        image:
+            type: string
+            nullable: true
+            length: 100
+            options:
+                fixed: false
+        priceCash:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: price_cash
+        priceWood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: price_wood
+        priceSteel:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: price_steel
+        priceFood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: price_food
+        networth:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        incomeCash:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: income_cash
+        incomeFood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: income_food
+        incomeWood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: income_wood
+        incomeSteel:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: income_steel
+        upkeepCash:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: upkeep_cash
+        upkeepFood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: upkeep_food
+        upkeepWood:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: upkeep_wood
+        upkeepSteel:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+                default: '0'
+            column: upkeep_steel
+        timestamp:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        description:
+            type: text
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+    oneToMany:
+        worldRegionUnits:
+            targetEntity: WorldRegionUnit
+            mappedBy: gameUnit
+        constructions:
+            targetEntity: Construction
+            mappedBy: gameUnit
+        fleetUnits:
+            targetEntity: FleetUnit
+            mappedBy: gameUnit
+    manyToOne:
+        gameUnitType:
+            targetEntity: GameUnitType
+            inversedBy: gameUnits
+            joinColumn:
+                name: game_unit_type_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

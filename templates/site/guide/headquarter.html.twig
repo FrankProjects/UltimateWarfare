@@ -1,0 +1,80 @@
+{% extends 'site/guideBase.html.twig' %}
+{% block content %}
+
+    <img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash"/><b>
+    148,172</b> ( -1650/h ) -
+    <img src="{{ asset('images/icons/resource_food.jpg') }}" width="25" height="25" alt="Food"/><b>
+    661,202</b> ( + 625/h ) -
+    <img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood"/><b>
+    65,737</b> ( + 9100/h ) -
+    <img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel"/><b>
+    60,875</b> ( + 7812/h )
+    <br />
+    <br />
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" width="600" align="center"><b>Headquarter</b></td>
+        </tr>
+        <tr>
+            <td align="center">
+
+                <b>Adviser:</b>
+                <br/>
+                You are currently in your Headquarters. This is where all the money in your empire is stored!<br/>
+                From here you can control your land, your countries and your world!<br/><br/>
+            </td>
+        </tr>
+    </table>
+
+    <br/>
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td>
+                <br/>
+                &#160;This is the first screen you start with, after you have logged in. You can see all your cash,
+                population, resources and regions here. <br/>
+                <ul>
+                    <li>
+                        <b>Cash:</b> Cash is used for buying almost everything in the game and also used as payment for
+                        your units. You make cash with Economic Centers and your population will pay tax, if you don't
+                        have enough cash, and you can't pay your units, they will lose faith in your abilites and begin
+                        to desert you.<br /><br />
+                    </li>
+                    <li>
+                        <b>Wood:</b> Wood is a building resource, you need wood for erecting buildings and for training
+                        units. You can make wood from your woodcutters. You can build woodcutters on your Countries.<br /><br />
+                    </li>
+                    <li>
+                        <b>Steel:</b> Steel is a building resource. Like wood, you need steel for erecting buildings and
+                        for training units. You can make steel from building mines.<br /><br />
+                    </li>
+                    <li>
+                        <b>Food:</b> Food is very important, your units and your population will need to be fed.
+                        Furthermore, if you don't have enough food, your population and units will die.<br /><br />
+                    </li>
+                    <li>
+                        <b>Population:</b> Your population are the workforce behind all your buildings. They also pay
+                        tax, so they are very important to the success of your empire.<br /><br />
+                    </li>
+                    <li>
+                        <b>Regions:</b> Regions are the only way to have building space. The more regions you have the
+                        more space you have to build. This is essential to the growth of your empire.<br /><br />
+                    </li>
+                    <li>
+                        <b>Networth:</b> Networth is a basic description of how powerful your empire is.<br /><br />
+                    </li>
+                    <li>
+                        <b>Announcements:</b> This is a global admin/moderator message. It can contain information about
+                        the game, news, updates and more.<br /><br />
+                    </li>
+                    <li>
+                        <b>Recent reports:</b> Last 10 reports will show up here. Reports are ingame events about market
+                        updates, attacks against you, and building updates.
+                    </li>
+                </ul>
+                <br/>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

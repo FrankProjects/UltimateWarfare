@@ -1,0 +1,33 @@
+FrankProjects\UltimateWarfare\Entity\Attacked:
+    type: entity
+    table: attacked
+    indexes:
+        attacker:
+            columns:
+                - attacker
+    id:
+        id:
+            type: bigint
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        attacker:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        defender:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        timestamp:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+    lifecycleCallbacks: {  }

@@ -1,0 +1,39 @@
+{% extends 'forumBase.html.twig' %}
+{% block content %}
+    <div align="center">
+        <a class="B" href="{{ path('Forum') }}">Forum</a> - <a class="B" href="{{ path('Forum/Category', {'categoryId': category.id}) }}">Topics</a>
+    </div>
+
+    <table class="table text" width="900" border="0" align="center" cellpadding="3" cellspacing="1">
+        <tr class="tabletop">
+            <td width="400" align="left"><strong>Topic</strong></td>
+            <td width="120" align="center"><strong>Creator</strong></td>
+            <td width="80" align="center"><strong>Reactions</strong></td>
+            <td width="300" align="left"><strong>Last reply</strong></td>
+        </tr>
+
+        {% for topic in topics %}
+            <tr>
+                {% if topic.sticky == 1 %}
+                    <td align="left"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}"><b><font color="#CC0000">Sticky </font></b>{{ topic.title|escape }}</a></td>
+                {% else %}
+                    <td align="left"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}">{{ topic.title|escape }}</a></td>
+                {% endif %}
+                <td align="center">{{ topic.gameAccount.forumName|escape }}</td>
+                <td align="center">{{ topic.posts|length }}</td>
+                {% set lastPost = topic.posts|last %}
+                {% if lastPost == null %}
+                    <td align="left">{{ topic.createDateTime|date("Y-m-d H:i:s") }} by {{ topic.gameAccount.forumName|escape }}</td>
+                {% else %}
+                    <td align="left">{{ lastPost.createDateTime|date("Y-m-d H:i:s") }} by {{ lastPost.gameAccount.forumName|escape }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+        {% if gameAccount != null and category.id > 1 or is_granted('ROLE_ADMIN') %}
+            <tr><td colspan="5" align="right"><a class="B" href="{{ path('Forum/Topic/Create', {'categoryId': category.id}) }}">Make a new Topic</a></td></tr>
+        {% endif %}
+    </table>
+    <br />
+    <br />
+{% endblock %}

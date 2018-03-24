@@ -1,0 +1,29 @@
+<table width="900" border="1" align="center" cellpadding="0" cellspacing="1" class="table text">
+    <tr>
+        <td width="200">Name: {{ post.gameAccount.forumName|escape }}<br/>
+            <b>Forum Moderator</b>
+        </td>
+
+        <td rowspan="3" width="700">{{ post.content|escape|nl2br }}
+            <br/>
+            {% if post.edited == true %}
+                <br/><br/><i> Last edited by: {{ post.editedBy|escape }}</i>
+            {% endif %}
+
+            {% if gameAccount != null and post.gameAccount.id == gameAccount.id or is_granted('ROLE_ADMIN') %}
+                <br/>
+                <br/>
+                <a class="B" href="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" title="Delete">Delete</a>
+                - <a class="B" href="{{ path('Forum/Post/Edit', {'postId': post.id}) }}" title="Edit">Edit</a>
+            {% endif %}
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Date/Time:<br/>
+            {{ post.createDateTime|date("Y-m-d H:i:s") }}
+        </td>
+    </tr>
+
+</table><br/>

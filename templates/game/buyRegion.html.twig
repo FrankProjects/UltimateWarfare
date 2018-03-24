@@ -1,0 +1,33 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Buy region
+{% endblock title %}
+
+{% block content %}
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" align="center" colspan="2"><b>Region</b></td>
+        </tr>
+        <tr>
+            <td width="120" align="center" rowspan="2">
+                <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100"><br />
+            </td>
+            <td width="580" align="center">Location: <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}</td>
+        </tr>
+        <tr>
+            <td>
+                <form action="{{ path('Game/World/Region/Buy', {'regionId': region.id}) }}" method = "post">
+                    <div>Do you really want to buy this region for $ {{ price }} ?</div>
+                    <div class="submit"><input type="submit" name="submit" value="Buy" /></div>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+{% endblock %}

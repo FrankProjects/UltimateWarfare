@@ -1,0 +1,80 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Fleet list
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td class="tabletop" colspan="7" align="center"><b>Fleets</b></td>
+        </tr>
+
+        {% for fleet in player.fleets %}
+            {% if loop.first %}
+                <tr>
+                    <td width="75">From Region</td>
+                    <td width="75">To Region</td>
+                    <td width="150">Owner</td>
+                    <td width="150">Fleet</td>
+                    <td width="75">Time left</td>
+                    <td width="50">Arrive at</td>
+                    <td width="100">Options</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td>
+                    {{ fleet.worldRegion.x }}, {{ fleet.worldRegion.y }}: {{ fleet.worldRegion.region }}
+                </td>
+                <td>
+                    {{ fleet.targetWorldRegion.x }}, {{ fleet.targetWorldRegion.y }}: {{ fleet.targetWorldRegion.region }}
+                </td>
+                <td>
+                    {% if player.federation != null and player.federation.id == fleet.targetWorldRegion.player.federation.id %}
+                        <font color="green">{{ fleet.targetWorldRegion.player.name|escape }}</font>
+                    {% elseif fleet.targetWorldRegion.player != null %}
+                        {{ fleet.targetWorldRegion.player.name|escape }}
+                    {% else %}
+                        Nobody!
+                    {% endif %}
+                </td>
+                <td>
+                    {% for unit in fleet.fleetUnits %}
+                        {{ unit.amount }} {{ unit.gameUnit.nameMulti }}<br />
+                    {% endfor %}
+                </td>
+
+                {% set timestampLeft = fleet.timestampArrive - date().timestamp %}
+
+                {% if timestampLeft < 0 %}
+                    {% set timestampLeft = 0 %}
+                {% endif %}
+
+                {% if timestampLeft == 0 %}
+                    <td><b>Arrived!</b></td>
+                {% else %}
+                    <td><span class="timer">{{ timestampLeft }}</span></td>
+                {% endif %}
+
+                <td>
+                    {{ fleet.timestampArrive|date("Y-m-d H:i:s") }}
+                </td>
+                <td>
+                    {% if fleet.timestampArrive > date().timestamp %}
+                        <a class="B" href="{{ path('Game/Fleet/Recall', {'fleetId': fleet.id}) }}"><b>Recall</b></a>
+                    {% else %}
+                        {% if fleet.targetWorldRegion.player.id == player.id %}
+                            <a class="B" href="{{ path('Game/Fleet/Reinforce', {'fleetId': fleet.id}) }}"><b>Reinforce</b></a><br />
+                            <a class="B" href="{{ path('Game/Fleet/Recall', {'fleetId': fleet.id}) }}"><b>Recall</b></a>
+                        {% else %}
+                            <a class="B" href="{{ path('Game/Fleet/Attack', {'fleetId': fleet.id}) }}"><b>Attack</b></a><br />
+                            <a class="B" href="{{ path('Game/Fleet/Recall', {'fleetId': fleet.id}) }}"><b>Recall</b></a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td align="center" colspan="7">No fleets sent out....</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

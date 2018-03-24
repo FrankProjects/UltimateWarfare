@@ -1,0 +1,14 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+    default_locale: en
+    csrf_protection: { enabled: true }
+    #http_method_override: true
+
+    session:
+    #    # With this config, PHP's native session handling is used
+        handler_id: ~
+
+    #esi: ~
+    #fragments: ~
+    php_errors:
+        log: true

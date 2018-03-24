@@ -1,0 +1,35 @@
+<p class="text2">
+    {{ 'label.navigation'|trans({}, 'navigation') }}<br />
+    :<a class="A" href="{{ path('Game/Headquarter') }}">Headquarters</a><br />
+
+    {% if player.regions > 0 %}
+        :<a class="A" href="{{ path('Game/Reports') }}">Reports</a><br />
+        :<a class="A" href="{{ path('Game/Construction') }}">Construction</a><br />
+        :<a class="A" href="{{ path('Game/Fleets') }}">Fleets</a><br />
+        :<a class="A" href="{{ path('Game/RegionList') }}">Regions</a><br />
+        :<a class="A" href="{{ path('Game/Market') }}">Market</a><br />
+        :<a class="A" href="{{ path('Game/Federation') }}">Federation</a><br />
+        :<a class="A" href="{{ path('Game/Research') }}">Research</a><br />
+        :<a class="A" href="{{ path('Game/World') }}">World</a>
+    {% else %}
+        :<a class="A" href="{{ path('Game/World/Search/Free') }}">World</a>
+    {% endif %}
+
+</p>
+
+<p class="text2">
+    {% if player.regions > 0 %}
+        :<a class="A" href="{{ path('Game/Message/Inbox') }}">Messages</a><br />
+        :<a class="A" href="{{ path('Game/Notepad') }}">Notepad</a><br />
+        :<a class="A" href="{{ path('Forum') }}">Forum</a><br />
+        :<a class="A" href="{{ path('Site/Chat') }}" target="main">Chat</a><br />
+        :<a class="A" href="{{ path('Game/Rankings') }}">Rankings</a><br />
+        :<a class="A" href="{{ path('Guide') }}" target="_blank">Help/FAQ</a><br />
+        :<a class="A" href="{{ path('Game/Surrender') }}">Surrender</a><br /><br /><br />
+    {% endif %}
+
+    :<a class="A" href="{{ path('Game/Account') }}">Account Management</a><br />
+    :<a class="A" href="{{ path('Site/Logout') }}">Log Out</a>
+</p>
+
+

@@ -1,0 +1,45 @@
+FrankProjects\UltimateWarfare\Entity\BattleDetails:
+    type: entity
+    table: battle_details
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        worldId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: world_id
+        attacker:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        defender:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        battleLog:
+            type: text
+            nullable: false
+            length: 65535
+            options:
+                fixed: false
+            column: battle_log
+        type:
+            type: boolean
+            nullable: false
+        timestamp:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+    lifecycleCallbacks: {  }

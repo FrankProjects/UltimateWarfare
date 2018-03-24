@@ -1,0 +1,53 @@
+FrankProjects\UltimateWarfare\Entity\WorldCountry:
+    type: entity
+    table: world_country
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        x:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        'y':
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        cX:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: c_x
+        cY:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: c_y
+        image:
+            type: string
+            nullable: false
+            length: 200
+            options:
+                fixed: false
+    oneToMany:
+        worldRegions:
+            targetEntity: WorldRegion
+            mappedBy: worldCountry
+    manyToOne:
+       worldSector:
+           targetEntity: WorldSector
+           inversedBy: worldCountries
+           joinColumn:
+               name: sector_id
+               referencedColumnName: id
+    lifecycleCallbacks: {  }

@@ -1,0 +1,479 @@
+Forum:
+    path:      /forum
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\ForumController::index
+
+Forum/Category:
+    path:      /forum/category/{categoryId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::category
+    requirements:
+        categoryId: '\d+'
+
+Forum/Category/Create:
+    path:      /forum/category/create/
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::create
+
+Forum/Category/Edit:
+    path:      /forum/category/edit/{categoryId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::edit
+    requirements:
+        categoryId: '\d+'
+
+Forum/Category/Remove:
+    path:      /forum/category/remove/{categoryId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::remove
+    requirements:
+        categoryId: '\d+'
+
+Forum/Post/Create:
+    path:      /forum/post/create/{topicId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\PostController::create
+    requirements:
+        topicId: '\d+'
+
+Forum/Post/Edit:
+    path:      /forum/post/edit/{postId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\PostController::edit
+    requirements:
+        postId: '\d+'
+
+Forum/Post/Remove:
+    path:      /forum/post/remove/{postId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\PostController::remove
+    requirements:
+        postId: '\d+'
+
+Forum/Topic:
+    path:      /forum/topic/{topicId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::topic
+    requirements:
+        topicId: '\d+'
+
+Forum/Topic/Create:
+    path:      /forum/topic/create/{categoryId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::create
+    requirements:
+        categoryId: '\d+'
+
+Forum/Topic/Edit:
+    path:      /forum/topic/edit/{topicId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::edit
+    requirements:
+        topicId: '\d+'
+
+Forum/Topic/Remove:
+    path:      /forum/topic/remove/{topicId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::remove
+    requirements:
+        topicId: '\d+'
+
+Forum/Topic/Sticky:
+    path:      /forum/topic/sticky/{topicId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::sticky
+    requirements:
+        topicId: '\d+'
+
+Forum/Topic/Unsticky:
+    path:      /forum/topic/unsticky/{topicId}
+    controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::unsticky
+    requirements:
+        topicId: '\d+'
+
+Game/Login:
+    path:      /game/login
+    controller: FrankProjects\UltimateWarfare\Controller\Game\LoginController::login
+
+Game/Login/Player:
+    path:      /game/login/player/{playerId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\LoginController::loginForPlayer
+    requirements:
+        playerId: '\d+'
+
+Game/Account:
+    path:      /game/account
+    controller: FrankProjects\UltimateWarfare\Controller\Game\GameAccountController::account
+
+Game/Account/Edit:
+    path:      /game/account/edit
+    controller: FrankProjects\UltimateWarfare\Controller\Game\GameAccountController::edit
+
+Game/Banned:
+    path:      /game/banned
+    controller: FrankProjects\UltimateWarfare\Controller\Game\GameAccountController::banned
+
+Game/Construction:
+    path:      /game/construction/{type}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::construction
+    defaults:
+        type: 0
+    requirements:
+        type: '\d+'
+
+Game/Construction/Cancel:
+    path:      /game/construction/cancel/{constructionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::cancel
+    requirements:
+        constructionId: '\d+'
+
+Game/Federation:
+    path:      /game/federation
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::federation
+
+Game/Federation/Create:
+    path:      /game/federation/create
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::create
+
+Game/Federation/Join:
+    path:      /game/federation/join
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::join
+
+Game/Fleets:
+    path:      /game/fleets
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::fleetList
+
+Game/Fleet/Attack:
+    path:      /game/fleet/attack/{fleetId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::attack
+
+Game/Fleet/Recall:
+    path:      /game/fleet/recall/{fleetId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::recall
+
+Game/Fleet/Reinforce:
+    path:      /game/fleet/reinforce/{fleetId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::reinforce
+
+Game/Headquarter:
+    path:      /game/headquarter
+    controller: FrankProjects\UltimateWarfare\Controller\Game\HeadquarterController::headquarter
+
+Game/Headquarter/Army:
+    path:      /game/headquarter/army
+    controller: FrankProjects\UltimateWarfare\Controller\Game\HeadquarterController::army
+
+Game/Headquarter/Income:
+    path:      /game/headquarter/income
+    controller: FrankProjects\UltimateWarfare\Controller\Game\HeadquarterController::income
+
+Game/Headquarter/Infrastructure:
+    path:      /game/headquarter/infrastructure
+    controller: FrankProjects\UltimateWarfare\Controller\Game\HeadquarterController::infrastructure
+
+Game/Market:
+    path:      /game/market
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::buy
+
+Game/Market/Sell:
+    path:      /game/market/sell
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::sell
+
+Game/Market/Offers:
+    path:      /game/market/offers
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::offers
+
+Game/Market/PlaceOffer:
+    path:      /game/market/place-offer
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::placeOffer
+
+Game/Message/Inbox:
+    path:      /game/message/inbox
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inbox
+
+Game/Message/Inbox/Read:
+    path:      /game/message/inbox/read/{messageId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inboxRead
+    requirements:
+        messageId: '\d+'
+
+Game/Message/New:
+    path:      /game/message/new
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::new
+
+Game/Message/Outbox:
+    path:      /game/message/outbox
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::outbox
+
+Game/Message/Outbox/Read:
+    path:      /game/message/outbox/read/{messageId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::outboxRead
+    requirements:
+        messageId: '\d+'
+
+Game/Notepad:
+    path:      /game/notepad
+    controller: FrankProjects\UltimateWarfare\Controller\Game\NotepadController::notepad
+
+Game/Rankings:
+    path:      /game/rankings/{sortBy}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RankingController::ranking
+    defaults:
+        sortBy: 'region'
+
+Game/RegionList:
+    path:      /game/region-list
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::regionList
+
+Game/Reports:
+    path:      /game/reports/{type}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ReportController::report
+    defaults:
+        type: 0
+    requirements:
+        type: '\d+'
+
+Game/Research:
+    path:      /game/research
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::research
+
+Game/Research/Cancel:
+    path:      /game/research/cancel/{researchId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::performCancel
+    requirements:
+        type: '\d+'
+
+Game/Research/History:
+    path:      /game/research/history
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::history
+
+Game/Research/Perform:
+    path:      /game/research/perform/{researchId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::performResearch
+    requirements:
+        type: '\d+'
+
+Game/Surrender:
+    path:      /game/surrender
+    controller: FrankProjects\UltimateWarfare\Controller\Game\SurrenderController::surrender
+
+Game/World:
+    path:      /game/world
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::world
+
+Game/World/Country:
+    path:      /game/world/country/{countryId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\CountryController::country
+    requirements:
+        countryId: '\d+'
+
+Game/World/Region:
+    path:      /game/world/region/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::region
+    requirements:
+        regionId: '\d+'
+
+Game/World/Region/Build:
+    path:      /game/world/region/build/{regionId}/{gameUnitTypeId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::build
+    requirements:
+        regionId: '\d+'
+        gameUnitTypeId: '\d+'
+
+Game/World/Region/Buy:
+    path:      /game/world/region/buy/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::buy
+    requirements:
+        regionId: '\d+'
+
+Game/World/Search/Free:
+    path:      /game/world/search/free
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::searchFree
+
+Game/World/Search/Player:
+    path:      /game/world/search/player
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::searchPlayer
+
+Game/World/Sector:
+    path:      /game/world/sector/{sectorId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\SectorController::sector
+    requirements:
+        sectorId: '\d+'
+
+Game/World/Sector/Search/Free:
+    path:      /game/world/sector/{sectorId}/search/free
+    controller: FrankProjects\UltimateWarfare\Controller\Game\SectorController::searchFree
+    requirements:
+        sectorId: '\d+'
+
+Game/World/Sector/Search/Player:
+    path:      /game/world/sector/{sectorId}/search/player
+    controller: FrankProjects\UltimateWarfare\Controller\Game\SectorController::searchPlayer
+    requirements:
+        sectorId: '\d+'
+
+Game/SelectName:
+    path:      /game/select-name/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::selectName
+    requirements:
+        worldId: '\d+'
+
+Game/SelectWorld:
+    path:      /game/select-world
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::selectWorld
+
+Game/StartWorld:
+    path:      /game/start/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::start
+    requirements:
+        worldId: '\d+'
+
+Game/Story/Chapter1:
+    path:      /game/story/1/{page}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\StoryController::page
+    requirements:
+        page: '\d+'
+
+Guide:
+    path:      /guide
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::index
+
+Guide/Attack:
+    path:      /guide/attack
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::attack
+
+Guide/Construction:
+    path:      /guide/construction
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::construction
+
+Guide/Federation:
+    path:      /guide/federation
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::federation
+
+Guide/Fleet:
+    path:      /guide/fleet
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::fleet
+
+Guide/Headquarter:
+    path:      /guide/headquarter
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::headquarter
+
+Guide/ListOperations:
+    path:      /guide/list-operations
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::listOperations
+
+Guide/ListResearch:
+    path:      /guide/list-research
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::listResearch
+
+Guide/ListUnits:
+    path:      /guide/list-units/{gameUnitTypeId}
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::listUnits
+    defaults:
+        gameUnitTypeId: 0
+    requirements:
+        gameUnitTypeId: '\d+'
+
+Guide/LogOff:
+    path:      /guide/log-off
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::logoff
+
+Guide/Market:
+    path:      /guide/market
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::market
+
+Guide/Mission:
+    path:      /guide/mission
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::mission
+
+Guide/Ranking:
+    path:      /guide/ranking
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::ranking
+
+Guide/Region:
+    path:      /guide/region
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::region
+
+Guide/Report:
+    path:      /guide/report
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::report
+
+Guide/Research:
+    path:      /guide/research
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::research
+
+Guide/Rules:
+    path:      /guide/rules
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::rules
+
+Guide/Surrender:
+    path:      /guide/surrender
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::surrender
+
+Guide/World:
+    path:      /guide/world
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::world
+
+Site/About:
+    path:      /about
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::about
+
+Site/Advertise:
+    path:      /advertise
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::advertise
+
+Site/Chat:
+    path:      /chat
+    controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::chat
+
+Site/AddChat:
+    path:      /chat/add-chat
+    controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::addChat
+
+Site/GetChat:
+    path:      /chat/get-chat/{lastChatLineId}
+    controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::getChat
+    requirements:
+        lastChatLineId: '\d+'
+
+Site/GetUsers:
+    path:      /chat/get-users
+    controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::getUsers
+
+Site/Community:
+    path:      /community
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::community
+
+Site/Contact:
+    path:      /contact
+    controller: FrankProjects\UltimateWarfare\Controller\Site\ContactController::contact
+
+Site/Donate:
+    path:      /donate
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::donate
+
+Site/HallOfFame:
+    path:      /hall-of-fame
+    controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::hallOfFame
+
+Site/HallOfFameRound:
+    path:      /hall-of-fame/{worldId}/{round}
+    controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::round
+    requirements:
+        worldId: '\d+'
+        round: '\d+'
+
+Site/Homepage:
+    path:      /
+    controller: FrankProjects\UltimateWarfare\Controller\Site\IndexController::index
+
+Site/Login:
+    path:      /login
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SecurityController::login
+
+Site/LoginCheck:
+    path:      /login_check
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SecurityController::check
+
+Site/Logout:
+    path:      /logout
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SecurityController::logout
+
+Site/LostPassword:
+    path:      /lostpassword
+    controller: FrankProjects\UltimateWarfare\Controller\Site\LostPasswordController::lostPassword
+
+Site/Register:
+    path:      /register
+    controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::register
+
+Site/Statistics:
+    path:      /statistics
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::statistics

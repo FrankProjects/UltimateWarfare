@@ -1,0 +1,35 @@
+{% extends 'site.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Hall of Fame
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr class="tabletop">
+            <td colspan="3" align="center"><b>Hall Of Fame</b></td>
+        </tr>
+        <tr>
+            <td width="70" align="center"><b>World</b></td>
+            <td width="400" align="left"><b>Name</b></td>
+            <td width="230" align="center"><b>End Date</b></td>
+        </tr>
+
+        {% for gameWorld in history %}
+            <tr>
+                <td align="center">
+                    {{ gameWorld.worldId }}
+                </td>
+                <td align="left">
+                    <a class="B" href="{{ path('Site/HallOfFameRound', {'worldId': gameWorld.worldId, 'round': gameWorld.round }) }}"><b>{{ gameWorld.name }}</b></a>
+                </td>
+                <td align="center">
+                    {{ gameWorld.endDate|date }}
+                </td>
+            </tr>
+
+        {% else %}
+            <tr><td align="center" colspan="3">No history...</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

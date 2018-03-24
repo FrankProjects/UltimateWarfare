@@ -1,0 +1,50 @@
+FrankProjects\UltimateWarfare\Entity\Post:
+    type: entity
+    repositoryClass: FrankProjects\UltimateWarfare\Repository\PostRepository
+    table: post
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        posterIp:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: poster_ip
+        content:
+            type: text
+            nullable: true
+            length: 65535
+            options:
+                fixed: false
+        createDateTime:
+            type: datetime
+            column: create_date_time
+    manyToOne:
+        gameAccount:
+            targetEntity: GameAccount
+            inversedBy: posts
+            joinColumn:
+                name: game_account_id
+                referencedColumnName: id
+        editGameAccount:
+            targetEntity: GameAccount
+            inversedBy: postsEdited
+            joinColumn:
+                name: edit_game_account_id
+                referencedColumnName: id
+        topic:
+            targetEntity: Topic
+            inversedBy: posts
+            joinColumn:
+                name: topic_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

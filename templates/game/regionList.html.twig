@@ -1,0 +1,60 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Region List
+{% endblock title %}
+
+{% block content %}
+    Sort Regions by:
+    <a class="B" href="region_list.php?sort_by=x&{{ sortDirection }}">X</a> -
+    <a class="B" href="region_list.php?sort_by=soldiers&{{ sortDirection }}">Soldiers</a> -
+    <a class="B" href="region_list.php?sort_by=population&{{ sortDirection }}">Pop</a> -
+    <a class="B" href="region_list.php?sort_by=buildings&{{ sortDirection }}">Buildings</a>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="3" align="center"><b>Regions</b></td>
+        </tr>
+        {% for region in regions %}
+            <tr>
+                <td width="120">
+                    <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100">
+                </td>
+                <td width="370" align="left">
+                    <ul>
+                        <li>Position: {{ region.x }}, {{ region.y }}: {{ region.region }}</li>
+                        <li>Built: {{ region.buildings }}
+                            {% if region.buildingsInConstruction > 0 %}
+                                ( {{ region.buildingsInConstruction }} )
+                            {% endif %}
+                            / {{ region.space }}
+                        </li>
+                        <li>Population: {{ region.population }} / {{ region.population * 500 }}
+                        <li>Click <a class="B" href="{{ path('Game/World/Region', {'regionId': region.id}) }}"><b>here</b></a> to go to this region.</li>
+                        <li>Quick Links:
+                            <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Build</a> -
+                            <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Build Units</a>
+                        </li>
+                    </ul>
+                </td>
+                <td width="210" align="left">
+                    {% for unit in region.worldRegionUnits %}
+                        {{ unit.gameUnit.name }}: {{ unit.amount }}
+                        <br />
+                    {% else %}
+                        No units stationed here!
+                    {% endfor %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td align="center" colspan="3">You have to buy a region on the map first!</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br />
+    <br />
+{% endblock %}

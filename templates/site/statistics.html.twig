@@ -1,0 +1,19 @@
+{% extends 'site.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Statistics
+{% endblock title %}
+
+{% block content %}
+    <table class="table text" width="700" cellspacing="0" cellpadding="0" border="1" align="center">
+        <tr class="tabletop">
+            <td align="center"><b>Ultimate Warfare Statistics</b></td>
+        </tr>
+        <tr>
+            <td align="center">
+                Last Login:  {{ lastLogin|escape }}<br />
+                Last Registered: {{ lastRegistered|escape }}<br />
+                Total users: {{ totalUsers }}
+            </td></tr>
+    </table>
+{% endblock %}

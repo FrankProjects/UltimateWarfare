@@ -1,0 +1,74 @@
+/* Chats */
+
+#chatBlock{
+	width:700px;
+	position:relative;
+}
+
+#chatTextBlock{
+	position:relative;
+	height:360px;
+	width:520px;
+	margin-bottom:20px;
+	padding-left:3px;
+	border:1px solid #cccc99;
+}
+
+div.chat{
+	float:left;
+	width:490px;
+	left: 5px;
+	top: 4px;
+}
+
+.chat:last-child{
+	margin-bottom:0;
+}
+
+.chat span{
+	font-size:12px;
+	text-align:left;
+}
+
+.chat .chat_text{
+	display:inline-block;
+	font-size:12px;
+	overflow:hidden;
+	vertical-align:text-top;
+	width:330px;
+}
+
+.chat .chat_time{
+	float:left;
+	font-size:11px;
+	vertical-align:text-top;
+	margin:0px 5px 0px 5px;
+}
+
+.chat .chat_name{
+	float:left;
+	font-size:11px;
+	vertical-align:text-top;
+	margin:0px 5px 0px 5px;
+}
+
+#chatUserBlock{
+	height:360px;
+	position:absolute;
+	right:0;
+	top:0px;
+	width:150px;
+	border:1px solid #cccc99;
+	padding-left:3px;
+}
+
+/* Chat User Area */
+#submitForm{
+	display:none;
+}
+
+input#chatText{
+	/* The chat submit text field */
+	width:385px;
+
+}

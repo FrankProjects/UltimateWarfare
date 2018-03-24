@@ -1,0 +1,48 @@
+FrankProjects\UltimateWarfare\Entity\Fleet:
+    type: entity
+    table: fleet
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        timestamp:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+        timestampArrive:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            column: timestamp_arrive
+    manyToOne:
+        player:
+            targetEntity: Player
+            inversedBy: fleets
+            joinColumn:
+                name: player_id
+                referencedColumnName: id
+        worldRegion:
+            targetEntity: WorldRegion
+            inversedBy: fleets
+            joinColumn:
+                name: region_id
+                referencedColumnName: id
+        targetWorldRegion:
+            targetEntity: WorldRegion
+            inversedBy: targetFleets
+            joinColumn:
+                name: target_id
+                referencedColumnName: id
+    oneToMany:
+        fleetUnits:
+            targetEntity: FleetUnit
+            mappedBy: fleet
+    lifecycleCallbacks: {  }

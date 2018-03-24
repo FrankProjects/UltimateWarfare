@@ -1,0 +1,19 @@
+label:
+  add_reaction: Add reaction
+  close: Close
+  date: Date/Time
+  forum: Forum
+  name: Name
+  title: Title
+  topics: Topics
+  post: Post
+action:
+  post:
+    edit: Edit post
+  topic:
+    create: Create Topic
+    close: Close this Topic
+    delete: Delete this Topic
+    edit: Edit this Topic
+    sticky: Sticky this Topic
+    unsticky: Unsticky this Topic

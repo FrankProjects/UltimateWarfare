@@ -1,0 +1,52 @@
+{% extends 'site/guideBase.html.twig' %}
+{% block content %}
+    <table width="360" border="1" cellspacing="0" cellpadding="0" class="worldtable text">
+        <tr>
+            <td width="15" align="center">x</td>
+            <td width="119" align="center">1</td>
+            <td width="119" align="center">2</td>
+            <td width="119" align="center">3</td>
+        </tr>
+        <tr>
+            <td width="15" align="center">1</td>
+            <td width="119" height="103" background="{{ asset('images/map/map15-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a href="{{ url('Guide/World') }}"><font color="gold"><b>Building<br />You</b></font></a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map8-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a class="A" href="{{ url('Guide/World') }}">Attack<br />DEFENDER</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map8-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a class="A" href="{{ url('Guide/World') }}">Buy</a></td>
+        </tr>
+        <tr>
+            <td width="15" align="center">2</td>
+            <td width="119" height="103" background="{{ asset('images/map/map6-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a href="{{ url('Guide/World') }}"><font color="gold"><b>Building<br />You</b></font></a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a class="A" href="{{ url('Guide/World') }}">Attack<br />DEFENDER</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a class="A" href="{{ url('Guide/World') }}">Attack<br />DEFENDER</a></td>
+        </tr>
+        <tr>
+            <td width="15" align="center">3</td>
+            <td width="119" height="103" background="{{ asset('images/map/map6-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a href="{{ url('Guide/World') }}"><font color="gold"><b>Building<br />You</b></font></a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a class="A" href="{{ url('Guide/World') }}">Attack<br />DEFENDER</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font color="#ffffff" /><br /><a class="A" href="{{ url('Guide/World') }}">Buy</a></td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td><br />
+                This is the world map, The size of the maps depends on what world you are playing!
+                <ul>
+
+                    <li>
+                        <b>Attack:</b> If this link is visible, then this region is owned by an enemy.
+                    </li>
+                    <li>
+                        <b>Building:</b> If this link is visible, then this region is owned by you, you can click on it to start building on it.
+                    </li>
+                    <li>
+                        <b>Buy:</b> If this link is visible, then this region has no owner yet. You can buy this region to expand your empire.
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

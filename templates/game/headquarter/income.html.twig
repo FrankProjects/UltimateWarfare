@@ -1,0 +1,75 @@
+{% extends 'game.html.twig' %}
+{% block content %}
+    Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+
+    <table border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="2" width="500" align="center"><b>Income</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Income Economic Centers:</td>
+            {% set incomeEc = player.incomeCash - incomePop %}
+            <td width="350" align="center">{{ incomeEc|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Income population:</td>
+            <td width="350" align="center">{{ incomePop|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Upkeep:</td>
+            <td width="350" align="center">-{{ player.upkeepCash|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Net Income: </td>
+            {% set incomeNet = player.incomeCash - player.upkeepCash %}
+            {% if incomeNet < 0 %}
+                <td width="350" align="center"><div class="bad">{{ incomeNet }}</div></td>
+            {% else %}
+                <td width="350" align="center"><div class="good">+{{ incomeNet }}</div></td>
+            {% endif %}
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <table border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="2" width="400" align="center"><b>Food Production</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Production:</td>
+            <td width="250" align="center">{{ player.incomeFood|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Consumption:</td>
+            <td width="250" align="center">-{{ player.upkeepFood|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Net:</td>
+            {% set foodNet = player.incomeFood - player.upkeepFood %}
+            {% if foodNet < 0 %}
+                <td width="250" align="center"><div class="bad">{{ foodNet }}</div></td>
+            {% else %}
+                <td width="250" align="center"><div class="good">+{{ foodNet }}</div></td>
+            {% endif %}
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <table border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="2" width="400" align="center"><b>Resources</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Steel:</td>
+            <td width="250" align="center">{{ player.incomeSteel|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Wood:</td>
+            <td width="250" align="center">{{ player.incomeWood|number_format }}</td>
+        </tr>
+    </table>
+{% endblock %}

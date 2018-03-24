@@ -1,0 +1,148 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Headquarter
+{% endblock title %}
+
+{% block content %}
+
+Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+
+{% if player.incomeFood < 0 and (player.food + player.incomeFood) < 0 %}
+    {% set runout_food_seconds = 0 - (player.food / player.incomeFood) * 3600 %}
+<table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <tr>
+        <td align="center">
+            <br />
+            {% if runout_food_seconds == 0 %}
+                <b>You don't have enough food to feed your Population</b><br />
+                You will lose 30% of your population every hour!<br /><br />
+
+                <b>You don't have enough food to feed your army</b><br />
+                You will lose 10% of your army every hour!
+            {% else %}
+                You don't have enough food to feed your Population in <b>{{ runout_food_seconds }} Seconds from now!</b><br />
+                Once you hit 0 food, you will lose 30% of your population and 10% of your army every hour!
+            {% endif %}
+            <br />
+            <br />
+        </td>
+    </tr>
+</table>
+<br />
+
+{% endif %}
+
+{% if player.incomeCash < 0 and (player.cash + player.incomeCash) < 0 %}
+    {% set runout_cash_seconds = 0 - (player.cash / player.incomeCash) * 3600 %}
+<table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <tr>
+        <td align="center">
+            <br />
+            {% if runout_cash_seconds == 0 %}
+                <b>You don't have enough cash to pay your army</b><br />
+                You will lose 10% of your army every hour!
+            {% else %}
+                You don't have enough cash to pay your army in <b>{{ runout_cash_seconds }} Seconds from now!</b><br />
+                Once you hit 0 cash, you will lose 10% of your army every hour!
+            {% endif %}
+            <br />
+            <br />
+        </td>
+    </tr>
+</table>
+<br />
+
+{% endif %}
+
+    <br />
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" width="600" align="center"><b>Headquarter</b></td>
+
+        </tr>
+
+        <tr>
+            <td align="center">
+                <b>Adviser:</b>
+                <br />
+                Welcome  <strong>{{ player.name|escape }}</strong>,
+                <br />
+                You are currently in your headquarters, this is where all the money in your empire is stored! <br />
+                From this headquarters you can control your land, your countries and your world! <br />
+                <br />
+            </td>
+        </tr>
+    </table>
+
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="3" align="center"><b>Status</b></td>
+        </tr>
+
+        <tr>
+            <td width="150" align="center">Cash:</td>
+            <td width="250" align="center">$ {{ player.cash|number_format }}</td>
+            <td width="300" rowspan="8" align="center">
+                <b>Ingame Announcements:</b>
+                <br />
+                No news for now...
+            </td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Wood:</td>
+            <td width="250" align="center">{{ player.wood|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Steel:</td>
+            <td width="250" align="center">{{ player.steel|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Food:</td>
+            <td width="250" align="center">{{ player.food|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Population:</td>
+            <td width="250" align="center">-</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Regions:</td>
+            <td width="250" align="center">{{ player.regions }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Networth:</td>
+            <td width="250" align="center">{{ player.networth|number_format }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Server time:</td>
+            <td width="250" align="center">{{ "now"|date("Y-m-d H:i:s") }}</td>
+        </tr>
+    </table>
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" align="center" colspan="2"><b>Recent Reports (Last 10) </b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center"><b>Date</b></td>
+            <td width="550" align="center"><b>Report</b></td>
+        </tr>
+        {% for report in reports %}
+            <tr>
+                <td>
+                    {{ report.timestamp|date }}
+                </td>
+                <td>
+                    {{ report.report|escape }}
+                </td>
+            </tr>
+
+        {% else %}
+            <tr><td align="center" colspan="2">No reports for you....</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,53 @@
+FrankProjects\UltimateWarfare\Entity\User:
+    type: entity
+    repositoryClass: FrankProjects\UltimateWarfare\Repository\UserRepository
+    table: user
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        username:
+            type: string
+            nullable: false
+            length: 180
+            unique: true
+        email:
+            type: string
+            nullable: false
+            length: 180
+            unique: true
+        enabled:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        password:
+            type: string
+            nullable: false
+            length: 255
+        lastLogin:
+            type: datetime
+            nullable: true
+            column: last_login
+        confirmationToken:
+            type: string
+            nullable: true
+            length: 180
+            unique: true
+            column: confirmation_token
+        passwordRequestedAt:
+            type: datetime
+            nullable: true
+            column: password_requested_at
+        roles:
+            type: array
+            nullable: false
+            options:
+                fixed: false
+    lifecycleCallbacks: {  }
