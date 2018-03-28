@@ -118,7 +118,7 @@ class GameAccount
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -127,14 +127,10 @@ class GameAccount
      * Set masterId
      *
      * @param int $masterId
-     *
-     * @return GameAccount
      */
-    public function setMasterId($masterId)
+    public function setMasterId(int $masterId)
     {
         $this->masterId = $masterId;
-
-        return $this;
     }
 
     /**
@@ -142,7 +138,7 @@ class GameAccount
      *
      * @return int
      */
-    public function getMasterId()
+    public function getMasterId(): int
     {
         return $this->masterId;
     }
@@ -150,23 +146,19 @@ class GameAccount
     /**
      * Set level
      *
-     * @param bool $level
-     *
-     * @return GameAccount
+     * @param int $level
      */
-    public function setLevel($level)
+    public function setLevel(int $level)
     {
         $this->level = $level;
-
-        return $this;
     }
 
     /**
      * Get level
      *
-     * @return bool
+     * @return int
      */
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
@@ -175,14 +167,10 @@ class GameAccount
      * Set signup
      *
      * @param int $signup
-     *
-     * @return GameAccount
      */
-    public function setSignup($signup)
+    public function setSignup(int $signup)
     {
         $this->signup = $signup;
-
-        return $this;
     }
 
     /**
@@ -223,14 +211,10 @@ class GameAccount
      * Set active
      *
      * @param bool $active
-     *
-     * @return GameAccount
      */
-    public function setActive($active)
+    public function setActive(bool $active)
     {
         $this->active = $active;
-
-        return $this;
     }
 
     /**
@@ -238,7 +222,7 @@ class GameAccount
      *
      * @return bool
      */
-    public function getActive()
+    public function getActive(): bool
     {
         return $this->active;
     }
@@ -247,14 +231,10 @@ class GameAccount
      * Set hints
      *
      * @param bool $hints
-     *
-     * @return GameAccount
      */
-    public function setHints($hints)
+    public function setHints(bool $hints)
     {
         $this->hints = $hints;
-
-        return $this;
     }
 
     /**
@@ -262,7 +242,7 @@ class GameAccount
      *
      * @return bool
      */
-    public function getHints()
+    public function getHints(): bool
     {
         return $this->hints;
     }
@@ -271,14 +251,10 @@ class GameAccount
      * Set forumName
      *
      * @param string $forumName
-     *
-     * @return GameAccount
      */
-    public function setForumName($forumName)
+    public function setForumName(string $forumName)
     {
         $this->forumName = $forumName;
-
-        return $this;
     }
 
     /**
@@ -286,7 +262,7 @@ class GameAccount
      *
      * @return string
      */
-    public function getForumName()
+    public function getForumName(): string
     {
         return $this->forumName;
     }
@@ -295,14 +271,10 @@ class GameAccount
      * Set forumLastpost
      *
      * @param int $forumLastpost
-     *
-     * @return GameAccount
      */
-    public function setForumLastpost($forumLastpost)
+    public function setForumLastpost(int $forumLastpost)
     {
         $this->forumLastpost = $forumLastpost;
-
-        return $this;
     }
 
     /**
@@ -310,7 +282,7 @@ class GameAccount
      *
      * @return int
      */
-    public function getForumLastpost()
+    public function getForumLastpost(): int
     {
         return $this->forumLastpost;
     }
@@ -319,14 +291,10 @@ class GameAccount
      * Set forumBan
      *
      * @param bool $forumBan
-     *
-     * @return GameAccount
      */
-    public function setForumBan($forumBan)
+    public function setForumBan(bool $forumBan)
     {
         $this->forumBan = $forumBan;
-
-        return $this;
     }
 
     /**
@@ -334,7 +302,7 @@ class GameAccount
      *
      * @return bool
      */
-    public function getForumBan()
+    public function getForumBan(): bool
     {
         return $this->forumBan;
     }
@@ -343,14 +311,10 @@ class GameAccount
      * Set adviser
      *
      * @param bool $adviser
-     *
-     * @return GameAccount
      */
-    public function setAdviser($adviser)
+    public function setAdviser(bool $adviser)
     {
         $this->adviser = $adviser;
-
-        return $this;
     }
 
     /**
@@ -358,9 +322,121 @@ class GameAccount
      *
      * @return bool
      */
-    public function getAdviser()
+    public function getAdviser(): bool
     {
         return $this->adviser;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPlayers(): Collection
+    {
+        return $this->players;
+    }
+
+    /**
+     * @param Collection $players
+     */
+    public function setPlayers(Collection $players)
+    {
+        $this->players = $players;
+    }
+
+    /**
+     * @return MapDesign
+     */
+    public function getMapDesign(): MapDesign
+    {
+        return $this->mapDesign;
+    }
+
+    /**
+     * @param MapDesign $mapDesign
+     */
+    public function setMapDesign(MapDesign $mapDesign)
+    {
+        $this->mapDesign = $mapDesign;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTopics(): Collection
+    {
+        return $this->topics;
+    }
+
+    /**
+     * @param Collection $topics
+     */
+    public function setTopics(Collection $topics)
+    {
+        $this->topics = $topics;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTopicsEdited(): Collection
+    {
+        return $this->topicsEdited;
+    }
+
+    /**
+     * @param Collection $topicsEdited
+     */
+    public function setTopicsEdited(Collection $topicsEdited)
+    {
+        $this->topicsEdited = $topicsEdited;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTopicsLastPost(): Collection
+    {
+        return $this->topicsLastPost;
+    }
+
+    /**
+     * @param Collection $topicsLastPost
+     */
+    public function setTopicsLastPost(Collection $topicsLastPost)
+    {
+        $this->topicsLastPost = $topicsLastPost;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param Collection $posts
+     */
+    public function setPosts(Collection $posts)
+    {
+        $this->posts = $posts;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPostsEdited(): Collection
+    {
+        return $this->postsEdited;
+    }
+
+    /**
+     * @param Collection $postsEdited
+     */
+    public function setPostsEdited(Collection $postsEdited)
+    {
+        $this->postsEdited = $postsEdited;
     }
 
     /**
@@ -369,7 +445,7 @@ class GameAccount
      * @param MapDesign $mapDesign
      * @return GameAccount
      */
-    public static function create($masterId, $ipAddress, MapDesign $mapDesign)
+    public static function create(int $masterId, string $ipAddress, MapDesign $mapDesign): GameAccount
     {
         $gameAccount = new GameAccount();
         $gameAccount->setMasterId($masterId);
@@ -378,117 +454,5 @@ class GameAccount
         $gameAccount->setMapDesign($mapDesign);
 
         return $gameAccount;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPlayers()
-    {
-        return $this->players;
-    }
-
-    /**
-     * @param array $players
-     */
-    public function setPlayers($players)
-    {
-        $this->players = $players;
-    }
-
-    /**
-     * @return MapDesign
-     */
-    public function getMapDesign()
-    {
-        return $this->mapDesign;
-    }
-
-    /**
-     * @param MapDesign $mapDesign
-     */
-    public function setMapDesign($mapDesign)
-    {
-        $this->mapDesign = $mapDesign;
-    }
-
-    /**
-     * @return Collection|Topic[]
-     */
-    public function getTopics(): Collection
-    {
-        return $this->topics;
-    }
-
-    /**
-     * @param Collection|Topic[] $topics
-     */
-    public function setTopics(Collection $topics)
-    {
-        $this->topics = $topics;
-    }
-
-    /**
-     * @return Collection|Topic[]
-     */
-    public function getTopicsEdited(): Collection
-    {
-        return $this->topicsEdited;
-    }
-
-    /**
-     * @param Collection|Topic[] $topicsEdited
-     */
-    public function setTopicsEdited(Collection $topicsEdited)
-    {
-        $this->topicsEdited = $topicsEdited;
-    }
-
-    /**
-     * @return Collection|Topic[]
-     */
-    public function getTopicsLastPost(): Collection
-    {
-        return $this->topicsLastPost;
-    }
-
-    /**
-     * @param Collection|Topic[] $topicsLastPost
-     */
-    public function setTopicsLastPost(Collection $topicsLastPost)
-    {
-        $this->topicsLastPost = $topicsLastPost;
-    }
-
-    /**
-     * @return Collection|Topic[]
-     */
-    public function getPosts()
-    {
-        return $this->posts;
-    }
-
-    /**
-     * @param Collection|Topic[] $posts
-     */
-    public function setPosts($posts)
-    {
-        $this->posts = $posts;
-    }
-
-    /**
-     * @return Collection|Topic[]
-     */
-    public function getPostsEdited()
-    {
-        return $this->postsEdited;
-    }
-
-    /**
-     * @param Collection|Topic[] $postsEdited
-     */
-    public function setPostsEdited($postsEdited)
-    {
-        $this->postsEdited = $postsEdited;
     }
 }
