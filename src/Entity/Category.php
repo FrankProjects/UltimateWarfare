@@ -64,7 +64,7 @@ class Category
     }
 
     /**
-     * @return Collection|Topic[]
+     * @return Collection
      */
     public function getTopics(): Collection
     {
@@ -72,7 +72,7 @@ class Category
     }
 
     /**
-     * @param Collection|Topic[] $topics
+     * @param Collection $topics
      */
     public function setTopics(Collection $topics)
     {
