@@ -2,9 +2,6 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Entity\Research;
-use FrankProjects\UltimateWarfare\Entity\ResearchNeeds;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
