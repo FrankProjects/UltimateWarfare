@@ -23,7 +23,7 @@ class Post
     private $content = '';
 
     /**
-     * @var /DateTime
+     * @var \DateTime
      */
     private $createDateTime;
 

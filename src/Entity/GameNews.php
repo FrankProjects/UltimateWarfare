@@ -23,7 +23,7 @@ class GameNews
     private $message;
 
     /**
-     * @var /DateTime
+     * @var \DateTime
      */
     private $createDateTime;
 
