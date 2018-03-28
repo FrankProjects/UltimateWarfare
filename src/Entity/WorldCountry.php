@@ -185,7 +185,7 @@ class WorldCountry
     }
 
     /**
-     * @return Collection|WorldRegion[]
+     * @return Collection
      */
     public function getWorldRegions(): Collection
     {
@@ -193,9 +193,9 @@ class WorldCountry
     }
 
     /**
-     * @param array $worldRegions
+     * @param Collection $worldRegions
      */
-    public function setWorldRegions(array $worldRegions)
+    public function setWorldRegions(Collection $worldRegions)
     {
         $this->worldRegions = $worldRegions;
     }
