@@ -221,7 +221,7 @@ class Player
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -231,7 +231,7 @@ class Player
      *
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
@@ -241,7 +241,7 @@ class Player
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -251,7 +251,7 @@ class Player
      *
      * @param int $timestampJoined
      */
-    public function setTimestampJoined($timestampJoined)
+    public function setTimestampJoined(int $timestampJoined)
     {
         $this->timestampJoined = $timestampJoined;
     }
@@ -261,7 +261,7 @@ class Player
      *
      * @return int
      */
-    public function getTimestampJoined()
+    public function getTimestampJoined(): int
     {
         return $this->timestampJoined;
     }
@@ -271,7 +271,7 @@ class Player
      *
      * @param int $timestampUpdate
      */
-    public function setTimestampUpdate($timestampUpdate)
+    public function setTimestampUpdate(int $timestampUpdate)
     {
         $this->timestampUpdate = $timestampUpdate;
     }
@@ -281,7 +281,7 @@ class Player
      *
      * @return int
      */
-    public function getTimestampUpdate()
+    public function getTimestampUpdate(): int
     {
         return $this->timestampUpdate;
     }
@@ -291,7 +291,7 @@ class Player
      *
      * @param int $cash
      */
-    public function setCash($cash)
+    public function setCash(int $cash)
     {
         $this->cash = $cash;
     }
@@ -301,7 +301,7 @@ class Player
      *
      * @return int
      */
-    public function getCash()
+    public function getCash(): int
     {
         return $this->cash;
     }
@@ -311,7 +311,7 @@ class Player
      *
      * @param int $steel
      */
-    public function setSteel($steel)
+    public function setSteel(int $steel)
     {
         $this->steel = $steel;
     }
@@ -321,7 +321,7 @@ class Player
      *
      * @return int
      */
-    public function getSteel()
+    public function getSteel(): int
     {
         return $this->steel;
     }
@@ -331,7 +331,7 @@ class Player
      *
      * @param int $wood
      */
-    public function setWood($wood)
+    public function setWood(int $wood)
     {
         $this->wood = $wood;
     }
@@ -341,7 +341,7 @@ class Player
      *
      * @return int
      */
-    public function getWood()
+    public function getWood(): int
     {
         return $this->wood;
     }
@@ -351,7 +351,7 @@ class Player
      *
      * @param int $food
      */
-    public function setFood($food)
+    public function setFood(int $food)
     {
         $this->food = $food;
     }
@@ -361,7 +361,7 @@ class Player
      *
      * @return int
      */
-    public function getFood()
+    public function getFood(): int
     {
         return $this->food;
     }
@@ -371,7 +371,7 @@ class Player
      *
      * @param int $regions
      */
-    public function setRegions($regions)
+    public function setRegions(int $regions)
     {
         $this->regions = $regions;
     }
@@ -381,7 +381,7 @@ class Player
      *
      * @return int
      */
-    public function getRegions()
+    public function getRegions(): int
     {
         return $this->regions;
     }
@@ -391,7 +391,7 @@ class Player
      *
      * @param int $networth
      */
-    public function setNetworth($networth)
+    public function setNetworth(int $networth)
     {
         $this->networth = $networth;
     }
@@ -401,7 +401,7 @@ class Player
      *
      * @return int
      */
-    public function getNetworth()
+    public function getNetworth(): int
     {
         return $this->networth;
     }
@@ -411,7 +411,7 @@ class Player
      *
      * @param bool $general
      */
-    public function setGeneral($general)
+    public function setGeneral(bool $general)
     {
         $this->general = $general;
     }
@@ -421,7 +421,7 @@ class Player
      *
      * @return bool
      */
-    public function getGeneral()
+    public function getGeneral(): bool
     {
         return $this->general;
     }
@@ -431,7 +431,7 @@ class Player
      *
      * @param bool $attacked
      */
-    public function setAttacked($attacked)
+    public function setAttacked(bool $attacked)
     {
         $this->attacked = $attacked;
     }
@@ -441,7 +441,7 @@ class Player
      *
      * @return bool
      */
-    public function getAttacked()
+    public function getAttacked(): bool
     {
         return $this->attacked;
     }
@@ -451,7 +451,7 @@ class Player
      *
      * @param bool $message
      */
-    public function setMessage($message)
+    public function setMessage(bool $message)
     {
         $this->message = $message;
     }
@@ -461,7 +461,7 @@ class Player
      *
      * @return bool
      */
-    public function getMessage()
+    public function getMessage(): bool
     {
         return $this->message;
     }
@@ -471,7 +471,7 @@ class Player
      *
      * @param bool $market
      */
-    public function setMarket($market)
+    public function setMarket(bool $market)
     {
         $this->market = $market;
     }
@@ -481,7 +481,7 @@ class Player
      *
      * @return bool
      */
-    public function getMarket()
+    public function getMarket(): bool
     {
         return $this->market;
     }
@@ -491,7 +491,7 @@ class Player
      *
      * @param bool $aid
      */
-    public function setAid($aid)
+    public function setAid(bool $aid)
     {
         $this->aid = $aid;
     }
@@ -501,7 +501,7 @@ class Player
      *
      * @return bool
      */
-    public function getAid()
+    public function getAid(): bool
     {
         return $this->aid;
     }
@@ -511,7 +511,7 @@ class Player
      *
      * @param bool $news
      */
-    public function setNews($news)
+    public function setNews(bool $news)
     {
         $this->news = $news;
     }
@@ -521,7 +521,7 @@ class Player
      *
      * @return bool
      */
-    public function getNews()
+    public function getNews(): bool
     {
         return $this->news;
     }
@@ -531,7 +531,7 @@ class Player
      *
      * @param int $federationHierarchy
      */
-    public function setFedlvl($federationHierarchy)
+    public function setFederationHierarchy(int $federationHierarchy)
     {
         $this->federationHierarchy = $federationHierarchy;
     }
@@ -541,7 +541,7 @@ class Player
      *
      * @return int
      */
-    public function getFederationHierarchy()
+    public function getFederationHierarchy(): int
     {
         return $this->federationHierarchy;
     }
@@ -551,7 +551,7 @@ class Player
      *
      * @param int $incomeCash
      */
-    public function setIncomeCash($incomeCash)
+    public function setIncomeCash(int $incomeCash)
     {
         $this->incomeCash = $incomeCash;
     }
@@ -561,7 +561,7 @@ class Player
      *
      * @return int
      */
-    public function getIncomeCash()
+    public function getIncomeCash(): int
     {
         return $this->incomeCash;
     }
@@ -571,7 +571,7 @@ class Player
      *
      * @param int $incomeFood
      */
-    public function setIncomeFood($incomeFood)
+    public function setIncomeFood(int $incomeFood)
     {
         $this->incomeFood = $incomeFood;
     }
@@ -581,7 +581,7 @@ class Player
      *
      * @return int
      */
-    public function getIncomeFood()
+    public function getIncomeFood(): int
     {
         return $this->incomeFood;
     }
@@ -591,7 +591,7 @@ class Player
      *
      * @param int $incomeWood
      */
-    public function setIncomeWood($incomeWood)
+    public function setIncomeWood(int $incomeWood)
     {
         $this->incomeWood = $incomeWood;
     }
@@ -601,7 +601,7 @@ class Player
      *
      * @return int
      */
-    public function getIncomeWood()
+    public function getIncomeWood(): int
     {
         return $this->incomeWood;
     }
@@ -611,7 +611,7 @@ class Player
      *
      * @param int $incomeSteel
      */
-    public function setIncomeSteel($incomeSteel)
+    public function setIncomeSteel(int $incomeSteel)
     {
         $this->incomeSteel = $incomeSteel;
     }
@@ -621,7 +621,7 @@ class Player
      *
      * @return int
      */
-    public function getIncomeSteel()
+    public function getIncomeSteel(): int
     {
         return $this->incomeSteel;
     }
@@ -631,7 +631,7 @@ class Player
      *
      * @param int $upkeepCash
      */
-    public function setUpkeepCash($upkeepCash)
+    public function setUpkeepCash(int $upkeepCash)
     {
         $this->upkeepCash = $upkeepCash;
     }
@@ -641,7 +641,7 @@ class Player
      *
      * @return int
      */
-    public function getUpkeepCash()
+    public function getUpkeepCash(): int
     {
         return $this->upkeepCash;
     }
@@ -651,7 +651,7 @@ class Player
      *
      * @param int $upkeepFood
      */
-    public function setUpkeepFood($upkeepFood)
+    public function setUpkeepFood(int $upkeepFood)
     {
         $this->upkeepFood = $upkeepFood;
     }
@@ -661,7 +661,7 @@ class Player
      *
      * @return int
      */
-    public function getUpkeepFood()
+    public function getUpkeepFood(): int
     {
         return $this->upkeepFood;
     }
@@ -671,7 +671,7 @@ class Player
      *
      * @param int $upkeepWood
      */
-    public function setUpkeepWood($upkeepWood)
+    public function setUpkeepWood(int $upkeepWood)
     {
         $this->upkeepWood = $upkeepWood;
     }
@@ -681,7 +681,7 @@ class Player
      *
      * @return int
      */
-    public function getUpkeepWood()
+    public function getUpkeepWood(): int
     {
         return $this->upkeepWood;
     }
@@ -691,7 +691,7 @@ class Player
      *
      * @param int $upkeepSteel
      */
-    public function setUpkeepSteel($upkeepSteel)
+    public function setUpkeepSteel(int $upkeepSteel)
     {
         $this->upkeepSteel = $upkeepSteel;
     }
@@ -701,7 +701,7 @@ class Player
      *
      * @return int
      */
-    public function getUpkeepSteel()
+    public function getUpkeepSteel(): int
     {
         return $this->upkeepSteel;
     }
@@ -711,7 +711,7 @@ class Player
      *
      * @param string $notepad
      */
-    public function setNotepad($notepad)
+    public function setNotepad(string $notepad)
     {
         $this->notepad = $notepad;
     }
@@ -721,39 +721,39 @@ class Player
      *
      * @return string
      */
-    public function getNotepad()
+    public function getNotepad(): string
     {
         return $this->notepad;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getReports()
+    public function getReports(): Collection
     {
         return $this->reports;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getConstructions()
+    public function getConstructions(): Collection
     {
         return $this->constructions;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getWorldRegions()
+    public function getWorldRegions(): Collection
     {
         return $this->worldRegions;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getFleets()
+    public function getFleets(): Collection
     {
         return $this->fleets;
     }
@@ -761,7 +761,7 @@ class Player
     /**
      * @return GameAccount
      */
-    public function getGameAccount()
+    public function getGameAccount(): GameAccount
     {
         return $this->gameAccount;
     }
@@ -769,7 +769,7 @@ class Player
     /**
      * @param GameAccount $gameAccount
      */
-    public function setGameAccount($gameAccount)
+    public function setGameAccount(GameAccount $gameAccount)
     {
         $this->gameAccount = $gameAccount;
     }
@@ -777,7 +777,7 @@ class Player
     /**
      * @return World
      */
-    public function getWorld()
+    public function getWorld(): World
     {
         return $this->world;
     }
@@ -785,7 +785,7 @@ class Player
     /**
      * @param World $world
      */
-    public function setWorld($world)
+    public function setWorld(World $world)
     {
         $this->world = $world;
     }
@@ -793,7 +793,7 @@ class Player
     /**
      * @return Federation
      */
-    public function getFederation()
+    public function getFederation(): Federation
     {
         return $this->federation;
     }
@@ -801,9 +801,73 @@ class Player
     /**
      * @param Federation $federation
      */
-    public function setFederation($federation)
+    public function setFederation(Federation $federation)
     {
         $this->federation = $federation;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getFromMessages(): Collection
+    {
+        return $this->fromMessages;
+    }
+
+    /**
+     * @param Collection $fromMessages
+     */
+    public function setFromMessages(Collection $fromMessages)
+    {
+        $this->fromMessages = $fromMessages;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getToMessages(): Collection
+    {
+        return $this->toMessages;
+    }
+
+    /**
+     * @param Collection $toMessages
+     */
+    public function setToMessages(Collection $toMessages)
+    {
+        $this->toMessages = $toMessages;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPlayerResearch(): Collection
+    {
+        return $this->playerResearch;
+    }
+
+    /**
+     * @param Collection $playerResearch
+     */
+    public function setPlayerResearches(Collection $playerResearch)
+    {
+        $this->playerResearch = $playerResearch;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getFederationApplications(): Collection
+    {
+        return $this->federationApplications;
+    }
+
+    /**
+     * @param Collection $federationApplications
+     */
+    public function setFederationApplications(Collection $federationApplications)
+    {
+        $this->federationApplications = $federationApplications;
     }
 
     /**
@@ -812,7 +876,7 @@ class Player
      * @param World $world
      * @return Player
      */
-    public static function create(GameAccount $gameAccount, $name, World $world)
+    public static function create(GameAccount $gameAccount, string $name, World $world)
     {
         $player = new Player();
         $player->setGameAccount($gameAccount);
@@ -826,70 +890,6 @@ class Player
         $player->setFood($world->getFood());
 
         return $player;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFromMessages()
-    {
-        return $this->fromMessages;
-    }
-
-    /**
-     * @param array $fromMessages
-     */
-    public function setFromMessages($fromMessages)
-    {
-        $this->fromMessages = $fromMessages;
-    }
-
-    /**
-     * @return array
-     */
-    public function getToMessages()
-    {
-        return $this->toMessages;
-    }
-
-    /**
-     * @param array $toMessages
-     */
-    public function setToMessages($toMessages)
-    {
-        $this->toMessages = $toMessages;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPlayerResearch()
-    {
-        return $this->playerResearch;
-    }
-
-    /**
-     * @param array $playerResearch
-     */
-    public function setPlayerResearches($playerResearch)
-    {
-        $this->playerResearch = $playerResearch;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFederationApplications()
-    {
-        return $this->federationApplications;
-    }
-
-    /**
-     * @param array $federationApplications
-     */
-    public function setFederationApplications($federationApplications)
-    {
-        $this->federationApplications = $federationApplications;
     }
 }
 
