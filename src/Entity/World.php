@@ -471,9 +471,9 @@ class World
     }
 
     /**
-     * @param array $worldSectors
+     * @param Collection $worldSectors
      */
-    public function setWorldSectors(array $worldSectors)
+    public function setWorldSectors(Collection $worldSectors)
     {
         $this->worldSectors = $worldSectors;
     }

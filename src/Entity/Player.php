@@ -3,6 +3,7 @@
 namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Player
@@ -90,49 +91,49 @@ class Player
     private $news = false;
 
     /**
-     * @var bool
+     * @var int
      */
-    private $fedlvl = '0';
+    private $federationHierarchy = 0;
 
     /**
      * @var int
      */
-    private $incomeCash = '0';
+    private $incomeCash = 0;
 
     /**
      * @var int
      */
-    private $incomeFood = '0';
+    private $incomeFood = 0;
 
     /**
      * @var int
      */
-    private $incomeWood = '0';
+    private $incomeWood = 0;
 
     /**
      * @var int
      */
-    private $incomeSteel = '0';
+    private $incomeSteel = 0;
 
     /**
      * @var int
      */
-    private $upkeepCash = '0';
+    private $upkeepCash = 0;
 
     /**
      * @var int
      */
-    private $upkeepFood = '0';
+    private $upkeepFood = 0;
 
     /**
      * @var int
      */
-    private $upkeepWood = '0';
+    private $upkeepWood = 0;
 
     /**
      * @var int
      */
-    private $upkeepSteel = '0';
+    private $upkeepSteel = 0;
 
     /**
      * @var string
@@ -155,47 +156,47 @@ class Player
     private $federation;
 
     /**
-     * @var array
+     * @var Collection|Report[]
      */
     private $reports = [];
 
     /**
-     * @var array
+     * @var Collection|Construction[]
      */
     private $constructions = [];
 
     /**
-     * @var array
+     * @var Collection|WorldRegion[]
      */
     private $worldRegions = [];
 
     /**
-     * @var array
+     * @var Collection|Fleet[]
      */
     private $fleets = [];
 
     /**
-     * @var array
+     * @var Collection|MarketItem[]
      */
     private $marketItems = [];
 
     /**
-     * @var array
+     * @var Collection|Message[]
      */
     private $fromMessages = [];
 
     /**
-     * @var array
+     * @var Collection|Message[]
      */
     private $toMessages = [];
 
     /**
-     * @var array
+     * @var Collection|ResearchPlayer[]
      */
     private $playerResearch = [];
 
     /**
-     * @var array
+     * @var Collection|FederationApplication[]
      */
     private $federationApplications = [];
 
@@ -229,14 +230,10 @@ class Player
      * Set name
      *
      * @param string $name
-     *
-     * @return Player
      */
     public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -253,14 +250,10 @@ class Player
      * Set timestampJoined
      *
      * @param int $timestampJoined
-     *
-     * @return Player
      */
     public function setTimestampJoined($timestampJoined)
     {
         $this->timestampJoined = $timestampJoined;
-
-        return $this;
     }
 
     /**
@@ -277,14 +270,10 @@ class Player
      * Set timestampUpdate
      *
      * @param int $timestampUpdate
-     *
-     * @return Player
      */
     public function setTimestampUpdate($timestampUpdate)
     {
         $this->timestampUpdate = $timestampUpdate;
-
-        return $this;
     }
 
     /**
@@ -301,14 +290,10 @@ class Player
      * Set cash
      *
      * @param int $cash
-     *
-     * @return Player
      */
     public function setCash($cash)
     {
         $this->cash = $cash;
-
-        return $this;
     }
 
     /**
@@ -325,14 +310,10 @@ class Player
      * Set steel
      *
      * @param int $steel
-     *
-     * @return Player
      */
     public function setSteel($steel)
     {
         $this->steel = $steel;
-
-        return $this;
     }
 
     /**
@@ -349,14 +330,10 @@ class Player
      * Set wood
      *
      * @param int $wood
-     *
-     * @return Player
      */
     public function setWood($wood)
     {
         $this->wood = $wood;
-
-        return $this;
     }
 
     /**
@@ -373,14 +350,10 @@ class Player
      * Set food
      *
      * @param int $food
-     *
-     * @return Player
      */
     public function setFood($food)
     {
         $this->food = $food;
-
-        return $this;
     }
 
     /**
@@ -397,14 +370,10 @@ class Player
      * Set regions
      *
      * @param int $regions
-     *
-     * @return Player
      */
     public function setRegions($regions)
     {
         $this->regions = $regions;
-
-        return $this;
     }
 
     /**
@@ -421,14 +390,10 @@ class Player
      * Set networth
      *
      * @param int $networth
-     *
-     * @return Player
      */
     public function setNetworth($networth)
     {
         $this->networth = $networth;
-
-        return $this;
     }
 
     /**
@@ -445,14 +410,10 @@ class Player
      * Set general
      *
      * @param bool $general
-     *
-     * @return Player
      */
     public function setGeneral($general)
     {
         $this->general = $general;
-
-        return $this;
     }
 
     /**
@@ -469,14 +430,10 @@ class Player
      * Set attacked
      *
      * @param bool $attacked
-     *
-     * @return Player
      */
     public function setAttacked($attacked)
     {
         $this->attacked = $attacked;
-
-        return $this;
     }
 
     /**
@@ -493,14 +450,10 @@ class Player
      * Set message
      *
      * @param bool $message
-     *
-     * @return Player
      */
     public function setMessage($message)
     {
         $this->message = $message;
-
-        return $this;
     }
 
     /**
@@ -517,14 +470,10 @@ class Player
      * Set market
      *
      * @param bool $market
-     *
-     * @return Player
      */
     public function setMarket($market)
     {
         $this->market = $market;
-
-        return $this;
     }
 
     /**
@@ -541,14 +490,10 @@ class Player
      * Set aid
      *
      * @param bool $aid
-     *
-     * @return Player
      */
     public function setAid($aid)
     {
         $this->aid = $aid;
-
-        return $this;
     }
 
     /**
@@ -565,14 +510,10 @@ class Player
      * Set news
      *
      * @param bool $news
-     *
-     * @return Player
      */
     public function setNews($news)
     {
         $this->news = $news;
-
-        return $this;
     }
 
     /**
@@ -586,41 +527,33 @@ class Player
     }
 
     /**
-     * Set fedlvl
+     * Set federationHierarchy
      *
-     * @param bool $fedlvl
-     *
-     * @return Player
+     * @param int $federationHierarchy
      */
-    public function setFedlvl($fedlvl)
+    public function setFedlvl($federationHierarchy)
     {
-        $this->fedlvl = $fedlvl;
-
-        return $this;
+        $this->federationHierarchy = $federationHierarchy;
     }
 
     /**
-     * Get fedlvl
+     * Get federationHierarchy
      *
-     * @return bool
+     * @return int
      */
-    public function getFedlvl()
+    public function getFederationHierarchy()
     {
-        return $this->fedlvl;
+        return $this->federationHierarchy;
     }
 
     /**
      * Set incomeCash
      *
      * @param int $incomeCash
-     *
-     * @return Player
      */
     public function setIncomeCash($incomeCash)
     {
         $this->incomeCash = $incomeCash;
-
-        return $this;
     }
 
     /**
@@ -637,14 +570,10 @@ class Player
      * Set incomeFood
      *
      * @param int $incomeFood
-     *
-     * @return Player
      */
     public function setIncomeFood($incomeFood)
     {
         $this->incomeFood = $incomeFood;
-
-        return $this;
     }
 
     /**
@@ -661,14 +590,10 @@ class Player
      * Set incomeWood
      *
      * @param int $incomeWood
-     *
-     * @return Player
      */
     public function setIncomeWood($incomeWood)
     {
         $this->incomeWood = $incomeWood;
-
-        return $this;
     }
 
     /**
@@ -685,14 +610,10 @@ class Player
      * Set incomeSteel
      *
      * @param int $incomeSteel
-     *
-     * @return Player
      */
     public function setIncomeSteel($incomeSteel)
     {
         $this->incomeSteel = $incomeSteel;
-
-        return $this;
     }
 
     /**
@@ -709,14 +630,10 @@ class Player
      * Set upkeepCash
      *
      * @param int $upkeepCash
-     *
-     * @return Player
      */
     public function setUpkeepCash($upkeepCash)
     {
         $this->upkeepCash = $upkeepCash;
-
-        return $this;
     }
 
     /**
@@ -733,14 +650,10 @@ class Player
      * Set upkeepFood
      *
      * @param int $upkeepFood
-     *
-     * @return Player
      */
     public function setUpkeepFood($upkeepFood)
     {
         $this->upkeepFood = $upkeepFood;
-
-        return $this;
     }
 
     /**
@@ -757,14 +670,10 @@ class Player
      * Set upkeepWood
      *
      * @param int $upkeepWood
-     *
-     * @return Player
      */
     public function setUpkeepWood($upkeepWood)
     {
         $this->upkeepWood = $upkeepWood;
-
-        return $this;
     }
 
     /**
@@ -781,14 +690,10 @@ class Player
      * Set upkeepSteel
      *
      * @param int $upkeepSteel
-     *
-     * @return Player
      */
     public function setUpkeepSteel($upkeepSteel)
     {
         $this->upkeepSteel = $upkeepSteel;
-
-        return $this;
     }
 
     /**
@@ -805,14 +710,10 @@ class Player
      * Set notepad
      *
      * @param string $notepad
-     *
-     * @return Player
      */
     public function setNotepad($notepad)
     {
         $this->notepad = $notepad;
-
-        return $this;
     }
 
     /**
@@ -823,30 +724,6 @@ class Player
     public function getNotepad()
     {
         return $this->notepad;
-    }
-
-    /**
-     * Set mission
-     *
-     * @param bool $mission
-     *
-     * @return Player
-     */
-    public function setMission($mission)
-    {
-        $this->mission = $mission;
-
-        return $this;
-    }
-
-    /**
-     * Get mission
-     *
-     * @return bool
-     */
-    public function getMission()
-    {
-        return $this->mission;
     }
 
     /**
