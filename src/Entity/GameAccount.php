@@ -31,11 +31,6 @@ class GameAccount
     private $signup;
 
     /**
-     * @var string
-     */
-    private $ip;
-
-    /**
      * @var bool
      */
     private $active = true;
@@ -118,7 +113,7 @@ class GameAccount
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -127,14 +122,10 @@ class GameAccount
      * Set masterId
      *
      * @param int $masterId
-     *
-     * @return GameAccount
      */
-    public function setMasterId($masterId)
+    public function setMasterId(int $masterId)
     {
         $this->masterId = $masterId;
-
-        return $this;
     }
 
     /**
@@ -142,7 +133,7 @@ class GameAccount
      *
      * @return int
      */
-    public function getMasterId()
+    public function getMasterId(): int
     {
         return $this->masterId;
     }
@@ -150,23 +141,19 @@ class GameAccount
     /**
      * Set level
      *
-     * @param bool $level
-     *
-     * @return GameAccount
+     * @param int $level
      */
-    public function setLevel($level)
+    public function setLevel(int $level)
     {
         $this->level = $level;
-
-        return $this;
     }
 
     /**
      * Get level
      *
-     * @return bool
+     * @return int
      */
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
@@ -175,14 +162,10 @@ class GameAccount
      * Set signup
      *
      * @param int $signup
-     *
-     * @return GameAccount
      */
-    public function setSignup($signup)
+    public function setSignup(int $signup)
     {
         $this->signup = $signup;
-
-        return $this;
     }
 
     /**
@@ -196,41 +179,13 @@ class GameAccount
     }
 
     /**
-     * Set ip
-     *
-     * @param string $ip
-     *
-     * @return GameAccount
-     */
-    public function setIp($ip)
-    {
-        $this->ip = $ip;
-
-        return $this;
-    }
-
-    /**
-     * Get ip
-     *
-     * @return string
-     */
-    public function getIp()
-    {
-        return $this->ip;
-    }
-
-    /**
      * Set active
      *
      * @param bool $active
-     *
-     * @return GameAccount
      */
-    public function setActive($active)
+    public function setActive(bool $active)
     {
         $this->active = $active;
-
-        return $this;
     }
 
     /**
@@ -238,7 +193,7 @@ class GameAccount
      *
      * @return bool
      */
-    public function getActive()
+    public function getActive(): bool
     {
         return $this->active;
     }
@@ -247,14 +202,10 @@ class GameAccount
      * Set hints
      *
      * @param bool $hints
-     *
-     * @return GameAccount
      */
-    public function setHints($hints)
+    public function setHints(bool $hints)
     {
         $this->hints = $hints;
-
-        return $this;
     }
 
     /**
@@ -262,7 +213,7 @@ class GameAccount
      *
      * @return bool
      */
-    public function getHints()
+    public function getHints(): bool
     {
         return $this->hints;
     }
@@ -271,14 +222,10 @@ class GameAccount
      * Set forumName
      *
      * @param string $forumName
-     *
-     * @return GameAccount
      */
-    public function setForumName($forumName)
+    public function setForumName(string $forumName)
     {
         $this->forumName = $forumName;
-
-        return $this;
     }
 
     /**
@@ -286,7 +233,7 @@ class GameAccount
      *
      * @return string
      */
-    public function getForumName()
+    public function getForumName(): string
     {
         return $this->forumName;
     }
@@ -295,14 +242,10 @@ class GameAccount
      * Set forumLastpost
      *
      * @param int $forumLastpost
-     *
-     * @return GameAccount
      */
-    public function setForumLastpost($forumLastpost)
+    public function setForumLastpost(int $forumLastpost)
     {
         $this->forumLastpost = $forumLastpost;
-
-        return $this;
     }
 
     /**
@@ -310,7 +253,7 @@ class GameAccount
      *
      * @return int
      */
-    public function getForumLastpost()
+    public function getForumLastpost(): int
     {
         return $this->forumLastpost;
     }
@@ -319,14 +262,10 @@ class GameAccount
      * Set forumBan
      *
      * @param bool $forumBan
-     *
-     * @return GameAccount
      */
-    public function setForumBan($forumBan)
+    public function setForumBan(bool $forumBan)
     {
         $this->forumBan = $forumBan;
-
-        return $this;
     }
 
     /**
@@ -334,7 +273,7 @@ class GameAccount
      *
      * @return bool
      */
-    public function getForumBan()
+    public function getForumBan(): bool
     {
         return $this->forumBan;
     }
@@ -343,14 +282,10 @@ class GameAccount
      * Set adviser
      *
      * @param bool $adviser
-     *
-     * @return GameAccount
      */
-    public function setAdviser($adviser)
+    public function setAdviser(bool $adviser)
     {
         $this->adviser = $adviser;
-
-        return $this;
     }
 
     /**
@@ -358,40 +293,23 @@ class GameAccount
      *
      * @return bool
      */
-    public function getAdviser()
+    public function getAdviser(): bool
     {
         return $this->adviser;
     }
 
     /**
-     * @param int $masterId
-     * @param string $ipAddress
-     * @param MapDesign $mapDesign
-     * @return GameAccount
+     * @return Collection
      */
-    public static function create($masterId, $ipAddress, MapDesign $mapDesign)
-    {
-        $gameAccount = new GameAccount();
-        $gameAccount->setMasterId($masterId);
-        $gameAccount->setSignup(time());
-        $gameAccount->setIp($ipAddress);
-        $gameAccount->setMapDesign($mapDesign);
-
-        return $gameAccount;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPlayers()
+    public function getPlayers(): Collection
     {
         return $this->players;
     }
 
     /**
-     * @param array $players
+     * @param Collection $players
      */
-    public function setPlayers($players)
+    public function setPlayers(Collection $players)
     {
         $this->players = $players;
     }
@@ -399,7 +317,7 @@ class GameAccount
     /**
      * @return MapDesign
      */
-    public function getMapDesign()
+    public function getMapDesign(): MapDesign
     {
         return $this->mapDesign;
     }
@@ -407,13 +325,13 @@ class GameAccount
     /**
      * @param MapDesign $mapDesign
      */
-    public function setMapDesign($mapDesign)
+    public function setMapDesign(MapDesign $mapDesign)
     {
         $this->mapDesign = $mapDesign;
     }
 
     /**
-     * @return Collection|Topic[]
+     * @return Collection
      */
     public function getTopics(): Collection
     {
@@ -421,7 +339,7 @@ class GameAccount
     }
 
     /**
-     * @param Collection|Topic[] $topics
+     * @param Collection $topics
      */
     public function setTopics(Collection $topics)
     {
@@ -429,7 +347,7 @@ class GameAccount
     }
 
     /**
-     * @return Collection|Topic[]
+     * @return Collection
      */
     public function getTopicsEdited(): Collection
     {
@@ -437,7 +355,7 @@ class GameAccount
     }
 
     /**
-     * @param Collection|Topic[] $topicsEdited
+     * @param Collection $topicsEdited
      */
     public function setTopicsEdited(Collection $topicsEdited)
     {
@@ -445,7 +363,7 @@ class GameAccount
     }
 
     /**
-     * @return Collection|Topic[]
+     * @return Collection
      */
     public function getTopicsLastPost(): Collection
     {
@@ -453,7 +371,7 @@ class GameAccount
     }
 
     /**
-     * @param Collection|Topic[] $topicsLastPost
+     * @param Collection $topicsLastPost
      */
     public function setTopicsLastPost(Collection $topicsLastPost)
     {
@@ -461,34 +379,49 @@ class GameAccount
     }
 
     /**
-     * @return Collection|Topic[]
+     * @return Collection
      */
-    public function getPosts()
+    public function getPosts(): Collection
     {
         return $this->posts;
     }
 
     /**
-     * @param Collection|Topic[] $posts
+     * @param Collection $posts
      */
-    public function setPosts($posts)
+    public function setPosts(Collection $posts)
     {
         $this->posts = $posts;
     }
 
     /**
-     * @return Collection|Topic[]
+     * @return Collection
      */
-    public function getPostsEdited()
+    public function getPostsEdited(): Collection
     {
         return $this->postsEdited;
     }
 
     /**
-     * @param Collection|Topic[] $postsEdited
+     * @param Collection $postsEdited
      */
-    public function setPostsEdited($postsEdited)
+    public function setPostsEdited(Collection $postsEdited)
     {
         $this->postsEdited = $postsEdited;
+    }
+
+    /**
+     * @param int $masterId
+     * @param MapDesign $mapDesign
+     * @return GameAccount
+     */
+    public static function create(int $masterId, MapDesign $mapDesign): GameAccount
+    {
+        $gameAccount = new GameAccount();
+        $gameAccount->setMasterId($masterId);
+        $gameAccount->setSignup(time());
+        $gameAccount->setMapDesign($mapDesign);
+
+        return $gameAccount;
     }
 }

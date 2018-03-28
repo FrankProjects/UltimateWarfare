@@ -2,7 +2,6 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\Banned;
 use FrankProjects\UltimateWarfare\Entity\MapDesign;
 use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
 use Symfony\Component\HttpFoundation\Request;

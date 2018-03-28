@@ -47,47 +47,19 @@ class MarketItem
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * Set type
-     *
-     * @param bool $type
-     *
-     * @return MarketItem
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return bool
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 
     /**
      * Set amount
      *
      * @param int $amount
-     *
-     * @return MarketItem
      */
-    public function setAmount($amount)
+    public function setAmount(int $amount)
     {
         $this->amount = $amount;
-
-        return $this;
     }
 
     /**
@@ -95,7 +67,7 @@ class MarketItem
      *
      * @return int
      */
-    public function getAmount()
+    public function getAmount(): int
     {
         return $this->amount;
     }
@@ -104,14 +76,10 @@ class MarketItem
      * Set price
      *
      * @param int $price
-     *
-     * @return MarketItem
      */
-    public function setPrice($price)
+    public function setPrice(int $price)
     {
         $this->price = $price;
-
-        return $this;
     }
 
     /**
@@ -119,7 +87,7 @@ class MarketItem
      *
      * @return int
      */
-    public function getPrice()
+    public function getPrice(): int
     {
         return $this->price;
     }
@@ -127,7 +95,7 @@ class MarketItem
     /**
      * @return World
      */
-    public function getWorld()
+    public function getWorld(): World
     {
         return $this->world;
     }
@@ -135,7 +103,7 @@ class MarketItem
     /**
      * @param World $world
      */
-    public function setWorld($world)
+    public function setWorld(World $world)
     {
         $this->world = $world;
     }
@@ -143,7 +111,7 @@ class MarketItem
     /**
      * @return Player
      */
-    public function getPlayer()
+    public function getPlayer(): Player
     {
         return $this->player;
     }
@@ -151,7 +119,7 @@ class MarketItem
     /**
      * @param Player $player
      */
-    public function setPlayer($player)
+    public function setPlayer(Player $player)
     {
         $this->player = $player;
     }
@@ -159,7 +127,7 @@ class MarketItem
     /**
      * @return GameResource
      */
-    public function getGameResource()
+    public function getGameResource(): GameResource
     {
         return $this->gameResource;
     }
@@ -167,7 +135,7 @@ class MarketItem
     /**
      * @param GameResource $gameResource
      */
-    public function setGameResource($gameResource)
+    public function setGameResource(GameResource $gameResource)
     {
         $this->gameResource = $gameResource;
     }
@@ -175,7 +143,7 @@ class MarketItem
     /**
      * @return MarketItemType
      */
-    public function getMarketItemType()
+    public function getMarketItemType(): MarketItemType
     {
         return $this->marketItemType;
     }
@@ -183,7 +151,7 @@ class MarketItem
     /**
      * @param MarketItemType $marketItemType
      */
-    public function setMarketItemType($marketItemType)
+    public function setMarketItemType(MarketItemType $marketItemType)
     {
         $this->marketItemType = $marketItemType;
     }

@@ -96,11 +96,13 @@ FrankProjects\UltimateWarfare\Entity\Player:
             nullable: false
             options:
                 default: '0'
-        fedlvl:
-            type: boolean
+        federationHierarchy:
+            type: integer
             nullable: false
             options:
+                unsigned: true
                 default: '0'
+            column: federation_hierarchy
         incomeCash:
             type: integer
             nullable: false

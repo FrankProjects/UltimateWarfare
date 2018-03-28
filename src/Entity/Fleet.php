@@ -152,7 +152,7 @@ class Fleet
     }
 
     /**
-     * @return Collection|FleetUnit[]
+     * @return Collection
      */
     public function getFleetUnits(): Collection
     {
@@ -160,9 +160,9 @@ class Fleet
     }
 
     /**
-     * @param array $fleetUnits
+     * @param Collection $fleetUnits
      */
-    public function setFleetUnits(array $fleetUnits)
+    public function setFleetUnits(Collection $fleetUnits)
     {
         $this->fleetUnits = $fleetUnits;
     }

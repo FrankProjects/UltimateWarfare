@@ -60,7 +60,7 @@ class MarketItemType
     }
 
     /**
-     * @return Collection|MarketItem[]
+     * @return Collection
      */
     public function getMarketItems(): Collection
     {
@@ -68,9 +68,9 @@ class MarketItemType
     }
 
     /**
-     * @param array $marketItems
+     * @param Collection $marketItems
      */
-    public function setMarketItems(array $marketItems)
+    public function setMarketItems(Collection $marketItems)
     {
         $this->marketItems = $marketItems;
     }

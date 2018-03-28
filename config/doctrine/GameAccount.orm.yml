@@ -28,12 +28,6 @@ FrankProjects\UltimateWarfare\Entity\GameAccount:
             nullable: true
             options:
                 unsigned: true
-        ip:
-            type: string
-            nullable: true
-            length: 39
-            options:
-                fixed: false
         active:
             type: boolean
             nullable: false

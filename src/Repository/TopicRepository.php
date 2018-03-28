@@ -2,7 +2,6 @@
 
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use Doctrine\Common\Collections\Collection;
 use FrankProjects\UltimateWarfare\Entity\Category;
 use FrankProjects\UltimateWarfare\Entity\Topic;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

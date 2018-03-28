@@ -24,7 +24,7 @@ final class LoginController extends BaseGameController
             $mapDesign = $em->getRepository('Game:MapDesign')
                 ->find(3);
 
-            $gameAccount = GameAccount::create($this->getUser()->getId(), $request->getClientIp(), $mapDesign);
+            $gameAccount = GameAccount::create($this->getUser()->getId(), $mapDesign);
             $em->persist($gameAccount);
             $em->flush();
 

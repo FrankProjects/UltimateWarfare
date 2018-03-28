@@ -2,9 +2,6 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
-use FrankProjects\UltimateWarfare\Controller\BaseController;
-use FrankProjects\UltimateWarfare\Entity\Post;
-use FrankProjects\UltimateWarfare\Entity\Topic;
 use FrankProjects\UltimateWarfare\Form\Forum\PostType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

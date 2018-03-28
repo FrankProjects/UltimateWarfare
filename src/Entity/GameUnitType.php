@@ -89,7 +89,7 @@ class GameUnitType
     }
 
     /**
-     * @return Collection|GameUnit[]
+     * @return Collection
      */
     public function getGameUnits(): Collection
     {
@@ -97,9 +97,9 @@ class GameUnitType
     }
 
     /**
-     * @param array $gameUnits
+     * @param Collection $gameUnits
      */
-    public function setGameUnits(array $gameUnits): void
+    public function setGameUnits(Collection $gameUnits): void
     {
         $this->gameUnits = $gameUnits;
     }

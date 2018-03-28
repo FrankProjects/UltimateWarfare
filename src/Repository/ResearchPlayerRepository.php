@@ -3,7 +3,6 @@
 namespace FrankProjects\UltimateWarfare\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use FrankProjects\UltimateWarfare\Entity\Player;
 
 class ResearchPlayerRepository extends EntityRepository
 {

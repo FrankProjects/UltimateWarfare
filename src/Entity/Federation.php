@@ -3,6 +3,7 @@
 namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Federation
@@ -32,22 +33,22 @@ class Federation
     /**
      * @var int
      */
-    private $cashbank = '0';
+    private $cashbank = 0;
 
     /**
      * @var int
      */
-    private $woodbank = '0';
+    private $woodbank = 0;
 
     /**
      * @var int
      */
-    private $steelbank = '0';
+    private $steelbank = 0;
 
     /**
      * @var int
      */
-    private $foodbank = '0';
+    private $foodbank = 0;
 
     /**
      * @var int
@@ -65,17 +66,17 @@ class Federation
     private $world;
 
     /**
-     * @var array
+     * @var Collection|Player[]
      */
     private $players = [];
 
     /**
-     * @var array
+     * @var Collection|FederationApplication[]
      */
     private $federationApplications = [];
 
     /**
-     * @var array
+     * @var Collection|FederationNews[]
      */
     private $federationNews = [];
 
@@ -94,7 +95,7 @@ class Federation
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -103,14 +104,10 @@ class Federation
      * Set name
      *
      * @param string $name
-     *
-     * @return Federation
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -118,7 +115,7 @@ class Federation
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -127,14 +124,10 @@ class Federation
      * Set founder
      *
      * @param Player $founder
-     *
-     * @return Federation
      */
     public function setFounder(Player $founder)
     {
         $this->founder = $founder;
-
-        return $this;
     }
 
     /**
@@ -142,7 +135,7 @@ class Federation
      *
      * @return Player
      */
-    public function getFounder()
+    public function getFounder(): Player
     {
         return $this->founder;
     }
@@ -151,14 +144,10 @@ class Federation
      * Set leaderMessage
      *
      * @param string $leaderMessage
-     *
-     * @return Federation
      */
-    public function setLeaderMessage($leaderMessage)
+    public function setLeaderMessage(string $leaderMessage)
     {
         $this->leaderMessage = $leaderMessage;
-
-        return $this;
     }
 
     /**
@@ -166,7 +155,7 @@ class Federation
      *
      * @return string
      */
-    public function getLeaderMessage()
+    public function getLeaderMessage(): string
     {
         return $this->leaderMessage;
     }
@@ -175,14 +164,10 @@ class Federation
      * Set cashbank
      *
      * @param int $cashbank
-     *
-     * @return Federation
      */
-    public function setCashbank($cashbank)
+    public function setCashbank(int $cashbank)
     {
         $this->cashbank = $cashbank;
-
-        return $this;
     }
 
     /**
@@ -190,7 +175,7 @@ class Federation
      *
      * @return int
      */
-    public function getCashbank()
+    public function getCashbank(): int
     {
         return $this->cashbank;
     }
@@ -199,14 +184,10 @@ class Federation
      * Set woodbank
      *
      * @param int $woodbank
-     *
-     * @return Federation
      */
-    public function setWoodbank($woodbank)
+    public function setWoodbank(int $woodbank)
     {
         $this->woodbank = $woodbank;
-
-        return $this;
     }
 
     /**
@@ -214,7 +195,7 @@ class Federation
      *
      * @return int
      */
-    public function getWoodbank()
+    public function getWoodbank(): int
     {
         return $this->woodbank;
     }
@@ -223,14 +204,10 @@ class Federation
      * Set steelbank
      *
      * @param int $steelbank
-     *
-     * @return Federation
      */
-    public function setSteelbank($steelbank)
+    public function setSteelbank(int $steelbank)
     {
         $this->steelbank = $steelbank;
-
-        return $this;
     }
 
     /**
@@ -238,7 +215,7 @@ class Federation
      *
      * @return int
      */
-    public function getSteelbank()
+    public function getSteelbank(): int
     {
         return $this->steelbank;
     }
@@ -247,14 +224,10 @@ class Federation
      * Set foodbank
      *
      * @param int $foodbank
-     *
-     * @return Federation
      */
-    public function setFoodbank($foodbank)
+    public function setFoodbank(int $foodbank)
     {
         $this->foodbank = $foodbank;
-
-        return $this;
     }
 
     /**
@@ -262,7 +235,7 @@ class Federation
      *
      * @return int
      */
-    public function getFoodbank()
+    public function getFoodbank(): int
     {
         return $this->foodbank;
     }
@@ -271,14 +244,10 @@ class Federation
      * Set regions
      *
      * @param int $regions
-     *
-     * @return Federation
      */
-    public function setRegions($regions)
+    public function setRegions(int $regions)
     {
         $this->regions = $regions;
-
-        return $this;
     }
 
     /**
@@ -286,7 +255,7 @@ class Federation
      *
      * @return int
      */
-    public function getRegions()
+    public function getRegions(): int
     {
         return $this->regions;
     }
@@ -295,14 +264,10 @@ class Federation
      * Set networth
      *
      * @param int $networth
-     *
-     * @return Federation
      */
-    public function setNetworth($networth)
+    public function setNetworth(int $networth)
     {
         $this->networth = $networth;
-
-        return $this;
     }
 
     /**
@@ -310,7 +275,7 @@ class Federation
      *
      * @return int
      */
-    public function getNetworth()
+    public function getNetworth(): int
     {
         return $this->networth;
     }
@@ -318,7 +283,7 @@ class Federation
     /**
      * @return World
      */
-    public function getWorld()
+    public function getWorld(): World
     {
         return $this->world;
     }
@@ -326,55 +291,55 @@ class Federation
     /**
      * @param World $world
      */
-    public function setWorld($world)
+    public function setWorld(World $world)
     {
         $this->world = $world;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getFederationApplications()
+    public function getFederationApplications(): Collection
     {
         return $this->federationApplications;
     }
 
     /**
-     * @param array $federationApplications
+     * @param Collection $federationApplications
      */
-    public function setFederationApplications($federationApplications)
+    public function setFederationApplications(Collection $federationApplications)
     {
         $this->federationApplications = $federationApplications;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getPlayers()
+    public function getPlayers(): Collection
     {
         return $this->players;
     }
 
     /**
-     * @param array $players
+     * @param Collection $players
      */
-    public function setPlayers($players)
+    public function setPlayers(Collection $players)
     {
         $this->players = $players;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getFederationNews()
+    public function getFederationNews(): Collection
     {
         return $this->federationNews;
     }
 
     /**
-     * @param array $federationNews
+     * @param Collection $federationNews
      */
-    public function setFederationNews($federationNews)
+    public function setFederationNews(Collection $federationNews)
     {
         $this->federationNews = $federationNews;
     }

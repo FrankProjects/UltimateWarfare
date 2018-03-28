@@ -2,7 +2,6 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
-use FrankProjects\UltimateWarfare\Controller\BaseController;
 use FrankProjects\UltimateWarfare\Entity\Category;
 use FrankProjects\UltimateWarfare\Entity\Topic;
 use Symfony\Component\HttpFoundation\Request;
