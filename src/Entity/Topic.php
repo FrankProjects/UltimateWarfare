@@ -30,7 +30,7 @@ class Topic
     private $content = '';
 
     /**
-     * @var /DateTime
+     * @var \DateTime
      */
     private $createDateTime;
 
@@ -107,7 +107,7 @@ class Topic
      *
      * @param string $posterIp
      */
-    public function setPosterIp($posterIp)
+    public function setPosterIp(string $posterIp)
     {
         $this->posterIp = $posterIp;
     }
@@ -117,7 +117,7 @@ class Topic
      *
      * @return string
      */
-    public function getPosterIp()
+    public function getPosterIp(): string
     {
         return $this->posterIp;
     }
@@ -127,7 +127,7 @@ class Topic
      *
      * @param bool $sticky
      */
-    public function setSticky($sticky)
+    public function setSticky(bool $sticky)
     {
         $this->sticky = $sticky;
     }
@@ -137,7 +137,7 @@ class Topic
      *
      * @return bool
      */
-    public function getSticky()
+    public function getSticky(): bool
     {
         return $this->sticky;
     }
@@ -147,7 +147,7 @@ class Topic
      *
      * @param bool $closed
      */
-    public function setClosed($closed)
+    public function setClosed(bool $closed)
     {
         $this->closed = $closed;
     }
@@ -157,7 +157,7 @@ class Topic
      *
      * @return bool
      */
-    public function getClosed()
+    public function getClosed(): bool
     {
         return $this->closed;
     }
@@ -167,7 +167,7 @@ class Topic
      *
      * @param string $content
      */
-    public function setContent($content)
+    public function setContent(string $content)
     {
         $this->content = $content;
     }
@@ -177,7 +177,7 @@ class Topic
      *
      * @return string
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -247,15 +247,15 @@ class Topic
     }
 
     /**
-     * @return Collection|Post[]
+     * @return Collection
      */
-    public function getPosts()
+    public function getPosts(): Collection
     {
         return $this->posts;
     }
 
     /**
-     * @param Collection|Post[] $posts
+     * @param Collection $posts
      */
     public function setPosts(Collection $posts)
     {
