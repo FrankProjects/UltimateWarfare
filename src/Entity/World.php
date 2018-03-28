@@ -463,7 +463,7 @@ class World
     }
 
     /**
-     * @return Collection|WorldSector[]
+     * @return Collection
      */
     public function getWorldSectors(): Collection
     {
@@ -479,7 +479,7 @@ class World
     }
 
     /**
-     * @return Collection|Player[]
+     * @return Collection
      */
     public function getPlayers(): Collection
     {
@@ -487,15 +487,15 @@ class World
     }
 
     /**
-     * @param array $players
+     * @param Collection $players
      */
-    public function setPlayers(array $players)
+    public function setPlayers(Collection $players)
     {
         $this->players = $players;
     }
 
     /**
-     * @return Collection|MarketItem[]
+     * @return Collection
      */
     public function getMarketItems(): Collection
     {
@@ -503,15 +503,15 @@ class World
     }
 
     /**
-     * @param array $marketItems
+     * @param Collection $marketItems
      */
-    public function setMarketItems(array $marketItems)
+    public function setMarketItems(Collection $marketItems)
     {
         $this->marketItems = $marketItems;
     }
 
     /**
-     * @return Collection|Message[]
+     * @return Collection
      */
     public function getMessages(): Collection
     {
@@ -519,15 +519,15 @@ class World
     }
 
     /**
-     * @param array $messages
+     * @param Collection $messages
      */
-    public function setMessages(array $messages)
+    public function setMessages(Collection $messages)
     {
         $this->messages = $messages;
     }
 
     /**
-     * @return Collection|Federation[]
+     * @return Collection
      */
     public function getFederations(): Collection
     {
@@ -535,9 +535,9 @@ class World
     }
 
     /**
-     * @param array $federations
+     * @param Collection $federations
      */
-    public function setFederations(array $federations)
+    public function setFederations(Collection $federations)
     {
         $this->federations = $federations;
     }
