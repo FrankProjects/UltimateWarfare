@@ -3,6 +3,7 @@
 namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * GameUnit
@@ -115,17 +116,17 @@ class GameUnit
     private $gameUnitType;
 
     /**
-     * @var array
+     * @var Collection|WorldRegionUnit[]
      */
     private $worldRegionUnits = [];
 
     /**
-     * @var array
+     * @var Collection|Construction[]
      */
     private $constructions = [];
 
     /**
-     * @var array
+     * @var Collection|FleetUnit[]
      */
     private $fleetUnits = [];
 
@@ -450,33 +451,33 @@ class GameUnit
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getWorldRegionUnits()
+    public function getWorldRegionUnits(): Collection
     {
         return $this->worldRegionUnits;
     }
 
     /**
-     * @param array $worldRegionUnits
+     * @param Collection $worldRegionUnits
      */
-    public function setWorldRegionUnits($worldRegionUnits)
+    public function setWorldRegionUnits(Collection $worldRegionUnits)
     {
         $this->worldRegionUnits = $worldRegionUnits;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function getConstructions()
+    public function getConstructions(): Collection
     {
         return $this->constructions;
     }
 
     /**
-     * @param array $constructions
+     * @param Collection $constructions
      */
-    public function setConstructions($constructions)
+    public function setConstructions(Collection $constructions)
     {
         $this->constructions = $constructions;
     }
