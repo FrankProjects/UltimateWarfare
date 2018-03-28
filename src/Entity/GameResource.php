@@ -64,7 +64,7 @@ class GameResource
     }
 
     /**
-     * @return Collection|MarketItem[]
+     * @return Collection
      */
     public function getMarketItems(): Collection
     {
@@ -72,9 +72,9 @@ class GameResource
     }
 
     /**
-     * @param array $marketItems
+     * @param Collection $marketItems
      */
-    public function setMarketItems(array $marketItems): void
+    public function setMarketItems(Collection $marketItems): void
     {
         $this->marketItems = $marketItems;
     }
