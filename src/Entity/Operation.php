@@ -50,12 +50,12 @@ class Operation
     /**
      * @var bool
      */
-    private $active = '1';
+    private $active = true;
 
     /**
      * @var float
      */
-    private $difficulty = '0.5';
+    private $difficulty = 0.5;
 
     /**
      * @var int
@@ -95,30 +95,6 @@ class Operation
     public function getNeeds()
     {
         return $this->needs;
-    }
-
-    /**
-     * Set raceId
-     *
-     * @param int $raceId
-     *
-     * @return Operation
-     */
-    public function setRaceId($raceId)
-    {
-        $this->raceId = $raceId;
-
-        return $this;
-    }
-
-    /**
-     * Get raceId
-     *
-     * @return int
-     */
-    public function getRaceId()
-    {
-        return $this->raceId;
     }
 
     /**
