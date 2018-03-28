@@ -48,7 +48,7 @@ class WorldRegion
     /**
      * @var int
      */
-    private $state = '0';
+    private $state = 0;
 
     /**
      * @var string
@@ -322,7 +322,7 @@ class WorldRegion
     }
 
     /**
-     * @return Collection|WorldRegionUnit[]
+     * @return Collection
      */
     public function getWorldRegionUnits(): Collection
     {
@@ -330,9 +330,9 @@ class WorldRegion
     }
 
     /**
-     * @param array $worldRegionUnits
+     * @param Collection $worldRegionUnits
      */
-    public function setWorldRegionUnits(array $worldRegionUnits): void
+    public function setWorldRegionUnits(Collection $worldRegionUnits): void
     {
         $this->worldRegionUnits = $worldRegionUnits;
     }
@@ -370,7 +370,7 @@ class WorldRegion
     }
 
     /**
-     * @return Collection|Fleet[]
+     * @return Collection
      */
     public function getFleets(): Collection
     {
@@ -378,9 +378,9 @@ class WorldRegion
     }
 
     /**
-     * @param array $fleets
+     * @param Collection $fleets
      */
-    public function setFleets(array $fleets): void
+    public function setFleets(Collection $fleets): void
     {
         $this->fleets = $fleets;
     }
@@ -402,7 +402,7 @@ class WorldRegion
     }
 
     /**
-     * @return Collection|Fleet[]
+     * @return Collection
      */
     public function getTargetFleets(): Collection
     {
@@ -410,15 +410,15 @@ class WorldRegion
     }
 
     /**
-     * @param array $targetFleets
+     * @param Collection $targetFleets
      */
-    public function setTargetFleets(array $targetFleets): void
+    public function setTargetFleets(Collection $targetFleets): void
     {
         $this->targetFleets = $targetFleets;
     }
 
     /**
-     * @return Collection|Construction[]
+     * @return Collection
      */
     public function getConstructions(): Collection
     {
@@ -426,9 +426,9 @@ class WorldRegion
     }
 
     /**
-     * @param array $constructions
+     * @param Collection $constructions
      */
-    public function setConstructions(array $constructions): void
+    public function setConstructions(Collection $constructions): void
     {
         $this->constructions = $constructions;
     }
