@@ -141,7 +141,7 @@ class WorldSector
     }
 
     /**
-     * @return Collection|WorldRegion[]
+     * @return Collection
      */
     public function getWorldRegions(): Collection
     {
@@ -149,15 +149,15 @@ class WorldSector
     }
 
     /**
-     * @param array $worldRegions
+     * @param Collection $worldRegions
      */
-    public function setWorldRegions(array $worldRegions)
+    public function setWorldRegions(Collection $worldRegions)
     {
         $this->worldRegions = $worldRegions;
     }
 
     /**
-     * @return Collection|WorldCountry[]
+     * @return Collection
      */
     public function getWorldCountries(): Collection
     {
@@ -165,9 +165,9 @@ class WorldSector
     }
 
     /**
-     * @param array $worldCountries
+     * @param Collection $worldCountries
      */
-    public function setWorldCountries(array $worldCountries)
+    public function setWorldCountries(Collection $worldCountries)
     {
         $this->worldCountries = $worldCountries;
     }
