@@ -31,11 +31,6 @@ class GameAccount
     private $signup;
 
     /**
-     * @var string
-     */
-    private $ip;
-
-    /**
      * @var bool
      */
     private $active = true;
@@ -181,30 +176,6 @@ class GameAccount
     public function getSignup()
     {
         return $this->signup;
-    }
-
-    /**
-     * Set ip
-     *
-     * @param string $ip
-     *
-     * @return GameAccount
-     */
-    public function setIp($ip)
-    {
-        $this->ip = $ip;
-
-        return $this;
-    }
-
-    /**
-     * Get ip
-     *
-     * @return string
-     */
-    public function getIp()
-    {
-        return $this->ip;
     }
 
     /**
@@ -441,16 +412,14 @@ class GameAccount
 
     /**
      * @param int $masterId
-     * @param string $ipAddress
      * @param MapDesign $mapDesign
      * @return GameAccount
      */
-    public static function create(int $masterId, string $ipAddress, MapDesign $mapDesign): GameAccount
+    public static function create(int $masterId, MapDesign $mapDesign): GameAccount
     {
         $gameAccount = new GameAccount();
         $gameAccount->setMasterId($masterId);
         $gameAccount->setSignup(time());
-        $gameAccount->setIp($ipAddress);
         $gameAccount->setMapDesign($mapDesign);
 
         return $gameAccount;
