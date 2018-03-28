@@ -201,23 +201,23 @@ class Research
     }
 
     /**
-     * @return Collection|ResearchNeeds[]
+     * @return Collection
      */
-    public function getResearchNeeds()
+    public function getResearchNeeds(): Collection
     {
         return $this->researchNeeds;
     }
 
     /**
-     * @param array $researchNeeds
+     * @param Collection $researchNeeds
      */
-    public function setResearchNeeds(array $researchNeeds)
+    public function setResearchNeeds(Collection $researchNeeds)
     {
         $this->researchNeeds = $researchNeeds;
     }
 
     /**
-     * @return Collection|ResearchNeeds[]
+     * @return Collection
      */
     public function getRequiredResearch(): Collection
     {
@@ -225,15 +225,15 @@ class Research
     }
 
     /**
-     * @param array $requiredResearch
+     * @param Collection $requiredResearch
      */
-    public function setRequiredResearch(array $requiredResearch)
+    public function setRequiredResearch(Collection $requiredResearch)
     {
         $this->requiredResearch = $requiredResearch;
     }
 
     /**
-     * @return Collection|ResearchPlayer[]
+     * @return Collection
      */
     public function getResearchPlayers(): Collection
     {
@@ -241,7 +241,7 @@ class Research
     }
 
     /**
-     * @param Collection|ResearchPlayer[] $researchPlayers
+     * @param Collection $researchPlayers
      */
     public function setResearchPlayers(Collection $researchPlayers)
     {
