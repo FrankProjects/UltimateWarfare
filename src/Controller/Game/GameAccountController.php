@@ -29,7 +29,7 @@ final class GameAccountController extends BaseGameController
     {
         $gameAccount = $this->getGameAccount();
         if ($gameAccount->getActive()) {
-            $request->getSession()->getFlashBag()->add('error', 'You are not banned!');
+            $this->addFlash('error', 'You are not banned!');
             return $this->redirectToRoute('Game/Account');
         }
 
@@ -50,7 +50,7 @@ final class GameAccountController extends BaseGameController
             $em->persist($unbanRequest);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'We have recieved your request, we will try to read your request ASAP...');
+            $this->addFlash('success', 'We have recieved your request, we will try to read your request ASAP...');
         }
 
         return $this->render('game/banned.html.twig', [
@@ -146,12 +146,12 @@ final class GameAccountController extends BaseGameController
             ->find($request->request->get('map'));
 
         if(!$mapDesign) {
-            $request->getSession()->getFlashBag()->add('error', 'No such map design');
+            $this->addFlash('error', 'No such map design');
         } else if ($mapDesign->getId() != $gameAccount->getMapDesign()->getId()){
             $gameAccount->setMapDesign($mapDesign);
             $em->persist($gameAccount);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('success', 'Map design succesfully changed!');
+            $this->addFlash('success', 'Map design succesfully changed!');
         }
     }
 
@@ -164,12 +164,12 @@ final class GameAccountController extends BaseGameController
     {
         $forumName = trim($request->request->get('name'));
         if (empty($forumName)){
-            $request->getSession()->getFlashBag()->add('error', 'Please enter a forum name');
+            $this->addFlash('error', 'Please enter a forum name');
             return;
         }
 
         if(preg_match("/^[0-9a-zA-Z_]{3,15}$/", $forumName) === 0){
-            $request->getSession()->getFlashBag()->add('error', 'Your Forum name may only contain letters, digits, underscores ( _ ) and the username should be between 3 and 15 characters!');
+            $this->addFlash('error', 'Your Forum name may only contain letters, digits, underscores ( _ ) and the username should be between 3 and 15 characters!');
             return;
         }
 
@@ -178,7 +178,7 @@ final class GameAccountController extends BaseGameController
             ->findBy(['forumName' => $forumName]);
 
         if ($gameAccount) {
-            $request->getSession()->getFlashBag()->add('error', 'This forumname already excist!');
+            $this->addFlash('error', 'This forumname already excist!');
             return;
         }
 
@@ -187,7 +187,7 @@ final class GameAccountController extends BaseGameController
             $gameAccount->setForumName($forumName);
             $em->persist($gameAccount);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('success', 'Forum name succesfully changed!');
+            $this->addFlash('success', 'Forum name succesfully changed!');
         }
     }
 
@@ -206,14 +206,14 @@ final class GameAccountController extends BaseGameController
                 $gameAccount->setAdviser(true);
                 $em->persist($gameAccount);
                 $em->flush();
-                $request->getSession()->getFlashBag()->add('success', 'Succesfully changed settings!');
+                $this->addFlash('success', 'Succesfully changed settings!');
             }
         } else {
             if ($gameAccount->getAdviser() == 1) {
                 $gameAccount->setAdviser(false);
                 $em->persist($gameAccount);
                 $em->flush();
-                $request->getSession()->getFlashBag()->add('success', 'Succesfully changed settings!');
+                $this->addFlash('success', 'Succesfully changed settings!');
             }
         }
     }
