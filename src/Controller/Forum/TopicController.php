@@ -24,7 +24,7 @@ class TopicController extends BaseForumController
             ->find($topicId);
 
         if ($topic === null) {
-            $request->getSession()->getFlashBag()->add('error', 'No such topic!');
+            $this->addFlash('error', 'No such topic!');
 
             return $this->redirect($this->generateUrl('Forum'));
         }
@@ -38,7 +38,7 @@ class TopicController extends BaseForumController
                 ->getLastPostByGameAccount($this->getGameAccount());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-                $request->getSession()->getFlashBag()->add('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
+                $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
                 return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
             } else {
                 $post->setTopic($topic);
@@ -48,7 +48,7 @@ class TopicController extends BaseForumController
 
                 $em->persist($post);
                 $em->flush();
-                $request->getSession()->getFlashBag()->add('success', 'Post added');
+                $this->addFlash('success', 'Post added');
             }
         }
 
@@ -74,13 +74,13 @@ class TopicController extends BaseForumController
             ->find($categoryId);
 
         if ($category === null) {
-            $request->getSession()->getFlashBag()->add('error', 'No such category!');
+            $this->addFlash('error', 'No such category!');
             return $this->redirect($this->generateUrl('Forum'));
         }
 
         $gameAccount = $this->getGameAccount();
         if ($gameAccount == null) {
-            $request->getSession()->getFlashBag()->add('error', 'Not logged in!');
+            $this->addFlash('error', 'Not logged in!');
             return $this->redirect($this->generateUrl('Forum'));
         }
 
@@ -94,7 +94,7 @@ class TopicController extends BaseForumController
                 ->getLastPostByGameAccount($this->getGameAccount());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-                $request->getSession()->getFlashBag()->add('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
+                $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
                 return $this->redirect($this->generateUrl('Forum'));
             }
 
@@ -105,7 +105,7 @@ class TopicController extends BaseForumController
             $em->persist($topic);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'Succesfully created topic');
+            $this->addFlash('success', 'Succesfully created topic');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
@@ -128,7 +128,7 @@ class TopicController extends BaseForumController
             ->find($topicId);
 
         if ($topic === null) {
-            $request->getSession()->getFlashBag()->add('error', 'No such topic!');
+            $this->addFlash('error', 'No such topic!');
 
             return $this->redirect($this->generateUrl('Forum'));
         }
@@ -136,13 +136,13 @@ class TopicController extends BaseForumController
         $category = $topic->getCategory();
         $gameAccount = $this->getGameAccount();
         if ($gameAccount == null) {
-            $request->getSession()->getFlashBag()->add('error', 'Not logged in!');
+            $this->addFlash('error', 'Not logged in!');
 
             return $this->redirect($this->generateUrl('Forum'));
         }
 
         if ($gameAccount->getId() != $topic->getGameAccount()->getId() && !$this->isGranted('ROLE_ADMIN')) {
-            $request->getSession()->getFlashBag()->add('error', 'Not enough permissions!');
+            $this->addFlash('error', 'Not enough permissions!');
 
             return $this->redirect($this->generateUrl('Forum'));
         }
@@ -153,7 +153,7 @@ class TopicController extends BaseForumController
 
         $em->remove($topic);
         $em->flush();
-        $request->getSession()->getFlashBag()->add('success', 'Topic removed');
+        $this->addFlash('success', 'Topic removed');
         return $this->redirect($this->generateUrl('Forum/Category', ['categoryId' => $category->getId()]));
     }
 
@@ -171,18 +171,18 @@ class TopicController extends BaseForumController
             ->find($topicId);
 
         if ($topic === null) {
-            $request->getSession()->getFlashBag()->add('error', 'No such topic!');
+            $this->addFlash('error', 'No such topic!');
             return $this->redirect($this->generateUrl('Forum'));
         }
 
         $gameAccount = $this->getGameAccount();
         if ($gameAccount == null) {
-            $request->getSession()->getFlashBag()->add('error', 'Not logged in!');
+            $this->addFlash('error', 'Not logged in!');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
         if ($gameAccount->getId() != $topic->getGameAccount()->getId() && !$this->isGranted('ROLE_ADMIN')) {
-            $request->getSession()->getFlashBag()->add('error', 'Not enough permissions!');
+            $this->addFlash('error', 'Not enough permissions!');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
@@ -193,7 +193,7 @@ class TopicController extends BaseForumController
                 ->getLastPostByGameAccount($this->getGameAccount());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-                $request->getSession()->getFlashBag()->add('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
+                $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
                 return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
             }
 
@@ -202,7 +202,7 @@ class TopicController extends BaseForumController
             $em->persist($topic);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'Succesfully edited topic');
+            $this->addFlash('success', 'Succesfully edited topic');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 

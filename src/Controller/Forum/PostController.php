@@ -21,7 +21,7 @@ class PostController extends BaseForumController
             ->find($postId);
 
         if ($post === null) {
-            $request->getSession()->getFlashBag()->add('error', 'No such post!');
+            $this->addFlash('error', 'No such post!');
 
             return $this->redirect($this->generateUrl('Forum'));
         }
@@ -29,20 +29,20 @@ class PostController extends BaseForumController
         $topic = $post->getTopic();
         $gameAccount = $this->getGameAccount();
         if ($gameAccount == null) {
-            $request->getSession()->getFlashBag()->add('error', 'Not logged in!');
+            $this->addFlash('error', 'Not logged in!');
 
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
         if ($gameAccount->getId() != $post->getGameAccount()->getId() && !$this->isGranted('ROLE_ADMIN')) {
-            $request->getSession()->getFlashBag()->add('error', 'Not enough permissions!');
+            $this->addFlash('error', 'Not enough permissions!');
 
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
         $em->remove($post);
         $em->flush();
-        $request->getSession()->getFlashBag()->add('success', 'Post removed');
+        $this->addFlash('success', 'Post removed');
         return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
     }
 
@@ -58,19 +58,19 @@ class PostController extends BaseForumController
             ->find($postId);
 
         if ($post === null) {
-            $request->getSession()->getFlashBag()->add('error', 'No such post!');
+            $this->addFlash('error', 'No such post!');
             return $this->redirect($this->generateUrl('Forum'));
         }
 
         $topic = $post->getTopic();
         $gameAccount = $this->getGameAccount();
         if ($gameAccount == null) {
-            $request->getSession()->getFlashBag()->add('error', 'Not logged in!');
+            $this->addFlash('error', 'Not logged in!');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
         if ($gameAccount->getId() != $post->getGameAccount()->getId() && !$this->isGranted('ROLE_ADMIN')) {
-            $request->getSession()->getFlashBag()->add('error', 'Not enough permissions!');
+            $this->addFlash('error', 'Not enough permissions!');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
@@ -81,7 +81,7 @@ class PostController extends BaseForumController
                 ->getLastPostByGameAccount($this->getGameAccount());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-                $request->getSession()->getFlashBag()->add('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
+                $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
                 return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
             }
 
@@ -90,7 +90,7 @@ class PostController extends BaseForumController
             $em->persist($post);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'Succesfully edited post');
+            $this->addFlash('success', 'Succesfully edited post');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
