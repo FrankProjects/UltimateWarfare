@@ -7,7 +7,7 @@ use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class GameAccountController extends BaseGameController
+final class UserController extends BaseGameController
 {
     /**
      * @param Request $request
@@ -16,8 +16,7 @@ final class GameAccountController extends BaseGameController
     public function account(Request $request): Response
     {
         return $this->render('game/account.html.twig', [
-            'user' => $this->getUser(),
-            'gameAccount' => $this->getGameAccount()
+            'user' => $this->getUser()
         ]);
     }
 
@@ -27,15 +26,15 @@ final class GameAccountController extends BaseGameController
      */
     public function banned(Request $request): Response
     {
-        $gameAccount = $this->getGameAccount();
-        if ($gameAccount->getActive()) {
+        $user = $this->getUser();
+        if ($user->getActive()) {
             $this->addFlash('error', 'You are not banned!');
             return $this->redirectToRoute('Game/Account');
         }
 
         $em = $this->getEm();
         $unbanRequest = $em->getRepository('Game:UnbanRequest')
-            ->findOneBy(['gameAccount' => $gameAccount]);
+            ->findOneBy(['user' => $user]);
 
         if ($unbanRequest === null) {
             $unbanRequest = new UnbanRequest();
@@ -46,7 +45,7 @@ final class GameAccountController extends BaseGameController
             $unbanReason = trim($request->request->get('post'));
 
             $unbanRequest->setPost($unbanReason);
-            $unbanRequest->setGameAccount($gameAccount);
+            $unbanRequest->setUser($user);
             $em->persist($unbanRequest);
             $em->flush();
 
@@ -54,7 +53,7 @@ final class GameAccountController extends BaseGameController
         }
 
         return $this->render('game/banned.html.twig', [
-            'gameAccount' => $this->getGameAccount(),
+            'user' => $this->getUser(),
             'unbanRequest' => $unbanRequest
         ]);
     }
@@ -70,10 +69,6 @@ final class GameAccountController extends BaseGameController
                 $this->changeMapDesign($request);
             }
 
-            if ($request->request->get('change_forumname')) {
-                $this->changeForumName($request);
-            }
-
             if ($request->request->get('change_settings')) {
                 $this->changeSettings($request);
             }
@@ -81,9 +76,8 @@ final class GameAccountController extends BaseGameController
 
         return $this->render('game/editAccount.html.twig', [
             'user' => $this->getUser(),
-            'gameAccount' => $this->getGameAccount(),
             'mapDesigns' => $this->getAllMapDesigns(),
-            'gameAccountType' => $this->getAccountType(),
+            'userType' => $this->getAccountType(),
         ]);
     }
 
@@ -104,8 +98,8 @@ final class GameAccountController extends BaseGameController
      */
     private function getAccountType(): string
     {
-        $gameAccount = $this->getGameAccount();
-        switch ($gameAccount->getLevel()):
+        $user = $this->getUser();
+        switch ($user->getRoles()):
             case 1:
                 $accountType = "Player";
                 break;
@@ -140,54 +134,18 @@ final class GameAccountController extends BaseGameController
      */
     private function changeMapDesign(Request $request)
     {
-        $gameAccount = $this->getGameAccount();
+        $user = $this->getUser();
         $em = $this->getEm();
         $mapDesign = $em->getRepository('Game:MapDesign')
             ->find($request->request->get('map'));
 
         if(!$mapDesign) {
             $this->addFlash('error', 'No such map design');
-        } else if ($mapDesign->getId() != $gameAccount->getMapDesign()->getId()){
-            $gameAccount->setMapDesign($mapDesign);
-            $em->persist($gameAccount);
+        } else if ($mapDesign->getId() != $user->getMapDesign()->getId()){
+            $user->setMapDesign($mapDesign);
+            $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'Map design succesfully changed!');
-        }
-    }
-
-    /**
-     * Change forum name
-     *
-     * @param Request $request
-     */
-    private function changeForumName(Request $request)
-    {
-        $forumName = trim($request->request->get('name'));
-        if (empty($forumName)){
-            $this->addFlash('error', 'Please enter a forum name');
-            return;
-        }
-
-        if(preg_match("/^[0-9a-zA-Z_]{3,15}$/", $forumName) === 0){
-            $this->addFlash('error', 'Your Forum name may only contain letters, digits, underscores ( _ ) and the username should be between 3 and 15 characters!');
-            return;
-        }
-
-        $em = $this->getEm();
-        $gameAccount = $em->getRepository('Game:GameAccount')
-            ->findBy(['forumName' => $forumName]);
-
-        if ($gameAccount) {
-            $this->addFlash('error', 'This forumname already excist!');
-            return;
-        }
-
-        $gameAccount = $this->getGameAccount();
-        if ($gameAccount->getForumName() != $forumName) {
-            $gameAccount->setForumName($forumName);
-            $em->persist($gameAccount);
-            $em->flush();
-            $this->addFlash('success', 'Forum name succesfully changed!');
         }
     }
 
@@ -198,20 +156,20 @@ final class GameAccountController extends BaseGameController
      */
     private function changeSettings(Request $request)
     {
-        $gameAccount = $this->getGameAccount();
+        $user = $this->getUser();
         $em = $this->getEm();
 
         if ($request->request->get('adviser')) {
-            if ($gameAccount->getAdviser() == 0) {
-                $gameAccount->setAdviser(true);
-                $em->persist($gameAccount);
+            if ($user->getAdviser() == 0) {
+                $user->setAdviser(true);
+                $em->persist($user);
                 $em->flush();
                 $this->addFlash('success', 'Succesfully changed settings!');
             }
         } else {
-            if ($gameAccount->getAdviser() == 1) {
-                $gameAccount->setAdviser(false);
-                $em->persist($gameAccount);
+            if ($user->getAdviser() == 1) {
+                $user->setAdviser(false);
+                $em->persist($user);
                 $em->flush();
                 $this->addFlash('success', 'Succesfully changed settings!');
             }

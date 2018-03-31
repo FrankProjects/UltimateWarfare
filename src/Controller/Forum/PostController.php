@@ -27,14 +27,14 @@ class PostController extends BaseForumController
         }
 
         $topic = $post->getTopic();
-        $gameAccount = $this->getGameAccount();
-        if ($gameAccount == null) {
+        $user = $this->getUser();
+        if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
 
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
-        if ($gameAccount->getId() != $post->getGameAccount()->getId() && !$this->isGranted('ROLE_ADMIN')) {
+        if ($user->getId() != $post->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('error', 'Not enough permissions!');
 
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
@@ -63,13 +63,13 @@ class PostController extends BaseForumController
         }
 
         $topic = $post->getTopic();
-        $gameAccount = $this->getGameAccount();
-        if ($gameAccount == null) {
+        $user = $this->getUser();
+        if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
-        if ($gameAccount->getId() != $post->getGameAccount()->getId() && !$this->isGranted('ROLE_ADMIN')) {
+        if ($user->getId() != $post->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('error', 'Not enough permissions!');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
@@ -78,14 +78,14 @@ class PostController extends BaseForumController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByGameAccount($this->getGameAccount());
+                ->getLastPostByUser($this->getUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
                 return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
             }
 
-            $post->setEditGameAccount($this->getGameAccount());
+            $post->setEditUser($this->getUser());
 
             $em->persist($post);
             $em->flush();
@@ -96,7 +96,7 @@ class PostController extends BaseForumController
 
         return $this->render('forum/post_edit.html.twig', [
             'topic' => $topic,
-            'gameAccount' => $this->getGameAccount(),
+            'user' => $this->getUser(),
             'form' => $form->createView()
         ]);
     }

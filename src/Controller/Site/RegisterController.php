@@ -33,6 +33,13 @@ final class RegisterController extends Controller
             $user->setPassword($password);
 
             $em = $this->getDoctrine()->getManager();
+
+            // Get default MapDesign
+            // XXX TODO: make setting?
+            $mapDesign = $em->getRepository('Game:MapDesign')
+                ->find(3);
+
+            $user->setMapDesign($mapDesign);
             $em->persist($user);
             $em->flush();
 
@@ -73,7 +80,8 @@ final class RegisterController extends Controller
             $mail_settings['success'] = "You have been succesfully registered.<br /> An e-mail has been sent to ".filter_html($mail_vars['email'])." with your activation code... <br />Activate your account within 48 hours!<br /><br /><a class=\"B\" href=\"login.php\" title=\"Ultimate Warfare - Login\">Click here to Login.</a>";
 
              */
-            $request->getSession()->getFlashBag()->add('success', "You successfully reqistered an account! An e-mail has been sent to {$user->getEmail()} with your activation code... <br />Activate your account within 48 hours!");
+
+            $this->addFlash('success', "You successfully reqistered an account! An e-mail has been sent to {$user->getEmail()} with your activation code... <br />Activate your account within 48 hours!");
         }
 
         return $this->render('site/register.html.twig', [

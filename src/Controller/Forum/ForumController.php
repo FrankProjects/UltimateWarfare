@@ -20,7 +20,7 @@ class ForumController extends BaseForumController
 
         return $this->render('forum/forum.html.twig', [
             'categories' => $categories,
-            'gameAccount' => $this->getGameAccount()
+            'user' => $this->getUser()
         ]);
     }
 }

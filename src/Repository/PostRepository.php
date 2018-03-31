@@ -2,7 +2,7 @@
 
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use FrankProjects\UltimateWarfare\Entity\GameAccount;
+use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -15,16 +15,16 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param GameAccount $gameAccount
+     * @param User $user
      * @return Post|null
      */
-    public function getLastPostByGameAccount(GameAccount $gameAccount)
+    public function getLastPostByUser(User $user)
     {
         return $this->getEntityManager()
             ->createQuery(
-                'SELECT p FROM Game:Post p WHERE p.gameAccount = :gameAccount ORDER BY p.createDateTime DESC'
+                'SELECT p FROM Game:Post p WHERE p.user = :user ORDER BY p.createDateTime DESC'
             )
-            ->setParameter('gameAccount', $gameAccount->getId())
+            ->setParameter('user', $user->getId())
             ->setMaxResults(1)
             ->getOneOrNullResult();
     }

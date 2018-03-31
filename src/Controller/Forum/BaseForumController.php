@@ -3,18 +3,17 @@
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
-use FrankProjects\UltimateWarfare\Entity\GameAccount;
 use FrankProjects\UltimateWarfare\Entity\User;
 
 class BaseForumController extends BaseController
 {
     /**
-     * Get GameAccount
+     * Get User
      *
-     * @return GameAccount|null
+     * @return User|null
      * @throws \Doctrine\ORM\ORMException
      */
-    public function getGameAccount()
+    public function getUser()
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -22,7 +21,6 @@ class BaseForumController extends BaseController
             return null;
         }
 
-        return $this->getEm()->getRepository('Game:GameAccount')
-            ->findOneBy(['masterId' => $user->getId()]);
+        return $user;
     }
 }

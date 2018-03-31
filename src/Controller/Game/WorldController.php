@@ -53,20 +53,20 @@ final class WorldController extends BaseGameController
     {
         $name = $request->request->get('name', null);
 
-        $gameAccount = $this->getGameAccount();
+        $user = $this->getUser();
         $em = $this->getEm();
         $world = $em->getRepository('Game:World')
             ->find($worldId);
 
         $players = $em->getRepository('Game:Player')
-            ->findByGameAccount($gameAccount);
+            ->findByUser($user);
         foreach($players as $player) {
             if ($player->getWorld()->getId() == $worldId) {
                 throw new AccessDeniedException("Player already in this world!");
             }
         }
 
-        $player = Player::create($gameAccount, $name, $world);
+        $player = Player::create($user, $name, $world);
         $em->persist($player);
         $em->flush();
 
@@ -193,7 +193,7 @@ final class WorldController extends BaseGameController
      */
     private function getMapUrl(): string
     {
-        $gameAccount = $this->getGameAccount();
-        return $gameAccount->getMapDesign()->getUrl();
+        $user = $this->getUser();
+        return $user->getMapDesign()->getUrl();
     }
 }

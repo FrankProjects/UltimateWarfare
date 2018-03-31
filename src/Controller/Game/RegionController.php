@@ -242,8 +242,8 @@ final class RegionController extends BaseGameController
      */
     private function getMapUrl(): string
     {
-        $gameAccount = $this->getGameAccount();
-        return $gameAccount->getMapDesign()->getUrl();
+        $user = $this->getUser();
+        return $user->getMapDesign()->getUrl();
     }
 
     /**
