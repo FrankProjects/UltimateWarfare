@@ -54,7 +54,7 @@ final class MessageController extends BaseGameController
             ->findOneBy(['id' => $messageId, 'toPlayer' => $this->getPlayer()]);
 
         if (!$message) {
-            $request->getSession()->getFlashBag()->add('error', 'No such message');
+            $this->addFlash('error', 'No such message');
             return $this->redirectToRoute('Game/Message/Inbox');
         }
 
@@ -74,14 +74,14 @@ final class MessageController extends BaseGameController
         $message = $em->getRepository('Game:Message')
             ->findOneBy(['id' => $messageId, 'toPlayer' => $this->getPlayer()]);
         if (!$message) {
-            $request->getSession()->getFlashBag()->add('error', 'No such message');
+            $this->addFlash('error', 'No such message');
             return;
         }
 
         $message->setToDelete(true);
         $em->persist($message);
         $em->flush();
-        $request->getSession()->getFlashBag()->add('success', 'Message succesfully deleted!');
+        $this->addFlash('success', 'Message succesfully deleted!');
     }
 
     /**
@@ -130,7 +130,7 @@ final class MessageController extends BaseGameController
             ->findOneBy(['id' => $messageId, 'fromPlayer' => $this->getPlayer()]);
 
         if (!$message) {
-            $request->getSession()->getFlashBag()->add('error', 'No such message');
+            $this->addFlash('error', 'No such message');
             return $this->redirectToRoute('Game/Message/Outbox');
         }
 
@@ -150,14 +150,14 @@ final class MessageController extends BaseGameController
         $message = $em->getRepository('Game:Message')
             ->findOneBy(['id' => $messageId, 'fromPlayer' => $this->getPlayer()]);
         if (!$message) {
-            $request->getSession()->getFlashBag()->add('error', 'No such message');
+            $this->addFlash('error', 'No such message');
             return;
         }
 
         $message->setFromDelete(true);
         $em->persist($message);
         $em->flush();
-        $request->getSession()->getFlashBag()->add('success', 'Message succesfully deleted!');
+        $this->addFlash('success', 'Message succesfully deleted!');
     }
 
     /**
@@ -190,13 +190,13 @@ final class MessageController extends BaseGameController
     {
         $subject = trim($request->request->get('subject'));
         if ($subject == '') {
-            $request->getSession()->getFlashBag()->add('error', 'Please type a subject');
+            $this->addFlash('error', 'Please type a subject');
             return;
         }
 
         $message = trim($request->request->get('message'));
         if ($message == '') {
-            $request->getSession()->getFlashBag()->add('error', 'Please type a message');
+            $this->addFlash('error', 'Please type a message');
             return;
         }
 
@@ -204,7 +204,7 @@ final class MessageController extends BaseGameController
         $toPlayer = $em->getRepository('Game:Player')
             ->findOneBy(['name' => $request->request->get('to'), 'world' => $this->getPlayer()->getWorld()]);
         if (!$toPlayer) {
-            $request->getSession()->getFlashBag()->add('error', 'No such player');
+            $this->addFlash('error', 'No such player');
             return;
         }
 
@@ -217,6 +217,6 @@ final class MessageController extends BaseGameController
         $em->persist($toPlayer);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('success', 'Message send!');
+        $this->addFlash('success', 'Message send!');
     }
 }

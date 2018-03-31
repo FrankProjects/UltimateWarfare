@@ -3,25 +3,24 @@
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
-use FrankProjects\UltimateWarfare\Entity\GameAccount;
-use Symfony\Component\Security\Core\User\UserInterface;
+use FrankProjects\UltimateWarfare\Entity\User;
 
 class BaseForumController extends BaseController
 {
     /**
-     * Get GameAccount
+     * Get User
      *
-     * @return GameAccount|null
+     * @return User|null
+     * @throws \Doctrine\ORM\ORMException
      */
-    public function getGameAccount()
+    public function getGameUser()
     {
+        /** @var User $user */
         $user = $this->getUser();
-        if (!is_object($user) || !$user instanceof UserInterface) {
+        if (!is_object($user) || !$user instanceof User) {
             return null;
         }
 
-        $em = $this->getDoctrine()->getManager();
-        return $em->getRepository(GameAccount::class)
-            ->findOneByMasterId($user->getId());
+        return $user;
     }
 }

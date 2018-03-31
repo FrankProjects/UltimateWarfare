@@ -30,7 +30,7 @@ final class FleetController extends BaseGameController
             ->find($fleetId);
 
         if ($fleet === null) {
-            $request->getSession()->getFlashBag()->add('error', 'No such fleet!');
+            $this->addFlash('error', 'No such fleet!');
 
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
@@ -38,7 +38,7 @@ final class FleetController extends BaseGameController
         }
 
         if ($fleet->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $request->getSession()->getFlashBag()->add('error', 'This is not your fleet');
+            $this->addFlash('error', 'This is not your fleet');
 
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
@@ -46,7 +46,7 @@ final class FleetController extends BaseGameController
         }
 
         if ($fleet->getWorldRegion()->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $request->getSession()->getFlashBag()->add('error', 'You are not owner if this region!');
+            $this->addFlash('error', 'You are not owner if this region!');
 
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
@@ -61,7 +61,7 @@ final class FleetController extends BaseGameController
         $em->remove($fleet);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('success', 'You succesfully recalled your forces!');
+        $this->addFlash('success', 'You succesfully recalled your forces!');
 
         return $this->render('game/fleetList.html.twig', [
             'player' => $this->getPlayer()
@@ -80,7 +80,7 @@ final class FleetController extends BaseGameController
             ->find($fleetId);
 
         if ($fleet === null) {
-            $request->getSession()->getFlashBag()->add('error', 'No such fleet!');
+            $this->addFlash('error', 'No such fleet!');
 
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
@@ -88,7 +88,7 @@ final class FleetController extends BaseGameController
         }
 
         if ($fleet->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $request->getSession()->getFlashBag()->add('error', 'This is not your fleet');
+            $this->addFlash('error', 'This is not your fleet');
 
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
@@ -96,7 +96,7 @@ final class FleetController extends BaseGameController
         }
 
         if ($fleet->getTargetWorldRegion()->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $request->getSession()->getFlashBag()->add('error', 'You are not owner if this region!');
+            $this->addFlash('error', 'You are not owner if this region!');
 
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
@@ -111,7 +111,7 @@ final class FleetController extends BaseGameController
         $em->remove($fleet);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('success', 'You succesfully reinforced your region!');
+        $this->addFlash('success', 'You succesfully reinforced your region!');
 
         return $this->render('game/fleetList.html.twig', [
             'player' => $this->getPlayer()

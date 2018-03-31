@@ -50,4 +50,51 @@ FrankProjects\UltimateWarfare\Entity\User:
             nullable: false
             options:
                 fixed: false
+        signup:
+            type: datetime
+            nullable: true
+        active:
+            type: boolean
+            nullable: false
+            options:
+                default: '1'
+        hints:
+            type: boolean
+            nullable: false
+            options:
+                default: '1'
+        adviser:
+            type: boolean
+            nullable: false
+            options:
+                default: '1'
+        forumBan:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+            column: forum_ban
+    manyToOne:
+        mapDesign:
+            targetEntity: MapDesign
+            inversedBy: users
+            joinColumn:
+                name: map_design_id
+                referencedColumnName: id
+    oneToMany:
+        players:
+            targetEntity: Player
+            mappedBy: user
+        topics:
+            targetEntity: Topic
+            mappedBy: user
+        topicsEdited:
+            targetEntity: Topic
+            mappedBy: editUser
+        posts:
+            targetEntity: Post
+            mappedBy: user
+        postsEdited:
+            targetEntity: Post
+            mappedBy: editUser
     lifecycleCallbacks: {  }

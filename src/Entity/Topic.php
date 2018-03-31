@@ -1,6 +1,7 @@
 <?php
 
 namespace FrankProjects\UltimateWarfare\Entity;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
@@ -50,14 +51,14 @@ class Topic
     private $category;
 
     /**
-     * @var GameAccount
+     * @var User
      */
-    private $gameAccount;
+    private $user;
 
     /**
-     * @var GameAccount|null
+     * @var User|null
      */
-    private $editGameAccount;
+    private $editUser;
 
     /**
      * @var Collection|Post[]
@@ -199,35 +200,35 @@ class Topic
     }
 
     /**
-     * @return GameAccount
+     * @return User
      */
-    public function getGameAccount(): GameAccount
+    public function getUser(): User
     {
-        return $this->gameAccount;
+        return $this->user;
     }
 
     /**
-     * @param GameAccount $gameAccount
+     * @param User $user
      */
-    public function setGameAccount(GameAccount $gameAccount)
+    public function setUser(User $user)
     {
-        $this->gameAccount = $gameAccount;
+        $this->user = $user;
     }
 
     /**
-     * @return GameAccount|null
+     * @return User|null
      */
-    public function getEditGameAccount()
+    public function getEditUser()
     {
-        return $this->editGameAccount;
+        return $this->editUser;
     }
 
     /**
-     * @param GameAccount $editGameAccount
+     * @param User $editUser
      */
-    public function setEditGameAccount(GameAccount $editGameAccount)
+    public function setEditUser(User $editUser)
     {
-        $this->editGameAccount = $editGameAccount;
+        $this->editUser = $editUser;
     }
 
     /**

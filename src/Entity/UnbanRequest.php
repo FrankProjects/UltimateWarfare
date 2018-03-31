@@ -13,9 +13,9 @@ class UnbanRequest
     private $id;
 
     /**
-     * @var GameAccount
+     * @var User
      */
-    private $gameAccount;
+    private $user;
 
     /**
      * @var string
@@ -25,7 +25,7 @@ class UnbanRequest
     /**
      * @var int
      */
-    private $status = '0';
+    private $status = 0;
 
 
     /**
@@ -39,23 +39,23 @@ class UnbanRequest
     }
 
     /**
-     * Set GameAccount
+     * Set User
      *
-     * @param GameAccount $gameAccount
+     * @param User $user
      */
-    public function setGameAccount(GameAccount $gameAccount)
+    public function setUser(User $user)
     {
-        $this->gameAccount = $gameAccount;
+        $this->user = $user;
     }
 
     /**
-     * Get GameAccount
+     * Get User
      *
-     * @return GameAccount
+     * @return User
      */
-    public function getGameAccount(): GameAccount
+    public function getUser(): User
     {
-        return $this->gameAccount;
+        return $this->user;
     }
 
     /**

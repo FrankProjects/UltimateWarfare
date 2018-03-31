@@ -194,11 +194,11 @@ FrankProjects\UltimateWarfare\Entity\Player:
             targetEntity: FederationApplication
             mappedBy: player
     manyToOne:
-        gameAccount:
-            targetEntity: GameAccount
+        user:
+            targetEntity: User
             inversedBy: players
             joinColumn:
-                name: game_account_id
+                name: user_id
                 referencedColumnName: id
         world:
             targetEntity: World

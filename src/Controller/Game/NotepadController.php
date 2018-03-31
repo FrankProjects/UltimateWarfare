@@ -21,7 +21,7 @@ final class NotepadController extends BaseGameController
             $em->persist($player);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'Notepad saved!');
+            $this->addFlash('success', 'Notepad saved!');
         }
         return $this->render('game/notepad.html.twig', [
             'player' => $player,

@@ -17,7 +17,7 @@
                 {% if lastTopic == null %}
                     <td align="left">No topics yet</td>
                 {% else %}
-                    <td align="left">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.gameAccount.forumName|escape }}</td>
+                    <td align="left">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.user.username|escape }}</td>
                 {% endif %}
             </tr>
         {% endfor %}

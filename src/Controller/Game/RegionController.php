@@ -145,7 +145,7 @@ final class RegionController extends BaseGameController
             $em->persist($region);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'You have bought a Region!');
+            $this->addFlash('success', 'You have bought a Region!');
 
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
         }
@@ -242,8 +242,8 @@ final class RegionController extends BaseGameController
      */
     private function getMapUrl(): string
     {
-        $gameAccount = $this->getGameAccount();
-        return $gameAccount->getMapDesign()->getUrl();
+        $user = $this->getGameUser();
+        return $user->getMapDesign()->getUrl();
     }
 
     /**
@@ -331,7 +331,7 @@ final class RegionController extends BaseGameController
                 }
 
                 if ($amount < 0) {
-                    $request->getSession()->getFlashBag()->add('error', "You can't build negative " . $gameUnit->getName() . "s!");
+                    $this->addFlash('error', "You can't build negative " . $gameUnit->getName() . "s!");
                     return false;
                 }
 
@@ -363,21 +363,21 @@ final class RegionController extends BaseGameController
             $totalSpace = $region->getSpace() - $regionBuildings - $buildingsInConstruction;
 
             if ($totalBuild > $totalSpace) {
-                $request->getSession()->getFlashBag()->add('error', 'You dont have that much buildingspace.');
+                $this->addFlash('error', 'You dont have that much buildingspace.');
                 return false;
             }
         }
 
         if($priceCash > $player->getCash()){
-            $request->getSession()->getFlashBag()->add('error', "You don't have enough cash to build that.");
+            $this->addFlash('error', "You don't have enough cash to build that.");
             return false;
         }
         if($priceWood > $player->getWood()){
-            $request->getSession()->getFlashBag()->add('error', "You don't have enough wood to build that.");
+            $this->addFlash('error', "You don't have enough wood to build that.");
             return false;
         }
         if($priceSteel > $player->getSteel()){
-            $request->getSession()->getFlashBag()->add('error', "You don't have enough steel to build that.");
+            $this->addFlash('error', "You don't have enough steel to build that.");
             return false;
         }
 
@@ -393,9 +393,9 @@ final class RegionController extends BaseGameController
                     $constructions[] = Construction::create($region, $player, $gameUnit, $amount);
 
                     if($gameUnitType->getId() == 4){
-                        $request->getSession()->getFlashBag()->add('success', $amount . " " . $gameUnit->getName() . "s are now being trained.");
+                        $this->addFlash('success', $amount . " " . $gameUnit->getName() . "s are now being trained.");
                     }else{
-                        $request->getSession()->getFlashBag()->add('success', $amount . " " . $gameUnit->getName() . "s are now being built.");
+                        $this->addFlash('success', $amount . " " . $gameUnit->getName() . "s are now being built.");
                     }
                 }
             }

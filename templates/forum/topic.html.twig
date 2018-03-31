@@ -20,17 +20,17 @@
             <td colspan="2"><b>{{ topic.title|escape }}</b></td>
         </tr>
         <tr>
-            <td width="200">{{ 'label.name'|trans }}: {{ topic.gameAccount.forumName|escape }}
+            <td width="200">{{ 'label.name'|trans }}: {{ topic.user.username|escape }}
                 <b>Forum Moderator</b>
             </td>
             <td rowspan="3" width="700">
                 {{ topic.content|escape|nl2br }}
 
-                {% if topic.editGameAccount != null %}
-                    <br/><br/><i> Last edited by: {{ topic.editGameAccount.forumName|escape }}</i>
+                {% if topic.editUser != null %}
+                    <br/><br/><i> Last edited by: {{ topic.editUser.username|escape }}</i>
                 {% endif %}
 
-                {% if gameAccount != null and gameAccount.id == topic.gameAccount.id or is_granted('ROLE_ADMIN') %}
+                {% if user != null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}
                     <br />
                     <br />
                     <a class="B" href="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}">{{ 'action.topic.delete'|trans }}</a> -
@@ -52,7 +52,7 @@
         {% include 'forum/post.html.twig' %}
     {% endfor %}
 
-    {% if gameAccount != null %}
+    {% if user != null %}
         {{ form_start(form) }}
         <table width="550" border="1" align="center" cellpadding="0" cellspacing="1" class="table text">
             <tr class="tabletop">

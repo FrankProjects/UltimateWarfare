@@ -45,17 +45,17 @@ FrankProjects\UltimateWarfare\Entity\Topic:
             options:
                 default: '0'
     manyToOne:
-        gameAccount:
-            targetEntity: GameAccount
+        user:
+            targetEntity: User
             inversedBy: topics
             joinColumn:
-                name: game_account_id
+                name: user_id
                 referencedColumnName: id
-        editGameAccount:
-            targetEntity: GameAccount
+        editUser:
+            targetEntity: User
             inversedBy: topicsEdited
             joinColumn:
-                name: edit_game_account_id
+                name: edit_user_id
                 referencedColumnName: id
         category:
             targetEntity: Category

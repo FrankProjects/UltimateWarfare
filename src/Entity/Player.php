@@ -141,9 +141,9 @@ class Player
     private $notepad = '';
 
     /**
-     * @var GameAccount
+     * @var User
      */
-    private $gameAccount;
+    private $user;
 
     /**
      * @var World
@@ -759,19 +759,19 @@ class Player
     }
 
     /**
-     * @return GameAccount
+     * @return User
      */
-    public function getGameAccount(): GameAccount
+    public function getUser(): User
     {
-        return $this->gameAccount;
+        return $this->user;
     }
 
     /**
-     * @param GameAccount $gameAccount
+     * @param User $user
      */
-    public function setGameAccount(GameAccount $gameAccount)
+    public function setUser(User $user)
     {
-        $this->gameAccount = $gameAccount;
+        $this->user = $user;
     }
 
     /**
@@ -871,15 +871,15 @@ class Player
     }
 
     /**
-     * @param GameAccount $gameAccount
+     * @param User $user
      * @param string $name
      * @param World $world
      * @return Player
      */
-    public static function create(GameAccount $gameAccount, string $name, World $world)
+    public static function create(User $user, string $name, World $world)
     {
         $player = new Player();
-        $player->setGameAccount($gameAccount);
+        $player->setUser($user);
         $player->setName($name);
         $player->setWorld($world);
         $player->setTimestampJoined(time());

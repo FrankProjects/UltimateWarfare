@@ -35,11 +35,11 @@
                         <br />
                         <br />
 
-                        {% if gameAccount.active == 0 %}
+                        {% if user.active == 0 %}
                             <a href="{{ path('Game/Banned') }}">You are banned!</a>
                             <br /><small>Contact a mod here to unban yourself.</small>
                         {% else %}
-                            {% for player in gameAccount.players %}
+                            {% for player in user.players %}
                             <a href="{{ path('Game/Login/Player', {'playerId': player.id}) }}"><img src="{{ asset('images/button/b_a_play.jpg') }}" alt="Click here to play." height="150" width="150" /></a><br />
                             <a class="B" href="{{ path('Game/Login/Player', {'playerId': player.id}) }}">You are playing in {{ player.world.name }} as {{ player.name|escape }}!</a><br />
                             {% endfor %}

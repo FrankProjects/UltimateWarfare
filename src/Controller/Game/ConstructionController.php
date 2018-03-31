@@ -56,19 +56,19 @@ final class ConstructionController extends BaseGameController
             ->find($constructionId);
 
         if (!$construction) {
-            $request->getSession()->getFlashBag()->add('error', "This construction queue doesn't exist!");
+            $this->addFlash('error', "This construction queue doesn't exist!");
             return $this->redirectToRoute('Game/Construction', [], 302);
         }
 
         if ($construction->getPlayer()->getId() != $player->getId()) {
-            $request->getSession()->getFlashBag()->add('error', "This is not your construction queue!");
+            $this->addFlash('error', "This is not your construction queue!");
             return $this->redirectToRoute('Game/Construction', [], 302);
         }
 
         $em->remove($construction);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('success', 'Succesfully cancelled construction queue!');
+        $this->addFlash('success', 'Succesfully cancelled construction queue!');
         return $this->redirectToRoute('Game/Construction', [], 302);
     }
 

@@ -19,7 +19,7 @@ final class ChatController extends BaseController
     public function chat(Request $request): Response
     {
         $isGuest = true;
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             $chatName = $this->get('session')->get('chatName');
 

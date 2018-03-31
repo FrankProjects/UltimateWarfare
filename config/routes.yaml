@@ -90,15 +90,15 @@ Game/Login/Player:
 
 Game/Account:
     path:      /game/account
-    controller: FrankProjects\UltimateWarfare\Controller\Game\GameAccountController::account
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::account
 
 Game/Account/Edit:
     path:      /game/account/edit
-    controller: FrankProjects\UltimateWarfare\Controller\Game\GameAccountController::edit
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::edit
 
 Game/Banned:
     path:      /game/banned
-    controller: FrankProjects\UltimateWarfare\Controller\Game\GameAccountController::banned
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::banned
 
 Game/Construction:
     path:      /game/construction/{type}

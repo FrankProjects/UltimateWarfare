@@ -60,7 +60,7 @@ final class CountryController extends BaseGameController
      */
     private function getMapUrl(): string
     {
-        $gameAccount = $this->getGameAccount();
-        return $gameAccount->getMapDesign()->getUrl();
+        $user = $this->getGameUser();
+        return $user->getMapDesign()->getUrl();
     }
 }

@@ -79,19 +79,19 @@ final class ResearchController extends BaseGameController
             ->find($researchId);
 
         if ($research === null) {
-            $request->getSession()->getFlashBag()->add('error', 'This technology does\'t excist!');
+            $this->addFlash('error', 'This technology does\'t excist!');
             return $this->redirectToRoute('Game/Research');
         }
 
         if (!$research->getActive()) {
-            $request->getSession()->getFlashBag()->add('error', 'This technology is disabled!');
+            $this->addFlash('error', 'This technology is disabled!');
             return $this->redirectToRoute('Game/Research');
         }
 
         $researching = $em->getRepository('Game:ResearchPlayer')
             ->findBy(['player' => $this->getPlayer(), 'active' => 0]);
         if (count($researching) > 0) {
-            $request->getSession()->getFlashBag()->add('error', 'You can only research 1 technology at a time!');
+            $this->addFlash('error', 'You can only research 1 technology at a time!');
             return $this->redirectToRoute('Game/Research');
         }
 
@@ -99,7 +99,7 @@ final class ResearchController extends BaseGameController
             ->findBy(['player' => $player, 'research' => $research]);
 
         if (count($isResearched) != 0) {
-            $request->getSession()->getFlashBag()->add('error', 'This technology has already been researched!');
+            $this->addFlash('error', 'This technology has already been researched!');
             return $this->redirectToRoute('Game/Research');
         }
 
@@ -108,13 +108,13 @@ final class ResearchController extends BaseGameController
                 ->findBy(['player' => $player, 'research' => $researchNeed->getRequiredResearch()]);
 
             if (count($isResearched) == 0) {
-                $request->getSession()->getFlashBag()->add('error', 'You don\'t have all required technologies!');
+                $this->addFlash('error', 'You don\'t have all required technologies!');
                 return $this->redirectToRoute('Game/Research');
             }
         }
 
         if ($research->getCost() > $player->getCash()) {
-            $request->getSession()->getFlashBag()->add('error', 'You can\'t afford that!');
+            $this->addFlash('error', 'You can\'t afford that!');
             return $this->redirectToRoute('Game/Research');
         }
 
@@ -128,7 +128,7 @@ final class ResearchController extends BaseGameController
         $em->persist($researchPlayer);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('success', "You started to research {$research->getName()}");
+        $this->addFlash('success', "You started to research {$research->getName()}");
         return $this->redirectToRoute('Game/Research');
 
     }
@@ -145,26 +145,26 @@ final class ResearchController extends BaseGameController
             ->find($researchId);
 
         if ($research === null) {
-            $request->getSession()->getFlashBag()->add('error', 'This technology does\'t excist!');
+            $this->addFlash('error', 'This technology does\'t excist!');
             return $this->redirectToRoute('Game/Research');
         }
 
         if (!$research->getActive()) {
-            $request->getSession()->getFlashBag()->add('error', 'This technology is disabled!');
+            $this->addFlash('error', 'This technology is disabled!');
             return $this->redirectToRoute('Game/Research');
         }
 
         $researching = $em->getRepository('Game:ResearchPlayer')
             ->findOneBy(['player' => $this->getPlayer(), 'research' => $research, 'active' => 0]);
         if (!$researching) {
-            $request->getSession()->getFlashBag()->add('error', 'You are not researching this!');
+            $this->addFlash('error', 'You are not researching this!');
             return $this->redirectToRoute('Game/Research');
         }
 
         $em->remove($researching);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('success', 'Succesfully cancelled your research project!');
+        $this->addFlash('success', 'Succesfully cancelled your research project!');
         return $this->redirectToRoute('Game/Research');
     }
 }
