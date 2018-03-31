@@ -82,16 +82,6 @@ class User implements UserInterface, EquatableInterface, \Serializable
     private $adviser = false;
 
     /**
-     * @var string
-     */
-    private $forumName;
-
-    /**
-     * @var \DateTime
-     */
-    private $forumLastPost;
-
-    /**
      * @var bool
      */
     private $forumBan = false;
