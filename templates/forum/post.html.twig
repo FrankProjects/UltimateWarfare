@@ -1,6 +1,6 @@
 <table width="900" border="1" align="center" cellpadding="0" cellspacing="1" class="table text">
     <tr>
-        <td width="200">Name: {{ post.gameAccount.forumName|escape }}<br/>
+        <td width="200">Name: {{ post.user.username|escape }}<br/>
             <b>Forum Moderator</b>
         </td>
 
@@ -10,7 +10,7 @@
                 <br/><br/><i> Last edited by: {{ post.editedBy|escape }}</i>
             {% endif %}
 
-            {% if gameAccount != null and post.gameAccount.id == gameAccount.id or is_granted('ROLE_ADMIN') %}
+            {% if user != null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}
                 <br/>
                 <br/>
                 <a class="B" href="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" title="Delete">Delete</a>

@@ -19,18 +19,18 @@
                 {% else %}
                     <td align="left"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}">{{ topic.title|escape }}</a></td>
                 {% endif %}
-                <td align="center">{{ topic.gameAccount.forumName|escape }}</td>
+                <td align="center">{{ topic.user.username|escape }}</td>
                 <td align="center">{{ topic.posts|length }}</td>
                 {% set lastPost = topic.posts|last %}
                 {% if lastPost == null %}
-                    <td align="left">{{ topic.createDateTime|date("Y-m-d H:i:s") }} by {{ topic.gameAccount.forumName|escape }}</td>
+                    <td align="left">{{ topic.createDateTime|date("Y-m-d H:i:s") }} by {{ topic.user.username|escape }}</td>
                 {% else %}
-                    <td align="left">{{ lastPost.createDateTime|date("Y-m-d H:i:s") }} by {{ lastPost.gameAccount.forumName|escape }}</td>
+                    <td align="left">{{ lastPost.createDateTime|date("Y-m-d H:i:s") }} by {{ lastPost.user.username|escape }}</td>
                 {% endif %}
             </tr>
         {% endfor %}
 
-        {% if gameAccount != null and category.id > 1 or is_granted('ROLE_ADMIN') %}
+        {% if user != null and category.id > 1 or is_granted('ROLE_ADMIN') %}
             <tr><td colspan="5" align="right"><a class="B" href="{{ path('Forum/Topic/Create', {'categoryId': category.id}) }}">Make a new Topic</a></td></tr>
         {% endif %}
     </table>

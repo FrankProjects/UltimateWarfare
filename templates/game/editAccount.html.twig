@@ -45,7 +45,7 @@
                 </tr>
                 <tr>
                     <td width="150" align="center">Signup date: </td>
-                    <td width="450" align="center"><b>{{ gameAccount.signup|date("Y-m-d H:i:s") }}</b></td>
+                    <td width="450" align="center"><b>{{ user.signup|date("Y-m-d H:i:s") }}</b></td>
                 </tr>
                 <tr>
                     <td width="150" align="center">Account Type: </td>
@@ -55,7 +55,7 @@
                     <td width="150" align="center">Account Status: </td>
                     <td width="450" align="center">
                         <b>
-                            {% if gameAccount.active == 1 %}
+                            {% if user.active == 1 %}
                                 <span class="good">Activated</span>
                             {% else %}
                                 <span class="bad">Banned/De-activated</span>
@@ -103,14 +103,14 @@
                 </tr>
                 <tr>
                     <td align="center" colspan="2">
-                        Current mapdesign: {{ gameAccount.mapDesign.name }}<br />
+                        Current mapdesign: {{ user.mapDesign.name }}<br />
 
-                        <img src="{{ asset('images/map/map7' ~ gameAccount.mapDesign.url) }}" width="120" height="100"><br /><br />
+                        <img src="{{ asset('images/map/map7' ~ user.mapDesign.url) }}" width="120" height="100"><br /><br />
                         <form class="general" action="{{ path('Game/Account/Edit') }}" method="post">
                         Change map to:<br />
                         <select name="map" id="map" onclick="$('#map option:selected').text();" style="width:320px;">
                             {% for mapDesign in mapDesigns %}
-                                {% if mapDesign.id == gameAccount.mapDesign.id %}
+                                {% if mapDesign.id == user.mapDesign.id %}
                                     <option value="{{ mapDesign.id }}" title="{{ asset('images/map/map7' ~ mapDesign.url) }}" selected="selected">{{ mapDesign.name }}</option>
                                 {% else %}
                                     <option value="{{ mapDesign.id }}" title="{{ asset('images/map/map7' ~ mapDesign.url) }}">{{ mapDesign.name }}</option>
@@ -128,19 +128,6 @@
                     <td class="tabletop" colspan="2" align="center"><b>Change Forum Name</b></td>
                 </tr>
                 <tr>
-                    <td colspan="2">
-                        <form class="general" action="{{ path('Game/Account/Edit') }}" method="POST">
-                            <div>
-                                <label for="name">Forum name:</label>
-                                <input type="text" name="name" id="name" maxlength="16" value="{{ gameAccount.forumName|escape }}"/>
-                            </div>
-                             <div class="submit">
-                                <input type="submit" name="change_forumname" value="Change Forumname">
-                            </div>
-                        </form>
-                    </td>
-                </tr>
-                <tr>
                     <td class="tabletop" colspan="2" align="center"><b>Other Settings</b></td>
                 </tr>
                 <tr>
@@ -148,7 +135,7 @@
                         <form class="general" action="{{ path('Game/Account/Edit') }}" method="POST">
                             <div>
                                 <label for="adviser">Show Advisors:</label>
-                                {% if gameAccount.adviser == 1 %}
+                                {% if user.adviser == 1 %}
                                     <input type="checkbox" name="adviser" id="adviser" checked="checked" />
                                 {% else %}
                                     <input type="checkbox" name="adviser" id="adviser" />
