@@ -31,7 +31,7 @@ FrankProjects\UltimateWarfare\Entity\MapDesign:
                 fixed: false
             column: image_dir
     oneToMany:
-        gameAccounts:
-            targetEntity: GameAccount
+        users:
+            targetEntity: User
             mappedBy: mapDesign
     lifecycleCallbacks: {  }

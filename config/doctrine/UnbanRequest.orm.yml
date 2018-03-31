@@ -24,9 +24,9 @@ FrankProjects\UltimateWarfare\Entity\UnbanRequest:
                 unsigned: false
                 default: '0'
     oneToOne:
-      gameAccount:
-        targetEntity: GameAccount
+      user:
+        targetEntity: User
         joinColumn:
-          name: game_account_id
+          name: user_id
           referencedColumnName: id
     lifecycleCallbacks: {  }

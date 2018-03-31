@@ -29,17 +29,17 @@ FrankProjects\UltimateWarfare\Entity\Post:
             type: datetime
             column: create_date_time
     manyToOne:
-        gameAccount:
-            targetEntity: GameAccount
+        user:
+            targetEntity: User
             inversedBy: posts
             joinColumn:
-                name: game_account_id
+                name: user_id
                 referencedColumnName: id
-        editGameAccount:
-            targetEntity: GameAccount
+        editUser:
+            targetEntity: User
             inversedBy: postsEdited
             joinColumn:
-                name: edit_game_account_id
+                name: edit_user_id
                 referencedColumnName: id
         topic:
             targetEntity: Topic

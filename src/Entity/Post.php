@@ -38,14 +38,14 @@ class Post
     private $topic;
 
     /**
-     * @var GameAccount
+     * @var User
      */
-    private $gameAccount;
+    private $user;
 
     /**
-     * @var GameAccount|null
+     * @var User|null
      */
-    private $editGameAccount;
+    private $editUser;
 
     /**
      * Get id
@@ -150,35 +150,35 @@ class Post
     }
 
     /**
-     * @return GameAccount
+     * @return User
      */
-    public function getGameAccount(): GameAccount
+    public function getUser(): User
     {
-        return $this->gameAccount;
+        return $this->user;
     }
 
     /**
-     * @param GameAccount $gameAccount
+     * @param User $user
      */
-    public function setGameAccount(GameAccount $gameAccount): void
+    public function setUser(User $user): void
     {
-        $this->gameAccount = $gameAccount;
+        $this->user = $user;
     }
 
     /**
-     * @return GameAccount|null
+     * @return User|null
      */
-    public function getEditGameAccount(): ?GameAccount
+    public function getEditUser(): ?User
     {
-        return $this->editGameAccount;
+        return $this->editUser;
     }
 
     /**
-     * @param GameAccount|null $editGameAccount
+     * @param User|null $editUser
      */
-    public function setEditGameAccount(?GameAccount $editGameAccount): void
+    public function setEditUser(?User $editUser): void
     {
-        $this->editGameAccount = $editGameAccount;
+        $this->editUser = $editUser;
     }
 }
 

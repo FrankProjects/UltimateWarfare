@@ -31,16 +31,16 @@ class MapDesign
     private $imageDir;
 
     /**
-     * @var Collection|GameAccount[]
+     * @var Collection|User[]
      */
-    private $gameAccounts = [];
+    private $users = [];
 
     /**
-     * GameAccount constructor.
+     * MapDesign constructor.
      */
     public function __construct()
     {
-        $this->gameAccounts = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
