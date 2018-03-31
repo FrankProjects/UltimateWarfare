@@ -22,7 +22,7 @@ final class WorldController extends BaseGameController
 
         return $this->render('game/selectWorld.html.twig', [
             'worlds' => $worlds,
-            'user' => $this->getUser()
+            'user' => $this->getGameUser()
         ]);
     }
 
@@ -39,7 +39,7 @@ final class WorldController extends BaseGameController
 
         return $this->render('game/selectName.html.twig', [
             'world' => $world,
-            'user' => $this->getUser()
+            'user' => $this->getGameUser()
         ]);
     }
 
@@ -53,7 +53,7 @@ final class WorldController extends BaseGameController
     {
         $name = $request->request->get('name', null);
 
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         $em = $this->getEm();
         $world = $em->getRepository('Game:World')
             ->find($worldId);
@@ -193,7 +193,7 @@ final class WorldController extends BaseGameController
      */
     private function getMapUrl(): string
     {
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         return $user->getMapDesign()->getUrl();
     }
 }

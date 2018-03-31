@@ -13,7 +13,7 @@ class BaseForumController extends BaseController
      * @return User|null
      * @throws \Doctrine\ORM\ORMException
      */
-    public function getUser()
+    public function getGameUser()
     {
         /** @var User $user */
         $user = $this->getUser();

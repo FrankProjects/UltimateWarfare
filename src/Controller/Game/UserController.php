@@ -16,7 +16,7 @@ final class UserController extends BaseGameController
     public function account(Request $request): Response
     {
         return $this->render('game/account.html.twig', [
-            'user' => $this->getUser()
+            'user' => $this->getGameUser()
         ]);
     }
 
@@ -26,7 +26,7 @@ final class UserController extends BaseGameController
      */
     public function banned(Request $request): Response
     {
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         if ($user->getActive()) {
             $this->addFlash('error', 'You are not banned!');
             return $this->redirectToRoute('Game/Account');
@@ -53,7 +53,7 @@ final class UserController extends BaseGameController
         }
 
         return $this->render('game/banned.html.twig', [
-            'user' => $this->getUser(),
+            'user' => $this->getGameUser(),
             'unbanRequest' => $unbanRequest
         ]);
     }
@@ -75,7 +75,7 @@ final class UserController extends BaseGameController
         }
 
         return $this->render('game/editAccount.html.twig', [
-            'user' => $this->getUser(),
+            'user' => $this->getGameUser(),
             'mapDesigns' => $this->getAllMapDesigns(),
             'userType' => $this->getAccountType(),
         ]);
@@ -98,7 +98,7 @@ final class UserController extends BaseGameController
      */
     private function getAccountType(): string
     {
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         switch ($user->getRoles()):
             case 1:
                 $accountType = "Player";
@@ -134,7 +134,7 @@ final class UserController extends BaseGameController
      */
     private function changeMapDesign(Request $request)
     {
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         $em = $this->getEm();
         $mapDesign = $em->getRepository('Game:MapDesign')
             ->find($request->request->get('map'));
@@ -156,7 +156,7 @@ final class UserController extends BaseGameController
      */
     private function changeSettings(Request $request)
     {
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         $em = $this->getEm();
 
         if ($request->request->get('adviser')) {

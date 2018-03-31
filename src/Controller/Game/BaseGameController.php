@@ -16,7 +16,7 @@ class BaseGameController extends BaseController
      *
      * @return User
      */
-    public function getUser(): User
+    public function getGameUser(): User
     {
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
@@ -39,7 +39,7 @@ class BaseGameController extends BaseController
          * XXX TODO: Fix counter in missions/chat/messages navigation bar
          * XXX TODO: Fix session expired page
          */
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         $playerId = $this->get('session')->get('playerId');
 
         if(!$playerId) {

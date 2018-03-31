@@ -26,7 +26,7 @@ class CategoryController extends BaseForumController
         return $this->render('forum/category.html.twig', [
             'category' => $category,
             'topics' => $topics,
-            'user' => $this->getUser()
+            'user' => $this->getGameUser()
         ]);
     }
 }

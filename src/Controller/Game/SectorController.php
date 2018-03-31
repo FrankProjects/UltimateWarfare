@@ -159,7 +159,7 @@ final class SectorController extends BaseGameController
      */
     private function getMapUrl(): string
     {
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         return $user->getMapDesign()->getUrl();
     }
 }

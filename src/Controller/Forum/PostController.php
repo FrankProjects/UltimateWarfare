@@ -27,7 +27,7 @@ class PostController extends BaseForumController
         }
 
         $topic = $post->getTopic();
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
 
@@ -63,7 +63,7 @@ class PostController extends BaseForumController
         }
 
         $topic = $post->getTopic();
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
@@ -78,14 +78,14 @@ class PostController extends BaseForumController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByUser($this->getUser());
+                ->getLastPostByUser($this->getGameUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
                 return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
             }
 
-            $post->setEditUser($this->getUser());
+            $post->setEditUser($this->getGameUser());
 
             $em->persist($post);
             $em->flush();
@@ -96,7 +96,7 @@ class PostController extends BaseForumController
 
         return $this->render('forum/post_edit.html.twig', [
             'topic' => $topic,
-            'user' => $this->getUser(),
+            'user' => $this->getGameUser(),
             'form' => $form->createView()
         ]);
     }

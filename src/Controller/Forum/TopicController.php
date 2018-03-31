@@ -33,9 +33,9 @@ class TopicController extends BaseForumController
         $form = $this->createForm(PostType::class, $post);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() && $this->getUser() !== null) {
+        if ($form->isSubmitted() && $form->isValid() && $this->getGameUser() !== null) {
             $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByUser($this->getUser());
+                ->getLastPostByUser($this->getGameUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
@@ -44,7 +44,7 @@ class TopicController extends BaseForumController
                 $post->setTopic($topic);
                 $post->setPosterIp($request->getClientIp());
                 $post->setCreateDateTime(new \DateTime());
-                $post->setUser($this->getUser());
+                $post->setUser($this->getGameUser());
 
                 $em->persist($post);
                 $em->flush();
@@ -54,7 +54,7 @@ class TopicController extends BaseForumController
 
         return $this->render('forum/topic.html.twig', [
             'topic' => $topic,
-            'user' => $this->getUser(),
+            'user' => $this->getGameUser(),
             'form' => $form->createView()
         ]);
     }
@@ -78,7 +78,7 @@ class TopicController extends BaseForumController
             return $this->redirect($this->generateUrl('Forum'));
         }
 
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirect($this->generateUrl('Forum'));
@@ -91,7 +91,7 @@ class TopicController extends BaseForumController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByUser($this->getUser());
+                ->getLastPostByUser($this->getGameUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
@@ -100,7 +100,7 @@ class TopicController extends BaseForumController
 
             $topic->setPosterIp($request->getClientIp());
             $topic->setCreateDateTime(new \DateTime());
-            $topic->setUser($this->getUser());
+            $topic->setUser($this->getGameUser());
 
             $em->persist($topic);
             $em->flush();
@@ -111,7 +111,7 @@ class TopicController extends BaseForumController
 
         return $this->render('forum/topic_create.html.twig', [
             'topic' => $topic,
-            'user' => $this->getUser(),
+            'user' => $this->getGameUser(),
             'form' => $form->createView()
         ]);
     }
@@ -134,7 +134,7 @@ class TopicController extends BaseForumController
         }
 
         $category = $topic->getCategory();
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
 
@@ -175,7 +175,7 @@ class TopicController extends BaseForumController
             return $this->redirect($this->generateUrl('Forum'));
         }
 
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
@@ -190,14 +190,14 @@ class TopicController extends BaseForumController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByUser($this->getUser());
+                ->getLastPostByUser($this->getGameUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
                 return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
             }
 
-            $topic->setEditUser($this->getUser());
+            $topic->setEditUser($this->getGameUser());
 
             $em->persist($topic);
             $em->flush();
@@ -208,7 +208,7 @@ class TopicController extends BaseForumController
 
         return $this->render('forum/topic_edit.html.twig', [
             'topic' => $topic,
-            'user' => $this->getUser(),
+            'user' => $this->getGameUser(),
             'form' => $form->createView()
         ]);
     }

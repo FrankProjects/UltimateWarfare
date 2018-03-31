@@ -13,7 +13,7 @@ final class LoginController extends BaseGameController
      */
     public function login(Request $request): Response
     {
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         $players = $user->getPlayers();
 
         if (count($players) == 0) {
@@ -36,7 +36,7 @@ final class LoginController extends BaseGameController
      */
     public function loginForPlayer(Request $request, int $playerId): Response
     {
-        $user = $this->getUser();
+        $user = $this->getGameUser();
         $em = $this->getEm();
 
         $player = $em->getRepository('Game:Player')
