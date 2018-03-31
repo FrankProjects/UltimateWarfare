@@ -40,6 +40,8 @@ final class RegisterController extends Controller
                 ->find(3);
 
             $user->setMapDesign($mapDesign);
+            $user->setSignup(new \DateTime());
+
             $em->persist($user);
             $em->flush();
 
