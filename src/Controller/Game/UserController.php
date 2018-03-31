@@ -99,32 +99,17 @@ final class UserController extends BaseGameController
     private function getAccountType(): string
     {
         $user = $this->getGameUser();
-        switch ($user->getRoles()):
-            case 1:
-                $accountType = "Player";
-                break;
+        $roles = $user->getRoles();
 
-            case 2:
-                $accountType = "VIP Player";
-                break;
+        if (in_array('ROLE_PLAYER', $roles)) {
+            return 'Player';
+        }
 
-            case 3:
-                $accountType = "Forum Moderator";
-                break;
+        if (in_array('ROLE_ADMIN', $roles)) {
+            return 'Admin';
+        }
 
-            case 5:
-                $accountType = "Moderator";
-                break;
-
-            case 10:
-                $accountType = "Admin";
-                break;
-
-            default:
-                $accountType = "Guest";
-        endswitch;
-
-        return $accountType;
+        return 'Guest';
     }
 
     /**
