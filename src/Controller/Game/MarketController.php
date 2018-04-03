@@ -261,6 +261,71 @@ final class MarketController extends BaseGameController
 
     /**
      * @param Request $request
+     * @param int $marketItemId
+     * @return RedirectResponse
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function cancelOrder(Request $request, int $marketItemId): RedirectResponse
+    {
+        $player = $this->getPlayer();
+        $world = $player->getWorld();
+        if (!$world->getMarket()) {
+            return $this->redirect($this->generateUrl('Game/Market'));
+        }
+
+        /** @var MarketItemRepository $marketItemRepository */
+        $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
+
+        /** @var MarketItem $marketItem */
+        $marketItem = $marketItemRepository->find($marketItemId);
+
+        if (!$marketItem) {
+            $this->addFlash('error', 'Market order does not exist!');
+            return $this->redirect($this->generateUrl('Game/Market'));
+        }
+
+        if ($marketItem->getWorld()->getId() != $world->getId()) {
+            $this->addFlash('error', 'Wrong game world!');
+            return $this->redirect($this->generateUrl('Game/Market'));
+        }
+
+        if ($marketItem->getPlayer()->getId() != $player->getId()) {
+            $this->addFlash('error', 'You can not cancel orders that do not belong to you!');
+            return $this->redirect($this->generateUrl('Game/Market'));
+        }
+
+        if ($marketItem->getMarketItemType()->getName() == MarketItemType::TYPE_NAME_BUY) {
+            $player->setCash($player->getCash() + $marketItem->getPrice());
+        } else {
+            $gameResource = $marketItem->getGameResource();
+            switch ($gameResource->getName()) {
+                case 'wood':
+                    $player->setWood($player->getWood() + $marketItem->getAmount());
+                    break;
+                case 'food':
+                    $player->setFood($player->getFood() + $marketItem->getAmount());
+                    break;
+                case 'steel':
+                    $player->setSteel($player->getSteel() + $marketItem->getAmount());
+                    break;
+                default:
+                    $this->addFlash('error', 'Unknown resource type!');
+                    return $this->redirect($this->generateUrl('Game/Market'));
+            }
+        }
+
+        $this->getEm()->persist($player);
+        $this->getEm()->remove($marketItem);
+        $this->getEm()->flush();
+
+        $this->addFlash('success', 'You cancelled your order!');
+
+        return $this->redirect($this->generateUrl('Game/Market'));
+    }
+
+    /**
+     * @param Request $request
      * @return Response
      */
     public function placeOffer(Request $request): Response

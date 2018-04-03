@@ -162,6 +162,12 @@ Game/Market:
     path:      /game/market
     controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::buy
 
+Game/Market/Cancel/Order:
+    path:      /game/market/cancel/{marketItemId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::cancelOrder
+    requirements:
+        marketItemId: '\d+'
+
 Game/Market/Buy/Order:
     path:      /game/market/buy/{marketItemId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::buyOrder
