@@ -11,7 +11,6 @@ class BaseForumController extends BaseController
      * Get User
      *
      * @return User|null
-     * @throws \Doctrine\ORM\ORMException
      */
     public function getGameUser()
     {

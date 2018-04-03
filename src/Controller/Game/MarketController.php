@@ -2,8 +2,10 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
 use FrankProjects\UltimateWarfare\Entity\MarketItemType;
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -341,9 +343,104 @@ final class MarketController extends BaseGameController
             ]);
         }
 
+        $gameResources = $this->getEm()->getRepository('Game:GameResource')->findAll();
+
+        if ($request->getMethod() == 'POST') {
+            $this->processPlaceOffer($request, $player);
+        }
+
         return $this->render('game/market/placeOffer.html.twig', [
             'player' => $player,
-            'marketItems' => []
+            'gameResources' => $gameResources
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param Player $player
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function processPlaceOffer(Request $request, Player $player): void
+    {
+        $price = intval($request->request->get('price'));
+        $amount = intval($request->request->get('amount'));
+
+        if ($price < 1 || $amount < 1) {
+            $this->addFlash('error', 'Invalid input!');
+            return;
+        }
+
+        $gameResourceRepository = $this->getEm()->getRepository('Game:GameResource');
+        /** @var GameResource $gameResource */
+        $gameResource = $gameResourceRepository->find($request->request->get('resource'));
+
+        if (!$gameResource) {
+            $this->addFlash('error', 'Invalid resource!');
+            return;
+        }
+
+        /** @var MarketItemType $marketItemType */
+        $marketItemType = $this->getEm()->getRepository('Game:MarketItemType')
+            ->findOneBy(['name' => $request->request->get('option')]);
+
+        if (!$marketItemType) {
+            $this->addFlash('error', 'Invalid type!');
+            return;
+        }
+
+        if ($marketItemType->getName() == MarketItemType::TYPE_NAME_BUY) {
+            if ($price > $player->getCash()) {
+                $this->addFlash('error', 'You do not have enough cash!');
+                return;
+            }
+
+            $player->setCash($player->getCash() - $price);
+            $this->addFlash('success', 'You placed a buy offer!');
+        } elseif ($marketItemType->getName() == MarketItemType::TYPE_NAME_SELL) {
+            switch ($gameResource->getName()) {
+                case 'Wood':
+                    if ($amount > $player->getWood()) {
+                        $this->addFlash('error', 'You do not have enough wood!');
+                        return;
+                    }
+
+                    $player->setWood($player->getWood() - $amount);
+                    break;
+                case 'Food':
+                    if ($amount > $player->getFood()) {
+                        $this->addFlash('error', 'You do not have enough food!');
+                        return;
+                    }
+                    $player->setFood($player->getFood() - $amount);
+                    break;
+                case 'Steel':
+                    if ($amount > $player->getSteel()) {
+                        $this->addFlash('error', 'You do not have enough steel!');
+                        return;
+                    }
+                    $player->setSteel($player->getSteel() - $amount);
+                    break;
+                default:
+                    $this->addFlash('error', 'Unknown resource type!');
+                    return;
+            }
+
+            $this->addFlash('success', 'You placed a sell offer!');
+        } else {
+            $this->addFlash('error', 'Invalid option!');
+        }
+
+        $marketItem = new MarketItem();
+        $marketItem->setWorld($player->getWorld());
+        $marketItem->setPlayer($player);
+        $marketItem->setGameResource($gameResource);
+        $marketItem->setAmount($amount);
+        $marketItem->setPrice($price);
+        $marketItem->setMarketItemType($marketItemType);
+
+        $this->getEm()->persist($marketItem);
+        $this->getEm()->persist($player);
+        $this->getEm()->flush();
     }
 }
