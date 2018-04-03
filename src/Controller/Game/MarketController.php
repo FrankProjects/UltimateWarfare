@@ -76,14 +76,9 @@ final class MarketController extends BaseGameController
             ]);
         }
 
-        $em = $this->getEm();
-
-        $marketItems = $em->getRepository('Game:MarketItem')
-            ->findBy(['player' => $player]);
-
         return $this->render('game/market/offers.html.twig', [
             'player' => $player,
-            'marketItems' => $marketItems
+            'marketItems' => $player->getMarketItems()
         ]);
     }
 

@@ -871,6 +871,22 @@ class Player
     }
 
     /**
+     * @return Collection
+     */
+    public function getMarketItems(): Collection
+    {
+        return $this->marketItems;
+    }
+
+    /**
+     * @param Collection $marketItems
+     */
+    public function setMarketItems(Collection $marketItems): void
+    {
+        $this->marketItems = $marketItems;
+    }
+
+    /**
      * @param User $user
      * @param string $name
      * @param World $world
