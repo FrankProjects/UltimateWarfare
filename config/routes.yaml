@@ -162,9 +162,22 @@ Game/Market:
     path:      /game/market
     controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::buy
 
+Game/Market/Buy/Order:
+    path:      /game/market/buy/{marketItemId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::buyOrder
+    requirements:
+        marketItemId: '\d+'
+
 Game/Market/Sell:
     path:      /game/market/sell
     controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::sell
+
+
+Game/Market/Sell/Order:
+    path:      /game/market/sell/{marketItemId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::sellOrder
+    requirements:
+        marketItemId: '\d+'
 
 Game/Market/Offers:
     path:      /game/market/offers
