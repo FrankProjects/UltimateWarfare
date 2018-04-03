@@ -15,6 +15,13 @@ final class MarketController extends BaseGameController
     public function buy(Request $request): Response
     {
         $player = $this->getPlayer();
+        $world = $player->getWorld();
+        if (!$world->getMarket()) {
+            return $this->render('game/market/disabled.html.twig', [
+                'player' => $player
+            ]);
+        }
+
         $em = $this->getEm();
         $marketItemType = $em->getRepository('Game:MarketItemType')
             -> findOneBy(['name' => MarketItemType::TYPE_NAME_SELL]);
@@ -23,7 +30,7 @@ final class MarketController extends BaseGameController
             ->findByWorldMarketItemType($player->getWorld(), $marketItemType);
 
         return $this->render('game/market/buy.html.twig', [
-            'player' => $this->getPlayer(),
+            'player' => $player,
             'marketItems' => $marketItems
         ]);
     }
@@ -35,6 +42,13 @@ final class MarketController extends BaseGameController
     public function sell(Request $request): Response
     {
         $player = $this->getPlayer();
+        $world = $player->getWorld();
+        if (!$world->getMarket()) {
+            return $this->render('game/market/disabled.html.twig', [
+                'player' => $player
+            ]);
+        }
+
         $em = $this->getEm();
         $marketItemType = $em->getRepository('Game:MarketItemType')
             -> findOneBy(['name' => MarketItemType::TYPE_NAME_BUY]);
@@ -43,7 +57,7 @@ final class MarketController extends BaseGameController
             ->findByWorldMarketItemType($player->getWorld(), $marketItemType);
 
         return $this->render('game/market/sell.html.twig', [
-            'player' => $this->getPlayer(),
+            'player' => $player,
             'marketItems' => $marketItems
         ]);
     }
@@ -55,13 +69,20 @@ final class MarketController extends BaseGameController
     public function offers(Request $request): Response
     {
         $player = $this->getPlayer();
+        $world = $player->getWorld();
+        if (!$world->getMarket()) {
+            return $this->render('game/market/disabled.html.twig', [
+                'player' => $player
+            ]);
+        }
+
         $em = $this->getEm();
 
         $marketItems = $em->getRepository('Game:MarketItem')
             ->findBy(['player' => $player]);
 
         return $this->render('game/market/offers.html.twig', [
-            'player' => $this->getPlayer(),
+            'player' => $player,
             'marketItems' => $marketItems
         ]);
     }
@@ -72,8 +93,16 @@ final class MarketController extends BaseGameController
      */
     public function placeOffer(Request $request): Response
     {
+        $player = $this->getPlayer();
+        $world = $player->getWorld();
+        if (!$world->getMarket()) {
+            return $this->render('game/market/disabled.html.twig', [
+                'player' => $player
+            ]);
+        }
+
         return $this->render('game/market/placeOffer.html.twig', [
-            'player' => $this->getPlayer(),
+            'player' => $player,
             'marketItems' => []
         ]);
     }
