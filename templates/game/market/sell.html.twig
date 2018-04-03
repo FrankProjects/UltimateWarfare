@@ -18,7 +18,7 @@
                 <td class="col_center">{{ item.amount }}</td>
                 <td class="col_center">{{ item.price }}</td>
                 <td>{{ item.player.name }}</td>
-                <td class="col_center"><a class="B" href="market.php?id={{ item.id }}&action=2"><b>Sell</b></a></td>
+                <td class="col_center"><a class="B" href="{{ path('Game/Market/Sell/Order', {'marketItemId': item.id}) }}"><b>Sell</b></a></td>
             </tr>
         {% else %}
             <tr>
