@@ -66,7 +66,7 @@ final class MarketController extends BaseGameController
             return $this->redirect($this->generateUrl('Game/Market'));
         }
 
-        if ($marketItem->getMarketItemType()->getName() != MarketItemType::TYPE_NAME_BUY) {
+        if ($marketItem->getMarketItemType()->getName() != MarketItemType::TYPE_NAME_SELL) {
             $this->addFlash('error', 'Market order is not a buy order!');
             return $this->redirect($this->generateUrl('Game/Market'));
         }
@@ -90,15 +90,16 @@ final class MarketController extends BaseGameController
         $marketItemPlayer = $marketItem->getPlayer();
         $marketItemPlayer->setCash($marketItemPlayer->getCash() + $marketItem->getPrice());
 
+        // XXX TODO: Fix better
         $gameResource = $marketItem->getGameResource();
         switch ($gameResource->getName()) {
-            case 'wood':
+            case 'Wood':
                 $player->setWood($player->getWood() + $marketItem->getAmount());
                 break;
-            case 'food':
+            case 'Food':
                 $player->setFood($player->getFood() + $marketItem->getAmount());
                 break;
-            case 'steel':
+            case 'Steel':
                 $player->setSteel($player->getSteel() + $marketItem->getAmount());
                 break;
             default:
@@ -182,7 +183,7 @@ final class MarketController extends BaseGameController
             return $this->redirect($this->generateUrl('Game/Market/Sell'));
         }
 
-        if ($marketItem->getMarketItemType()->getName() != MarketItemType::TYPE_NAME_SELL) {
+        if ($marketItem->getMarketItemType()->getName() != MarketItemType::TYPE_NAME_BUY) {
             $this->addFlash('error', 'Market order is not a sell order!');
             return $this->redirect($this->generateUrl('Game/Market/Sell'));
         }
@@ -201,15 +202,16 @@ final class MarketController extends BaseGameController
         $marketItemPlayer = $marketItem->getPlayer();
         $marketItemPlayer->setCash($marketItemPlayer->getCash() - $marketItem->getPrice());
 
+        // XXX TODO: Fix better
         $gameResource = $marketItem->getGameResource();
         switch ($gameResource->getName()) {
-            case 'wood':
+            case 'Wood':
                 $player->setWood($player->getWood() - $marketItem->getAmount());
                 break;
-            case 'food':
+            case 'Food':
                 $player->setFood($player->getFood() - $marketItem->getAmount());
                 break;
-            case 'steel':
+            case 'Steel':
                 $player->setSteel($player->getSteel() - $marketItem->getAmount());
                 break;
             default:
@@ -298,15 +300,16 @@ final class MarketController extends BaseGameController
         if ($marketItem->getMarketItemType()->getName() == MarketItemType::TYPE_NAME_BUY) {
             $player->setCash($player->getCash() + $marketItem->getPrice());
         } else {
+            // XXX TODO: Fix better
             $gameResource = $marketItem->getGameResource();
             switch ($gameResource->getName()) {
-                case 'wood':
+                case 'Wood':
                     $player->setWood($player->getWood() + $marketItem->getAmount());
                     break;
-                case 'food':
+                case 'Food':
                     $player->setFood($player->getFood() + $marketItem->getAmount());
                     break;
-                case 'steel':
+                case 'Steel':
                     $player->setSteel($player->getSteel() + $marketItem->getAmount());
                     break;
                 default:
