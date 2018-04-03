@@ -93,13 +93,13 @@ final class MarketController extends BaseGameController
         $gameResource = $marketItem->getGameResource();
         switch ($gameResource->getName()) {
             case 'wood':
-                $player->setWood($marketItem->getAmount());
+                $player->setWood($player->getWood() + $marketItem->getAmount());
                 break;
             case 'food':
-                $player->setFood($marketItem->getAmount());
+                $player->setFood($player->getFood() + $marketItem->getAmount());
                 break;
             case 'steel':
-                $player->setSteel($marketItem->getAmount());
+                $player->setSteel($player->getSteel() + $marketItem->getAmount());
                 break;
             default:
                 $this->addFlash('error', 'Unknown resource type!');
@@ -126,7 +126,6 @@ final class MarketController extends BaseGameController
         $this->addFlash('success', $buyMessage);
 
         return $this->redirect($this->generateUrl('Game/Market'));
-
     }
 
     /**
@@ -155,6 +154,89 @@ final class MarketController extends BaseGameController
             'player' => $player,
             'marketItems' => $marketItems
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $marketItemId
+     * @return RedirectResponse
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function sellOrder(Request $request, int $marketItemId): RedirectResponse
+    {
+        $player = $this->getPlayer();
+        $world = $player->getWorld();
+        if (!$world->getMarket()) {
+            return $this->redirect($this->generateUrl('Game/Market'));
+        }
+
+        /** @var MarketItemRepository $marketItemRepository */
+        $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
+
+        /** @var MarketItem $marketItem */
+        $marketItem = $marketItemRepository->find($marketItemId);
+
+        if (!$marketItem) {
+            $this->addFlash('error', 'Market order does not exist!');
+            return $this->redirect($this->generateUrl('Game/Market/Sell'));
+        }
+
+        if ($marketItem->getMarketItemType()->getName() != MarketItemType::TYPE_NAME_SELL) {
+            $this->addFlash('error', 'Market order is not a sell order!');
+            return $this->redirect($this->generateUrl('Game/Market/Sell'));
+        }
+
+        if ($marketItem->getWorld()->getId() != $world->getId()) {
+            $this->addFlash('error', 'Wrong game world!');
+            return $this->redirect($this->generateUrl('Game/Market/Sell'));
+        }
+
+        if ($marketItem->getPlayer()->getId() == $player->getId()) {
+            $this->addFlash('error', 'Can not sell to yourself!');
+            return $this->redirect($this->generateUrl('Game/Market/Sell'));
+        }
+
+        $player->setCash($player->getCash() + $marketItem->getPrice());
+        $marketItemPlayer = $marketItem->getPlayer();
+        $marketItemPlayer->setCash($marketItemPlayer->getCash() - $marketItem->getPrice());
+
+        $gameResource = $marketItem->getGameResource();
+        switch ($gameResource->getName()) {
+            case 'wood':
+                $player->setWood($player->getWood() - $marketItem->getAmount());
+                break;
+            case 'food':
+                $player->setFood($player->getFood() - $marketItem->getAmount());
+                break;
+            case 'steel':
+                $player->setSteel($player->getSteel() - $marketItem->getAmount());
+                break;
+            default:
+                $this->addFlash('error', 'Unknown resource type!');
+                return $this->redirect($this->generateUrl('Game/Market/Sell'));
+        }
+
+        // Set update news feed
+        $marketItemPlayer->setMarket(true);
+
+        $this->getEm()->persist($player);
+        $this->getEm()->persist($marketItemPlayer);
+        $this->getEm()->remove($marketItem);
+
+        $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
+        $sellReport = Report::create($player, time(), 4, $sellMessage);
+        $this->getEm()->persist($sellReport);
+
+        $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
+        $buyReport = Report::create($marketItemPlayer, time(), 4, $buyMessage);
+        $this->getEm()->persist($buyReport);
+
+        $this->getEm()->flush();
+
+        $this->addFlash('success', $sellMessage);
+
+        return $this->redirect($this->generateUrl('Game/Market/Sell'));
     }
 
     /**
