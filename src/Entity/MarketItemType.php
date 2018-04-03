@@ -21,6 +21,16 @@ class MarketItemType
     private $name;
 
     /**
+     * @var string
+     */
+    const TYPE_NAME_BUY = 'buy';
+
+    /**
+     * @var string
+     */
+    const TYPE_NAME_SELL = 'sell';
+
+    /**
      * @var Collection|MarketItem[]
      */
     private $marketItems = [];

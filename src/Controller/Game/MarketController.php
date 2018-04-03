@@ -2,6 +2,7 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\MarketItemType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,7 +17,7 @@ final class MarketController extends BaseGameController
         $player = $this->getPlayer();
         $em = $this->getEm();
         $marketItemType = $em->getRepository('Game:MarketItemType')
-            -> findOneBy(['name' => 'sell']);
+            -> findOneBy(['name' => MarketItemType::TYPE_NAME_SELL]);
 
         $marketItems = $em->getRepository('Game:MarketItem')
             ->findByWorldMarketItemType($player->getWorld(), $marketItemType);
@@ -36,7 +37,7 @@ final class MarketController extends BaseGameController
         $player = $this->getPlayer();
         $em = $this->getEm();
         $marketItemType = $em->getRepository('Game:MarketItemType')
-            -> findOneBy(['name' => 'buy']);
+            -> findOneBy(['name' => MarketItemType::TYPE_NAME_BUY]);
 
         $marketItems = $em->getRepository('Game:MarketItem')
             ->findByWorldMarketItemType($player->getWorld(), $marketItemType);
