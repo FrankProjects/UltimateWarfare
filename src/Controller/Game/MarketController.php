@@ -3,6 +3,7 @@
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\MarketItemType;
+use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,12 +23,13 @@ final class MarketController extends BaseGameController
             ]);
         }
 
-        $em = $this->getEm();
-        $marketItemType = $em->getRepository('Game:MarketItemType')
-            -> findOneBy(['name' => MarketItemType::TYPE_NAME_SELL]);
+        /** @var MarketItemType $marketItemType */
+        $marketItemType = $this->getEm()->getRepository('Game:MarketItemType')
+            ->findOneBy(['name' => MarketItemType::TYPE_NAME_SELL]);
 
-        $marketItems = $em->getRepository('Game:MarketItem')
-            ->findByWorldMarketItemType($player->getWorld(), $marketItemType);
+        /** @var MarketItemRepository $marketItemRepository */
+        $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
+        $marketItems = $marketItemRepository->findByWorldMarketItemType($player->getWorld(), $marketItemType);
 
         return $this->render('game/market/buy.html.twig', [
             'player' => $player,
@@ -49,12 +51,13 @@ final class MarketController extends BaseGameController
             ]);
         }
 
-        $em = $this->getEm();
-        $marketItemType = $em->getRepository('Game:MarketItemType')
-            -> findOneBy(['name' => MarketItemType::TYPE_NAME_BUY]);
+        /** @var MarketItemType $marketItemType */
+        $marketItemType = $this->getEm()->getRepository('Game:MarketItemType')
+            ->findOneBy(['name' => MarketItemType::TYPE_NAME_BUY]);
 
-        $marketItems = $em->getRepository('Game:MarketItem')
-            ->findByWorldMarketItemType($player->getWorld(), $marketItemType);
+        /** @var MarketItemRepository $marketItemRepository */
+        $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
+        $marketItems = $marketItemRepository->findByWorldMarketItemType($player->getWorld(), $marketItemType);
 
         return $this->render('game/market/sell.html.twig', [
             'player' => $player,

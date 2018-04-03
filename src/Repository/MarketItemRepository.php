@@ -2,18 +2,26 @@
 
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\MarketItem;
 use FrankProjects\UltimateWarfare\Entity\MarketItemType;
 use FrankProjects\UltimateWarfare\Entity\World;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-class MarketItemRepository extends EntityRepository
+class MarketItemRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, MarketItem::class);
+    }
+
     /**
      * @param World $world
      * @param MarketItemType $marketItemType
      * @return array
      */
-    public function findByWorldMarketItemType(World $world, MarketItemType $marketItemType)
+    public function findByWorldMarketItemType(World $world, MarketItemType $marketItemType): array
     {
         return $this->getEntityManager()
             ->createQuery(
