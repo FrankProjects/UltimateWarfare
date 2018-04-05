@@ -2,7 +2,6 @@
 
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use Doctrine\Common\Collections\Collection;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
 use FrankProjects\UltimateWarfare\Entity\MarketItemType;
 use FrankProjects\UltimateWarfare\Entity\World;
