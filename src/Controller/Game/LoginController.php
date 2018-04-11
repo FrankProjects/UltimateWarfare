@@ -17,7 +17,7 @@ final class LoginController extends BaseGameController
         $players = $user->getPlayers();
 
         if (count($players) == 0) {
-            return $this->redirectToRoute('Story/Chapter1', array('page' => 1), 302);
+            return $this->redirectToRoute('Game/Story/Chapter1', array('page' => 1), 302);
         } else {
             //if (count($player) == 0) {
             //    return $this->redirectToRoute('SelectWorld', array(), 302);
