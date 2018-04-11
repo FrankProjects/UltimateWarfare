@@ -23,6 +23,14 @@ class BaseGameController extends BaseController
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
+        if ($user->isEnabled() !== true) {
+            throw new AccessDeniedException('User is not enabled!');
+        }
+
+        if ($user->getActive() !== true) {
+            throw new AccessDeniedException('User is not active!');
+        }
+
         return $user;
     }
 
@@ -58,14 +66,19 @@ class BaseGameController extends BaseController
             throw new AccessDeniedException('Player does not belong to User');
         }
 
-        if ($user->getActive() == 0) {
-            throw new AccessDeniedException('User is not active!');
-        }
-
         // XXX TODO: Should be run once on page request
-        $gameEngine = new GameEngine($em);
-        $gameEngine->run($player);
+        $this->updateGameState($player);
 
         return $player;
+    }
+
+    /**
+     * @param Player $player
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    private function updateGameState(Player $player)
+    {
+        $gameEngine = new GameEngine($this->getEm());
+        $gameEngine->run($player);
     }
 }
