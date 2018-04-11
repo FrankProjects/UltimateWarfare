@@ -47,9 +47,9 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * Random string sent to the user email address in order to verify it.
      *
-     * @var string
+     * @var ?string
      */
-    private $confirmationToken = '';
+    private $confirmationToken = null;
 
     /**
      * @var \DateTime
@@ -214,7 +214,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
 
     public function eraseCredentials()
     {
-        $this->plainPassword = null;
+        $this->plainPassword = '';
     }
 
     /**
@@ -295,7 +295,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
-     * @return string
+     * @return ?string
      */
     public function getConfirmationToken(): ?string
     {
@@ -303,7 +303,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
-     * @param string $confirmationToken
+     * @param ?string $confirmationToken
      */
     public function setConfirmationToken(?string $confirmationToken): void
     {
