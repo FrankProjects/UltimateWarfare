@@ -4,8 +4,10 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\MapDesign;
 use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
+use FrankProjects\UltimateWarfare\Form\ChangePasswordType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class UserController extends BaseGameController
 {
@@ -60,10 +62,38 @@ final class UserController extends BaseGameController
 
     /**
      * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
      * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
+        $user = $this->getGameUser();
+        $changePasswordForm = $this->createForm(ChangePasswordType::class, $user);
+        $changePasswordForm->handleRequest($request);
+
+        if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
+            $oldPassword = $changePasswordForm->get('oldPassword')->getData();
+            $plainPassword = $changePasswordForm->get('plainPassword')->getData();
+
+            if ($encoder->isPasswordValid($user, $oldPassword)) {
+                if ($plainPassword === null) {
+                    $this->addFlash('error', 'New passwords do not match');
+                } else {
+                    $newEncodedPassword = $encoder->encodePassword($user, $plainPassword);
+                    $user->setPassword($newEncodedPassword);
+                    $em = $this->getEm();
+                    $em->persist($user);
+
+                    $em->flush();
+                    $this->addFlash('success', "Password change successfully!");
+                }
+            } else {
+                $this->addFlash('error', 'Old password is invalid');
+            }
+        }
+
         if ($request->getMethod() == 'POST') {
             if ($request->request->get('change_map') && $request->request->get('map')) {
                 $this->changeMapDesign($request);
@@ -78,6 +108,7 @@ final class UserController extends BaseGameController
             'user' => $this->getGameUser(),
             'mapDesigns' => $this->getAllMapDesigns(),
             'userType' => $this->getAccountType(),
+            'changePasswordForm' => $changePasswordForm->createView()
         ]);
     }
 

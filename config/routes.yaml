@@ -485,9 +485,9 @@ Site/Logout:
     path:      /logout
     controller: FrankProjects\UltimateWarfare\Controller\Site\SecurityController::logout
 
-Site/LostPassword:
-    path:      /lostpassword
-    controller: FrankProjects\UltimateWarfare\Controller\Site\LostPasswordController::lostPassword
+Site/ResetPassword:
+    path:      /reset-password
+    controller: FrankProjects\UltimateWarfare\Controller\Site\ResetPasswordController::requestPasswordReset
 
 Site/Register:
     path:      /register
@@ -496,3 +496,11 @@ Site/Register:
 Site/Statistics:
     path:      /statistics
     controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::statistics
+
+User/Activation:
+    path:      /user/activate/{token}
+    controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::activateUser
+
+User/Password/Reset:
+    path:      /password/reset/{token}
+    controller: FrankProjects\UltimateWarfare\Controller\Site\ResetPasswordController::resetPassword
