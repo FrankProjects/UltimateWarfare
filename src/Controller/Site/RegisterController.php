@@ -4,10 +4,12 @@ namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Form\RegistrationType;
 use FrankProjects\UltimateWarfare\Entity\User;
+use FrankProjects\UltimateWarfare\Util\TokenGenerator;
 use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Psr\Log\LoggerInterface;
 
@@ -29,65 +31,88 @@ final class RegisterController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
 
-            $em = $this->getDoctrine()->getManager();
 
             // Get default MapDesign
             // XXX TODO: make setting?
             $mapDesign = $em->getRepository('Game:MapDesign')
                 ->find(3);
 
+            $generator = new TokenGenerator();
+            $token = $generator->generateToken(40);
+
             $user->setMapDesign($mapDesign);
             $user->setSignup(new \DateTime());
+            $user->setConfirmationToken($token);
 
             $em->persist($user);
             $em->flush();
 
             $message = (new \Swift_Message('Welcome to Ultimate-Warfare'))
-                ->setFrom('send@example.com')
-                ->setTo('recipient@example.com')
+                ->setFrom('no-reply@ultimate-warfare.com')
+                ->setTo($user->getEmail())
                 ->setBody(
                     $this->renderView(
-                        'email/registration.html.twig',
-                        array('username' => $user->getUsername())
-                    ),
+                        'email/register.html.twig',
+                        [
+                            'username' => $user->getUsername(),
+                            'token' => $token
+                        ]                    ),
                     'text/html'
                 )
                 ->addPart(
                     $this->renderView(
-                        'email/registration.txt.twig',
-                        array('username' => $user->getUsername())
+                        'email/register.txt.twig',
+                        [
+                            'username' => $user->getUsername(),
+                            'token' => $token
+                        ]
                     ),
                     'text/plain'
-                )
-            ;
+                );
 
             $messages = $mailer->send($message);
             if ($messages == 0) {
                 $logger->error("Send a registration email to {$user->getEmail()} failed");
+                $this->addFlash('error', 'You successfully reqistered an account, but an error occurred while sending an activation email!');
             } else {
                 $logger->info("Send a registration email to {$user->getEmail()}");
+                $this->addFlash('success', "You successfully reqistered an account! An e-mail has been sent to {$user->getEmail()} with your activation code...");
             }
-            // XXX TODO: Send mail
-            /**
-            //Init mail settings
-            $mail_settings['title'] = "Welcome to Ultimate-Warfare";
-            $mail_settings['from_header'] = "From: Ultimate-Warfare <no-reply@ultimate-warfare.com>";
-            $mail_settings['from_address'] = "no-reply@ultimate-warfare.com";
-
-            //Init error/success messages
-            $mail_settings['error'] = "* You succesfully registered, but an error occurred while sending an activation email!<br />Send an email to admin@ultimate-warfare.com with your email and username.";
-            $mail_settings['success'] = "You have been succesfully registered.<br /> An e-mail has been sent to ".filter_html($mail_vars['email'])." with your activation code... <br />Activate your account within 48 hours!<br /><br /><a class=\"B\" href=\"login.php\" title=\"Ultimate Warfare - Login\">Click here to Login.</a>";
-
-             */
-
-            $this->addFlash('success', "You successfully reqistered an account! An e-mail has been sent to {$user->getEmail()} with your activation code... <br />Activate your account within 48 hours!");
         }
 
         return $this->render('site/register.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $email
+     * @return Response
+     */
+    public function activateUser(Request $request, $token): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var User $user */
+        $user = $em->getRepository('Game:User')
+            ->findOneBy(['confirmationToken' => $token]);
+
+        if (!$user) {
+            throw new NotFoundHttpException("User with token {$token} does not exist");
+        }
+
+        $user->setConfirmationToken(null);
+        $user->setEnabled(true);
+        $em->persist($user);
+        $em->flush();
+
+        $this->addFlash('success', 'You successfully activated your account!');
+        return $this->redirectToRoute('Site/Login');
     }
 }
