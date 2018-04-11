@@ -5,15 +5,14 @@ Build the strongest army, buy the strongest weapons and conquer countries as a r
 
 Thank you for joining Ultimate Warfare we hope you enjoy your stay here and also hope that you have lots of fun playing the game and meeting new friends.
 
-Username: {{ username }}
+Username: {{ username|escape }}
 
 Activation URL:
-{{ url('Site/Activation') }}
-$html_root . "/activation.php?email=".$mail_vars['email']."&key=".$mail_vars['key']."
+{{ url('User/Activation', {'token': token}) }}
 
 Please do not reply to these messages, they are created by an automatic device and replies will not be read.
 
-{{ url('Site/HomePage') }}
+{{ url('Site/Homepage') }}
 Thanks
 
 ~ Frank
