@@ -5,18 +5,6 @@
 {% endblock title %}
 
 {% block content %}
-    {% for msg in app.flashes('success') %}
-        <div class="success" id="success">
-            {{ msg }}
-        </div>
-    {% endfor %}
-
-    {% for msg in app.flashes('error') %}
-        <div class="error" id="error">
-            {{ msg }}
-        </div>
-    {% endfor %}
-
     <br/>
 
     <fieldset>
