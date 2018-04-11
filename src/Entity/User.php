@@ -297,7 +297,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @return string
      */
-    public function getConfirmationToken(): string
+    public function getConfirmationToken(): ?string
     {
         return $this->confirmationToken;
     }
@@ -305,7 +305,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @param string $confirmationToken
      */
-    public function setConfirmationToken(string $confirmationToken): void
+    public function setConfirmationToken(?string $confirmationToken): void
     {
         $this->confirmationToken = $confirmationToken;
     }
