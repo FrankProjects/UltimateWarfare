@@ -49,8 +49,6 @@ Missing features compared to old game code:
 - Market system
 - Moderator panel
 - Missions
-- Change password in account settings
-- Password reset
 - Profile
 - Battle system
 - Special operations
