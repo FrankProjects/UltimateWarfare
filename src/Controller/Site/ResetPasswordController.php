@@ -2,7 +2,6 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
-use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Form\ResetPasswordType;
 use FrankProjects\UltimateWarfare\Util\TokenGenerator;
 use Psr\Log\LoggerInterface;
@@ -25,7 +24,6 @@ final class ResetPasswordController extends Controller
         if ($email) {
             $em = $this->getDoctrine()->getManager();
 
-            /** @var User $user */
             $user = $em->getRepository('Game:User')
                 ->findOneBy(['email' => $email]);
 
@@ -86,7 +84,6 @@ final class ResetPasswordController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        /** @var User $user */
         $user = $em->getRepository('Game:User')
             ->findOneBy(['confirmationToken' => $token]);
 
