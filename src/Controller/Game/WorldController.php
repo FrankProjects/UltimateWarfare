@@ -47,7 +47,6 @@ final class WorldController extends BaseGameController
      * @param Request $request
      * @param int $worldId
      * @return Response
-     * @throws Exception
      */
     public function start(Request $request, int $worldId): Response
     {

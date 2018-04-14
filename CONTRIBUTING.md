@@ -102,7 +102,13 @@ $ composer install --prefer-source
 
 ```
 
-TODO: Add database seeds
+
+##### Load database data
+
+```bash
+$ bin/console doctrine:migrations:migrate
+```
+
 
 
 ### Directory structure

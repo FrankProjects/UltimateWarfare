@@ -92,10 +92,10 @@ final class RegisterController extends Controller
 
     /**
      * @param Request $request
-     * @param $email
+     * @param string $token
      * @return Response
      */
-    public function activateUser(Request $request, $token): Response
+    public function activateUser(Request $request, string $token): Response
     {
         $em = $this->getDoctrine()->getManager();
 
