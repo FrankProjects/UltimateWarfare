@@ -1,4 +1,4 @@
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (1, 1, 1, 1, 1, 1, 1, 1, 'map36', 0, '', 26, 0, NULL),
 (2, 1, 1, 2, 1, 1, 2, 1, 'map36', 0, '', 50, 0, NULL),
 (3, 1, 1, 3, 1, 1, 3, 1, 'map36', 0, '', 86, 0, NULL),
@@ -870,7 +870,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (869, 2, 35, 19, 10, 2, 4, 4, 'map36', 0, '', 3, 0, NULL),
 (870, 2, 35, 20, 10, 2, 5, 4, 'map36', 0, '', 28, 0, NULL),
 (871, 2, 35, 21, 10, 2, 1, 5, 'map36', 0, '', 49, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (872, 2, 35, 22, 10, 2, 2, 5, 'map36', 0, '', 60, 0, NULL),
 (873, 2, 35, 23, 10, 2, 3, 5, 'map36', 0, '', 65, 0, NULL),
 (874, 2, 35, 24, 10, 2, 4, 5, 'map36', 0, '', 91, 0, NULL),
@@ -1703,7 +1703,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (1701, 3, 69, 1, 14, 4, 1, 1, 'map36', 0, '', 45, 2500, NULL),
 (1702, 3, 69, 2, 14, 4, 2, 1, 'map36', 0, '', 17, 0, NULL),
 (1703, 3, 69, 3, 14, 4, 3, 1, 'map6', 0, '', 1004, 20000, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (1704, 3, 69, 4, 14, 4, 4, 1, 'map18', 0, '', 1767, 33500, NULL),
 (1705, 3, 69, 5, 14, 4, 5, 1, 'map18', 0, '', 1996, 0, NULL),
 (1706, 3, 69, 6, 14, 4, 1, 2, 'map36', 0, '', 50, 0, NULL),
@@ -2537,7 +2537,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (2534, 5, 102, 9, 22, 1, 4, 2, 'map36', 0, '', 1, 0, NULL),
 (2535, 5, 102, 10, 22, 1, 5, 2, 'map36', 0, '', 99, 0, NULL),
 (2536, 5, 102, 11, 22, 1, 1, 3, 'map36', 0, '', 1, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (2537, 5, 102, 12, 22, 1, 2, 3, 'map36', 0, '', 48, 0, NULL),
 (2538, 5, 102, 13, 22, 1, 3, 3, 'map36', 0, '', 65, 2500, NULL),
 (2539, 5, 102, 14, 22, 1, 4, 3, 'map36', 0, '', 40, 0, NULL),
@@ -3371,7 +3371,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (3367, 6, 135, 17, 5, 7, 2, 4, 'map18', 0, '', 2089, 0, NULL),
 (3368, 6, 135, 18, 5, 7, 3, 4, 'map18', 0, '', 1954, 0, NULL),
 (3369, 6, 135, 19, 5, 7, 4, 4, 'map18', 0, '', 2066, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (3370, 6, 135, 20, 5, 7, 5, 4, 'map18', 0, '', 1757, 0, NULL),
 (3371, 6, 135, 21, 5, 7, 1, 5, 'map18', 0, '', 1784, 0, NULL),
 (3372, 6, 135, 22, 5, 7, 2, 5, 'map18', 0, '', 2037, 0, NULL),
@@ -4186,7 +4186,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (4181, 7, 168, 6, 8, 9, 1, 2, 'map18', 0, '', 2210, 0, NULL),
 (4182, 7, 168, 7, 8, 9, 2, 2, 'map18', 0, '', 2195, 0, NULL),
 (4183, 7, 168, 8, 8, 9, 3, 2, 'map18', 0, '', 2096, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (4184, 7, 168, 9, 8, 9, 4, 2, 'map18', 0, '', 2116, 0, NULL),
 (4185, 7, 168, 10, 8, 9, 5, 2, 'map18', 0, '', 1913, 0, NULL),
 (4186, 7, 168, 11, 8, 9, 1, 3, 'map18', 0, '', 2047, 1023500, NULL),
@@ -4981,7 +4981,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (4975, 8, 199, 25, 14, 10, 5, 5, 'map18', 0, '', 2155, 0, NULL),
 (4976, 8, 200, 1, 15, 10, 1, 1, 'map18', 0, '', 2242, 1121000, NULL),
 (4977, 8, 200, 2, 15, 10, 2, 1, 'map18', 0, '', 1803, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (4978, 8, 200, 3, 15, 10, 3, 1, 'map18', 0, '', 2057, 0, NULL),
 (4979, 8, 200, 4, 15, 10, 4, 1, 'map18', 0, '', 1888, 0, NULL),
 (4980, 8, 200, 5, 15, 10, 5, 1, 'map18', 0, '', 1860, 0, NULL),
@@ -5787,7 +5787,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (5780, 10, 232, 5, 22, 7, 5, 1, 'map36', 0, '', 68, 0, NULL),
 (5781, 10, 232, 6, 22, 7, 1, 2, 'map36', 0, '', 33, 0, NULL),
 (5782, 10, 232, 7, 22, 7, 2, 2, 'map36', 0, '', 56, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (5783, 10, 232, 8, 22, 7, 3, 2, 'map36', 0, '', 99, 0, NULL),
 (5784, 10, 232, 9, 22, 7, 4, 2, 'map36', 0, '', 37, 0, NULL),
 (5785, 10, 232, 10, 22, 7, 5, 2, 'map36', 0, '', 28, 0, NULL),
@@ -6592,7 +6592,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (6584, 11, 264, 9, 4, 13, 4, 2, 'map18', 0, '', 1780, 0, NULL),
 (6585, 11, 264, 10, 4, 13, 5, 2, 'map18', 0, '', 2226, 0, NULL),
 (6586, 11, 264, 11, 4, 13, 1, 3, 'map18', 0, '', 1868, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (6587, 11, 264, 12, 4, 13, 2, 3, 'map18', 0, '', 2127, 0, NULL),
 (6588, 11, 264, 13, 4, 13, 3, 3, 'map18', 0, '', 2232, 0, NULL),
 (6589, 11, 264, 14, 4, 13, 4, 3, 'map18', 0, '', 2040, 0, NULL),
@@ -7381,7 +7381,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (7372, 12, 295, 22, 10, 14, 2, 5, 'map18', 0, '', 1782, 0, NULL),
 (7373, 12, 295, 23, 10, 14, 3, 5, 'map18', 0, '', 1907, 0, NULL),
 (7374, 12, 295, 24, 10, 14, 4, 5, 'map18', 0, '', 2063, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (7375, 12, 295, 25, 10, 14, 5, 5, 'map18', 0, '', 1972, 0, NULL),
 (7376, 12, 296, 1, 6, 15, 1, 1, 'map18', 0, '', 2211, 0, NULL),
 (7377, 12, 296, 2, 6, 15, 2, 1, 'map18', 0, '', 1872, 0, NULL),
@@ -8154,7 +8154,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (8144, 14, 326, 19, 16, 11, 4, 4, 'map18', 0, '', 2043, 0, NULL),
 (8145, 14, 326, 20, 16, 11, 5, 4, 'map18', 0, '', 1782, 0, NULL),
 (8146, 14, 326, 21, 16, 11, 1, 5, 'map18', 0, '', 1894, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (8147, 14, 326, 22, 16, 11, 2, 5, 'map18', 0, '', 2136, 0, NULL),
 (8148, 14, 326, 23, 16, 11, 3, 5, 'map18', 0, '', 1853, 0, NULL),
 (8149, 14, 326, 24, 16, 11, 4, 5, 'map18', 0, '', 1991, 0, NULL),
@@ -8928,7 +8928,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (8917, 15, 357, 17, 22, 12, 2, 4, 'map18', 0, '', 1984, 0, NULL),
 (8918, 15, 357, 18, 22, 12, 3, 4, 'map18', 0, '', 2139, 0, NULL),
 (8919, 15, 357, 19, 22, 12, 4, 4, 'map18', 0, '', 2151, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (8920, 15, 357, 20, 22, 12, 5, 4, 'map18', 0, '', 1881, 0, NULL),
 (8921, 15, 357, 21, 22, 12, 1, 5, 'map18', 0, '', 2232, 1116000, NULL),
 (8922, 15, 357, 22, 22, 12, 2, 5, 'map18', 0, '', 2073, 0, NULL),
@@ -9726,7 +9726,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (9714, 16, 389, 14, 4, 18, 4, 3, 'map9', 0, '', 1039, 20000, NULL),
 (9715, 16, 389, 15, 4, 18, 5, 3, 'map9', 0, '', 1107, 20000, NULL),
 (9716, 16, 389, 16, 4, 18, 1, 4, 'map36', 0, '', 33, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (9717, 16, 389, 17, 4, 18, 2, 4, 'map36', 0, '', 29, 0, NULL),
 (9718, 16, 389, 18, 4, 18, 3, 4, 'map36', 0, '', 27, 3500, NULL),
 (9719, 16, 389, 19, 4, 18, 4, 4, 'map15', 0, '', 841, 20000, NULL),
@@ -10506,7 +10506,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (10493, 17, 420, 18, 10, 19, 3, 4, 'map18', 0, '', 2002, 0, NULL),
 (10494, 17, 420, 19, 10, 19, 4, 4, 'map18', 0, '', 1862, 0, NULL),
 (10495, 17, 420, 20, 10, 19, 5, 4, 'map18', 0, '', 2065, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (10496, 17, 420, 21, 10, 19, 1, 5, 'map18', 0, '', 1907, 0, NULL),
 (10497, 17, 420, 22, 10, 19, 2, 5, 'map18', 0, '', 2176, 0, NULL),
 (10498, 17, 420, 23, 10, 19, 3, 5, 'map18', 0, '', 1868, 934000, NULL),
@@ -11271,7 +11271,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (11257, 19, 451, 7, 16, 16, 2, 2, 'map18', 0, '', 2014, 0, NULL),
 (11258, 19, 451, 8, 16, 16, 3, 2, 'map18', 0, '', 1901, 0, NULL),
 (11259, 19, 451, 9, 16, 16, 4, 2, 'map18', 0, '', 1756, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (11260, 19, 451, 10, 16, 16, 5, 2, 'map18', 0, '', 1784, 0, NULL),
 (11261, 19, 451, 11, 16, 16, 1, 3, 'map18', 0, '', 2101, 1050500, NULL),
 (11262, 19, 451, 12, 16, 16, 2, 3, 'map18', 0, '', 2162, 1081000, NULL),
@@ -12031,7 +12031,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (12016, 20, 481, 16, 21, 17, 1, 4, 'map18', 0, '', 2223, 0, NULL),
 (12017, 20, 481, 17, 21, 17, 2, 4, 'map18', 0, '', 1795, 0, NULL),
 (12018, 20, 481, 18, 21, 17, 3, 4, 'map18', 0, '', 2011, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (12019, 20, 481, 19, 21, 17, 4, 4, 'map18', 0, '', 1803, 0, NULL),
 (12020, 20, 481, 20, 21, 17, 5, 4, 'map18', 0, '', 1907, 0, NULL),
 (12021, 20, 481, 21, 21, 17, 1, 5, 'map18', 0, '', 2013, 0, NULL),
@@ -12815,7 +12815,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (12799, 21, 512, 24, 2, 23, 4, 5, 'map36', 0, '', 28, 0, NULL),
 (12800, 21, 512, 25, 2, 23, 5, 5, 'map36', 0, '', 87, 0, NULL),
 (12801, 21, 513, 1, 3, 23, 1, 1, 'map36', 0, '', 14, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (12802, 21, 513, 2, 3, 23, 2, 1, 'map36', 0, '', 9, 0, NULL),
 (12803, 21, 513, 3, 3, 23, 3, 1, 'map6', 0, '', 1302, 20000, NULL),
 (12804, 21, 513, 4, 3, 23, 4, 1, 'map18', 0, '', 2230, 20000, NULL),
@@ -13608,7 +13608,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (13591, 22, 544, 16, 9, 24, 1, 4, 'map36', 0, '', 39, 0, NULL),
 (13592, 22, 544, 17, 9, 24, 2, 4, 'map36', 0, '', 92, 0, NULL),
 (13593, 22, 544, 18, 9, 24, 3, 4, 'map36', 0, '', 60, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (13594, 22, 544, 19, 9, 24, 4, 4, 'map36', 0, '', 43, 0, NULL),
 (13595, 22, 544, 20, 9, 24, 5, 4, 'map36', 0, '', 40, 0, NULL),
 (13596, 22, 544, 21, 9, 24, 1, 5, 'map36', 0, '', 58, 0, NULL),
@@ -14392,7 +14392,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (14374, 23, 575, 24, 15, 25, 4, 5, 'map36', 0, '', 97, 0, NULL),
 (14375, 23, 575, 25, 15, 25, 5, 5, 'map36', 0, '', 93, 0, NULL),
 (14376, 24, 576, 1, 16, 21, 1, 1, 'map18', 0, '', 2060, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (14377, 24, 576, 2, 16, 21, 2, 1, 'map18', 0, '', 2014, 0, NULL),
 (14378, 24, 576, 3, 16, 21, 3, 1, 'map18', 0, '', 1842, 0, NULL),
 (14379, 24, 576, 4, 16, 21, 4, 1, 'map18', 0, '', 1892, 0, NULL),
@@ -15171,7 +15171,7 @@ INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`,
 (15152, 25, 607, 2, 22, 22, 2, 1, 'map18', 0, '', 2119, 0, NULL),
 (15153, 25, 607, 3, 22, 22, 3, 1, 'map18', 0, '', 2222, 0, NULL),
 (15154, 25, 607, 4, 22, 22, 4, 1, 'map18', 0, '', 1886, 0, NULL);
-INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `pop`, `player_id`) VALUES
+INSERT INTO `world_region` (`id`, `sector_id`, `country_id`, `region`, `x`, `y`, `r_x`, `r_y`, `image`, `state`, `name`, `space`, `population`, `player_id`) VALUES
 (15155, 25, 607, 5, 22, 22, 5, 1, 'map18', 0, '', 2249, 0, NULL),
 (15156, 25, 607, 6, 22, 22, 1, 2, 'map18', 0, '', 1758, 0, NULL),
 (15157, 25, 607, 7, 22, 22, 2, 2, 'map18', 0, '', 1920, 0, NULL),
