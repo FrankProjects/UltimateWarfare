@@ -22,7 +22,9 @@ final class RegisterController extends Controller
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param Swift_Mailer $mailer
+     * @param LoggerInterface $logger
      * @return Response
+     * @throws \Exception
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, Swift_Mailer $mailer, LoggerInterface $logger): Response
     {
