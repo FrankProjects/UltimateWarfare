@@ -28,8 +28,11 @@
                         They both landed safely and started to rebuild the earth. This time there would be no projects. This war would be fought like men. <br />
                         The Earth was the playground, the war was the game.<br /><br />
 
-                        <a class="B" href="{{ path('Game/Login') }}"><strong>Play</strong></a>
-
+                        {% if players is empty %}
+                            <a class="B" href="{{ path('Game/SelectWorld') }}"><strong>Play</strong></a>
+                        {% else %}
+                            <a class="B" href="{{ path('Game/Login') }}"><strong>Play</strong></a>
+                        {% endif %}
                     </td>
                 </tr>
             </table>
