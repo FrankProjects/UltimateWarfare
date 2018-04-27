@@ -197,6 +197,12 @@ Game/Message/Inbox:
     path:      /game/message/inbox
     controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inbox
 
+Game/Message/Inbox/Delete:
+    path:      /game/message/inbox/delete/{messageId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inboxDelete
+    requirements:
+        messageId: '\d+'
+
 Game/Message/Inbox/Read:
     path:      /game/message/inbox/read/{messageId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inboxRead
@@ -204,12 +210,20 @@ Game/Message/Inbox/Read:
         messageId: '\d+'
 
 Game/Message/New:
-    path:      /game/message/new
+    path:      /game/message/new/{playerName}
     controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::new
+    defaults:
+        playerName: ''
 
 Game/Message/Outbox:
     path:      /game/message/outbox
     controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::outbox
+
+Game/Message/Outbox/Delete:
+    path:      /game/message/outbox/delete/{messageId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::outboxDelete
+    requirements:
+        messageId: '\d+'
 
 Game/Message/Outbox/Read:
     path:      /game/message/outbox/read/{messageId}
@@ -220,6 +234,10 @@ Game/Message/Outbox/Read:
 Game/Notepad:
     path:      /game/notepad
     controller: FrankProjects\UltimateWarfare\Controller\Game\NotepadController::notepad
+
+Game/Profile:
+    path:      /game/profile/{playerName}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ProfileController::profile
 
 Game/Rankings:
     path:      /game/rankings/{sortBy}
@@ -263,6 +281,10 @@ Game/Surrender:
     path:      /game/surrender
     controller: FrankProjects\UltimateWarfare\Controller\Game\SurrenderController::surrender
 
+Game/Surrender/Confirm:
+    path:      /game/surrender/confirm
+    controller: FrankProjects\UltimateWarfare\Controller\Game\SurrenderController::surrenderConfirm
+
 Game/World:
     path:      /game/world
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::world
@@ -279,6 +301,12 @@ Game/World/Region:
     requirements:
         regionId: '\d+'
 
+Game/World/Region/Attack:
+    path:      /game/world/region/attack/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::attack
+    requirements:
+        regionId: '\d+'
+
 Game/World/Region/Build:
     path:      /game/world/region/build/{regionId}/{gameUnitTypeId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::build
@@ -289,6 +317,19 @@ Game/World/Region/Build:
 Game/World/Region/Buy:
     path:      /game/world/region/buy/{regionId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::buy
+    requirements:
+        regionId: '\d+'
+
+Game/World/Region/Remove:
+    path:      /game/world/region/remove/{regionId}/{gameUnitTypeId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::remove
+    requirements:
+        regionId: '\d+'
+        gameUnitTypeId: '\d+'
+
+Game/World/Region/SendUnits:
+    path:      /game/world/region/send-units/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::sendUnits
     requirements:
         regionId: '\d+'
 
