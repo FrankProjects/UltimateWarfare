@@ -13,82 +13,21 @@ use Symfony\Component\HttpFoundation\Response;
 final class RegionController extends BaseGameController
 {
     /**
-     * @param Request $request
-     * @param int $regionId
-     * @return Response
-     */
-    public function region(Request $request, int $regionId): Response
-    {
-        $player = $this->getPlayer();
-        $em = $this->getEm();
-        $region = $em->getRepository('Game:WorldRegion')
-            -> findOneBy(['id' => $regionId]);
-
-        if(!$region) {
-            return $this->render('game/regionNotFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $sector = $region->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
-            return $this->render('game/regionNotFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $region->gameUnits = $this->getRegionGameUnitData($region);
-        return $this->render('game/region.html.twig', [
-            'region' => $region,
-            'player' => $player,
-            'mapUrl' => $this->getMapUrl(),
-        ]);
-    }
-
-    /**
-     * XXX TODO: Add sorting support
+     * XXX TODO: Fix me
      *
      * @param Request $request
+     * @param int $regionId
      * @return Response
      */
-    public function regionList(Request $request): Response
+    public function attack(Request $request, int $regionId): Response
     {
-        $player = $this->getPlayer();
-        $regions = $player->getWorldRegions();
-
-        // XXX TODO: Make this more efficient...
-        foreach ($regions as $region) {
-            $buildingsInConstruction = 0;
-            foreach ($region->getConstructions() as $regionConstruction) {
-                if ($regionConstruction->getGameUnit()->getGameUnitType()->getId() == 1) {
-                    $buildingsInConstruction += $regionConstruction->getNumber();
-                }
-            }
-            $region->buildingsInConstruction = $buildingsInConstruction;
-
-            $regionBuildings = 0;
-            foreach ($region->getWorldRegionUnits() as $regionUnit) {
-                if ($regionUnit->getGameUnit()->getGameUnitType()->getId() == 1) {
-                    $regionBuildings += $regionUnit->getAmount();
-                }
-            }
-
-            $region->buildings = $regionBuildings;
-        }
-
-        return $this->render('game/regionList.html.twig', [
-            'regions' => $regions,
-            'player' => $player,
-            'mapUrl' => $this->getMapUrl(),
-            'sortDirection' => 'up'
-        ]);
     }
 
     /**
      * @param Request $request
      * @param int $regionId
      * @return Response
+     * @throws \Exception
      */
     public function buy(Request $request, int $regionId): Response
     {
@@ -158,6 +97,105 @@ final class RegionController extends BaseGameController
     }
 
     /**
+     * XXX TODO: Fix previous and next region navigation
+     *
+     * @param Request $request
+     * @param int $regionId
+     * @return Response
+     */
+    public function region(Request $request, int $regionId): Response
+    {
+        $player = $this->getPlayer();
+        $em = $this->getEm();
+        $region = $em->getRepository('Game:WorldRegion')
+            -> findOneBy(['id' => $regionId]);
+
+        if(!$region) {
+            return $this->render('game/regionNotFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        $sector = $region->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            return $this->render('game/regionNotFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        $region->gameUnits = $this->getRegionGameUnitData($region);
+        return $this->render('game/region.html.twig', [
+            'region' => $region,
+            'player' => $player,
+            'mapUrl' => $this->getMapUrl(),
+            'previousRegionId' => 0,
+            'nextRegionId' => 0,
+        ]);
+    }
+
+    /**
+     * XXX TODO: Add sorting support (by building space, population, buildings, units)
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function regionList(Request $request): Response
+    {
+        $player = $this->getPlayer();
+        $regions = $player->getWorldRegions();
+
+        // XXX TODO: Make this more efficient...
+        foreach ($regions as $region) {
+            $buildingsInConstruction = 0;
+            foreach ($region->getConstructions() as $regionConstruction) {
+                if ($regionConstruction->getGameUnit()->getGameUnitType()->getId() == 1) {
+                    $buildingsInConstruction += $regionConstruction->getNumber();
+                }
+            }
+            $region->buildingsInConstruction = $buildingsInConstruction;
+
+            $regionBuildings = 0;
+            foreach ($region->getWorldRegionUnits() as $regionUnit) {
+                if ($regionUnit->getGameUnit()->getGameUnitType()->getId() == 1) {
+                    $regionBuildings += $regionUnit->getAmount();
+                }
+            }
+
+            $region->buildings = $regionBuildings;
+        }
+
+        return $this->render('game/regionList.html.twig', [
+            'regions' => $regions,
+            'player' => $player,
+            'mapUrl' => $this->getMapUrl(),
+        ]);
+    }
+
+    /**
+     * XXX TODO: Fix me
+     *
+     * @param Request $request
+     * @param int $regionId
+     * @param int $gameUnitTypeId
+     * @return Response
+     */
+    public function remove(Request $request, int $regionId, int $gameUnitTypeId): Response
+    {
+    }
+
+    /**
+     * XXX TODO: Fix me
+     *
+     * @param Request $request
+     * @param int $regionId
+     * @return Response
+     */
+    public function sendUnits(Request $request, int $regionId): Response
+    {
+    }
+
+    /**
      * XXX TODO: Fix unit info page
      * XXX TODO: Fix buildtime to human readable format
      *
@@ -165,6 +203,7 @@ final class RegionController extends BaseGameController
      * @param int $regionId
      * @param int $gameUnitTypeId
      * @return Response
+     * @throws \Exception
      */
     public function build(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
@@ -314,6 +353,7 @@ final class RegionController extends BaseGameController
      * @param Player $player
      * @param GameUnitType $gameUnitType
      * @return bool
+     * @throws \Exception
      */
     private function processBuildOrder(Request $request, WorldRegion $region, Player $player, GameUnitType $gameUnitType): bool
     {

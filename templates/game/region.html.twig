@@ -6,7 +6,7 @@
     <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
         <tr>
             {% if player.regions > 1 and region.player.id is defined and region.player.id == player.id %}
-            <td class="tabletop" colspan="3" align="center"><a class="B" href="region.php?region=$prev_id"><<</a> <b>Region</b> <a class="B" href="region.php?region=$next_id">>></a></td>
+            <td class="tabletop" colspan="3" align="center"><a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegionId}) }}"><<</a> <b>Region</b> <a class="B" href="{{ path('Game/World/Region', {'regionId': nextRegionId}) }}">>></a></td>
             {% else %}
             <td class="tabletop" colspan="3" align="center"><b>Region</b></td>
             {% endif %}
@@ -23,14 +23,16 @@
         <tr>
             <td width="300" align="center">Owner:</td>
             {% if region.player is not null %}
-                <td width="280" align="center"><a class="B" href="profile.php?user=$r_ownername">{{ region.player.name|escape }}</a></td>
+                <td width="280" align="center"><a class="B" href="{{ path('Game/Profile', {'playerName': region.player.name}) }}">{{ region.player.name|escape }}</a></td>
             {% else %}
                 <td width="280" align="center">Nobody</td>
             {% endif %}
         </tr>
         <tr>
             <td width="300" align="center">Space:</td>
-            <td width="280" align="center">{{ region.space }}</td>
+            <td width="280" align="center">
+                {{ region.space }}
+            </td>
         </tr>
     </table>
 
@@ -38,14 +40,14 @@
     <br />
 
     {% if region.player.id is defined and region.player.id != player.id %}
-        <a class="B" href="pm_send.php?to=$r_ownername">Send message</a>
+        <a class="B" href="{{ path('Game/Message/New', {'playerName': region.player.name}) }}">Send message</a>
     {% endif %}
 
     {% if region.state == 1 %}
         <br /><b>This region was hit by a nuclear blast.</b><br />
         There is a huge amount of toxic radiation so this region will not be liveable for an unknown amount of time!
     {% elseif region.player == null %}
-        <a class="B" href="buy.php?region=$region_id">Buy</a>
+        <a class="B" href="{{ path('Game/World/Region/Buy', {'regionId': region.id}) }}">Buy</a>
     {% elseif region.player.id == player.id %}
     <br /><br />
     <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
@@ -86,13 +88,13 @@
         <tr>
             <td colspan="2" align="center">
             <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Building</a><br />
-            <a class="B" href="building_delete.php?region=$region_id&type=1">Demolish Buildings</a><br />
+            <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Demolish Buildings</a><br />
             </td>
 
             <td colspan="2" align="center">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Building Units</a><br />
-                <a class="B" href="building_delete.php?region=$region_id&type=4">Disband Units</a><br />
-                <a class="B" href="send_units.php?region=$region_id">Send Units</a>
+                <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Disband Units</a><br />
+                <a class="B" href="{{ path('Game/World/Region/SendUnits', {'regionId': region.id}) }}">Send Units</a>
             </td>
         </tr>
     </table>
@@ -132,12 +134,12 @@
         <tr>
             <td colspan="2" align="center">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 2}) }}">Building Defences</a><br />
-                <a class="B" href="building_delete.php?region=$region_id&type=2">Demolish defensive buildings </a>
+                <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 2}) }}">Demolish defensive buildings </a>
             </td>
 
             <td colspan="2" align="center">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 3}) }}">Building Specials</a><br />
-                <a class="B" href="building_delete.php?region=$region_id&type=3">Demolish specials buildings</a>
+                <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 3}) }}">Demolish specials buildings</a>
             </td>
         </tr>
     </table>
@@ -190,24 +192,16 @@
         <tr>
             <td colspan="2" align="center">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 5}) }}">Build Special Units</a><br />
-                <a class="B" href="building_delete.php?region=$region_id&type=5">Demolish Special Units </a>
+                <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 5}) }}">Demolish Special Units </a>
             </td>
         </tr>
     </table>
 
         {% if player.regions > 1 %}
-            <a class="B" href="region.php?region=$prev_id#bottom"><<</a> <b>Region</b> <a class="B" href="region.php?region=$next_id#bottom">>></a>
+            <a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegionId}) }}#bottom"><<</a> <b>Region</b> <a class="B" href="{{ path('Game/World/Region', {'regionId': nextRegionId}) }}#bottom">>></a>
         {% endif %}
     {% else %}
-        <br /><br /><a class="B" href="attack.php?target=$region_id">Attack</a>
-
-    $checkop = "SELECT 1 FROM research_player where player_id = $player_id AND research_id = 100";
-    $result = $db->query($checkop);
-
-    if ($db->num_rows($result) == 1) {
-    echo "<br /><br /><a class=\"B\" href=\"special_op.php?target_id=$region_id\">Special Operation</a>";
-    }
-
+        <br /><br /><a class="B" href="{{ path('Game/World/Region/Attack', {'regionId': region.id}) }}">Attack</a>
     {% endif %}
 
     <br />
