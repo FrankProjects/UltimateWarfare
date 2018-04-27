@@ -791,17 +791,17 @@ class Player
     }
 
     /**
-     * @return Federation
+     * @return Federation|null
      */
-    public function getFederation(): Federation
+    public function getFederation(): ?Federation
     {
         return $this->federation;
     }
 
     /**
-     * @param Federation $federation
+     * @param Federation|null $federation
      */
-    public function setFederation(Federation $federation)
+    public function setFederation(?Federation $federation)
     {
         $this->federation = $federation;
     }
