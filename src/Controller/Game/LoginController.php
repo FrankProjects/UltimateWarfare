@@ -17,15 +17,11 @@ final class LoginController extends BaseGameController
         $players = $user->getPlayers();
 
         if (count($players) == 0) {
-            return $this->redirectToRoute('Game/Story/Chapter1', array('page' => 1), 302);
+            return $this->redirectToRoute('Game/Story/Chapter1', ['page' => 1]);
         } else {
-            //if (count($player) == 0) {
-            //    return $this->redirectToRoute('SelectWorld', array(), 302);
-            //} else {
-
             $player = $players->first();
             $this->get('session')->set('playerId', $player->getId());
-            return $this->redirectToRoute('Game/Headquarter', array(), 302);
+            return $this->redirectToRoute('Game/Headquarter');
         }
     }
 
@@ -43,14 +39,14 @@ final class LoginController extends BaseGameController
             ->find($playerId);
 
         if (!$player) {
-            return $this->redirectToRoute('Game/Login', array(), 302);
+            return $this->redirectToRoute('Game/Login');
         }
 
         if ($player->getUser()->getId() != $user->getId()) {
-            return $this->redirectToRoute('Game/Login', array(), 302);
+            return $this->redirectToRoute('Game/Login');
         }
 
         $this->get('session')->set('playerId', $player->getId());
-        return $this->redirectToRoute('Game/Headquarter', array(), 302);
+        return $this->redirectToRoute('Game/Headquarter');
     }
 }

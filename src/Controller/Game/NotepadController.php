@@ -10,6 +10,7 @@ final class NotepadController extends BaseGameController
     /**
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
     public function notepad(Request $request): Response
     {

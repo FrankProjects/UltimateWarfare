@@ -19,7 +19,12 @@ final class StoryController extends BaseGameController
             case 1:
                 return $this->render('game/story/chapter1_1.html.twig');
             case 2:
-                return $this->render('game/story/chapter1_2.html.twig');
+                $user = $this->getGameUser();
+                $players = $user->getPlayers();
+
+                return $this->render('game/story/chapter1_2.html.twig', [
+                    'players' => $players
+                ]);
             default:
                 throw new NotFoundHttpException("Page not found!");
         }
