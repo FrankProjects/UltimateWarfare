@@ -32,6 +32,8 @@
             </td>
         </tr>
     </table>
-    Options: <a class="B" href="pm_send.php?to=<?php echo $top; ?>">Send new message</a> - <a class="B" href="pm_outbox.php?action=delete&message=<?php echo $message_id; ?>">Delete</a>
+    Options:
+    <a class="B" href="{{ path('Game/Message/New', {'playerName': message.toPlayer.name}) }}">Send new message</a> -
+    <a class="B" href="{{ path('Game/Message/Outbox/Delete', {'messageId': message.id}) }}">Delete</a>
 
 {% endblock %}

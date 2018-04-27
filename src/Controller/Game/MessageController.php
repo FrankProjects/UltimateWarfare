@@ -13,6 +13,7 @@ final class MessageController extends BaseGameController
      *
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
     public function inbox(Request $request): Response
     {
@@ -20,12 +21,12 @@ final class MessageController extends BaseGameController
 
         if ($request->getMethod() == 'POST') {
             if ($request->request->get('action') == 'delete' && $request->request->get('message') != null) {
-                $this->deleteMessageFromInbox($request, $request->request->get('message'));
+                $this->deleteMessageFromInbox($request->request->get('message'));
             }
 
             if ($request->request->get('del') && $request->request->get('selected_messages') != null) {
                 foreach ($request->request->get('selected_messages') as $messageId) {
-                    $this->deleteMessageFromInbox($request, $messageId);
+                    $this->deleteMessageFromInbox($messageId);
                 }
             }
         }
@@ -67,8 +68,21 @@ final class MessageController extends BaseGameController
     /**
      * @param Request $request
      * @param int $messageId
+     * @return Response
+     * @throws \Exception
      */
-    private function deleteMessageFromInbox(Request $request, int $messageId)
+    public function inboxDelete(Request $request, int $messageId): Response
+    {
+        $this->deleteMessageFromInbox($messageId);
+
+        return $this->redirectToRoute('Game/Message/Inbox');
+    }
+
+    /**
+     * @param int $messageId
+     * @throws \Exception
+     */
+    private function deleteMessageFromInbox(int $messageId)
     {
         $em = $this->getEm();
         $message = $em->getRepository('Game:Message')
@@ -89,6 +103,7 @@ final class MessageController extends BaseGameController
      *
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
     public function outbox(Request $request): Response
     {
@@ -96,12 +111,12 @@ final class MessageController extends BaseGameController
 
         if ($request->getMethod() == 'POST') {
             if ($request->request->get('action') == 'delete' && $request->request->get('message') != null) {
-                $this->deleteMessageFromOutbox($request, $request->request->get('message'));
+                $this->deleteMessageFromOutbox($request->request->get('message'));
             }
 
             if ($request->request->get('del') && $request->request->get('selected_messages') != null) {
                 foreach ($request->request->get('selected_messages') as $messageId) {
-                    $this->deleteMessageFromOutbox($request, $messageId);
+                    $this->deleteMessageFromOutbox($messageId);
                 }
             }
         }
@@ -143,8 +158,21 @@ final class MessageController extends BaseGameController
     /**
      * @param Request $request
      * @param int $messageId
+     * @return Response
+     * @throws \Exception
      */
-    private function deleteMessageFromOutbox(Request $request, int $messageId)
+    public function outboxDelete(Request $request, int $messageId): Response
+    {
+        $this->deleteMessageFromOutbox($messageId);
+
+        return $this->redirectToRoute('Game/Message/Outbox');
+    }
+
+    /**
+     * @param int $messageId
+     * @throws \Exception
+     */
+    private function deleteMessageFromOutbox(int $messageId)
     {
         $em = $this->getEm();
         $message = $em->getRepository('Game:Message')
@@ -162,22 +190,27 @@ final class MessageController extends BaseGameController
 
     /**
      * @param Request $request
+     * @param string $playerName
      * @return Response
+     * @throws \Exception
      */
-    public function new(Request $request): Response
+    public function new(Request $request, $playerName = ''): Response
     {
         $player = $this->getPlayer();
+
+        if ($playerName == '') {
+            $playerName = $request->request->get('toPlayerName');
+        }
 
         if ($request->getMethod() == 'POST') {
             if ($request->request->get('submit')) {
                 $this->sendMessage($request);
             }
-
         }
 
         return $this->render('game/message/new.html.twig', [
             'player' => $player,
-            'toPlayerName' => $request->request->get('toPlayerName'),
+            'toPlayerName' => $playerName,
             'subject' => $request->request->get('subject'),
             'message' => $request->request->get('message')
         ]);
@@ -185,6 +218,7 @@ final class MessageController extends BaseGameController
 
     /**
      * @param Request $request
+     * @throws \Exception
      */
     private function sendMessage(Request $request)
     {
