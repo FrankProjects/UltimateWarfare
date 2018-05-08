@@ -88,12 +88,12 @@
         <tr>
             <td colspan="2" align="center">
             <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Building</a><br />
-            <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Demolish Buildings</a><br />
+            <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Demolish Buildings</a><br />
             </td>
 
             <td colspan="2" align="center">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Building Units</a><br />
-                <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Disband Units</a><br />
+                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Disband Units</a><br />
                 <a class="B" href="{{ path('Game/World/Region/SendUnits', {'regionId': region.id}) }}">Send Units</a>
             </td>
         </tr>
@@ -134,12 +134,12 @@
         <tr>
             <td colspan="2" align="center">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 2}) }}">Building Defences</a><br />
-                <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 2}) }}">Demolish defensive buildings </a>
+                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 2}) }}">Demolish defensive buildings </a>
             </td>
 
             <td colspan="2" align="center">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 3}) }}">Building Specials</a><br />
-                <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 3}) }}">Demolish specials buildings</a>
+                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 3}) }}">Demolish specials buildings</a>
             </td>
         </tr>
     </table>
@@ -192,7 +192,7 @@
         <tr>
             <td colspan="2" align="center">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 5}) }}">Build Special Units</a><br />
-                <a class="B" href="{{ path('Game/World/Region/Remove', {'regionId': region.id, 'gameUnitTypeId': 5}) }}">Demolish Special Units </a>
+                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 5}) }}">Demolish Special Units </a>
             </td>
         </tr>
     </table>

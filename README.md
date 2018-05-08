@@ -46,13 +46,9 @@ Missing features compared to old game code:
     - Bank
     - News
     - Sending aid
-- Market system
 - Moderator panel
-- Missions
-- Profile
 - Battle system
 - Special operations
-- Surrender
 
 
 ## Contributing

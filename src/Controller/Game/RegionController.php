@@ -7,6 +7,7 @@ use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,7 +38,7 @@ final class RegionController extends BaseGameController
             -> findOneBy(['id' => $regionId]);
 
         if (!$region) {
-            return $this->render('game/regionNotFound.html.twig', [
+            return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
         }
@@ -45,7 +46,7 @@ final class RegionController extends BaseGameController
         $sector = $region->getWorldSector();
 
         if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
-            return $this->render('game/regionNotFound.html.twig', [
+            return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
         }
@@ -88,7 +89,7 @@ final class RegionController extends BaseGameController
 
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
         }
-        return $this->render('game/buyRegion.html.twig', [
+        return $this->render('game/region/buy.html.twig', [
             'region' => $region,
             'player' => $player,
             'mapUrl' => $this->getMapUrl(),
@@ -111,7 +112,7 @@ final class RegionController extends BaseGameController
             -> findOneBy(['id' => $regionId]);
 
         if(!$region) {
-            return $this->render('game/regionNotFound.html.twig', [
+            return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
         }
@@ -119,7 +120,7 @@ final class RegionController extends BaseGameController
         $sector = $region->getWorldSector();
 
         if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
-            return $this->render('game/regionNotFound.html.twig', [
+            return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
         }
@@ -173,15 +174,60 @@ final class RegionController extends BaseGameController
     }
 
     /**
-     * XXX TODO: Fix me
-     *
      * @param Request $request
      * @param int $regionId
      * @param int $gameUnitTypeId
      * @return Response
+     * @throws \Exception
      */
-    public function remove(Request $request, int $regionId, int $gameUnitTypeId): Response
+    public function removeGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
+        $player = $this->getPlayer();
+        $em = $this->getEm();
+
+        $region = $em->getRepository('Game:WorldRegion')
+            ->find($regionId);
+
+        if (!$region) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        $gameUnitType = $em->getRepository('Game:GameUnitType')
+            ->find($gameUnitTypeId);
+
+        if (!$gameUnitType) {
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
+        }
+
+        $sector = $region->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        if ($region->getPlayer()->getId() != $player->getId()) {
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
+        }
+
+        if ($request->getMethod() == 'POST') {
+            $this->processRemoveGameUnitsOrder($request, $region, $player, $gameUnitType);
+        }
+
+        $gameUnitTypes = $em->getRepository('Game:GameUnitType')
+            ->findAll();
+
+        $region->gameUnits = $this->getRegionGameUnitData($region);
+
+        return $this->render('game/region/removeGameUnits.html.twig', [
+            'region' => $region,
+            'player' => $player,
+            'gameUnitType' => $gameUnitType,
+            'gameUnitTypes' => $gameUnitTypes,
+        ]);
     }
 
     /**
@@ -214,7 +260,7 @@ final class RegionController extends BaseGameController
             ->find($regionId);
 
         if (!$region) {
-            return $this->render('game/regionNotFound.html.twig', [
+            return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
         }
@@ -229,7 +275,7 @@ final class RegionController extends BaseGameController
         $sector = $region->getWorldSector();
 
         if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
-            return $this->render('game/regionNotFound.html.twig', [
+            return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
         }
@@ -267,7 +313,7 @@ final class RegionController extends BaseGameController
             $spaceLeft = $region->getSpace() - $regionBuildings - $buildingsInConstruction;
         }
 
-        return $this->render('game/build.html.twig', [
+        return $this->render('game/region/build.html.twig', [
             'region' => $region,
             'player' => $player,
             'spaceLeft' => $spaceLeft,
@@ -448,6 +494,77 @@ final class RegionController extends BaseGameController
             $em->persist($construction);
         }
 
+        $em->flush();
+
+        return true;
+    }
+
+    /**
+     * @param Request $request
+     * @param WorldRegion $region
+     * @param Player $player
+     * @param GameUnitType $gameUnitType
+     * @return bool
+     * @throws \Exception
+     */
+    private function processRemoveGameUnitsOrder(Request $request, WorldRegion $region, Player $player, GameUnitType $gameUnitType): bool
+    {
+        $em = $this->getEm();
+        $networth = 0;
+
+        foreach($gameUnitType->getGameUnits() as $gameUnit) {
+            if ($request->request->has($gameUnit->getId())) {
+                $amount = $request->request->get($gameUnit->getId(), 0);
+                if ($amount == 0) {
+                    continue;
+                }
+
+                if ($amount < 0) {
+                    $this->addFlash('error', "You can't destroy negative " . $gameUnit->getName() . "s!");
+                    return false;
+                }
+
+                $hasUnit = false;
+                foreach ($region->getWorldRegionUnits() as $regionUnit) {
+                    if ($regionUnit->getGameUnit()->getId() == $gameUnit->getId()) {
+                        $hasUnit = true;
+                        /**
+                         * @var WorldRegionUnit $regionUnit
+                         */
+                        if ($amount > $regionUnit->getAmount()) {
+                            $this->addFlash('error', "You don't have that many " . $gameUnit->getName() . "s!");
+                            return false;
+                        }
+
+                        $regionUnit->setAmount($regionUnit->getAmount() - $amount);
+                        $em->persist($regionUnit);;
+                    }
+                }
+
+                if ($hasUnit !== true) {
+                    $this->addFlash('error', "You don't have that many " . $gameUnit->getName() . "s!");
+                    return false;
+                }
+
+                $networth += $amount * $gameUnit->getNetworth();
+
+                if($gameUnitType->getId() == 4){
+                    $this->addFlash('success', "You have disbanded {$amount} {$gameUnit->getName()}'s");
+                }else{
+                    $this->addFlash('success', "You have destroyed {$amount} {$gameUnit->getName()}'s");
+                }
+            }
+        }
+
+        $player->setNetworth($player->getNetworth() - $networth);
+
+        if ($player->getFederation() !== null) {
+            $federation = $player->getFederation();
+            $federation->setNetworth($federation->getNetworth() - $networth);
+            $em->persist($federation);
+        }
+
+        $em->persist($player);
         $em->flush();
 
         return true;

@@ -1,0 +1,43 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Profile
+{% endblock title %}
+
+{% block content %}
+    <table border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="2" width="600" align="center"><b>Player</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Name:</td>
+            <td width="350" align="center">{{ profilePlayer.name|escape }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Join date:</td>
+            <td width="350" align="center">{{ profilePlayer.timestampJoined|date("Y-m-d H:i:s") }}</td>
+        </tr>
+        <tr>
+            <td class="tabletop" colspan="2" width="600" align="center"><b>Player stats</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Regions:</td>
+            <td width="350" align="center">{{ profilePlayer.worldRegions|length }}</td>
+        </tr>
+        <tr>
+            <td width="150" align="center">Networth:</td>
+            <td width="350" align="center">{{ profilePlayer.networth }}</td>
+        </tr>
+        {% if profilePlayer.federation is not null %}
+            <tr>
+                <td width="150" align="center">Federation:</td>
+                <td width="350" align="center">{{ profilePlayer.federation.name|escape }}</td>
+            </tr>
+        {% endif %}
+    </table>
+
+    <br />
+    <br />
+
+    <a class="B" href="{{ path('Game/Message/New', {'playerName': profilePlayer.name}) }}">Send message</a>
+{% endblock %}

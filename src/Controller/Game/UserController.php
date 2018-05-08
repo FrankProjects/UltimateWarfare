@@ -25,6 +25,7 @@ final class UserController extends BaseGameController
     /**
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
     public function banned(Request $request): Response
     {
@@ -51,7 +52,7 @@ final class UserController extends BaseGameController
             $em->persist($unbanRequest);
             $em->flush();
 
-            $this->addFlash('success', 'We have recieved your request, we will try to read your request ASAP...');
+            $this->addFlash('success', 'We have received your request, we will try to read your request ASAP...');
         }
 
         return $this->render('game/banned.html.twig', [
@@ -64,8 +65,7 @@ final class UserController extends BaseGameController
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      */
     public function edit(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
@@ -147,6 +147,7 @@ final class UserController extends BaseGameController
      * Change map design
      *
      * @param Request $request
+     * @throws \Exception
      */
     private function changeMapDesign(Request $request)
     {
@@ -169,6 +170,7 @@ final class UserController extends BaseGameController
      * Change settings
      *
      * @param Request $request
+     * @throws \Exception
      */
     private function changeSettings(Request $request)
     {

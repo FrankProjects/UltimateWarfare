@@ -5,24 +5,37 @@
 {% endblock title %}
 
 {% block content %}
-    <form method="get" action="">
-        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
-            <tr>
-                <td class="tabletop" align="center"><b>Surrender</b></td>
-            </tr>
-            <tr>
-                <td align="center">
-                    You really want to surrender your empire?<br />
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" align="center"><b>Surrender</b></td>
+        </tr>
+        <tr>
+            <td align="center">
+                {% if canSurrender == true %}
+                    You really want to surrender your empire?
+                    <br />
+                    <br />
+
+                    <div>
+                        <b>Confirm Password</b>
+                        <br />
+                        Enter your password to officially delete your account from this world!<br />
+                        <b>Warning:</b> This can't be undone!
+                    </div>
+
+                    <br />
+                    <br />
+
+                    {{ form_start(confirmPasswordForm, {'attr': {'class': 'general'}}) }}
+                    {{ form_row(confirmPasswordForm.plainPassword) }}
+                    <div class="submit">
+                        <input type="submit" name="submit" value="Surrender" />
+                    </div>
+                    {{ form_end(confirmPasswordForm) }}
+                {% else %}
                     You can not surrender for the first 48 Hours!
-
-                    <input type="hidden" name="confirming" value="1" />
-
-                    <br />
-                    <br />
-
-                    <div class="submit"><input type="submit" value="Surrender" /></div>
-                </td>
-            </tr>
-        </table>
-    </form>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
 {% endblock %}

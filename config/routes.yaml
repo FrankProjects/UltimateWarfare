@@ -281,10 +281,6 @@ Game/Surrender:
     path:      /game/surrender
     controller: FrankProjects\UltimateWarfare\Controller\Game\SurrenderController::surrender
 
-Game/Surrender/Confirm:
-    path:      /game/surrender/confirm
-    controller: FrankProjects\UltimateWarfare\Controller\Game\SurrenderController::surrenderConfirm
-
 Game/World:
     path:      /game/world
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::world
@@ -320,9 +316,9 @@ Game/World/Region/Buy:
     requirements:
         regionId: '\d+'
 
-Game/World/Region/Remove:
+Game/World/Region/RemoveGameUnits:
     path:      /game/world/region/remove/{regionId}/{gameUnitTypeId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::remove
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::removeGameUnits
     requirements:
         regionId: '\d+'
         gameUnitTypeId: '\d+'

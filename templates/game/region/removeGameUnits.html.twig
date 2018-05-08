@@ -1,0 +1,52 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Build region
+{% endblock title %}
+
+{% block content %}
+    Go to: <a class="B" href="{{ path('Game/World/Region', {'regionId': region.id}) }}">Region</a>
+    {% for gameUnitType in gameUnitTypes %}
+        - <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">{{ gameUnitType.name }}</a>
+    {% endfor %}
+
+    <form method="post" action="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">
+        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+            <tr>
+                <td class="tabletop" align="center" colspan="4"><b>Destroy Units</b></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Unit</td>
+                <td>You have</td>
+                <td>Amount</td>
+            </tr>
+            {% for gameUnit in gameUnitType.gameUnits %}
+                <tr>
+                    <td width="150"><img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130"></td>
+
+                    <td width="150" align="center">
+                        <a class="B" href="{{ path('Guide/ListUnits', {'gameUnitTypeId': gameUnitType.id}) }}" ONCLICK="popup('{{ path('Guide/ListUnits', {'gameUnitTypeId': gameUnitType.id}) }}', 1000, 600);return false;" target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
+                            <b>{{ gameUnit.name }}</b>
+                        </a><br />
+                    </td>
+                    <td width="100" align="center">
+                        {{ region.gameUnits[gameUnit.rowName] }}
+                    </td>
+                    <td width="200" align="center">
+                        <input type="text" size="12" name="{{ gameUnit.id }}" />
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">No Units in the UW database!</td></tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4">
+                    <div class="submit">
+                        <input type="submit" name="submit" value="Destroy">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
