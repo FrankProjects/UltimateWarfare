@@ -49,7 +49,6 @@ Missing features compared to old game code:
 - Moderator panel
 - Battle system
 - Special operations
-- Surrender
 
 
 ## Contributing
