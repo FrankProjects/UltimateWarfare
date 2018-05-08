@@ -15,7 +15,7 @@ final class SurrenderController extends BaseGameController
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
-     * @throws /Exception
+     * @throws \Exception
      */
     public function surrender(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
