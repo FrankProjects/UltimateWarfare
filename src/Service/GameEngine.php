@@ -4,10 +4,8 @@ namespace FrankProjects\UltimateWarfare\Service;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
-use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 
 final class GameEngine
@@ -29,7 +27,6 @@ final class GameEngine
 
     /**
      * @param Player|null $player
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Exception
      */
     public function run(?Player $player)
@@ -52,15 +49,17 @@ final class GameEngine
             throw $e;
         }
     }
+
     /**
      * @return bool
+     * @throws \Exception
      */
     public function processConstructionQueue(int $timestamp): bool
     {
         $constructions = $this->em->getRepository('Game:Construction')
             ->getCompletedConstructions($timestamp);
 
-        /** @var Construction $construction */
+        /** @var \FrankProjects\UltimateWarfare\Entity\Construction $construction */
         foreach($constructions as $construction) {
             $worldRegion = $construction->getWorldRegion();
 
@@ -150,13 +149,14 @@ final class GameEngine
     /**
      * @param int $timestamp
      * @return bool
+     * @throws \Exception
      */
     public function processResearchQueue(int $timestamp): bool
     {
         $researches = $this->em->getRepository('Game:ResearchPlayer')
             ->getNonActiveCompletedResearch($timestamp);
 
-        /** @var ResearchPlayer $researchPlayer */
+        /** @var \FrankProjects\UltimateWarfare\Entity\ResearchPlayer $researchPlayer */
         foreach($researches as $researchPlayer) {
             // Process income before updating income...
             $this->processPlayerIncome($researchPlayer->getPlayer(), $timestamp);

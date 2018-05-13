@@ -7,7 +7,6 @@ use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,6 +21,9 @@ final class RegionController extends BaseGameController
      */
     public function attack(Request $request, int $regionId): Response
     {
+        return $this->render('game/region/attack.html.twig', [
+            'player' => $this->getPlayer(),
+        ]);
     }
 
     /**
@@ -239,6 +241,9 @@ final class RegionController extends BaseGameController
      */
     public function sendUnits(Request $request, int $regionId): Response
     {
+        return $this->render('game/region/sendUnits.html.twig', [
+            'player' => $this->getPlayer(),
+        ]);
     }
 
     /**
@@ -528,16 +533,14 @@ final class RegionController extends BaseGameController
                 foreach ($region->getWorldRegionUnits() as $regionUnit) {
                     if ($regionUnit->getGameUnit()->getId() == $gameUnit->getId()) {
                         $hasUnit = true;
-                        /**
-                         * @var WorldRegionUnit $regionUnit
-                         */
+                        /** @var \FrankProjects\UltimateWarfare\Entity\WorldRegionUnit $regionUnit */
                         if ($amount > $regionUnit->getAmount()) {
                             $this->addFlash('error', "You don't have that many " . $gameUnit->getName() . "s!");
                             return false;
                         }
 
                         $regionUnit->setAmount($regionUnit->getAmount() - $amount);
-                        $em->persist($regionUnit);;
+                        $em->persist($regionUnit);
                     }
                 }
 
