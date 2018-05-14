@@ -4,9 +4,12 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use Doctrine\ORM\ORMException;
 use FrankProjects\UltimateWarfare\Entity\Construction;
+use FrankProjects\UltimateWarfare\Entity\Fleet;
+use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -233,16 +236,66 @@ final class RegionController extends BaseGameController
     }
 
     /**
-     * XXX TODO: Fix me
-     *
      * @param Request $request
      * @param int $regionId
      * @return Response
+     * @throws \Exception
      */
     public function sendUnits(Request $request, int $regionId): Response
     {
+        $player = $this->getPlayer();
+        $em = $this->getEm();
+
+        $region = $em->getRepository('Game:WorldRegion')
+            ->find($regionId);
+
+        if (!$region) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        $sector = $region->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        if ($region->getPlayer()->getId() != $player->getId()) {
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
+        }
+
+        $gameUnitType = $em->getRepository('Game:GameUnitType')
+            ->find(4);
+
+        if ($request->getMethod() == 'POST') {
+            $this->processSendGameUnitsOrder($request, $region, $player, $gameUnitType);
+        }
+
+        $region->gameUnits = $this->getRegionGameUnitData($region);
+
+        $distanceCalculator = new DistanceCalculator();
+
+        $targetRegions = [];
+        foreach ($player->getWorldRegions() as $worldRegion) {
+            $distance = $distanceCalculator->calculateDistance(
+                $worldRegion->getX(),
+                $worldRegion->getY(),
+                $region->getX(),
+                $region->getY()
+            ) * 100;
+
+            $worldRegion->distance = $distance;
+            $targetRegions[] = $worldRegion;
+        }
+
         return $this->render('game/region/sendUnits.html.twig', [
-            'player' => $this->getPlayer(),
+            'region' => $region,
+            'player' => $player,
+            'gameUnitType' => $gameUnitType,
+            'targetRegions' => $targetRegions
         ]);
     }
 
@@ -499,6 +552,99 @@ final class RegionController extends BaseGameController
             $em->persist($construction);
         }
 
+        $em->flush();
+
+        return true;
+    }
+
+    /**
+     * @param Request $request
+     * @param WorldRegion $region
+     * @param Player $player
+     * @param GameUnitType $gameUnitType
+     * @return bool
+     * @throws \Exception
+     */
+    private function processSendGameUnitsOrder(Request $request, WorldRegion $region, Player $player, GameUnitType $gameUnitType): bool
+    {
+        $targetRegionId = $request->request->get('target', 0);
+
+        $em = $this->getEm();
+        $targetRegion = $em->getRepository('Game:WorldRegion')
+            ->find($targetRegionId);
+
+        if (!$targetRegion) {
+            $this->addFlash('error', "Target region does not exist.");
+            return false;
+        }
+
+        $sector = $targetRegion->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            $this->addFlash('error', "Target region does not exist.");
+            return false;
+        }
+
+        if ($targetRegion->getPlayer()->getId() != $player->getId()) {
+            $this->addFlash('error', "Target region is not owned by you.");
+            return false;
+        }
+
+        $distanceCalculator = new DistanceCalculator();
+        $distance = $distanceCalculator->calculateDistance($targetRegion->getX(), $targetRegion->getY(), $region->getX(), $region->getY());
+
+        $fleet = new Fleet();
+        $fleet->setPlayer($player);
+        $fleet->setWorldRegion($region);
+        $fleet->setTargetWorldRegion($targetRegion);
+        $fleet->setTimestamp(time());
+        $fleet->setTimestampArrive(time() + ($distance * 100));
+
+        foreach($gameUnitType->getGameUnits() as $gameUnit) {
+            if ($request->request->has($gameUnit->getId())) {
+                $amount = $request->request->get($gameUnit->getId(), 0);
+                if ($amount == 0) {
+                    continue;
+                }
+
+                if ($amount < 0) {
+                    $this->addFlash('error', "You can't send negative " . $gameUnit->getName() . "s!");
+                    return false;
+                }
+
+                $hasUnit = false;
+                foreach ($region->getWorldRegionUnits() as $regionUnit) {
+                    if ($regionUnit->getGameUnit()->getId() == $gameUnit->getId()) {
+                        $hasUnit = true;
+                        /** @var \FrankProjects\UltimateWarfare\Entity\WorldRegionUnit $regionUnit */
+                        if ($amount > $regionUnit->getAmount()) {
+                            $this->addFlash('error', "You don't have that many " . $gameUnit->getName() . "s!");
+                            return false;
+                        }
+
+                        $regionUnit->setAmount($regionUnit->getAmount() - $amount);
+
+                        $fleetUnit = new FleetUnit();
+                        $fleetUnit->setGameUnit($regionUnit->getGameUnit());
+                        $fleetUnit->setAmount($amount);
+                        $fleetUnit->setFleet($fleet);
+
+                        $em->persist($fleetUnit);
+                        $em->persist($regionUnit);
+                    }
+                }
+
+                if ($hasUnit !== true) {
+                    $this->addFlash('error', "You don't have that many " . $gameUnit->getName() . "s!");
+                    return false;
+                }
+
+                $this->addFlash('success', "You have sent your Units!");
+            }
+        }
+
+        $em->persist($fleet);
+        $em->persist($player);
         $em->flush();
 
         return true;
