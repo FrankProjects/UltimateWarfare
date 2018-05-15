@@ -97,7 +97,14 @@ final class GuideController extends BaseController
      */
     public function listResearch(Request $request): Response
     {
-        return $this->render('site/guide/listResearch.html.twig');
+        $em = $this->getEm();
+        $researches = $em->getRepository('Game:Research')
+            ->findAll();
+
+
+        return $this->render('site/guide/listResearch.html.twig', [
+            'researches' => $researches
+        ]);
     }
 
     /**
