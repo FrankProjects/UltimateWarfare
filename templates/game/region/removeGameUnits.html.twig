@@ -26,7 +26,7 @@
                     <td width="150"><img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130"></td>
 
                     <td width="150" align="center">
-                        <a class="B" href="{{ path('Guide/ListUnits', {'gameUnitTypeId': gameUnitType.id}) }}" ONCLICK="popup('{{ path('Guide/ListUnits', {'gameUnitTypeId': gameUnitType.id}) }}', 1000, 600);return false;" target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
+                        <a class="B" href="{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}" ONCLICK="popup('{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}', 1000, 600);return false;" target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
                             <b>{{ gameUnit.name }}</b>
                         </a><br />
                     </td>
