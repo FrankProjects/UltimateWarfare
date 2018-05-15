@@ -10,6 +10,17 @@
             {% include 'site/guide/navigation.html.twig' %}
         </td>
         <td id="container_content" align="center" class="text">
+            {% for msg in app.flashes('success') %}
+                <div class="success" id="success">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+
+            {% for msg in app.flashes('error') %}
+                <div class="error" id="error">
+                    {{ msg }}
+                </div>
+            {% endfor %}
             {% block content %}{% endblock %}
         </td>
     </tr>

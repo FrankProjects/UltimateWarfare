@@ -2,12 +2,10 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
 use FrankProjects\UltimateWarfare\Entity\MarketItemType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +30,7 @@ final class MarketController extends BaseGameController
         $marketItemType = $this->getEm()->getRepository('Game:MarketItemType')
             ->findOneBy(['name' => MarketItemType::TYPE_NAME_SELL]);
 
-        /** @var MarketItemRepository $marketItemRepository */
+        /** @var \FrankProjects\UltimateWarfare\Repository\MarketItemRepository $marketItemRepository */
         $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
         $marketItems = $marketItemRepository->findByWorldMarketItemType($player->getWorld(), $marketItemType);
 
@@ -57,7 +55,7 @@ final class MarketController extends BaseGameController
             return $this->redirect($this->generateUrl('Game/Market'));
         }
 
-        /** @var MarketItemRepository $marketItemRepository */
+        /** @var \FrankProjects\UltimateWarfare\Repository\MarketItemRepository $marketItemRepository */
         $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
 
         /** @var MarketItem $marketItem */
@@ -149,7 +147,7 @@ final class MarketController extends BaseGameController
         $marketItemType = $this->getEm()->getRepository('Game:MarketItemType')
             ->findOneBy(['name' => MarketItemType::TYPE_NAME_BUY]);
 
-        /** @var MarketItemRepository $marketItemRepository */
+        /** @var \FrankProjects\UltimateWarfare\Repository\MarketItemRepository $marketItemRepository */
         $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
         $marketItems = $marketItemRepository->findByWorldMarketItemType($player->getWorld(), $marketItemType);
 
@@ -174,7 +172,7 @@ final class MarketController extends BaseGameController
             return $this->redirect($this->generateUrl('Game/Market'));
         }
 
-        /** @var MarketItemRepository $marketItemRepository */
+        /** @var \FrankProjects\UltimateWarfare\Repository\MarketItemRepository $marketItemRepository */
         $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
 
         /** @var MarketItem $marketItem */
@@ -278,7 +276,7 @@ final class MarketController extends BaseGameController
             return $this->redirect($this->generateUrl('Game/Market'));
         }
 
-        /** @var MarketItemRepository $marketItemRepository */
+        /** @var \FrankProjects\UltimateWarfare\Repository\MarketItemRepository $marketItemRepository */
         $marketItemRepository = $this->getEm()->getRepository('Game:MarketItem');
 
         /** @var MarketItem $marketItem */
@@ -372,7 +370,7 @@ final class MarketController extends BaseGameController
         }
 
         $gameResourceRepository = $this->getEm()->getRepository('Game:GameResource');
-        /** @var GameResource $gameResource */
+        /** @var \FrankProjects\UltimateWarfare\Entity\GameResource $gameResource */
         $gameResource = $gameResourceRepository->find($request->request->get('resource'));
 
         if (!$gameResource) {
