@@ -2,11 +2,11 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use FrankProjects\UltimateWarfare\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class GuideController extends Controller
+final class GuideController extends BaseController
 {
     /**
      * @param Request $request
@@ -24,6 +24,26 @@ final class GuideController extends Controller
     public function construction(Request $request): Response
     {
         return $this->render('site/guide/construction.html.twig');
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function gameUnit(Request $request, int $gameUnitId): Response
+    {
+        $em = $this->getEm();
+        $gameUnit = $em->getRepository('Game:GameUnit')
+            ->find($gameUnitId);
+
+        if ($gameUnit === null) {
+            $this->addFlash('error', 'No such game unit!');
+            return $this->redirectToRoute('Guide/ListUnits');
+        }
+
+        return $this->render('site/guide/gameUnit.html.twig', [
+            'gameUnit' => $gameUnit
+        ]);
     }
 
     /**
@@ -84,9 +104,25 @@ final class GuideController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function listUnits(Request $request): Response
+    public function listUnits(Request $request, int $gameUnitTypeId): Response
     {
-        return $this->render('site/guide/listUnits.html.twig');
+        $em = $this->getEm();
+        $gameUnitType = $em->getRepository('Game:GameUnitType')
+            ->find($gameUnitTypeId);
+
+        if ($gameUnitType === null) {
+            $this->addFlash('error', 'No such game unit type!');
+
+            $gameUnitTypes = $em->getRepository('Game:GameUnitType')
+                ->findAll();
+            return $this->render('site/guide/selectGameUnitType.html.twig', [
+                'gameUnitTypes' => $gameUnitTypes
+            ]);
+        }
+
+        return $this->render('site/guide/listGameUnits.html.twig', [
+            'gameUnitType' => $gameUnitType
+        ]);
     }
 
     /**

@@ -453,6 +453,14 @@ Guide/Surrender:
     path:      /guide/surrender
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::surrender
 
+Guide/GameUnit:
+    path:      /guide/unit/{gameUnitId}
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::gameUnit
+    defaults:
+        gameUnitId: 0
+    requirements:
+        gameUnitId: '\d+'
+
 Guide/World:
     path:      /guide/world
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::world

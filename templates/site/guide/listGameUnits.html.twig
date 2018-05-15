@@ -1,0 +1,42 @@
+{% extends 'site/guideBase.html.twig' %}
+
+{% block content %}
+    {% for gameUnit in gameUnitType.gameUnits %}
+        <table class="table text" width="700" cellspacing="0" cellpadding="0" border="1" align="center">
+            <tr class="tabletop">
+                <td align="center" colspan="2"><b>{{ gameUnit.name }}</b></td>
+            </tr>
+            <tr>
+                <td width="350" align="left">
+                    {{ gameUnit.description }}<br /><br />
+                    Cash: {{ gameUnit.priceCash }}<br />
+                    Wood: {{ gameUnit.priceWood }}<br />
+                    Steel: {{ gameUnit.priceSteel }}<br />
+                    Food: {{ gameUnit.priceFood }}<br />
+                    Networth: {{ gameUnit.networth }}<br />
+                    Building time: {{ gameUnit.timestamp }}<br />
+                </td>
+                <td width="350" align="left">
+                    <img src="{{ asset('images/' ~ gameUnit.gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130">
+                </td>
+            </tr>
+            <tr>
+                <td width="350" align="left">
+                    <b>Income:</b><br />
+                    Cash: {{ gameUnit.incomeCash }}<br />
+                    Wood: {{ gameUnit.incomeWood }}<br />
+                    Steel: {{ gameUnit.incomeSteel }}<br />
+                    Food: {{ gameUnit.incomeFood }}<br />
+                </td>
+                <td width="350" align="left">
+                    <b>Upkeep:</b><br />
+                    Cash: {{ gameUnit.upkeepCash }}<br />
+                    Wood: {{ gameUnit.upkeepWood }}<br />
+                    Steel: {{ gameUnit.upkeepSteel }}<br />
+                    Food: {{ gameUnit.upkeepFood }}<br />
+                </td>
+            </tr>
+        </table>
+        <br />
+    {% endfor %}
+{% endblock %}
