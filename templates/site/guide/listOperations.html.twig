@@ -1,4 +1,23 @@
 {% extends 'site/guideBase.html.twig' %}
-{% block content %}
 
+{% block content %}
+    <table class="table text" width="700" cellspacing="0" cellpadding="0" border="1" align="center">
+        <tr class="tabletop">
+            <td align="center" colspan="2"><b>Operations</b></td>
+        </tr>
+        {% for operation in operations %}
+            <tr>
+                <td width="150"><img src="{{ asset('images/operations/' ~ operation.pic) }}" width="150" height="130"></td>
+                <td width="450" align="left">
+                    {{ operation.description }}
+                    <ul>
+                        <li>Name: {{ operation.name }}</li>
+                        <li>Cash: {{ operation.cost }}</li>
+                        <li>Needs: FIX ME</li>
+                        <li>Difficulty: {{ operation.difficulty }}</li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

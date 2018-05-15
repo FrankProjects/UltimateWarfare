@@ -88,7 +88,13 @@ final class GuideController extends BaseController
      */
     public function listOperations(Request $request): Response
     {
-        return $this->render('site/guide/listOperations.html.twig');
+        $em = $this->getEm();
+        $operations = $em->getRepository('Game:Operation')
+            ->findAll();
+
+        return $this->render('site/guide/listOperations.html.twig', [
+            'operations' => $operations
+        ]);
     }
 
     /**
