@@ -10,22 +10,150 @@ use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
+use FrankProjects\UltimateWarfare\Util\TimeCalculator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class RegionController extends BaseGameController
 {
     /**
-     * XXX TODO: Fix me
-     *
      * @param Request $request
      * @param int $regionId
      * @return Response
+     * @throws \Exception
      */
     public function attack(Request $request, int $regionId): Response
     {
-        return $this->render('game/region/attack.html.twig', [
-            'player' => $this->getPlayer(),
+        $player = $this->getPlayer();
+        $em = $this->getEm();
+
+        $region = $em->getRepository('Game:WorldRegion')
+            ->find($regionId);
+
+        if (!$region) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        $sector = $region->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        if ($region->getPlayer() === null) {
+            $this->addFlash('error', "Can not attack nobody!");
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
+        }
+
+        if ($region->getPlayer()->getId() == $player->getId()) {
+            $this->addFlash('error', "Can not attack your own region!");
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
+        }
+
+        $distanceCalculator = new DistanceCalculator();
+        $timeCalculator = new TimeCalculator();
+
+        $playerRegions = [];
+        foreach ($player->getWorldRegions() as $worldRegion) {
+            $distance = $distanceCalculator->calculateDistance(
+                    $worldRegion->getX(),
+                    $worldRegion->getY(),
+                    $region->getX(),
+                    $region->getY()
+                ) * 100;
+
+            $worldRegion->distance = $timeCalculator->calculateTimeLeft($distance);
+            $playerRegions[] = $worldRegion;
+        }
+
+        return $this->render('game/region/attackFrom.html.twig', [
+            'region' => $region,
+            'player' => $player,
+            'mapUrl' => $this->getMapUrl(),
+            'playerRegions' => $playerRegions
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $regionId
+     * @param int $playerRegionId
+     * @return Response
+     * @throws \Exception
+     */
+    public function attackSelectGameUnits(Request $request, int $regionId, int $playerRegionId): Response
+    {
+        $player = $this->getPlayer();
+        $em = $this->getEm();
+
+        $region = $em->getRepository('Game:WorldRegion')
+            ->find($regionId);
+
+        if (!$region) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        $sector = $region->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        if ($region->getPlayer() === null) {
+            $this->addFlash('error', "Can not attack nobody!");
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
+        }
+
+        if ($region->getPlayer()->getId() == $player->getId()) {
+            $this->addFlash('error', "Can not attack your own region!");
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
+        }
+
+        $playerRegion = $em->getRepository('Game:WorldRegion')
+            ->find($playerRegionId);
+
+        if (!$playerRegion) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        $sector = $playerRegion->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            return $this->render('game/region/notFound.html.twig', [
+                'player' => $player,
+            ]);
+        }
+
+        if ($playerRegion->getPlayer() === null || $playerRegion->getPlayer()->getId() != $player->getId()) {
+            $this->addFlash('error', "You are not owner of this region!");
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $playerRegion->getId()], 302);
+        }
+
+        $gameUnitType = $em->getRepository('Game:GameUnitType')
+            ->find(4);
+
+        if ($request->getMethod() == 'POST') {
+            $this->processSendGameUnits($request, $playerRegion, $region, $player, $gameUnitType);
+            return $this->redirectToRoute('Game/Fleets', [], 302);
+        }
+
+        $playerRegion->gameUnits = $this->getRegionGameUnitData($playerRegion);
+
+        return $this->render('game/region/attackSelectGameUnits.html.twig', [
+            'region' => $region,
+            'playerRegion' => $playerRegion,
+            'player' => $player,
+            'gameUnitType' => $gameUnitType,
         ]);
     }
 
@@ -271,7 +399,15 @@ final class RegionController extends BaseGameController
             ->find(4);
 
         if ($request->getMethod() == 'POST') {
-            $this->processSendGameUnitsOrder($request, $region, $player, $gameUnitType);
+            $targetRegionId = $request->request->get('target', 0);
+            $targetRegion = $em->getRepository('Game:WorldRegion')
+                ->find($targetRegionId);
+
+            if ($targetRegion) {
+                $this->processSendGameUnits($request, $region, $targetRegion, $player, $gameUnitType);
+            } else {
+                $this->addFlash('error', "Target region does not exist.");
+            }
         }
 
         $region->gameUnits = $this->getRegionGameUnitData($region);
@@ -560,24 +696,15 @@ final class RegionController extends BaseGameController
     /**
      * @param Request $request
      * @param WorldRegion $region
+     * @param WorldRegion $targetRegion
      * @param Player $player
      * @param GameUnitType $gameUnitType
      * @return bool
      * @throws \Exception
      */
-    private function processSendGameUnitsOrder(Request $request, WorldRegion $region, Player $player, GameUnitType $gameUnitType): bool
+    private function processSendGameUnits(Request $request, WorldRegion $region, WorldRegion $targetRegion, Player $player, GameUnitType $gameUnitType): bool
     {
-        $targetRegionId = $request->request->get('target', 0);
-
         $em = $this->getEm();
-        $targetRegion = $em->getRepository('Game:WorldRegion')
-            ->find($targetRegionId);
-
-        if (!$targetRegion) {
-            $this->addFlash('error', "Target region does not exist.");
-            return false;
-        }
-
         $sector = $targetRegion->getWorldSector();
 
         if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
@@ -585,8 +712,8 @@ final class RegionController extends BaseGameController
             return false;
         }
 
-        if ($targetRegion->getPlayer()->getId() != $player->getId()) {
-            $this->addFlash('error', "Target region is not owned by you.");
+        if ($region->getPlayer()->getId() != $player->getId()) {
+            $this->addFlash('error', "Region is not owned by you.");
             return false;
         }
 

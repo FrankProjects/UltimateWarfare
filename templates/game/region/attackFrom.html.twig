@@ -1,0 +1,77 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Attack from?
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            {% if player.regions > 1 and region.player.id is defined and region.player.id == player.id %}
+                <td class="tabletop" colspan="3" align="center"><a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegionId}) }}"><<</a> <b>Region</b> <a class="B" href="{{ path('Game/World/Region', {'regionId': nextRegionId}) }}">>></a></td>
+            {% else %}
+                <td class="tabletop" colspan="3" align="center"><b>Region</b></td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td rowspan="3" width="120">
+                <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100"><br />
+            </td>
+            <td width="300" align="center">Location:</td>
+            <td width="280" align="center">
+                <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}
+            </td>
+        </tr>
+        <tr>
+            <td width="300" align="center">Owner:</td>
+            {% if region.player is not null %}
+                <td width="280" align="center"><a class="B" href="{{ path('Game/Profile', {'playerName': region.player.name}) }}">{{ region.player.name|escape }}</a></td>
+            {% else %}
+                <td width="280" align="center">Nobody</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td width="300" align="center">Space:</td>
+            <td width="280" align="center">
+                {{ region.space }}
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="3" align="center"><b>Attack from...</b></td>
+        </tr>
+
+        {% for playerRegion in playerRegions %}
+            <tr>
+                <td width="120">
+                    <img src="{{ asset('images/map/' ~ playerRegion.image ~ mapUrl) }}" width="120" height="100">
+                </td>
+                <td width="370" align="left">
+                    <ul>
+                        <li>Position: {{ playerRegion.x }}, {{ playerRegion.y }}: {{ playerRegion.region }}</li>
+                        <li>Travel time to target: {{ playerRegion.distance }}</li>
+                        <li>
+                            <a class="B" href="{{ path('Game/World/Region/AttackSelectGameUnits', {'regionId': region.id, 'playerRegionId': playerRegion.id}) }}">Attack</a> with this region.
+                        </li>
+                    </ul>
+                </td>
+                <td width="210" align="left">
+                    {% for regionUnit in playerRegion.worldRegionUnits %}
+                        {% if regionUnit.amount > 1 %}
+                            {{ regionUnit.amount }} {{ regionUnit.gameUnit.nameMulti }}<br />
+                        {% else %}
+                            {{ regionUnit.amount }} {{ regionUnit.gameUnit.name }}<br />
+                        {% endif %}
+                    {% else %}
+                        No units stationed here!
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

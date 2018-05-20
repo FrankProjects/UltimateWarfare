@@ -303,6 +303,13 @@ Game/World/Region/Attack:
     requirements:
         regionId: '\d+'
 
+Game/World/Region/AttackSelectGameUnits:
+    path:      /game/world/region/attack/{regionId}/{playerRegionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::attackSelectGameUnits
+    requirements:
+        regionId: '\d+'
+        playerRegionId: '\d+'
+
 Game/World/Region/Build:
     path:      /game/world/region/build/{regionId}/{gameUnitTypeId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::build
