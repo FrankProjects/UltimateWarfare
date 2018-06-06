@@ -200,6 +200,9 @@
     "symfony/options-resolver": {
         "version": "v4.0.2"
     },
+    "symfony/polyfill-ctype": {
+        "version": "v1.8.0"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.6.0"
     },
