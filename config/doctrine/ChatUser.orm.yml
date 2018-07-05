@@ -19,7 +19,7 @@ FrankProjects\UltimateWarfare\Entity\ChatUser:
         name:
             type: string
             nullable: false
-            length: 255
+            length: 64
             options:
                 fixed: false
         timestampActivity:
