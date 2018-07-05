@@ -103,12 +103,19 @@ $ composer install --prefer-source
 ```
 
 
+##### Create database and schema
+
+```bash
+$ bin/console doctrine:database:create
+$ bin/console doctrine:schema:create
+```
+
+
 ##### Load database data
 
 ```bash
 $ bin/console doctrine:migrations:migrate
 ```
-
 
 
 ### Directory structure
