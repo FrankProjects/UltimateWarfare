@@ -37,7 +37,6 @@ INSERT INTO `research_needs` (`id`, `research_id`, `required_research_id`) VALUE
 (36, 208, 9),
 (37, 208, 207),
 (38, 209, 10),
-(39, 209, 108),
 (40, 500, 1),
 (41, 501, 2),
 (42, 501, 500),
