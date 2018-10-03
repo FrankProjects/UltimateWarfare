@@ -353,7 +353,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
      */
     public function unserialize($serialized)
     {
-        list (
+        list(
             $this->id,
             $this->username,
             $this->enabled,

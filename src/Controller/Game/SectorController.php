@@ -21,14 +21,14 @@ final class SectorController extends BaseGameController
         $sector = $em->getRepository('Game:WorldSector')
             -> findOneBy(['id' => $sectorId, 'world' => $player->getWorld()]);
 
-        if(!$sector) {
+        if (!$sector) {
             return $this->render('game/sectorNotFound.html.twig', [
                 'player' => $player,
             ]);
         }
 
         $countries = [];
-        foreach($sector->getWorldCountries() as $country) {
+        foreach ($sector->getWorldCountries() as $country) {
             $country->regionCount = $this->getRegionCount($country, $player);
             $countries[$country->getCX()][$country->getCY()] = $country;
         }
@@ -58,14 +58,14 @@ final class SectorController extends BaseGameController
         $sector = $em->getRepository('Game:WorldSector')
             -> findOneBy(['id' => $sectorId, 'world' => $player->getWorld()]);
 
-        if(!$sector) {
+        if (!$sector) {
             return $this->render('game/sectorNotFound.html.twig', [
                 'player' => $player,
             ]);
         }
 
         $countries = [];
-        foreach($sector->getWorldCountries() as $country) {
+        foreach ($sector->getWorldCountries() as $country) {
             $country->regionCount = $this->getRegionCount($country);
             $countries[$country->getCX()][$country->getCY()] = $country;
         }
@@ -96,7 +96,7 @@ final class SectorController extends BaseGameController
         $sector = $em->getRepository('Game:WorldSector')
             -> findOneBy(['id' => $sectorId, 'world' => $player->getWorld()]);
 
-        if(!$sector) {
+        if (!$sector) {
             return $this->render('game/sectorNotFound.html.twig', [
                 'player' => $player,
             ]);
@@ -113,7 +113,7 @@ final class SectorController extends BaseGameController
         }
 
         $countries = [];
-        foreach($sector->getWorldCountries() as $country) {
+        foreach ($sector->getWorldCountries() as $country) {
             if ($searchFound) {
                 $country->regionCount = $this->getRegionCount($country, $playerSearch);
             } else {

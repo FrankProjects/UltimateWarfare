@@ -59,7 +59,7 @@ final class WorldController extends BaseGameController
 
         $players = $em->getRepository('Game:Player')
             ->findByUser($user);
-        foreach($players as $player) {
+        foreach ($players as $player) {
             if ($player->getWorld()->getId() == $worldId) {
                 throw new AccessDeniedException("Player already in this world!");
             }
@@ -82,7 +82,7 @@ final class WorldController extends BaseGameController
         $world = $player->getWorld();
 
         $sectors = [];
-        foreach($world->getWorldSectors() as $sector) {
+        foreach ($world->getWorldSectors() as $sector) {
             $sector->regionCount = $this->getRegionCount($sector, $player);
             $sectors[$sector->getX()][$sector->getY()] = $sector;
         }
@@ -109,7 +109,7 @@ final class WorldController extends BaseGameController
         $world = $player->getWorld();
 
         $sectors = [];
-        foreach($world->getWorldSectors() as $sector) {
+        foreach ($world->getWorldSectors() as $sector) {
             $sector->regionCount = $this->getRegionCount($sector);
             $sectors[$sector->getX()][$sector->getY()] = $sector;
         }
@@ -148,7 +148,7 @@ final class WorldController extends BaseGameController
         }
 
         $sectors = [];
-        foreach($world->getWorldSectors() as $sector) {
+        foreach ($world->getWorldSectors() as $sector) {
             if ($searchFound) {
                 $sector->regionCount = $this->getRegionCount($sector, $playerSearch);
             } else {

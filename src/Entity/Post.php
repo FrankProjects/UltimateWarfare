@@ -181,4 +181,3 @@ class Post
         $this->editUser = $editUser;
     }
 }
-

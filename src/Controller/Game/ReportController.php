@@ -17,37 +17,37 @@ final class ReportController extends BaseGameController
         switch ($type):
             case 1:
                 $reportQueryVariable = "attacked";
-                $reportSubject = "Battle reports";
-                $reportSummary = "You will see your battle reports here.";
-                $reportType = 1;
-                break;
+        $reportSubject = "Battle reports";
+        $reportSummary = "You will see your battle reports here.";
+        $reportType = 1;
+        break;
 
-            case 2:
+        case 2:
                 $reportQueryVariable = "general";
-                $reportSubject = "General reports";
-                $reportSummary = "You will see your general reports here.";
-                $reportType = 2;
-                break;
+        $reportSubject = "General reports";
+        $reportSummary = "You will see your general reports here.";
+        $reportType = 2;
+        break;
 
-            case 4:
+        case 4:
                 $reportQueryVariable = "market";
-                $reportSubject = "Market reports";
-                $reportSummary = "You will see your market reports here.";
-                $reportType = 4;
-                break;
+        $reportSubject = "Market reports";
+        $reportSummary = "You will see your market reports here.";
+        $reportType = 4;
+        break;
 
-            case 5:
+        case 5:
                 $reportQueryVariable = "aid";
-                $reportSubject = "Aid reports";
-                $reportSummary = "You will see your aid reports here.";
-                $reportType = 5;
-                break;
+        $reportSubject = "Aid reports";
+        $reportSummary = "You will see your aid reports here.";
+        $reportType = 5;
+        break;
 
-            default:
+        default:
                 $reportQueryVariable = "all";
-                $reportSubject = "All reports";
-                $reportSummary = "You will see your reports here.";
-                $reportType = 10;
+        $reportSubject = "All reports";
+        $reportSummary = "You will see your reports here.";
+        $reportType = 10;
         endswitch;
 
         /**

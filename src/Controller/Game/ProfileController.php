@@ -19,7 +19,7 @@ final class ProfileController extends BaseGameController
         $profilePlayer = $em->getRepository('Game:Player')
             -> findOneBy(['name' => $playerName]);
 
-        if(!$profilePlayer) {
+        if (!$profilePlayer) {
             return $this->render('game/playerNotFound.html.twig');
         }
 

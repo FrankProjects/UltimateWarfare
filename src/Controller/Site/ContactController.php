@@ -39,7 +39,7 @@ final class ContactController extends Controller
             $this->get('mailer')->send($message);
         }
 
-        return $this->render('site/contact.html.twig',[
+        return $this->render('site/contact.html.twig', [
             'form' => $form->createView()
         ]);
     }

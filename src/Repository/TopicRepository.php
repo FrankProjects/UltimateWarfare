@@ -46,4 +46,3 @@ class TopicRepository extends ServiceEntityRepository
             ->getResult();
     }
 }
-

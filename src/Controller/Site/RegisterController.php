@@ -63,7 +63,7 @@ final class RegisterController extends Controller
                         [
                             'username' => $user->getUsername(),
                             'token' => $token
-                        ]                    ),
+                        ]),
                     'text/html'
                 )
                 ->addPart(

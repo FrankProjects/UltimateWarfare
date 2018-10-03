@@ -193,7 +193,6 @@ final class RegionController extends BaseGameController
         $regionPrice = $player->getRegions() * 10000;
 
         if ($request->getMethod() == 'POST') {
-
             if ($player->getCash() < $regionPrice) {
                 return $this->render('game/error/tooExpensive.html.twig', [
                     'player' => $player,
@@ -208,7 +207,7 @@ final class RegionController extends BaseGameController
 
             $federation = $player->getFederation();
 
-            if($federation != null){
+            if ($federation != null) {
                 $federation->setRegions($federation->getRegions() + 1);
                 $federation->setNetworth($federation->getNetworth() + 1000);
                 $em->persist($federation);
@@ -244,7 +243,7 @@ final class RegionController extends BaseGameController
         $region = $em->getRepository('Game:WorldRegion')
             -> findOneBy(['id' => $regionId]);
 
-        if(!$region) {
+        if (!$region) {
             return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
@@ -603,7 +602,7 @@ final class RegionController extends BaseGameController
         $totalBuild = 0;
         $constructions = [];
 
-        foreach($gameUnitType->getGameUnits() as $gameUnit) {
+        foreach ($gameUnitType->getGameUnits() as $gameUnit) {
             if ($request->request->has($gameUnit->getId())) {
                 $amount = $request->request->get($gameUnit->getId(), 0);
                 if ($amount == 0) {
@@ -619,13 +618,13 @@ final class RegionController extends BaseGameController
                 $priceWood = $priceWood + ($amount * $gameUnit->getPriceWood());
                 $priceSteel = $priceSteel + ($amount * $gameUnit->getPriceSteel());
 
-                if ($gameUnitType->getId() == 1){
+                if ($gameUnitType->getId() == 1) {
                     $totalBuild = $totalBuild + $amount;
                 }
             }
         }
 
-        if($gameUnitType->getId() == 1){
+        if ($gameUnitType->getId() == 1) {
             $buildingsInConstruction = 0;
             foreach ($region->getConstructions() as $regionConstruction) {
                 if ($regionConstruction->getGameUnit()->getGameUnitType()->getId() == 1) {
@@ -648,15 +647,15 @@ final class RegionController extends BaseGameController
             }
         }
 
-        if($priceCash > $player->getCash()){
+        if ($priceCash > $player->getCash()) {
             $this->addFlash('error', "You don't have enough cash to build that.");
             return false;
         }
-        if($priceWood > $player->getWood()){
+        if ($priceWood > $player->getWood()) {
             $this->addFlash('error', "You don't have enough wood to build that.");
             return false;
         }
-        if($priceSteel > $player->getSteel()){
+        if ($priceSteel > $player->getSteel()) {
             $this->addFlash('error', "You don't have enough steel to build that.");
             return false;
         }
@@ -666,15 +665,15 @@ final class RegionController extends BaseGameController
         $player->setSteel($player->getSteel() - $priceSteel);
 
 
-        foreach($gameUnitType->getGameUnits() as $gameUnit) {
+        foreach ($gameUnitType->getGameUnits() as $gameUnit) {
             if ($request->request->has($gameUnit->getId())) {
                 $amount = $request->request->get($gameUnit->getId(), 0);
-                if($amount > 0){
+                if ($amount > 0) {
                     $constructions[] = Construction::create($region, $player, $gameUnit, $amount);
 
-                    if($gameUnitType->getId() == 4){
+                    if ($gameUnitType->getId() == 4) {
                         $this->addFlash('success', $amount . " " . $gameUnit->getName() . "s are now being trained.");
-                    }else{
+                    } else {
                         $this->addFlash('success', $amount . " " . $gameUnit->getName() . "s are now being built.");
                     }
                 }
@@ -727,7 +726,7 @@ final class RegionController extends BaseGameController
         $fleet->setTimestamp(time());
         $fleet->setTimestampArrive(time() + ($distance * 100));
 
-        foreach($gameUnitType->getGameUnits() as $gameUnit) {
+        foreach ($gameUnitType->getGameUnits() as $gameUnit) {
             if ($request->request->has($gameUnit->getId())) {
                 $amount = $request->request->get($gameUnit->getId(), 0);
                 if ($amount == 0) {
@@ -790,7 +789,7 @@ final class RegionController extends BaseGameController
         $em = $this->getEm();
         $networth = 0;
 
-        foreach($gameUnitType->getGameUnits() as $gameUnit) {
+        foreach ($gameUnitType->getGameUnits() as $gameUnit) {
             if ($request->request->has($gameUnit->getId())) {
                 $amount = $request->request->get($gameUnit->getId(), 0);
                 if ($amount == 0) {
@@ -824,9 +823,9 @@ final class RegionController extends BaseGameController
 
                 $networth += $amount * $gameUnit->getNetworth();
 
-                if($gameUnitType->getId() == 4){
+                if ($gameUnitType->getId() == 4) {
                     $this->addFlash('success', "You have disbanded {$amount} {$gameUnit->getName()}'s");
-                }else{
+                } else {
                     $this->addFlash('success', "You have destroyed {$amount} {$gameUnit->getName()}'s");
                 }
             }

@@ -21,7 +21,7 @@ final class RankingController extends BaseGameController
             $rankingsTitle = "Rankings by Regions (Top 10)";
             $players = $em->getRepository('Game:Player')
                 ->findByWorldAndRegions($player->getWorld());
-        }else{
+        } else {
             $rankingsTitle = "Rankings by Networth (Top 10)";
             $players = $em->getRepository('Game:Player')
                 ->findByWorldAndNetworth($player->getWorld());

@@ -60,7 +60,7 @@ final class GameEngine
             ->getCompletedConstructions($timestamp);
 
         /** @var \FrankProjects\UltimateWarfare\Entity\Construction $construction */
-        foreach($constructions as $construction) {
+        foreach ($constructions as $construction) {
             $worldRegion = $construction->getWorldRegion();
 
             if ($worldRegion->getPlayer()->getId() !== $construction->getPlayer()->getId()) {
@@ -157,7 +157,7 @@ final class GameEngine
             ->getNonActiveCompletedResearch($timestamp);
 
         /** @var \FrankProjects\UltimateWarfare\Entity\ResearchPlayer $researchPlayer */
-        foreach($researches as $researchPlayer) {
+        foreach ($researches as $researchPlayer) {
             // Process income before updating income...
             $this->processPlayerIncome($researchPlayer->getPlayer(), $timestamp);
 
@@ -200,7 +200,7 @@ final class GameEngine
     public function processPlayerIncome(Player $player, int $timestamp): bool
     {
         // Don't update player income more than once every minute...
-        if($player->getTimestampUpdate() + 60 > $timestamp) {
+        if ($player->getTimestampUpdate() + 60 > $timestamp) {
             return true;
         }
 

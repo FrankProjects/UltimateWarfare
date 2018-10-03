@@ -28,6 +28,5 @@ final class StoryController extends BaseGameController
             default:
                 throw new NotFoundHttpException("Page not found!");
         }
-
     }
 }

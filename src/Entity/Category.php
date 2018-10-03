@@ -1,6 +1,7 @@
 <?php
 
 namespace FrankProjects\UltimateWarfare\Entity;
+
 use Doctrine\Common\Collections\Collection;
 
 /**

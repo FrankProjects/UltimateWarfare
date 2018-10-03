@@ -49,7 +49,7 @@ class BaseGameController extends BaseController
         $user = $this->getGameUser();
         $playerId = $this->get('session')->get('playerId');
 
-        if(!$playerId) {
+        if (!$playerId) {
             throw new AccessDeniedException('Player is not set');
         }
 
