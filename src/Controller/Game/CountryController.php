@@ -19,7 +19,7 @@ final class CountryController extends BaseGameController
         $country = $em->getRepository('Game:WorldCountry')
             -> findOneBy(['id' => $countryId]);
 
-        if(!$country) {
+        if (!$country) {
             return $this->render('game/countryNotFound.html.twig', [
                 'player' => $player,
             ]);
@@ -37,7 +37,7 @@ final class CountryController extends BaseGameController
         #    ->findBy(['worldId' => $player->getWorldId(), 'countryId' => $countryId]);
 
         $regions = [];
-        foreach($country->getWorldRegions() as $region) {
+        foreach ($country->getWorldRegions() as $region) {
             $regions[$region->getRX()][$region->getRY()] = $region;
         }
 

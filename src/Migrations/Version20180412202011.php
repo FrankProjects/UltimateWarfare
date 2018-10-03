@@ -21,7 +21,7 @@ class Version20180412202011 extends AbstractMigration
         $finder->name('*.sql');
         $finder->sortByName();
 
-        foreach( $finder as $file ){
+        foreach ($finder as $file) {
             $this->connection->exec($file->getContents());
             $this->write('[OK] ' . $file->getFilename());
         }

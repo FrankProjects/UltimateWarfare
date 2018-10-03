@@ -23,7 +23,7 @@ final class ChatController extends BaseController
         if (!is_object($user) || !$user instanceof UserInterface) {
             $chatName = $this->get('session')->get('chatName');
 
-            if(!$chatName){
+            if (!$chatName) {
                 $chatName = uniqid('Guest_');
                 $this->get('session')->set('chatName', $chatName);
             }

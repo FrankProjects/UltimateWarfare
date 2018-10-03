@@ -17,7 +17,7 @@ class BaseController extends Controller
      */
     protected function getEm(): EntityManager
     {
-        if ($this->em === NULL) {
+        if ($this->em === null) {
             $this->em = $this->getDoctrine()->getManager();
         }
 

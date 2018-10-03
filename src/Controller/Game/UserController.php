@@ -156,9 +156,9 @@ final class UserController extends BaseGameController
         $mapDesign = $em->getRepository('Game:MapDesign')
             ->find($request->request->get('map'));
 
-        if(!$mapDesign) {
+        if (!$mapDesign) {
             $this->addFlash('error', 'No such map design');
-        } else if ($mapDesign->getId() != $user->getMapDesign()->getId()){
+        } elseif ($mapDesign->getId() != $user->getMapDesign()->getId()) {
             $user->setMapDesign($mapDesign);
             $em->persist($user);
             $em->flush();

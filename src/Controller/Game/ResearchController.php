@@ -130,7 +130,6 @@ final class ResearchController extends BaseGameController
 
         $this->addFlash('success', "You started to research {$research->getName()}");
         return $this->redirectToRoute('Game/Research');
-
     }
 
     /**

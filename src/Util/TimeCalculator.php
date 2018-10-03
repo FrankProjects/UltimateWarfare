@@ -14,16 +14,16 @@ final class TimeCalculator
     {
         $hms = "";
         $hours = floor($seconds / 3600);
-        if($hours > 0){
+        if ($hours > 0) {
             $hms .= $hours.":";
-        }else{
+        } else {
             $hms .= "00:";
         }
 
         $minutes = floor(($seconds / 60) % 60);
-        if($minutes > 0){
+        if ($minutes > 0) {
             $hms .= str_pad((string)$minutes, 2, "0", STR_PAD_LEFT). ":";
-        }else{
+        } else {
             $hms .= "00:";
         }
 

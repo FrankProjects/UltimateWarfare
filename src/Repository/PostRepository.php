@@ -29,4 +29,3 @@ class PostRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 }
-
