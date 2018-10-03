@@ -3,6 +3,7 @@ Ultimate Warfare
 
 ![Ultimate Warfare](https://raw.githubusercontent.com/FrankProjects/UltimateWarfare/master/public/images/banner.jpg)
 
+[![Travis-CI](https://api.travis-ci.org/FrankProjects/UltimateWarfare.svg)](https://travis-ci.org/FrankProjects/UltimateWarfare)
 [![StyleCI](https://github.styleci.io/repos/126375561/shield)](https://github.styleci.io/repos/126375561)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2aecf6889aa57d760beb/maintainability)](https://codeclimate.com/github/FrankProjects/UltimateWarfare/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/2aecf6889aa57d760beb/test_coverage)](https://codeclimate.com/github/FrankProjects/UltimateWarfare/test_coverage)
