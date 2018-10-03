@@ -22,7 +22,6 @@
         "twig/twig": "^2.4"
     },
     "require-dev": {
-        "phan/phan": "^0.12.3",
         "symfony/dotenv": "^4.0"
     },
     "config": {
