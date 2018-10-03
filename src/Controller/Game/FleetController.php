@@ -2,11 +2,22 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class FleetController extends BaseGameController
 {
+    /**
+     * @var FleetRepository
+     */
+    private $fleetRepository;
+
+    public function __construct(FleetRepository $fleetRepository)
+    {
+        $this->fleetRepository = $fleetRepository;
+    }
+
     /**
      * @param Request $request
      * @return Response
@@ -25,9 +36,7 @@ final class FleetController extends BaseGameController
      */
     public function recall(Request $request, int $fleetId): Response
     {
-        $em = $this->getEm();
-        $fleet = $em->getRepository('Game:Fleet')
-            ->find($fleetId);
+        $fleet = $this->fleetRepository->find($fleetId);
 
         if ($fleet === null) {
             $this->addFlash('error', 'No such fleet!');
@@ -53,6 +62,8 @@ final class FleetController extends BaseGameController
             ]);
         }
 
+        $em = $this->getEm();
+
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
             $em->remove($fleetUnit);
             // XXX TODO: fix recall fleet units
@@ -75,9 +86,7 @@ final class FleetController extends BaseGameController
      */
     public function reinforce(Request $request, int $fleetId): Response
     {
-        $em = $this->getEm();
-        $fleet = $em->getRepository('Game:Fleet')
-            ->find($fleetId);
+        $fleet = $this->fleetRepository->find($fleetId);
 
         if ($fleet === null) {
             $this->addFlash('error', 'No such fleet!');
@@ -102,6 +111,8 @@ final class FleetController extends BaseGameController
                 'player' => $this->getPlayer()
             ]);
         }
+
+        $em = $this->getEm();
 
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
             $em->remove($fleetUnit);

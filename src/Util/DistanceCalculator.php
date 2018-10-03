@@ -17,6 +17,6 @@ final class DistanceCalculator
         $differenceY = abs($targetY - $sourceY);
 
         $distance = pow($differenceX, 2) + pow($differenceY, 2);
-        return 2 * round(sqrt($distance));
+        return intval(2 * round(sqrt($distance)));
     }
 }
