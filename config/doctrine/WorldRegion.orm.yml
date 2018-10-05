@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\WorldRegion:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\WorldRegionRepository
     table: world_region
     indexes:
         countryId:

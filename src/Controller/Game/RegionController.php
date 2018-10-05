@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use Doctrine\ORM\ORMException;
@@ -9,6 +11,7 @@ use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use FrankProjects\UltimateWarfare\Util\TimeCalculator;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +19,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RegionController extends BaseGameController
 {
+    /**
+     * @var WorldRegionRepository
+     */
+    private $worldRegionRepository;
+
+    /**
+     * RegionController constructor.
+     * @param WorldRegionRepository $worldRegionRepository
+     */
+    public function __construct(WorldRegionRepository $worldRegionRepository)
+    {
+        $this->worldRegionRepository = $worldRegionRepository;
+    }
+
     /**
      * @param Request $request
      * @param int $regionId
@@ -25,20 +42,9 @@ final class RegionController extends BaseGameController
     public function attack(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-
-        $region = $em->getRepository('Game:WorldRegion')
-            ->find($regionId);
+        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $sector = $region->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
             return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
@@ -88,20 +94,9 @@ final class RegionController extends BaseGameController
     public function attackSelectGameUnits(Request $request, int $regionId, int $playerRegionId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-
-        $region = $em->getRepository('Game:WorldRegion')
-            ->find($regionId);
+        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $sector = $region->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
             return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
@@ -117,18 +112,9 @@ final class RegionController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
         }
 
-        $playerRegion = $em->getRepository('Game:WorldRegion')
-            ->find($playerRegionId);
+        $playerRegion = $this->getWorldRegionByIdAndPlayer($playerRegionId, $player);
 
         if (!$playerRegion) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $sector = $playerRegion->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
             return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
@@ -139,7 +125,7 @@ final class RegionController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $playerRegion->getId()], 302);
         }
 
-        $gameUnitType = $em->getRepository('Game:GameUnitType')
+        $gameUnitType = $this->getEm()->getRepository('Game:GameUnitType')
             ->find(4);
 
         if ($request->getMethod() == 'POST') {
@@ -166,19 +152,9 @@ final class RegionController extends BaseGameController
     public function buy(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-        $region = $em->getRepository('Game:WorldRegion')
-            -> findOneBy(['id' => $regionId]);
+        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $sector = $region->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
             return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
@@ -199,6 +175,7 @@ final class RegionController extends BaseGameController
                 ]);
             }
 
+            $em = $this->getEm();
             $player->setCash($player->getCash() - $regionPrice);
             $player->setRegions($player->getRegions() + 1);
             $player->setNetworth($this->calculateNetworth($player));
@@ -214,8 +191,9 @@ final class RegionController extends BaseGameController
             }
 
             $em->persist($player);
-            $em->persist($region);
             $em->flush();
+
+            $this->worldRegionRepository->save($region);
 
             $this->addFlash('success', 'You have bought a Region!');
 
@@ -239,19 +217,9 @@ final class RegionController extends BaseGameController
     public function region(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-        $region = $em->getRepository('Game:WorldRegion')
-            -> findOneBy(['id' => $regionId]);
+        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $sector = $region->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
             return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
@@ -315,10 +283,7 @@ final class RegionController extends BaseGameController
     public function removeGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-
-        $region = $em->getRepository('Game:WorldRegion')
-            ->find($regionId);
+        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
             return $this->render('game/region/notFound.html.twig', [
@@ -326,19 +291,12 @@ final class RegionController extends BaseGameController
             ]);
         }
 
+        $em = $this->getEm();
         $gameUnitType = $em->getRepository('Game:GameUnitType')
             ->find($gameUnitTypeId);
 
         if (!$gameUnitType) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
-        }
-
-        $sector = $region->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
         }
 
         if ($region->getPlayer()->getId() != $player->getId()) {
@@ -371,20 +329,9 @@ final class RegionController extends BaseGameController
     public function sendUnits(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-
-        $region = $em->getRepository('Game:WorldRegion')
-            ->find($regionId);
+        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $sector = $region->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
             return $this->render('game/region/notFound.html.twig', [
                 'player' => $player,
             ]);
@@ -394,13 +341,12 @@ final class RegionController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
         }
 
-        $gameUnitType = $em->getRepository('Game:GameUnitType')
+        $gameUnitType = $this->getEm()->getRepository('Game:GameUnitType')
             ->find(4);
 
         if ($request->getMethod() == 'POST') {
-            $targetRegionId = $request->request->get('target', 0);
-            $targetRegion = $em->getRepository('Game:WorldRegion')
-                ->find($targetRegionId);
+            $targetRegionId = intval($request->request->get('target', 0));
+            $targetRegion = $this->getWorldRegionByIdAndPlayer($targetRegionId, $player);
 
             if ($targetRegion) {
                 $this->processSendGameUnits($request, $region, $targetRegion, $player, $gameUnitType);
@@ -447,10 +393,7 @@ final class RegionController extends BaseGameController
     public function build(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-
-        $region = $em->getRepository('Game:WorldRegion')
-            ->find($regionId);
+        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
             return $this->render('game/region/notFound.html.twig', [
@@ -458,19 +401,11 @@ final class RegionController extends BaseGameController
             ]);
         }
 
-        $gameUnitType = $em->getRepository('Game:GameUnitType')
+        $gameUnitType = $this->getEm()->getRepository('Game:GameUnitType')
             ->find($gameUnitTypeId);
 
         if (!$gameUnitType) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
-        }
-
-        $sector = $region->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
         }
 
         if ($region->getPlayer()->getId() != $player->getId()) {
@@ -481,7 +416,7 @@ final class RegionController extends BaseGameController
             $this->processBuildOrder($request, $region, $player, $gameUnitType);
         }
 
-        $gameUnitTypes = $em->getRepository('Game:GameUnitType')
+        $gameUnitTypes = $this->getEm()->getRepository('Game:GameUnitType')
             ->findAll();
 
         $region->gameUnits = $this->getRegionGameUnitData($region);
@@ -728,7 +663,7 @@ final class RegionController extends BaseGameController
 
         foreach ($gameUnitType->getGameUnits() as $gameUnit) {
             if ($request->request->has($gameUnit->getId())) {
-                $amount = $request->request->get($gameUnit->getId(), 0);
+                $amount = intval($request->request->get($gameUnit->getId(), 0));
                 if ($amount == 0) {
                     continue;
                 }
@@ -843,5 +778,26 @@ final class RegionController extends BaseGameController
         $em->flush();
 
         return true;
+    }
+
+    /**
+     * @param int $worldRegionId
+     * @param Player $player
+     * @return WorldRegion|null
+     */
+    private function getWorldRegionByIdAndPlayer(int $worldRegionId, Player $player): ?WorldRegion
+    {
+        $worldRegion = $this->worldRegionRepository->find($worldRegionId);
+        if (!$worldRegion) {
+            return null;
+        }
+
+        $sector = $worldRegion->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            return null;
+        }
+
+        return $worldRegion;
     }
 }
