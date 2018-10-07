@@ -13,6 +13,10 @@ final class FleetController extends BaseGameController
      */
     private $fleetRepository;
 
+    /**
+     * FleetController constructor.
+     * @param FleetRepository $fleetRepository
+     */
     public function __construct(FleetRepository $fleetRepository)
     {
         $this->fleetRepository = $fleetRepository;
@@ -62,15 +66,8 @@ final class FleetController extends BaseGameController
             ]);
         }
 
-        $em = $this->getEm();
-
-        foreach ($fleet->getFleetUnits() as $fleetUnit) {
-            $em->remove($fleetUnit);
-            // XXX TODO: fix recall fleet units
-        }
-
-        $em->remove($fleet);
-        $em->flush();
+        // XXX TODO: fix recall fleet units
+        $this->fleetRepository->remove($fleet);
 
         $this->addFlash('success', 'You succesfully recalled your forces!');
 
@@ -112,15 +109,8 @@ final class FleetController extends BaseGameController
             ]);
         }
 
-        $em = $this->getEm();
-
-        foreach ($fleet->getFleetUnits() as $fleetUnit) {
-            $em->remove($fleetUnit);
-            // XXX TODO: fix reinforce fleet units
-        }
-
-        $em->remove($fleet);
-        $em->flush();
+        // XXX TODO: fix reinforce fleet units
+        $this->fleetRepository->remove($fleet);
 
         $this->addFlash('success', 'You succesfully reinforced your region!');
 

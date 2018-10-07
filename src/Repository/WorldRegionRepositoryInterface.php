@@ -9,10 +9,10 @@ use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 interface WorldRegionRepositoryInterface
 {
     /**
-     * @param int $worldRegionId
+     * @param int $id
      * @return WorldRegion|null
      */
-    public function find(int $worldRegionId): ?WorldRegion;
+    public function find(int $id): ?WorldRegion;
 
     /**
      * @param WorldRegion $worldRegion

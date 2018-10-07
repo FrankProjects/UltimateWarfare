@@ -11,6 +11,8 @@ use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use FrankProjects\UltimateWarfare\Util\TimeCalculator;
@@ -25,12 +27,26 @@ final class RegionController extends BaseGameController
     private $worldRegionRepository;
 
     /**
+     * @var GameUnitRepository
+     */
+    private $gameUnitRepository;
+
+    /**
+     * @var GameUnitTypeRepository
+     */
+    private $gameUnitTypeRepository;
+
+    /**
      * RegionController constructor.
      * @param WorldRegionRepository $worldRegionRepository
+     * @param GameUnitRepository $gameUnitRepository
+     * @param GameUnitTypeRepository $gameUnitTypeRepository
      */
-    public function __construct(WorldRegionRepository $worldRegionRepository)
+    public function __construct(WorldRegionRepository $worldRegionRepository, GameUnitRepository $gameUnitRepository, GameUnitTypeRepository $gameUnitTypeRepository)
     {
         $this->worldRegionRepository = $worldRegionRepository;
+        $this->gameUnitRepository = $gameUnitRepository;
+        $this->gameUnitTypeRepository = $gameUnitTypeRepository;
     }
 
     /**
@@ -125,8 +141,7 @@ final class RegionController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $playerRegion->getId()], 302);
         }
 
-        $gameUnitType = $this->getEm()->getRepository('Game:GameUnitType')
-            ->find(4);
+        $gameUnitType = $this->gameUnitTypeRepository->find(4);
 
         if ($request->getMethod() == 'POST') {
             $this->processSendGameUnits($request, $playerRegion, $region, $player, $gameUnitType);
@@ -291,9 +306,7 @@ final class RegionController extends BaseGameController
             ]);
         }
 
-        $em = $this->getEm();
-        $gameUnitType = $em->getRepository('Game:GameUnitType')
-            ->find($gameUnitTypeId);
+        $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
 
         if (!$gameUnitType) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
@@ -307,8 +320,7 @@ final class RegionController extends BaseGameController
             $this->processRemoveGameUnitsOrder($request, $region, $player, $gameUnitType);
         }
 
-        $gameUnitTypes = $em->getRepository('Game:GameUnitType')
-            ->findAll();
+        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
         $region->gameUnits = $this->getRegionGameUnitData($region);
 
@@ -341,8 +353,7 @@ final class RegionController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
         }
 
-        $gameUnitType = $this->getEm()->getRepository('Game:GameUnitType')
-            ->find(4);
+        $gameUnitType = $this->gameUnitTypeRepository->find(4);
 
         if ($request->getMethod() == 'POST') {
             $targetRegionId = intval($request->request->get('target', 0));
@@ -401,8 +412,7 @@ final class RegionController extends BaseGameController
             ]);
         }
 
-        $gameUnitType = $this->getEm()->getRepository('Game:GameUnitType')
-            ->find($gameUnitTypeId);
+        $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
 
         if (!$gameUnitType) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
@@ -416,8 +426,7 @@ final class RegionController extends BaseGameController
             $this->processBuildOrder($request, $region, $player, $gameUnitType);
         }
 
-        $gameUnitTypes = $this->getEm()->getRepository('Game:GameUnitType')
-            ->findAll();
+        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
         $region->gameUnits = $this->getRegionGameUnitData($region);
         $region->construction = $this->getWorldRegionConstructionData($region);
@@ -510,9 +519,7 @@ final class RegionController extends BaseGameController
      */
     private function getGameUnitFields(): array
     {
-        $em = $this->getEm();
-        $repository = $em->getRepository('Game:GameUnit');
-        $gameUnits = $repository->findAll();
+        $gameUnits = $this->gameUnitRepository->findAll();
         $gameUnitArray = [];
         foreach ($gameUnits as $unit) {
             $gameUnitArray[$unit->getRowName()] = 0;
