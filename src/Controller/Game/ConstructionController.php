@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,18 +15,43 @@ use Symfony\Component\HttpFoundation\Response;
 final class ConstructionController extends BaseGameController
 {
     /**
+     * @var ConstructionRepository
+     */
+    private $constructionRepository;
+
+    /**
+     * @var GameUnitRepository
+     */
+    private $gameUnitRepository;
+
+    /**
+     * @var GameUnitTypeRepository
+     */
+    private $gameUnitTypeRepository;
+
+    /**
+     * ConstructionController constructor.
+     *
+     * @param ConstructionRepository $constructionRepository
+     * @param GameUnitRepository $gameUnitRepository
+     * @param GameUnitTypeRepository $gameUnitTypeRepository
+     */
+    public function __construct(ConstructionRepository $constructionRepository, GameUnitRepository $gameUnitRepository, GameUnitTypeRepository $gameUnitTypeRepository)
+    {
+        $this->constructionRepository = $constructionRepository;
+        $this->gameUnitRepository = $gameUnitRepository;
+        $this->gameUnitTypeRepository = $gameUnitTypeRepository;
+    }
+
+    /**
      * @param Request $request
      * @param int $type
      * @return Response
      */
     public function construction(Request $request, int $type): Response
     {
-        $em = $this->getEm();
-        $gameUnitType = $em->getRepository('Game:GameUnitType')
-            ->find($type);
-
-        $gameUnitTypes = $em->getRepository('Game:GameUnitType')
-            ->findAll();
+        $gameUnitType = $this->gameUnitTypeRepository->find($type);
+        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
         if (!$gameUnitType) {
             $constructionData = $this->getConstructionData($this->getPlayer());
@@ -32,8 +62,7 @@ final class ConstructionController extends BaseGameController
             ]);
         }
 
-        $constructions = $em->getRepository('Game:Construction')
-            ->findByGameUnitType($this->getPlayer(), $gameUnitType);
+        $constructions = $this->constructionRepository->findByPlayerAndGameUnitType($this->getPlayer(), $gameUnitType);
 
         return $this->render('game/construction.html.twig', [
             'player' => $this->getPlayer(),
@@ -51,9 +80,7 @@ final class ConstructionController extends BaseGameController
     public function cancel(Request $request, int $constructionId): RedirectResponse
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-        $construction = $em->getRepository('Game:Construction')
-            ->find($constructionId);
+        $construction = $this->constructionRepository->find($constructionId);
 
         if (!$construction) {
             $this->addFlash('error', "This construction queue doesn't exist!");
@@ -65,8 +92,7 @@ final class ConstructionController extends BaseGameController
             return $this->redirectToRoute('Game/Construction', [], 302);
         }
 
-        $em->remove($construction);
-        $em->flush();
+        $this->constructionRepository->remove($construction);
 
         $this->addFlash('success', 'Succesfully cancelled construction queue!');
         return $this->redirectToRoute('Game/Construction', [], 302);
@@ -92,12 +118,10 @@ final class ConstructionController extends BaseGameController
      */
     private function getGameUnitFields(): array
     {
-        $em = $this->getEm();
-        $repository = $em->getRepository('Game:GameUnit');
-        $gameUnits = $repository->findAll();
+        $gameUnits = $this->gameUnitRepository->findAll();
         $gameUnitArray = [];
-        foreach ($gameUnits as $unit) {
-            $gameUnitArray[$unit->getRowName()] = 0;
+        foreach ($gameUnits as $gameUnit) {
+            $gameUnitArray[$gameUnit->getRowName()] = 0;
         }
 
         return $gameUnitArray;
