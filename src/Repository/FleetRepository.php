@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\Player;
 
-class FleetRepository implements FleetRepositoryInterface
+final class FleetRepository implements FleetRepositoryInterface
 {
     /**
      * @var EntityManager
