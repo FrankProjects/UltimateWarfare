@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Fleet;
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,26 +44,16 @@ final class FleetController extends BaseGameController
      */
     public function recall(Request $request, int $fleetId): Response
     {
-        $fleet = $this->fleetRepository->find($fleetId);
+        $fleet = $this->getFleetByIdAndPlayer($fleetId, $this->getPlayer());
 
         if ($fleet === null) {
-            $this->addFlash('error', 'No such fleet!');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
-        }
-
-        if ($fleet->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'This is not your fleet');
-
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
             ]);
         }
 
         if ($fleet->getWorldRegion()->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'You are not owner if this region!');
+            $this->addFlash('error', 'You are not the owner of this region!');
 
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
@@ -83,26 +77,16 @@ final class FleetController extends BaseGameController
      */
     public function reinforce(Request $request, int $fleetId): Response
     {
-        $fleet = $this->fleetRepository->find($fleetId);
+        $fleet = $this->getFleetByIdAndPlayer($fleetId, $this->getPlayer());
 
         if ($fleet === null) {
-            $this->addFlash('error', 'No such fleet!');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
-        }
-
-        if ($fleet->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'This is not your fleet');
-
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
             ]);
         }
 
         if ($fleet->getTargetWorldRegion()->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'You are not owner if this region!');
+            $this->addFlash('error', 'You are not the owner of this region!');
 
             return $this->render('game/fleetList.html.twig', [
                 'player' => $this->getPlayer()
@@ -117,5 +101,27 @@ final class FleetController extends BaseGameController
         return $this->render('game/fleetList.html.twig', [
             'player' => $this->getPlayer()
         ]);
+    }
+
+    /**
+     * @param int $fleetId
+     * @param Player $player
+     * @return Fleet|null
+     */
+    private function getFleetByIdAndPlayer(int $fleetId, Player $player): ?Fleet
+    {
+        $fleet = $this->fleetRepository->find($fleetId);
+
+        if ($fleet === null) {
+            $this->addFlash('error', 'No such fleet!');
+            return null;
+        }
+
+        if ($fleet->getPlayer()->getId() != $player->getId()) {
+            $this->addFlash('error', 'This is not your fleet');
+            return null;
+        }
+
+        return $fleet;
     }
 }
