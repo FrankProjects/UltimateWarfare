@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Service;
 
 use Doctrine\ORM\EntityManager;
@@ -7,9 +9,15 @@ use Doctrine\ORM\ORMException;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
+use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 
 final class GameEngine
 {
+    /**
+     * @var ConstructionRepository
+     */
+    private $constructionRepository;
+
     /**
      * @var EntityManager $em
      */
@@ -18,10 +26,12 @@ final class GameEngine
     /**
      * GameEngine constructor.
      *
+     * @param ConstructionRepository $constructionRepository
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(ConstructionRepository $constructionRepository, EntityManager $em)
     {
+        $this->constructionRepository = $constructionRepository;
         $this->em = $em;
     }
 
@@ -56,8 +66,7 @@ final class GameEngine
      */
     public function processConstructionQueue(int $timestamp): bool
     {
-        $constructions = $this->em->getRepository('Game:Construction')
-            ->getCompletedConstructions($timestamp);
+        $constructions = $this->constructionRepository->getCompletedConstructions($timestamp);
 
         /** @var \FrankProjects\UltimateWarfare\Entity\Construction $construction */
         foreach ($constructions as $construction) {
@@ -66,7 +75,7 @@ final class GameEngine
             if ($worldRegion->getPlayer()->getId() !== $construction->getPlayer()->getId()) {
                 // Never process construction queue items for a region that no longer belongs to this player
                 try {
-                    $this->em->remove($construction);
+                    $this->constructionRepository->remove($construction);
                 } catch (ORMException $e) {
                     return false;
                 }
@@ -136,7 +145,7 @@ final class GameEngine
                 $this->em->persist($worldRegionUnit);
                 $this->em->persist($player);
                 $this->em->persist($report);
-                $this->em->remove($construction);
+                $this->constructionRepository->remove($construction);
                 $this->em->flush();
             } catch (ORMException $e) {
                 return false;
