@@ -698,7 +698,13 @@ final class RegionController extends BaseGameController
                         $fleetUnit->setFleet($fleet);
 
                         $em->persist($fleetUnit);
-                        $em->persist($regionUnit);
+
+                        if ($regionUnit->getAmount() === 0) {
+                            $em->remove($regionUnit);
+                        } else {
+                            $em->persist($regionUnit);
+                        }
+                        break;
                     }
                 }
 

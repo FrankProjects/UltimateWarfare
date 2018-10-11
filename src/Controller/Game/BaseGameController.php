@@ -77,7 +77,7 @@ class BaseGameController extends BaseController
      */
     private function updateGameState(Player $player)
     {
-        $gameEngine = new GameEngine($this->getEm());
+        $gameEngine = $this->container->get(GameEngine::class);
         $gameEngine->run($player);
     }
 }

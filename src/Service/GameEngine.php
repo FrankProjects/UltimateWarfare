@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
@@ -19,7 +19,7 @@ final class GameEngine
     private $constructionRepository;
 
     /**
-     * @var EntityManager $em
+     * @var EntityManagerInterface $em
      */
     private $em;
 
@@ -27,9 +27,9 @@ final class GameEngine
      * GameEngine constructor.
      *
      * @param ConstructionRepository $constructionRepository
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      */
-    public function __construct(ConstructionRepository $constructionRepository, EntityManager $em)
+    public function __construct(ConstructionRepository $constructionRepository, EntityManagerInterface $em)
     {
         $this->constructionRepository = $constructionRepository;
         $this->em = $em;
@@ -220,10 +220,10 @@ final class GameEngine
         $incomeWoodRate = $player->getIncomeWood() - $player->getUpkeepWood();
         $incomeSteelRate = $player->getIncomeSteel() - $player->getUpkeepSteel();
         
-        $incomeCash = round(($incomeCashRate / 3600) * $timeDiff, 3);
-        $incomeFood = round(($incomeFoodRate / 3600) * $timeDiff, 3);
-        $incomeWood = round(($incomeWoodRate / 3600) * $timeDiff, 3);
-        $incomeSteel = round(($incomeSteelRate / 3600) * $timeDiff, 3);
+        $incomeCash = intval(($incomeCashRate / 3600) * $timeDiff);
+        $incomeFood = intval(($incomeFoodRate / 3600) * $timeDiff);
+        $incomeWood = intval(($incomeWoodRate / 3600) * $timeDiff);
+        $incomeSteel = intval(($incomeSteelRate / 3600) * $timeDiff);
 
         $newCash = $player->getCash() + $incomeCash;
         if ($newCash < 0) {

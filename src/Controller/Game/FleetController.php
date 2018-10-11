@@ -4,28 +4,13 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\Fleet;
-use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Repository\FleetRepository;
+use FrankProjects\UltimateWarfare\Service\Fleet as FleetService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class FleetController extends BaseGameController
 {
-    /**
-     * @var FleetRepository
-     */
-    private $fleetRepository;
-
-    /**
-     * FleetController constructor.
-     * @param FleetRepository $fleetRepository
-     */
-    public function __construct(FleetRepository $fleetRepository)
-    {
-        $this->fleetRepository = $fleetRepository;
-    }
-
     /**
      * @param Request $request
      * @return Response
@@ -44,26 +29,13 @@ final class FleetController extends BaseGameController
      */
     public function recall(Request $request, int $fleetId): Response
     {
-        $fleet = $this->getFleetByIdAndPlayer($fleetId, $this->getPlayer());
-
-        if ($fleet === null) {
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
+        $fleetService = $this->container->get(FleetService::class);
+        try {
+            $fleetService->recall($fleetId, $this->getPlayer());
+            $this->addFlash('success', 'You successfully recalled your troops!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
-
-        if ($fleet->getWorldRegion()->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'You are not the owner of this region!');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
-        }
-
-        // XXX TODO: fix recall fleet units
-        $this->fleetRepository->remove($fleet);
-
-        $this->addFlash('success', 'You succesfully recalled your forces!');
 
         return $this->render('game/fleetList.html.twig', [
             'player' => $this->getPlayer()
@@ -77,51 +49,16 @@ final class FleetController extends BaseGameController
      */
     public function reinforce(Request $request, int $fleetId): Response
     {
-        $fleet = $this->getFleetByIdAndPlayer($fleetId, $this->getPlayer());
-
-        if ($fleet === null) {
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
+        $fleetService = $this->container->get(FleetService::class);
+        try {
+            $fleetService->reinforce($fleetId, $this->getPlayer());
+            $this->addFlash('success', 'You successfully reinforced your region!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
-
-        if ($fleet->getTargetWorldRegion()->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'You are not the owner of this region!');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
-        }
-
-        // XXX TODO: fix reinforce fleet units
-        $this->fleetRepository->remove($fleet);
-
-        $this->addFlash('success', 'You succesfully reinforced your region!');
 
         return $this->render('game/fleetList.html.twig', [
             'player' => $this->getPlayer()
         ]);
-    }
-
-    /**
-     * @param int $fleetId
-     * @param Player $player
-     * @return Fleet|null
-     */
-    private function getFleetByIdAndPlayer(int $fleetId, Player $player): ?Fleet
-    {
-        $fleet = $this->fleetRepository->find($fleetId);
-
-        if ($fleet === null) {
-            $this->addFlash('error', 'No such fleet!');
-            return null;
-        }
-
-        if ($fleet->getPlayer()->getId() != $player->getId()) {
-            $this->addFlash('error', 'This is not your fleet');
-            return null;
-        }
-
-        return $fleet;
     }
 }
