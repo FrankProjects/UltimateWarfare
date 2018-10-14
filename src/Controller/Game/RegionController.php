@@ -11,13 +11,16 @@ use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Service\RegionActionService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use FrankProjects\UltimateWarfare\Util\TimeCalculator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class RegionController extends BaseGameController
 {
@@ -37,16 +40,28 @@ final class RegionController extends BaseGameController
     private $gameUnitTypeRepository;
 
     /**
+     * @var RegionActionService
+     */
+    private $regionActionService;
+
+    /**
      * RegionController constructor.
      * @param WorldRegionRepository $worldRegionRepository
      * @param GameUnitRepository $gameUnitRepository
      * @param GameUnitTypeRepository $gameUnitTypeRepository
+     * @param RegionActionService $regionActionService
      */
-    public function __construct(WorldRegionRepository $worldRegionRepository, GameUnitRepository $gameUnitRepository, GameUnitTypeRepository $gameUnitTypeRepository)
+    public function __construct(
+        WorldRegionRepository $worldRegionRepository,
+        GameUnitRepository $gameUnitRepository,
+        GameUnitTypeRepository $gameUnitTypeRepository,
+        RegionActionService $regionActionService
+    )
     {
         $this->worldRegionRepository = $worldRegionRepository;
         $this->gameUnitRepository = $gameUnitRepository;
         $this->gameUnitTypeRepository = $gameUnitTypeRepository;
+        $this->regionActionService = $regionActionService;
     }
 
     /**
@@ -167,58 +182,26 @@ final class RegionController extends BaseGameController
     public function buy(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
-        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
-        if (!$region) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
+        try {
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
 
-        if ($region->getPlayer() != null) {
-            return $this->render('game/regionHasOwner.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        $regionPrice = $player->getRegions() * 10000;
-
-        if ($request->getMethod() == 'POST') {
-            if ($player->getCash() < $regionPrice) {
-                return $this->render('game/error/tooExpensive.html.twig', [
-                    'player' => $player,
-                ]);
+            if ($request->isMethod('POST')) {
+                $this->regionActionService->buy($regionId, $this->getPlayer());
+                $this->addFlash('success', 'You have bought a Region!');
             }
-
-            $em = $this->getEm();
-            $player->setCash($player->getCash() - $regionPrice);
-            $player->setRegions($player->getRegions() + 1);
-            $player->setNetworth($this->calculateNetworth($player));
-
-            $region->setPlayer($player);
-
-            $federation = $player->getFederation();
-
-            if ($federation != null) {
-                $federation->setRegions($federation->getRegions() + 1);
-                $federation->setNetworth($federation->getNetworth() + 1000);
-                $em->persist($federation);
-            }
-
-            $em->persist($player);
-            $em->flush();
-
-            $this->worldRegionRepository->save($region);
-
-            $this->addFlash('success', 'You have bought a Region!');
-
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
+        } catch (WorldRegionNotFoundException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Game/RegionList', [], 302);
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
+
         return $this->render('game/region/buy.html.twig', [
-            'region' => $region,
+            'region' => $worldRegion,
             'player' => $player,
             'mapUrl' => $this->getMapUrl(),
-            'price'  => $regionPrice
+            'price'  => $player->getRegionPrice()
         ]);
     }
 
@@ -466,16 +449,6 @@ final class RegionController extends BaseGameController
     {
         $user = $this->getGameUser();
         return $user->getMapDesign()->getUrl();
-    }
-
-    /**
-     * @param Player $player
-     * @return int
-     */
-    private function calculateNetworth(Player $player): int
-    {
-        // XXX TODO
-        return 1000;
     }
 
     /**
