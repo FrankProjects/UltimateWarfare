@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service;
 
-use FrankProjects\UltimateWarfare\Entity\Fleet as FleetEntity;
+use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
@@ -13,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 use RuntimeException;
 
-final class Fleet
+final class FleetActionService
 {
     /**
      * @var FleetRepository
@@ -26,7 +26,7 @@ final class Fleet
     private $worldRegionUnitRepository;
 
     /**
-     * Fleet service
+     * FleetActionService service
      *
      * @param FleetRepository $fleetRepository
      * @param WorldRegionUnitRepository $worldRegionUnitRepository
@@ -48,10 +48,6 @@ final class Fleet
     {
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
 
-        if ($fleet === null) {
-            throw new RunTimeException('Fleet does not exist.');
-        }
-
         if ($fleet->getWorldRegion()->getPlayer()->getId() != $player->getId()) {
             throw new RunTimeException('You are not the owner of this region!');
         }
@@ -72,10 +68,6 @@ final class Fleet
     {
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
 
-        if ($fleet === null) {
-            throw new RunTimeException('Fleet does not exist.');
-        }
-
         if ($fleet->getTargetWorldRegion()->getPlayer()->getId() != $player->getId()) {
             throw new RunTimeException('You are not the owner of this region!');
         }
@@ -88,30 +80,30 @@ final class Fleet
     /**
      * @param int $fleetId
      * @param Player $player
-     * @return FleetEntity|null
+     * @return Fleet
      */
-    private function getFleetByIdAndPlayer(int $fleetId, Player $player): ?FleetEntity
+    private function getFleetByIdAndPlayer(int $fleetId, Player $player): Fleet
     {
         $fleet = $this->fleetRepository->find($fleetId);
 
         if ($fleet === null) {
-            return null;
+            throw new RunTimeException('Fleet does not exist!');
         }
 
         if ($fleet->getPlayer()->getId() != $player->getId()) {
-            return null;
+            throw new RunTimeException('Fleet does not belong to you!');
         }
 
         return $fleet;
     }
 
     /**
-     * @param FleetEntity $fleet
+     * @param Fleet $fleet
      * @param WorldRegion $worldRegion
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    private function addFleetUnitsToWorldRegion(FleetEntity $fleet, WorldRegion $worldRegion): void
+    private function addFleetUnitsToWorldRegion(Fleet $fleet, WorldRegion $worldRegion): void
     {
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
             $this->addFleetUnitToWorldRegion($fleetUnit, $worldRegion);
