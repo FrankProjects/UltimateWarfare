@@ -42,7 +42,7 @@ final class GameUnitTypeRepository implements GameUnitTypeRepositoryInterface
     }
 
     /**
-     * @return array
+     * @return GameUnitType[]
      */
     public function findAll(): array
     {

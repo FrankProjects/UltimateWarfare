@@ -45,7 +45,7 @@ final class ConstructionRepository implements ConstructionRepositoryInterface
 
     /**
      * @param Player $player
-     * @return array
+     * @return Construction[]
      */
     public function findByPlayer(Player $player): array
     {
@@ -55,7 +55,7 @@ final class ConstructionRepository implements ConstructionRepositoryInterface
     /**
      * @param Player $player
      * @param GameUnitType $gameUnitType
-     * @return array
+     * @return Construction[]
      */
     public function findByPlayerAndGameUnitType(Player $player, GameUnitType $gameUnitType): array
     {
@@ -73,7 +73,7 @@ final class ConstructionRepository implements ConstructionRepositoryInterface
 
     /**
      * @param int $timestamp
-     * @return array
+     * @return Construction[]
      */
     public function getCompletedConstructions(int $timestamp): array
     {

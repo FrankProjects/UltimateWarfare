@@ -53,11 +53,11 @@ final class PlayerRepository implements PlayerRepositoryInterface
     /**
      * @param World $world
      * @param integer $limit
-     * @return array
+     * @return Player[]
      */
     public function findByWorldAndRegions(World $world, $limit = 10): array
     {
-        return $this->getEntityManager()
+        return $this->entityManager
             ->createQuery(
                 'SELECT p
               FROM Game:Player p
@@ -71,11 +71,11 @@ final class PlayerRepository implements PlayerRepositoryInterface
     /**
      * @param World $world
      * @param integer $limit
-     * @return array
+     * @return Player[]
      */
     public function findByWorldAndNetworth(World $world, $limit = 10): array
     {
-        return $this->getEntityManager()
+        return $this->entityManager
             ->createQuery(
                 'SELECT p
               FROM Game:Player p
