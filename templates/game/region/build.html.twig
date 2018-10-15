@@ -40,8 +40,8 @@
                     </td>
                     <td width="100" align="center">
                         {{ region.gameUnits[gameUnit.rowName] }}
-                        {% if region.construction[gameUnit.rowName] > 0 %}
-                            ({{ region.construction[gameUnit.rowName] }})
+                        {% if region.construction[gameUnit.id] is defined and region.construction[gameUnit.id] > 0 %}
+                            ({{ region.construction[gameUnit.id] }})
                         {% endif %}
                     </td>
 

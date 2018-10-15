@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 
 final class ConstructionRepository implements ConstructionRepositoryInterface
 {
@@ -50,6 +51,30 @@ final class ConstructionRepository implements ConstructionRepositoryInterface
     public function findByPlayer(Player $player): array
     {
         return $this->repository->findBy(['player' => $player]);
+    }
+
+    /**
+     * @param WorldRegion $worldRegion
+     * @return array
+     */
+    public function getGameUnitConstructionSumByWorldRegion(WorldRegion $worldRegion): array
+    {
+        $results = $this->entityManager
+            ->createQuery(
+                'SELECT gu.id, sum(c.number) as total
+              FROM Game:Construction c
+              JOIN Game:GameUnit gu WITH c.gameUnit = gu
+              WHERE c.worldRegion = :worldRegion
+              GROUP BY gu.id'
+            )->setParameter('worldRegion', $worldRegion)
+            ->getArrayResult();
+
+        $gameUnits = [];
+        foreach ($results as $result) {
+            $gameUnits[$result['id']] = $result['total'];
+        }
+
+        return $gameUnits;
     }
 
     /**

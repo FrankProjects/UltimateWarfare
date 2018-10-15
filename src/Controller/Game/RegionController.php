@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use Doctrine\ORM\ORMException;
 use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
@@ -12,6 +11,7 @@ use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
+use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -23,6 +23,11 @@ use Throwable;
 
 final class RegionController extends BaseGameController
 {
+    /**
+     * @var ConstructionRepository
+     */
+    private $constructionRepository;
+
     /**
      * @var WorldRegionRepository
      */
@@ -45,17 +50,21 @@ final class RegionController extends BaseGameController
 
     /**
      * RegionController constructor.
+     *
+     * @param ConstructionRepository $constructionRepository
      * @param WorldRegionRepository $worldRegionRepository
      * @param GameUnitRepository $gameUnitRepository
      * @param GameUnitTypeRepository $gameUnitTypeRepository
      * @param RegionActionService $regionActionService
      */
     public function __construct(
+        ConstructionRepository $constructionRepository,
         WorldRegionRepository $worldRegionRepository,
         GameUnitRepository $gameUnitRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
         RegionActionService $regionActionService
     ) {
+        $this->constructionRepository = $constructionRepository;
         $this->worldRegionRepository = $worldRegionRepository;
         $this->gameUnitRepository = $gameUnitRepository;
         $this->gameUnitTypeRepository = $gameUnitTypeRepository;
@@ -388,7 +397,7 @@ final class RegionController extends BaseGameController
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
         $region->gameUnits = $this->getRegionGameUnitData($region);
-        $region->construction = $this->getWorldRegionConstructionData($region);
+        $region->construction = $this->constructionRepository->getGameUnitConstructionSumByWorldRegion($region);
 
         $spaceLeft = 0;
         if ($gameUnitType->getId() == 1) {
@@ -437,27 +446,6 @@ final class RegionController extends BaseGameController
 
         foreach ($worldRegion->getWorldRegionUnits() as $data) {
             $gameUnitData[$data->getGameUnit()->getRowName()] += $data->getAmount();
-        }
-
-        return $gameUnitData;
-    }
-
-    /**
-     * @param WorldRegion $worldRegion
-     * @return array
-     */
-    private function getWorldRegionConstructionData(WorldRegion $worldRegion): array
-    {
-        $gameUnitData = $this->getGameUnitFields();
-
-        try {
-            // Refresh object to always get latest construction queue
-            $this->getEm()->refresh($worldRegion);
-        } catch (ORMException $e) {
-        }
-
-        foreach ($worldRegion->getConstructions() as $data) {
-            $gameUnitData[$data->getGameUnit()->getRowName()] += $data->getNumber();
         }
 
         return $gameUnitData;
@@ -558,7 +546,7 @@ final class RegionController extends BaseGameController
 
         foreach ($gameUnitType->getGameUnits() as $gameUnit) {
             if ($request->request->has($gameUnit->getId())) {
-                $amount = $request->request->get($gameUnit->getId(), 0);
+                $amount = intval($request->request->get($gameUnit->getId(), 0));
                 if ($amount > 0) {
                     $constructions[] = Construction::create($region, $player, $gameUnit, $amount);
 
