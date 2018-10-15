@@ -17,7 +17,6 @@ use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Service\RegionActionService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
-use FrankProjects\UltimateWarfare\Util\TimeCalculator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -56,8 +55,7 @@ final class RegionController extends BaseGameController
         GameUnitRepository $gameUnitRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
         RegionActionService $regionActionService
-    )
-    {
+    ) {
         $this->worldRegionRepository = $worldRegionRepository;
         $this->gameUnitRepository = $gameUnitRepository;
         $this->gameUnitTypeRepository = $gameUnitTypeRepository;

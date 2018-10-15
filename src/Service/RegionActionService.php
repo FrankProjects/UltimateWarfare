@@ -56,8 +56,7 @@ final class RegionActionService
         FederationRepository $federationRepository,
         DistanceCalculator $distanceCalculator,
         TimeCalculator $timeCalculator
-    )
-    {
+    ) {
         $this->worldRegionRepository = $worldRegionRepository;
         $this->playerRepository = $playerRepository;
         $this->federationRepository = $federationRepository;
