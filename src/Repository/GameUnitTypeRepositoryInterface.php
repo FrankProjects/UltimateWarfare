@@ -15,7 +15,7 @@ interface GameUnitTypeRepositoryInterface
     public function find(int $id): ?GameUnitType;
 
     /**
-     * @return array
+     * @return GameUnitType[]
      */
     public function findAll(): array;
 

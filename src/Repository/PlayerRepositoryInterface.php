@@ -23,14 +23,14 @@ interface PlayerRepositoryInterface
     /**
      * @param World $world
      * @param int $limit
-     * @return array
+     * @return Player[]
      */
     public function findByWorldAndRegions(World $world, $limit = 10): array;
 
     /**
      * @param World $world
      * @param int $limit
-     * @return array
+     * @return Player[]
      */
     public function findByWorldAndNetworth(World $world, $limit = 10): array;
 }

@@ -17,7 +17,7 @@ interface FleetRepositoryInterface
 
     /**
      * @param Player $player
-     * @return array
+     * @return Fleet[]
      */
     public function findByPlayer(Player $player): array;
 
