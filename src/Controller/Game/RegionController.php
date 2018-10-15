@@ -110,7 +110,7 @@ final class RegionController extends BaseGameController
     public function attackSelectGameUnits(Request $request, int $regionId, int $playerRegionId): Response
     {
         $player = $this->getPlayer();
-        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
+        $region = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
             return $this->render('game/region/notFound.html.twig', [
@@ -128,7 +128,7 @@ final class RegionController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
         }
 
-        $playerRegion = $this->getWorldRegionByIdAndPlayer($playerRegionId, $player);
+        $playerRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($playerRegionId, $player);
 
         if (!$playerRegion) {
             return $this->render('game/region/notFound.html.twig', [
@@ -148,7 +148,7 @@ final class RegionController extends BaseGameController
             return $this->redirectToRoute('Game/Fleets', [], 302);
         }
 
-        $playerRegion->gameUnits = $this->getRegionGameUnitData($playerRegion);
+        $playerRegion->gameUnits = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($playerRegion);
 
         return $this->render('game/region/attackSelectGameUnits.html.twig', [
             'region' => $region,
@@ -191,30 +191,32 @@ final class RegionController extends BaseGameController
     }
 
     /**
-     * XXX TODO: Fix previous and next region navigation
-     *
-     * @param Request $request
      * @param int $regionId
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function region(Request $request, int $regionId): Response
+    public function region(int $regionId): Response
     {
         $player = $this->getPlayer();
-        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
 
-        if (!$region) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
+        try {
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+        } catch (WorldRegionNotFoundException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Game/RegionList', [], 302);
         }
 
-        $region->gameUnits = $this->getRegionGameUnitData($region);
+        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
+
+        $worldRegion->gameUnits = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
+
         return $this->render('game/region.html.twig', [
-            'region' => $region,
+            'region' => $worldRegion,
             'player' => $player,
             'mapUrl' => $this->getMapUrl(),
-            'previousRegionId' => 0,
-            'nextRegionId' => 0,
+            'previousRegion' => $this->worldRegionRepository->getPreviousWorldRegionForPlayer($regionId, $player),
+            'nextRegion' => $this->worldRegionRepository->getNextWorldRegionForPlayer($regionId, $player),
+            'gameUnitTypes' => $gameUnitTypes
         ]);
     }
 
@@ -266,7 +268,7 @@ final class RegionController extends BaseGameController
     public function removeGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
         $player = $this->getPlayer();
-        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
+        $region = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
             return $this->render('game/region/notFound.html.twig', [
@@ -290,7 +292,7 @@ final class RegionController extends BaseGameController
 
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
-        $region->gameUnits = $this->getRegionGameUnitData($region);
+        $region->gameUnits = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($region);
 
         return $this->render('game/region/removeGameUnits.html.twig', [
             'region' => $region,
@@ -309,7 +311,7 @@ final class RegionController extends BaseGameController
     public function sendUnits(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
-        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
+        $region = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
             return $this->render('game/region/notFound.html.twig', [
@@ -325,7 +327,7 @@ final class RegionController extends BaseGameController
 
         if ($request->getMethod() == 'POST') {
             $targetRegionId = intval($request->request->get('target', 0));
-            $targetRegion = $this->getWorldRegionByIdAndPlayer($targetRegionId, $player);
+            $targetRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($targetRegionId, $player);
 
             if ($targetRegion) {
                 $this->processSendGameUnits($request, $region, $targetRegion, $player, $gameUnitType);
@@ -334,7 +336,7 @@ final class RegionController extends BaseGameController
             }
         }
 
-        $region->gameUnits = $this->getRegionGameUnitData($region);
+        $region->gameUnits = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($region);
 
         $distanceCalculator = new DistanceCalculator();
 
@@ -372,7 +374,7 @@ final class RegionController extends BaseGameController
     public function build(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
         $player = $this->getPlayer();
-        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
+        $region = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
 
         if (!$region) {
             return $this->render('game/region/notFound.html.twig', [
@@ -396,7 +398,7 @@ final class RegionController extends BaseGameController
 
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
-        $region->gameUnits = $this->getRegionGameUnitData($region);
+        $region->gameUnits = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($region);
         $region->construction = $this->constructionRepository->getGameUnitConstructionSumByWorldRegion($region);
 
         $spaceLeft = 0;
@@ -434,35 +436,6 @@ final class RegionController extends BaseGameController
     {
         $user = $this->getGameUser();
         return $user->getMapDesign()->getUrl();
-    }
-
-    /**
-     * @param WorldRegion $worldRegion
-     * @return array
-     */
-    private function getRegionGameUnitData(WorldRegion $worldRegion): array
-    {
-        $gameUnitData = $this->getGameUnitFields();
-
-        foreach ($worldRegion->getWorldRegionUnits() as $data) {
-            $gameUnitData[$data->getGameUnit()->getRowName()] += $data->getAmount();
-        }
-
-        return $gameUnitData;
-    }
-
-    /**
-     * @return array
-     */
-    private function getGameUnitFields(): array
-    {
-        $gameUnits = $this->gameUnitRepository->findAll();
-        $gameUnitArray = [];
-        foreach ($gameUnits as $unit) {
-            $gameUnitArray[$unit->getRowName()] = 0;
-        }
-
-        return $gameUnitArray;
     }
 
     /**
@@ -728,26 +701,5 @@ final class RegionController extends BaseGameController
         $em->flush();
 
         return true;
-    }
-
-    /**
-     * @param int $worldRegionId
-     * @param Player $player
-     * @return WorldRegion|null
-     */
-    private function getWorldRegionByIdAndPlayer(int $worldRegionId, Player $player): ?WorldRegion
-    {
-        $worldRegion = $this->worldRegionRepository->find($worldRegionId);
-        if (!$worldRegion) {
-            return null;
-        }
-
-        $sector = $worldRegion->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
-            return null;
-        }
-
-        return $worldRegion;
     }
 }

@@ -39,7 +39,12 @@
                         <img src="{{ asset('images/icons/time.gif') }}" width="25" height="25" alt="Construction time">{{ gameUnit.timestamp }}
                     </td>
                     <td width="100" align="center">
-                        {{ region.gameUnits[gameUnit.rowName] }}
+                        {% if region.gameUnits[gameUnit.id] is defined and region.gameUnits[gameUnit.id] > 0 %}
+                            {{ region.gameUnits[gameUnit.id] }}
+                        {% else %}
+                            0
+                        {% endif %}
+
                         {% if region.construction[gameUnit.id] is defined and region.construction[gameUnit.id] > 0 %}
                             ({{ region.construction[gameUnit.id] }})
                         {% endif %}
