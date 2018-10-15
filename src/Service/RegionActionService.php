@@ -10,6 +10,8 @@ use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
+use FrankProjects\UltimateWarfare\Util\TimeCalculator;
 use RuntimeException;
 
 final class RegionActionService
@@ -30,20 +32,68 @@ final class RegionActionService
     private $federationRepository;
 
     /**
+     * @var DistanceCalculator
+     */
+    private $distanceCalculator;
+
+    /**
+     * @var TimeCalculator
+     */
+    private $timeCalculator;
+
+    /**
      * RegionActionService service
      *
      * @param WorldRegionRepository $worldRegionRepository
      * @param PlayerRepository $playerRepository
      * @param FederationRepository $federationRepository
+     * @param DistanceCalculator $distanceCalculator
+     * @param TimeCalculator $timeCalculator
      */
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         PlayerRepository $playerRepository,
-        FederationRepository $federationRepository)
+        FederationRepository $federationRepository,
+        DistanceCalculator $distanceCalculator,
+        TimeCalculator $timeCalculator
+    )
     {
         $this->worldRegionRepository = $worldRegionRepository;
         $this->playerRepository = $playerRepository;
         $this->federationRepository = $federationRepository;
+        $this->distanceCalculator = $distanceCalculator;
+        $this->timeCalculator = $timeCalculator;
+    }
+
+    /**
+     * @param WorldRegion $worldRegion
+     * @param Player $player
+     * @return array
+     */
+    public function getAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
+    {
+        if ($worldRegion->getPlayer() === null) {
+            throw new RunTimeException('Can not attack region without owner!');
+        }
+
+        if ($worldRegion->getPlayer()->getId() == $player->getId()) {
+            throw new RunTimeException('Can not attack your own region!');
+        }
+
+        $playerRegions = [];
+        foreach ($player->getWorldRegions() as $playerWorldRegion) {
+            $distance = $this->distanceCalculator->calculateDistance(
+                    $playerWorldRegion->getX(),
+                    $playerWorldRegion->getY(),
+                    $worldRegion->getX(),
+                    $worldRegion->getY()
+                ) * 100;
+
+            $playerWorldRegion->distance = $this->timeCalculator->calculateTimeLeft($distance);
+            $playerRegions[] = $playerWorldRegion;
+        }
+
+        return $playerRegions;
     }
 
     /**
@@ -53,7 +103,7 @@ final class RegionActionService
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws WorldRegionNotFoundException
      */
-    public function buy(int $worldRegionId, Player $player): void
+    public function buyWorldRegion(int $worldRegionId, Player $player): void
     {
         $worldRegion = $this->getWorldRegionByIdAndPlayer($worldRegionId, $player);
 

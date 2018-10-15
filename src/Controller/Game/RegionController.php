@@ -65,50 +65,28 @@ final class RegionController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @param int $regionId
      * @return Response
      * @throws \Exception
      */
-    public function attack(Request $request, int $regionId): Response
+    public function attack(int $regionId): Response
     {
         $player = $this->getPlayer();
-        $region = $this->getWorldRegionByIdAndPlayer($regionId, $player);
-
-        if (!$region) {
-            return $this->render('game/region/notFound.html.twig', [
-                'player' => $player,
-            ]);
-        }
-
-        if ($region->getPlayer() === null) {
-            $this->addFlash('error', "Can not attack nobody!");
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
-        }
-
-        if ($region->getPlayer()->getId() == $player->getId()) {
-            $this->addFlash('error', "Can not attack your own region!");
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $region->getId()], 302);
-        }
-
-        $distanceCalculator = new DistanceCalculator();
-        $timeCalculator = new TimeCalculator();
-
         $playerRegions = [];
-        foreach ($player->getWorldRegions() as $worldRegion) {
-            $distance = $distanceCalculator->calculateDistance(
-                    $worldRegion->getX(),
-                    $worldRegion->getY(),
-                    $region->getX(),
-                    $region->getY()
-                ) * 100;
+        $worldRegion = null;
 
-            $worldRegion->distance = $timeCalculator->calculateTimeLeft($distance);
-            $playerRegions[] = $worldRegion;
+        try {
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+            $playerRegions = $this->regionActionService->getAttackFromWorldRegionList($worldRegion, $this->getPlayer());
+        } catch (WorldRegionNotFoundException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Game/RegionList', [], 302);
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
 
         return $this->render('game/region/attackFrom.html.twig', [
-            'region' => $region,
+            'region' => $worldRegion,
             'player' => $player,
             'mapUrl' => $this->getMapUrl(),
             'playerRegions' => $playerRegions
@@ -187,7 +165,7 @@ final class RegionController extends BaseGameController
             $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
 
             if ($request->isMethod('POST')) {
-                $this->regionActionService->buy($regionId, $this->getPlayer());
+                $this->regionActionService->buyWorldRegion($regionId, $this->getPlayer());
                 $this->addFlash('success', 'You have bought a Region!');
             }
         } catch (WorldRegionNotFoundException $e) {
