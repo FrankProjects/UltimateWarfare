@@ -79,6 +79,30 @@ final class ConstructionRepository implements ConstructionRepositoryInterface
 
     /**
      * @param Player $player
+     * @return array
+     */
+    public function getGameUnitConstructionSumByPlayer(Player $player): array
+    {
+        $results = $this->entityManager
+            ->createQuery(
+                'SELECT gu.id, sum(c.number) as total
+              FROM Game:Construction c
+              JOIN Game:GameUnit gu WITH c.gameUnit = gu
+              WHERE c.player = :player
+              GROUP BY gu.id'
+            )->setParameter('player', $player)
+            ->getArrayResult();
+
+        $gameUnits = [];
+        foreach ($results as $result) {
+            $gameUnits[$result['id']] = $result['total'];
+        }
+
+        return $gameUnits;
+    }
+
+    /**
+     * @param Player $player
      * @param GameUnitType $gameUnitType
      * @return Construction[]
      */

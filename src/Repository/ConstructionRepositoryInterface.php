@@ -31,6 +31,12 @@ interface ConstructionRepositoryInterface
 
     /**
      * @param Player $player
+     * @return array
+     */
+    public function getGameUnitConstructionSumByPlayer(Player $player): array;
+
+    /**
+     * @param Player $player
      * @param GameUnitType $gameUnitType
      * @return Construction[]
      */
