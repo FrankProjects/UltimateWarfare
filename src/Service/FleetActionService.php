@@ -144,7 +144,7 @@ final class FleetActionService
 
             $gameUnit = $this->gameUnitRepository->find($gameUnitId);
             if ($gameUnit === null) {
-               continue;
+                continue;
             }
 
             if ($gameUnit->getGameUnitType()->getId() !== $gameUnitType->getId()) {
