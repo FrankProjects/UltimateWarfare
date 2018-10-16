@@ -6,11 +6,15 @@ namespace FrankProjects\UltimateWarfare\Service;
 
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
+use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
+use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
+use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use RuntimeException;
 
 final class FleetActionService
@@ -21,20 +25,46 @@ final class FleetActionService
     private $fleetRepository;
 
     /**
+     * @var FleetUnitRepository
+     */
+    private $fleetUnitRepository;
+
+    /**
+     * @var GameUnitRepository
+     */
+    private $gameUnitRepository;
+
+    /**
      * @var WorldRegionUnitRepository
      */
     private $worldRegionUnitRepository;
 
     /**
+     * @var DistanceCalculator
+     */
+    private $distanceCalculator;
+
+    /**
      * FleetActionService service
      *
      * @param FleetRepository $fleetRepository
+     * @param FleetUnitRepository $fleetUnitRepository
+     * @param GameUnitRepository $gameUnitRepository
      * @param WorldRegionUnitRepository $worldRegionUnitRepository
+     * @param DistanceCalculator $distanceCalculator
      */
-    public function __construct(FleetRepository $fleetRepository, WorldRegionUnitRepository $worldRegionUnitRepository)
-    {
+    public function __construct(
+        FleetRepository $fleetRepository,
+        FleetUnitRepository $fleetUnitRepository,
+        GameUnitRepository $gameUnitRepository,
+        WorldRegionUnitRepository $worldRegionUnitRepository,
+        DistanceCalculator $distanceCalculator
+    ) {
         $this->fleetRepository = $fleetRepository;
+        $this->fleetUnitRepository = $fleetUnitRepository;
+        $this->gameUnitRepository = $gameUnitRepository;
         $this->worldRegionUnitRepository = $worldRegionUnitRepository;
+        $this->distanceCalculator = $distanceCalculator;
     }
 
     /**
@@ -75,6 +105,84 @@ final class FleetActionService
         $this->addFleetUnitsToWorldRegion($fleet, $fleet->getTargetWorldRegion());
 
         return true;
+    }
+
+    /**
+     * @param WorldRegion $region
+     * @param WorldRegion $targetRegion
+     * @param Player $player
+     * @param GameUnitType $gameUnitType
+     * @param array $unitData
+     * @throws \Exception
+     */
+    public function sendGameUnits(WorldRegion $region, WorldRegion $targetRegion, Player $player, GameUnitType $gameUnitType, array $unitData): void
+    {
+        $sector = $targetRegion->getWorldSector();
+
+        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+            throw new RunTimeException('Target region does not exist!');
+        }
+
+        if ($region->getPlayer()->getId() != $player->getId()) {
+            throw new RunTimeException('Region is not owned by you.');
+        }
+
+        $distance = $this->distanceCalculator->calculateDistance($targetRegion->getX(), $targetRegion->getY(), $region->getX(), $region->getY());
+
+        $fleet = new Fleet();
+        $fleet->setPlayer($player);
+        $fleet->setWorldRegion($region);
+        $fleet->setTargetWorldRegion($targetRegion);
+        $fleet->setTimestamp(time());
+        $fleet->setTimestampArrive(time() + ($distance * 100));
+
+        foreach ($unitData as $gameUnitId => $amount) {
+            $amount = intval($amount);
+            if ($amount < 1) {
+                continue;
+            }
+
+            $gameUnit = $this->gameUnitRepository->find($gameUnitId);
+            if ($gameUnit === null) {
+               continue;
+            }
+
+            if ($gameUnit->getGameUnitType()->getId() !== $gameUnitType->getId()) {
+                continue;
+            }
+
+            $hasUnit = false;
+            foreach ($region->getWorldRegionUnits() as $regionUnit) {
+                if ($regionUnit->getGameUnit()->getId() == $gameUnit->getId()) {
+                    $hasUnit = true;
+                    if ($amount > $regionUnit->getAmount()) {
+                        throw new RunTimeException("You don't have that many " . $gameUnit->getName() . "s!");
+                    }
+
+                    $regionUnit->setAmount($regionUnit->getAmount() - $amount);
+
+                    $fleetUnit = new FleetUnit();
+                    $fleetUnit->setGameUnit($regionUnit->getGameUnit());
+                    $fleetUnit->setAmount($amount);
+                    $fleetUnit->setFleet($fleet);
+
+                    $this->fleetUnitRepository->save($fleetUnit);
+
+                    if ($regionUnit->getAmount() === 0) {
+                        $this->worldRegionUnitRepository->remove($regionUnit);
+                    } else {
+                        $this->worldRegionUnitRepository->save($regionUnit);
+                    }
+                    break;
+                }
+            }
+
+            if ($hasUnit !== true) {
+                throw new RunTimeException("You don't have that many " . $gameUnit->getName() . "s!");
+            }
+        }
+
+        $this->fleetRepository->save($fleet);
     }
 
     /**

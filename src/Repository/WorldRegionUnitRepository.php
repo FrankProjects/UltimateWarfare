@@ -46,6 +46,17 @@ final class WorldRegionUnitRepository implements WorldRegionUnitRepositoryInterf
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
+    public function remove(WorldRegionUnit $worldRegionUnit): void
+    {
+        $this->entityManager->remove($worldRegionUnit);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param WorldRegionUnit $worldRegionUnit
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function save(WorldRegionUnit $worldRegionUnit): void
     {
         $this->entityManager->persist($worldRegionUnit);

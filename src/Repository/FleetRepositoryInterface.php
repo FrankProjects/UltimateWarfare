@@ -21,6 +21,10 @@ interface FleetRepositoryInterface
      */
     public function findByPlayer(Player $player): array;
 
+    /**
+     * @param Fleet $fleet
+     */
+    public function remove(Fleet $fleet): void;
 
     /**
      * @param Fleet $fleet

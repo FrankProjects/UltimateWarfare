@@ -17,5 +17,10 @@ interface WorldRegionUnitRepositoryInterface
     /**
      * @param WorldRegionUnit $worldRegionUnit
      */
+    public function remove(WorldRegionUnit $worldRegionUnit): void;
+
+    /**
+     * @param WorldRegionUnit $worldRegionUnit
+     */
     public function save(WorldRegionUnit $worldRegionUnit): void;
 }
