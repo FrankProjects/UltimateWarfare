@@ -63,11 +63,11 @@
             </tr>
             {% set hasGameUnit = 0 %}
             {% for gameUnit in gameUnitType.gameUnits %}
-                {% if region.gameUnits[gameUnit.id] is defined and region.gameUnits[gameUnit.id] > 0 %}
+                {% if gameUnitsData[gameUnit.id] is defined and gameUnitsData[gameUnit.id] > 0 %}
                     {% set hasGameUnit = 1 %}
                     <tr>
                         <td width="350" align="center">{{ gameUnit.name }}</td>
-                        <td width="350" align="center">{{ region.gameUnits[gameUnit.id] }}</td>
+                        <td width="350" align="center">{{ gameUnitsData[gameUnit.id] }}</td>
                     </tr>
                 {% endif %}
             {% endfor %}
