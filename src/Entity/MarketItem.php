@@ -155,4 +155,25 @@ class MarketItem
     {
         $this->marketItemType = $marketItemType;
     }
+
+    /**
+     * @param Player $player
+     * @param GameResource $gameResource
+     * @param int $amount
+     * @param int $price
+     * @param MarketItemType $marketItemType
+     * @return MarketItem
+     */
+    public static function createForPlayer(Player $player, GameResource $gameResource, int $amount, int $price, MarketItemType $marketItemType): MarketItem
+    {
+        $marketItem = new MarketItem();
+        $marketItem->setWorld($player->getWorld());
+        $marketItem->setPlayer($player);
+        $marketItem->setGameResource($gameResource);
+        $marketItem->setAmount($amount);
+        $marketItem->setPrice($price);
+        $marketItem->setMarketItemType($marketItemType);
+
+        return $marketItem;
+    }
 }

@@ -19,7 +19,6 @@ interface GameUnitRepositoryInterface
      */
     public function findAll(): array;
 
-
     /**
      * @param GameUnit $gameUnit
      */
