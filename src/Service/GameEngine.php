@@ -61,6 +61,7 @@ final class GameEngine
     }
 
     /**
+     * @param int $timestamp
      * @return bool
      * @throws \Exception
      */
@@ -87,11 +88,12 @@ final class GameEngine
 
             $gameUnitExist = false;
             foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getId() == $construction->getGameUnit()->getId()) {
+                if ($worldRegionUnit->getGameUnit()->getId() == $construction->getGameUnit()->getId()) {
                     $gameUnitExist = true;
                     break;
                 }
             }
+
 
             if ($gameUnitExist) {
                 $worldRegionUnit->setAmount($construction->getNumber());
