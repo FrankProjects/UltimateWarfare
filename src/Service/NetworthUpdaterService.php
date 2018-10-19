@@ -30,8 +30,7 @@ final class NetworthUpdaterService
     public function __construct(
         FederationRepository $federationRepository,
         PlayerRepository $playerRepository
-    )
-    {
+    ) {
         $this->federationRepository = $federationRepository;
         $this->playerRepository = $playerRepository;
     }
