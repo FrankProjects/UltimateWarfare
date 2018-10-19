@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service;
 
 use FrankProjects\UltimateWarfare\Entity\Construction;
+use FrankProjects\UltimateWarfare\Entity\GameUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
-use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
@@ -21,11 +21,6 @@ final class ConstructionActionService
      * @var ConstructionRepository
      */
     private $constructionRepository;
-
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
 
     /**
      * @var GameUnitRepository
@@ -43,26 +38,31 @@ final class ConstructionActionService
     private $worldRegionUnitRepository;
 
     /**
+     * @var NetworthUpdaterService
+     */
+    private $networthUpdaterService;
+
+    /**
      * ConstructionActionService constructor.
      *
      * @param ConstructionRepository $constructionRepository
-     * @param FederationRepository $federationRepository
      * @param GameUnitRepository $gameUnitRepository
      * @param PlayerRepository $playerRepository
      * @param WorldRegionUnitRepository $worldRegionUnitRepository
+     * @param NetworthUpdaterService $networthUpdaterService
      */
     public function __construct(
         ConstructionRepository $constructionRepository,
-        FederationRepository $federationRepository,
         GameUnitRepository $gameUnitRepository,
         PlayerRepository $playerRepository,
-        WorldRegionUnitRepository $worldRegionUnitRepository
+        WorldRegionUnitRepository $worldRegionUnitRepository,
+        NetworthUpdaterService $networthUpdaterService
     ) {
         $this->constructionRepository = $constructionRepository;
-        $this->federationRepository = $federationRepository;
         $this->gameUnitRepository = $gameUnitRepository;
         $this->playerRepository = $playerRepository;
         $this->worldRegionUnitRepository = $worldRegionUnitRepository;
+        $this->networthUpdaterService = $networthUpdaterService;
     }
 
     /**
@@ -146,8 +146,6 @@ final class ConstructionActionService
      */
     public function removeGameUnits(WorldRegion $region, Player $player, GameUnitType $gameUnitType, array $destroyData): void
     {
-        $networth = 0;
-
         foreach ($destroyData as $gameUnitId => $amount) {
             $amount = intval($amount);
             if ($amount < 1) {
@@ -163,30 +161,10 @@ final class ConstructionActionService
                 continue;
             }
 
-            foreach ($region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId() !== $gameUnit->getId()) {
-                    continue;
-                }
-
-                if ($amount > $worldRegionUnit->getAmount()) {
-                    throw new RunTimeException('You do not have that many ' . $gameUnit->getName() . "s!");
-                }
-
-                $networth += $amount * $gameUnit->getNetworth();
-                $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $amount);
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
-            }
+            $this->removeGameUnitsFromWorldRegion($region, $gameUnit, $amount);
         }
 
-        $player->setNetworth($player->getNetworth() - $networth);
-
-        if ($player->getFederation() !== null) {
-            $federation = $player->getFederation();
-            $federation->setNetworth($federation->getNetworth() - $networth);
-            $this->federationRepository->save($federation);
-        }
-
-        $this->playerRepository->save($player);
+        $this->networthUpdaterService->updateNetworthForPlayer($player);
     }
 
     /**
@@ -238,5 +216,28 @@ final class ConstructionActionService
         }
 
         return $regionBuildings;
+    }
+
+    /**
+     * @param WorldRegion $worldRegion
+     * @param GameUnit $gameUnit
+     * @param int $amount
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function removeGameUnitsFromWorldRegion(WorldRegion $worldRegion, GameUnit $gameUnit, int $amount): void
+    {
+        foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
+            if ($worldRegionUnit->getGameUnit()->getId() !== $gameUnit->getId()) {
+                continue;
+            }
+
+            if ($amount > $worldRegionUnit->getAmount()) {
+                throw new RunTimeException('You do not have that many ' . $gameUnit->getName() . "s!");
+            }
+
+            $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $amount);
+            $this->worldRegionUnitRepository->save($worldRegionUnit);
+        }
     }
 }
