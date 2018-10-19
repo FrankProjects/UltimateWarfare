@@ -84,4 +84,20 @@ class FleetUnit
     {
         $this->gameUnit = $gameUnit;
     }
+
+    /**
+     * @param Fleet $fleet
+     * @param GameUnit $gameUnit
+     * @param int $amount
+     * @return FleetUnit
+     */
+    public static function createForFleet(Fleet $fleet, GameUnit $gameUnit, int $amount): FleetUnit
+    {
+        $fleetUnit = new FleetUnit();
+        $fleetUnit->setGameUnit($gameUnit);
+        $fleetUnit->setAmount($amount);
+        $fleetUnit->setFleet($fleet);
+
+        return $fleetUnit;
+    }
 }

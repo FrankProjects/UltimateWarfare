@@ -4,6 +4,7 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 
 /**
  * Fleet
@@ -165,5 +166,31 @@ class Fleet
     public function setFleetUnits(Collection $fleetUnits)
     {
         $this->fleetUnits = $fleetUnits;
+    }
+
+    /**
+     * @param Player $player
+     * @param WorldRegion $worldRegion
+     * @param WorldRegion $targetWorldRegion
+     * @return Fleet
+     */
+    public static function createForPlayer(Player $player, WorldRegion $worldRegion, WorldRegion $targetWorldRegion): Fleet
+    {
+        $distanceCalculator = new DistanceCalculator();
+        $distance = $distanceCalculator->calculateDistance(
+            $targetWorldRegion->getX(),
+            $targetWorldRegion->getY(),
+            $worldRegion->getX(),
+            $worldRegion->getY()
+        );
+
+        $fleet = new Fleet();
+        $fleet->setPlayer($player);
+        $fleet->setWorldRegion($worldRegion);
+        $fleet->setTargetWorldRegion($targetWorldRegion);
+        $fleet->setTimestamp(time());
+        $fleet->setTimestampArrive(time() + ($distance * 100));
+
+        return $fleet;
     }
 }
