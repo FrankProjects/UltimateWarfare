@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\Construction:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\ConstructionRepository
     table: construction
     id:
         id:

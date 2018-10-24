@@ -7,6 +7,11 @@ namespace FrankProjects\UltimateWarfare\Entity;
  */
 class Report
 {
+    const TYPE_ATTACKED = 1;
+    const TYPE_GENERAL = 2;
+    const TYPE_MARKET = 4;
+    const TYPE_AID = 5;
+
     /**
      * @var int
      */
@@ -134,5 +139,30 @@ class Report
         $report->setReport($message);
 
         return $report;
+    }
+
+    /**
+     * @param int $type
+     * @return string
+     */
+    public static function getReportSubject(int $type): string
+    {
+        if ($type == self::TYPE_ATTACKED) {
+            return 'Battle reports';
+        }
+
+        if ($type == self::TYPE_GENERAL) {
+            return 'General reports';
+        }
+
+        if ($type == self::TYPE_MARKET) {
+            return 'Market reports';
+        }
+
+        if ($type == self::TYPE_AID) {
+            return 'Aid reports';
+        }
+
+        return 'All reports';
     }
 }

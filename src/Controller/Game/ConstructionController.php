@@ -1,30 +1,81 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
+use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Service\ConstructionActionService;
+use FrankProjects\UltimateWarfare\Service\RegionActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class ConstructionController extends BaseGameController
 {
     /**
-     * @param Request $request
+     * @var ConstructionRepository
+     */
+    private $constructionRepository;
+
+    /**
+     * @var GameUnitTypeRepository
+     */
+    private $gameUnitTypeRepository;
+
+    /**
+     * @var WorldRegionRepository
+     */
+    private $worldRegionRepository;
+
+    /**
+     * @var ConstructionActionService
+     */
+    private $constructionActionService;
+
+    /**
+     * @var RegionActionService
+     */
+    private $regionActionService;
+
+    /**
+     * ConstructionController constructor.
+     *
+     * @param ConstructionRepository $constructionRepository
+     * @param GameUnitTypeRepository $gameUnitTypeRepository
+     * @param WorldRegionRepository $worldRegionRepository
+     * @param ConstructionActionService $constructionActionService
+     * @param RegionActionService $regionActionService
+     */
+    public function __construct(
+        ConstructionRepository $constructionRepository,
+        GameUnitTypeRepository $gameUnitTypeRepository,
+        WorldRegionRepository $worldRegionRepository,
+        ConstructionActionService $constructionActionService,
+        RegionActionService $regionActionService
+    ) {
+        $this->constructionRepository = $constructionRepository;
+        $this->gameUnitTypeRepository = $gameUnitTypeRepository;
+        $this->worldRegionRepository = $worldRegionRepository;
+        $this->constructionActionService = $constructionActionService;
+        $this->regionActionService = $regionActionService;
+    }
+
+    /**
      * @param int $type
      * @return Response
      */
-    public function construction(Request $request, int $type): Response
+    public function construction(int $type): Response
     {
-        $em = $this->getEm();
-        $gameUnitType = $em->getRepository('Game:GameUnitType')
-            ->find($type);
-
-        $gameUnitTypes = $em->getRepository('Game:GameUnitType')
-            ->findAll();
+        $gameUnitType = $this->gameUnitTypeRepository->find($type);
+        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
         if (!$gameUnitType) {
-            $constructionData = $this->getConstructionData($this->getPlayer());
+            $constructionData = $this->constructionRepository->getGameUnitConstructionSumByPlayer($this->getPlayer());
             return $this->render('game/constructionSummary.html.twig', [
                 'player' => $this->getPlayer(),
                 'gameUnitTypes' => $gameUnitTypes,
@@ -32,8 +83,7 @@ final class ConstructionController extends BaseGameController
             ]);
         }
 
-        $constructions = $em->getRepository('Game:Construction')
-            ->findByGameUnitType($this->getPlayer(), $gameUnitType);
+        $constructions = $this->constructionRepository->findByPlayerAndGameUnitType($this->getPlayer(), $gameUnitType);
 
         return $this->render('game/construction.html.twig', [
             'player' => $this->getPlayer(),
@@ -44,16 +94,125 @@ final class ConstructionController extends BaseGameController
     }
 
     /**
+     * XXX TODO: Fix unit info page
+     * XXX TODO: Fix buildtime to human readable format
+     *
      * @param Request $request
+     * @param int $regionId
+     * @param int $gameUnitTypeId
+     * @return Response
+     * @throws \Exception
+     */
+    public function constructGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
+    {
+        $player = $this->getPlayer();
+
+        try {
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+        } catch (WorldRegionNotFoundException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Game/RegionList', [], 302);
+        }
+
+        $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
+
+        if (!$gameUnitType) {
+            $this->addFlash('error', 'Unknown GameUnitType!');
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
+        }
+
+        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
+            $this->addFlash('error', 'This is not your region!');
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
+        }
+
+        if ($request->isMethod('POST')) {
+            $this->constructionActionService->constructGameUnits($worldRegion, $player, $gameUnitType, $request->get('construct'));
+
+            // XXX TODO: Refactor to show what!
+            if ($gameUnitType->getId() == 4) {
+                $this->addFlash('success', 'New units are now being trained!');
+            } else {
+                $this->addFlash('success', 'New buildings are now being built!');
+            }
+        }
+
+        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
+
+        $gameUnitData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
+        $constructionData = $this->constructionRepository->getGameUnitConstructionSumByWorldRegion($worldRegion);
+
+        return $this->render('game/region/constructGameUnits.html.twig', [
+            'region' => $worldRegion,
+            'player' => $player,
+            'spaceLeft' => $this->constructionActionService->getBuildingSpaceLeft($gameUnitType, $worldRegion),
+            'gameUnitType' => $gameUnitType,
+            'gameUnitTypes' => $gameUnitTypes,
+            'gameUnitData' => $gameUnitData,
+            'constructionData' => $constructionData
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $regionId
+     * @param int $gameUnitTypeId
+     * @return Response
+     * @throws \Exception
+     */
+    public function removeGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
+    {
+        $player = $this->getPlayer();
+
+        try {
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+        } catch (WorldRegionNotFoundException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Game/RegionList', [], 302);
+        }
+
+        $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
+
+        if (!$gameUnitType) {
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
+        }
+
+        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
+        }
+
+        if ($request->isMethod('POST')) {
+            $this->constructionActionService->removeGameUnits($worldRegion, $player, $gameUnitType, $request->get('destroy'));
+
+            // XXX TODO: Refactor to show what!
+            if ($gameUnitType->getId() == 4) {
+                $this->addFlash('success', "You have disbanded units!");
+            } else {
+                $this->addFlash('success', "You have destroyed buildings!");
+            }
+        }
+
+        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
+
+        $gameUnitData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
+
+        return $this->render('game/region/removeGameUnits.html.twig', [
+            'region' => $worldRegion,
+            'player' => $player,
+            'gameUnitType' => $gameUnitType,
+            'gameUnitTypes' => $gameUnitTypes,
+            'gameUnitData' => $gameUnitData,
+        ]);
+    }
+
+    /**
      * @param int $constructionId
      * @return RedirectResponse
      */
-    public function cancel(Request $request, int $constructionId): RedirectResponse
+    public function cancel(int $constructionId): RedirectResponse
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-        $construction = $em->getRepository('Game:Construction')
-            ->find($constructionId);
+        $construction = $this->constructionRepository->find($constructionId);
 
         if (!$construction) {
             $this->addFlash('error', "This construction queue doesn't exist!");
@@ -65,41 +224,13 @@ final class ConstructionController extends BaseGameController
             return $this->redirectToRoute('Game/Construction', [], 302);
         }
 
-        $em->remove($construction);
-        $em->flush();
+        try {
+            $this->constructionRepository->remove($construction);
+            $this->addFlash('success', 'Successfully cancelled construction queue!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
 
-        $this->addFlash('success', 'Succesfully cancelled construction queue!');
         return $this->redirectToRoute('Game/Construction', [], 302);
-    }
-
-    /**
-     * @param Player $player
-     * @return array
-     */
-    private function getConstructionData(Player $player): array
-    {
-        $gameUnitData = $this->getGameUnitFields();
-
-        foreach ($player->getConstructions() as $data) {
-            $gameUnitData[$data->getGameUnit()->getRowName()] += $data->getNumber();
-        }
-
-        return $gameUnitData;
-    }
-
-    /**
-     * @return array
-     */
-    private function getGameUnitFields(): array
-    {
-        $em = $this->getEm();
-        $repository = $em->getRepository('Game:GameUnit');
-        $gameUnits = $repository->findAll();
-        $gameUnitArray = [];
-        foreach ($gameUnits as $unit) {
-            $gameUnitArray[$unit->getRowName()] = 0;
-        }
-
-        return $gameUnitArray;
     }
 }

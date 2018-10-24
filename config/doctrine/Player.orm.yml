@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\Player:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\PlayerRepository
     table: player
     indexes:
         name:

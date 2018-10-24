@@ -13,6 +13,11 @@ class Player
     /**
      * @var int
      */
+    const PRICE_PER_REGION = 10000;
+
+    /**
+     * @var int
+     */
     private $id;
 
     /**
@@ -906,5 +911,13 @@ class Player
         $player->setFood($world->getFood());
 
         return $player;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRegionPrice(): int
+    {
+        return $this->getRegions() * self::PRICE_PER_REGION;
     }
 }

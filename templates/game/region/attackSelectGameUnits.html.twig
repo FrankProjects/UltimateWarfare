@@ -30,7 +30,11 @@
                         </a>
                     </td>
                     <td width="100" align="center">
-                        {{ playerRegion.gameUnits[gameUnit.rowName] }}
+                        {% if gameUnitsData[gameUnit.id] is defined and gameUnitsData[gameUnit.id] > 0 %}
+                            {{ gameUnitsData[gameUnit.id] }}
+                        {% else %}
+                            0
+                        {% endif %}
                     </td>
 
                     <td width="200" align="center">

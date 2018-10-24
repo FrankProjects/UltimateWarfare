@@ -3,7 +3,15 @@
     <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
         <tr>
             {% if player.regions > 1 and region.player.id is defined and region.player.id == player.id %}
-            <td class="tabletop" colspan="3" align="center"><a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegionId}) }}"><<</a> <b>Region</b> <a class="B" href="{{ path('Game/World/Region', {'regionId': nextRegionId}) }}">>></a></td>
+            <td class="tabletop" colspan="3" align="center">
+                {% if previousRegion is not null %}
+                    <a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegion.id}) }}"><<</a>
+                {% endif %}
+                <b>Region</b>
+                {% if nextRegion is not null %}
+                    <a class="B" href="{{ path('Game/World/Region', {'regionId': nextRegion.id}) }}">>></a>
+                {% endif %}
+            </td>
             {% else %}
             <td class="tabletop" colspan="3" align="center"><b>Region</b></td>
             {% endif %}
@@ -47,155 +55,58 @@
         <a class="B" href="{{ path('Game/World/Region/Buy', {'regionId': region.id}) }}">Buy</a>
     {% elseif region.player.id == player.id %}
     <br /><br />
-    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
-        <tr>
-            <td width="350" class="tabletop" colspan="2" align="center"><b>Region Infrastrucure</b></td>
-            <td width="350" class="tabletop" colspan="2" align="center"><b>Units</b></td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Economic Centers:</td>
-            <td width="200" align="center">{{ region.gameUnits['economic'] }}</td>
-            <td width="150" align="center">Soldiers:</td>
-            <td width="200" align="center">{{ region.gameUnits['soldier'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Farms:</td>
-            <td width="200" align="center">{{ region.gameUnits['farm'] }}</td>
-            <td width="150" align="center">Tanks:</td>
-            <td width="200" align="center">{{ region.gameUnits['tank'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Mines:</td>
-            <td width="200" align="center">{{ region.gameUnits['mine'] }}</td>
-            <td width="150" align="center">Planes:</td>
-            <td width="200" align="center">{{ region.gameUnits['plane'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Woodcutters:</td>
-            <td width="200" align="center">{{ region.gameUnits['woodcutter'] }}</td>
-            <td width="150" align="center">Ships:</td>
-            <td width="200" align="center">{{ region.gameUnits['ship'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Houses:</td>
-            <td width="200" align="center">{{ region.gameUnits['house'] }}</td>
-            <td width="150" align="center">Minesweepers:</td>
-            <td width="200" align="center">{{ region.gameUnits['minesweeper'] }}</td>
-        </tr>
-        <tr>
-            <td colspan="2" align="center">
-            <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Building</a><br />
-            <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Demolish Buildings</a><br />
-            </td>
+
+    {% for gameUnitType in gameUnitTypes %}
+        <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+            <tr>
+                <td width="700" class="tabletop" colspan="2" align="center"><b>{{ gameUnitType.name }}</b></td>
+            </tr>
+            {% set hasGameUnit = 0 %}
+            {% for gameUnit in gameUnitType.gameUnits %}
+                {% if gameUnitsData[gameUnit.id] is defined and gameUnitsData[gameUnit.id] > 0 %}
+                    {% set hasGameUnit = 1 %}
+                    <tr>
+                        <td width="350" align="center">{{ gameUnit.name }}</td>
+                        <td width="350" align="center">{{ gameUnitsData[gameUnit.id] }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
+            {% if hasGameUnit == 0 %}
+                <tr>
+                    <td colspan="2" width="700" align="center">You don't have any {{ gameUnitType.name }}</td>
+                </tr>
+            {% endif %}
 
             <td colspan="2" align="center">
-                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Building Units</a><br />
-                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Disband Units</a><br />
-                <a class="B" href="{{ path('Game/World/Region/SendUnits', {'regionId': region.id}) }}">Send Units</a>
+                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">{{ gameUnitType.name }}</a><br />
+                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">Demolish {{ gameUnitType.name }}</a><br />
             </td>
-        </tr>
-    </table>
+        </table>
+    {% endfor %}
 
-    <br />
-    <br />
-
-    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
-        <tr>
-            <td width="350" class="tabletop" colspan="2" align="center"><b>Defence</b></td>
-            <td width="350" class="tabletop" colspan="2" align="center"><b>Special</b></td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Sea Mines:</td>
-            <td width="200" align="center">{{ region.gameUnits['sea_mine'] }}</td>
-            <td width="150" align="center">Airfields:</td>
-            <td width="200" align="center">{{ region.gameUnits['airport'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Land Mines:</td>
-            <td width="200" align="center">{{ region.gameUnits['land_mine'] }}</td>
-            <td width="150" align="center">Harbors:</td>
-            <td width="200" align="center">{{ region.gameUnits['harbor'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Bunkers:</td>
-            <td width="200" align="center">{{ region.gameUnits['bunker'] }}</td>
-            <td width="150" align="center">Train Stations:</td>
-            <td width="200" align="center">{{ region.gameUnits['station'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Anti Air Missiles:</td>
-            <td width="200" align="center">{{ region.gameUnits['anti_air_missile'] }}</td>
-            <td width="150" align="center"></td>
-            <td width="200" align="center"></td>
-        </tr>
-        <tr>
-            <td colspan="2" align="center">
-                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 2}) }}">Building Defences</a><br />
-                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 2}) }}">Demolish defensive buildings </a>
-            </td>
-
-            <td colspan="2" align="center">
-                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 3}) }}">Building Specials</a><br />
-                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 3}) }}">Demolish specials buildings</a>
-            </td>
-        </tr>
-    </table>
-
-    <br />
-    <br />
-
-    <a name="bottom"></a>
-
+        <br />
     <table width="350" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
         <tr>
-            <td width="350" class="tabletop" colspan="2" align="center"><b>Special Operation Units</b></td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Guards:</td>
-            <td width="200" align="center">{{ region.gameUnits['guard'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Special ops:</td>
-            <td width="200" align="center">{{ region.gameUnits['sp_op'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Snipers:</td>
-            <td width="200" align="center">{{ region.gameUnits['sniper'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Submarines:</td>
-            <td width="200" align="center">{{ region.gameUnits['submarine'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Stealth Bombers:</td>
-            <td width="200" align="center">{{ region.gameUnits['stealth_bomber'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Rockets:</td>
-            <td width="200" align="center">{{ region.gameUnits['rocket'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Chemical Rockets:</td>
-            <td width="200" align="center">{{ region.gameUnits['chem_rocket'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Spies:</td>
-            <td width="200" align="center">{{ region.gameUnits['spy'] }}</td>
-        </tr>
-        <tr>
-            <td width="150" align="center">Nuclear Missiles:</td>
-            <td width="200" align="center">{{ region.gameUnits['nuclear_missile'] }}</td>
+            <td width="350" class="tabletop" colspan="2" align="center"><b>Other Actions</b></td>
         </tr>
         <tr>
             <td colspan="2" align="center">
-                <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 5}) }}">Build Special Units</a><br />
-                <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': 5}) }}">Demolish Special Units </a>
+                 <a class="B" href="{{ path('Game/World/Region/SendUnits', {'regionId': region.id}) }}">Send Units</a>
             </td>
         </tr>
     </table>
 
+        <a name="bottom"></a>
+
         {% if player.regions > 1 %}
-            <a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegionId}) }}#bottom"><<</a> <b>Region</b> <a class="B" href="{{ path('Game/World/Region', {'regionId': nextRegionId}) }}#bottom">>></a>
+            {% if previousRegion is not null %}
+                <a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegion.id}) }}#bottom"><<</a>
+            {% endif %}
+            <b>Region</b>
+            {% if nextRegion is not null %}
+                <a class="B" href="{{ path('Game/World/Region', {'regionId': nextRegion.id}) }}#bottom">>></a>
+            {% endif %}
         {% endif %}
     {% else %}
         <br /><br /><a class="B" href="{{ path('Game/World/Region/Attack', {'regionId': region.id}) }}">Attack</a>

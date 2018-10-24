@@ -8,6 +8,16 @@ namespace FrankProjects\UltimateWarfare\Entity;
 class MarketItem
 {
     /**
+     * @var string
+     */
+    const TYPE_BUY = 'buy';
+
+    /**
+     * @var string
+     */
+    const TYPE_SELL = 'sell';
+
+    /**
      * @var int
      */
     private $id;
@@ -38,9 +48,9 @@ class MarketItem
     private $gameResource;
 
     /**
-     * @var MarketItemType
+     * @var string
      */
-    private $marketItemType;
+    private $type;
 
     /**
      * Get id
@@ -57,7 +67,7 @@ class MarketItem
      *
      * @param int $amount
      */
-    public function setAmount(int $amount)
+    public function setAmount(int $amount): void
     {
         $this->amount = $amount;
     }
@@ -77,7 +87,7 @@ class MarketItem
      *
      * @param int $price
      */
-    public function setPrice(int $price)
+    public function setPrice(int $price): void
     {
         $this->price = $price;
     }
@@ -103,7 +113,7 @@ class MarketItem
     /**
      * @param World $world
      */
-    public function setWorld(World $world)
+    public function setWorld(World $world): void
     {
         $this->world = $world;
     }
@@ -119,7 +129,7 @@ class MarketItem
     /**
      * @param Player $player
      */
-    public function setPlayer(Player $player)
+    public function setPlayer(Player $player): void
     {
         $this->player = $player;
     }
@@ -135,24 +145,49 @@ class MarketItem
     /**
      * @param GameResource $gameResource
      */
-    public function setGameResource(GameResource $gameResource)
+    public function setGameResource(GameResource $gameResource): void
     {
         $this->gameResource = $gameResource;
     }
 
     /**
-     * @return MarketItemType
+     * @return string
      */
-    public function getMarketItemType(): MarketItemType
+    public function getType(): string
     {
-        return $this->marketItemType;
+        return $this->type;
     }
 
     /**
-     * @param MarketItemType $marketItemType
+     * @param string $type
      */
-    public function setMarketItemType(MarketItemType $marketItemType)
+    public function setType(string $type): void
     {
-        $this->marketItemType = $marketItemType;
+        if (!in_array($type, [self::TYPE_BUY, self::TYPE_SELL])) {
+            throw new \InvalidArgumentException("Invalid type");
+        }
+
+        $this->type = $type;
+    }
+
+    /**
+     * @param Player $player
+     * @param GameResource $gameResource
+     * @param int $amount
+     * @param int $price
+     * @param string $type
+     * @return MarketItem
+     */
+    public static function createForPlayer(Player $player, GameResource $gameResource, int $amount, int $price, string $type): MarketItem
+    {
+        $marketItem = new MarketItem();
+        $marketItem->setWorld($player->getWorld());
+        $marketItem->setPlayer($player);
+        $marketItem->setGameResource($gameResource);
+        $marketItem->setAmount($amount);
+        $marketItem->setPrice($price);
+        $marketItem->setType($type);
+
+        return $marketItem;
     }
 }

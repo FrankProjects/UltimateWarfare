@@ -22,14 +22,24 @@
                 <td width="700" colspan="2" class="tabletop"><b>{{ gameUnitType.name }}</b></td>
             </tr>
 
+            {% set gameUnitInConstruction = 0 %}
             {% for gameUnit in gameUnitType.gameUnits %}
-                <tr>
-                    <td width="350">{{ gameUnit.nameMulti }}:</td>
-                    <td width="350">
-                        {{ constructionData[gameUnit.rowName] }}
-                    </td>
-                </tr>
+                {% if constructionData[gameUnit.id] is defined and constructionData[gameUnit.id] > 0 %}
+                    {% set gameUnitInConstruction = 1 %}
+                    <tr>
+                        <td width="350">{{ gameUnit.nameMulti }}:</td>
+                        <td width="350">
+                            {{ constructionData[gameUnit.id] }}
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
+
+            {% if gameUnitInConstruction == 0 %}
+                <tr>
+                    <td colspan="2" width="700" align="center">You don't have any {{ gameUnitType.name }} in construction</td>
+                </tr>
+            {% endif %}
         {% endfor %}
     </table>
 {% endblock %}

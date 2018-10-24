@@ -1,27 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Service;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
+use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 
 final class GameEngine
 {
     /**
-     * @var EntityManager $em
+     * @var ConstructionRepository
+     */
+    private $constructionRepository;
+
+    /**
+     * @var EntityManagerInterface $em
      */
     private $em;
 
     /**
      * GameEngine constructor.
      *
-     * @param EntityManager $em
+     * @param ConstructionRepository $constructionRepository
+     * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(ConstructionRepository $constructionRepository, EntityManagerInterface $em)
     {
+        $this->constructionRepository = $constructionRepository;
         $this->em = $em;
     }
 
@@ -51,13 +61,13 @@ final class GameEngine
     }
 
     /**
+     * @param int $timestamp
      * @return bool
      * @throws \Exception
      */
     public function processConstructionQueue(int $timestamp): bool
     {
-        $constructions = $this->em->getRepository('Game:Construction')
-            ->getCompletedConstructions($timestamp);
+        $constructions = $this->constructionRepository->getCompletedConstructions($timestamp);
 
         /** @var \FrankProjects\UltimateWarfare\Entity\Construction $construction */
         foreach ($constructions as $construction) {
@@ -66,7 +76,7 @@ final class GameEngine
             if ($worldRegion->getPlayer()->getId() !== $construction->getPlayer()->getId()) {
                 // Never process construction queue items for a region that no longer belongs to this player
                 try {
-                    $this->em->remove($construction);
+                    $this->constructionRepository->remove($construction);
                 } catch (ORMException $e) {
                     return false;
                 }
@@ -78,11 +88,12 @@ final class GameEngine
 
             $gameUnitExist = false;
             foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getId() == $construction->getGameUnit()->getId()) {
+                if ($worldRegionUnit->getGameUnit()->getId() == $construction->getGameUnit()->getId()) {
                     $gameUnitExist = true;
                     break;
                 }
             }
+
 
             if ($gameUnitExist) {
                 $worldRegionUnit->setAmount($construction->getNumber());
@@ -136,7 +147,7 @@ final class GameEngine
                 $this->em->persist($worldRegionUnit);
                 $this->em->persist($player);
                 $this->em->persist($report);
-                $this->em->remove($construction);
+                $this->constructionRepository->remove($construction);
                 $this->em->flush();
             } catch (ORMException $e) {
                 return false;
@@ -211,10 +222,10 @@ final class GameEngine
         $incomeWoodRate = $player->getIncomeWood() - $player->getUpkeepWood();
         $incomeSteelRate = $player->getIncomeSteel() - $player->getUpkeepSteel();
         
-        $incomeCash = round(($incomeCashRate / 3600) * $timeDiff, 3);
-        $incomeFood = round(($incomeFoodRate / 3600) * $timeDiff, 3);
-        $incomeWood = round(($incomeWoodRate / 3600) * $timeDiff, 3);
-        $incomeSteel = round(($incomeSteelRate / 3600) * $timeDiff, 3);
+        $incomeCash = intval(($incomeCashRate / 3600) * $timeDiff);
+        $incomeFood = intval(($incomeFoodRate / 3600) * $timeDiff);
+        $incomeWood = intval(($incomeWoodRate / 3600) * $timeDiff);
+        $incomeSteel = intval(($incomeSteelRate / 3600) * $timeDiff);
 
         $newCash = $player->getCash() + $incomeCash;
         if ($newCash < 0) {

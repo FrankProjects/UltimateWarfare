@@ -7,11 +7,7 @@
 {% block content %}
     <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
         <tr>
-            {% if player.regions > 1 and region.player.id is defined and region.player.id == player.id %}
-                <td class="tabletop" colspan="3" align="center"><a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegionId}) }}"><<</a> <b>Region</b> <a class="B" href="{{ path('Game/World/Region', {'regionId': nextRegionId}) }}">>></a></td>
-            {% else %}
-                <td class="tabletop" colspan="3" align="center"><b>Region</b></td>
-            {% endif %}
+            <td class="tabletop" colspan="3" align="center"><b>Region</b></td>
         </tr>
         <tr>
             <td rowspan="3" width="120">

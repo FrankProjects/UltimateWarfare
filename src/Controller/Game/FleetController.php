@@ -1,28 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Repository\FleetRepository;
+use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
+use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Service\FleetActionService;
+use FrankProjects\UltimateWarfare\Service\RegionActionService;
+use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class FleetController extends BaseGameController
 {
     /**
-     * @var FleetRepository
+     * @var WorldRegionRepository
      */
-    private $fleetRepository;
+    private $worldRegionRepository;
 
-    public function __construct(FleetRepository $fleetRepository)
-    {
-        $this->fleetRepository = $fleetRepository;
+    /**
+     * @var GameUnitTypeRepository
+     */
+    private $gameUnitTypeRepository;
+
+    /**
+     * @var FleetActionService
+     */
+    private $fleetActionService;
+
+    /**
+     * @var RegionActionService
+     */
+    private $regionActionService;
+
+    /**
+     * FleetController constructor.
+     *
+     * @param WorldRegionRepository $worldRegionRepository
+     * @param GameUnitTypeRepository $gameUnitTypeRepository
+     * @param FleetActionService $fleetActionService
+     * @param RegionActionService $regionActionService
+     */
+    public function __construct(
+        WorldRegionRepository $worldRegionRepository,
+        GameUnitTypeRepository $gameUnitTypeRepository,
+        FleetActionService $fleetActionService,
+        RegionActionService $regionActionService
+    ) {
+        $this->worldRegionRepository = $worldRegionRepository;
+        $this->gameUnitTypeRepository = $gameUnitTypeRepository;
+        $this->fleetActionService = $fleetActionService;
+        $this->regionActionService = $regionActionService;
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function fleetList(Request $request): Response
+    public function fleetList(): Response
     {
         return $this->render('game/fleetList.html.twig', [
             'player' => $this->getPlayer()
@@ -30,49 +69,17 @@ final class FleetController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @param int $fleetId
      * @return Response
      */
-    public function recall(Request $request, int $fleetId): Response
+    public function recall(int $fleetId): Response
     {
-        $fleet = $this->fleetRepository->find($fleetId);
-
-        if ($fleet === null) {
-            $this->addFlash('error', 'No such fleet!');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
+        try {
+            $this->fleetActionService->recall($fleetId, $this->getPlayer());
+            $this->addFlash('success', 'You successfully recalled your troops!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
-
-        if ($fleet->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'This is not your fleet');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
-        }
-
-        if ($fleet->getWorldRegion()->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'You are not owner if this region!');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
-        }
-
-        $em = $this->getEm();
-
-        foreach ($fleet->getFleetUnits() as $fleetUnit) {
-            $em->remove($fleetUnit);
-            // XXX TODO: fix recall fleet units
-        }
-
-        $em->remove($fleet);
-        $em->flush();
-
-        $this->addFlash('success', 'You succesfully recalled your forces!');
 
         return $this->render('game/fleetList.html.twig', [
             'player' => $this->getPlayer()
@@ -80,52 +87,97 @@ final class FleetController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @param int $fleetId
      * @return Response
      */
-    public function reinforce(Request $request, int $fleetId): Response
+    public function reinforce(int $fleetId): Response
     {
-        $fleet = $this->fleetRepository->find($fleetId);
-
-        if ($fleet === null) {
-            $this->addFlash('error', 'No such fleet!');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
+        try {
+            $this->fleetActionService->reinforce($fleetId, $this->getPlayer());
+            $this->addFlash('success', 'You successfully reinforced your region!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
-
-        if ($fleet->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'This is not your fleet');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
-        }
-
-        if ($fleet->getTargetWorldRegion()->getPlayer()->getId() != $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'You are not owner if this region!');
-
-            return $this->render('game/fleetList.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
-        }
-
-        $em = $this->getEm();
-
-        foreach ($fleet->getFleetUnits() as $fleetUnit) {
-            $em->remove($fleetUnit);
-            // XXX TODO: fix reinforce fleet units
-        }
-
-        $em->remove($fleet);
-        $em->flush();
-
-        $this->addFlash('success', 'You succesfully reinforced your region!');
 
         return $this->render('game/fleetList.html.twig', [
             'player' => $this->getPlayer()
         ]);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param int $regionId
+     * @return Response
+     * @throws \Exception
+     */
+    public function sendGameUnits(Request $request, int $regionId): Response
+    {
+        $player = $this->getPlayer();
+
+        try {
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+        } catch (WorldRegionNotFoundException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Game/RegionList', [], 302);
+        }
+
+        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
+            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
+        }
+
+        $gameUnitType = $this->gameUnitTypeRepository->find(4);
+
+        if ($request->getMethod() == 'POST') {
+            $targetRegionId = intval($request->request->get('target', 0));
+            $targetRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($targetRegionId, $player);
+
+            if ($targetRegion) {
+                try {
+                    $this->fleetActionService->sendGameUnits($worldRegion, $targetRegion, $player, $gameUnitType, $request->get('units'));
+                    $this->addFlash('success', 'You successfully send units!');
+                } catch (Throwable $e) {
+                    $this->addFlash('error', $e->getMessage());
+                }
+            } else {
+                $this->addFlash('error', "Target region does not exist.");
+            }
+        }
+
+        $gameUnitsData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
+        $targetRegions = $this->getTargetWorldRegionData($player, $worldRegion);
+
+        return $this->render('game/region/sendUnits.html.twig', [
+            'region' => $worldRegion,
+            'player' => $player,
+            'gameUnitType' => $gameUnitType,
+            'targetRegions' => $targetRegions,
+            'gameUnitsData' => $gameUnitsData
+        ]);
+    }
+
+    /**
+     * @param Player $player
+     * @param WorldRegion $region
+     * @return WorldRegion[]
+     */
+    private function getTargetWorldRegionData(Player $player, WorldRegion $region): array
+    {
+        $distanceCalculator = new DistanceCalculator();
+
+        $targetRegions = [];
+        foreach ($player->getWorldRegions() as $worldRegion) {
+            $distance = $distanceCalculator->calculateDistance(
+                    $worldRegion->getX(),
+                    $worldRegion->getY(),
+                    $region->getX(),
+                    $region->getY()
+                ) * 100;
+
+            $worldRegion->distance = $distance;
+            $targetRegions[] = $worldRegion;
+        }
+
+        return $targetRegions;
     }
 }
