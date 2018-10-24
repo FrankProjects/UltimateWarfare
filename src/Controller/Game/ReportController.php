@@ -38,9 +38,8 @@ final class ReportController extends BaseGameController
             case Report::TYPE_MARKET:
             case Report::TYPE_AID:
                 $reports = $this->reportRepository->findReportsByType($this->getPlayer(), $type);
-                break;
-
-            default:
+        break;
+        default:
                 $reports = $this->reportRepository->findReports($this->getPlayer());
         endswitch;
 
