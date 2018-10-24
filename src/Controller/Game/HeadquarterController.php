@@ -21,8 +21,7 @@ final class HeadquarterController extends BaseGameController
      */
     public function __construct(
         ReportRepository $reportRepository
-    )
-    {
+    ) {
         $this->reportRepository = $reportRepository;
     }
 

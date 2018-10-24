@@ -140,4 +140,29 @@ class Report
 
         return $report;
     }
+
+    /**
+     * @param int $type
+     * @return string
+     */
+    public static function getReportSubject(int $type): string
+    {
+        if ($type == self::TYPE_ATTACKED) {
+            return 'Battle reports';
+        }
+
+        if ($type == self::TYPE_GENERAL) {
+            return 'General reports';
+        }
+
+        if ($type == self::TYPE_MARKET) {
+            return 'Market reports';
+        }
+
+        if ($type == self::TYPE_AID) {
+            return 'Aid reports';
+        }
+
+        return 'All reports';
+    }
 }

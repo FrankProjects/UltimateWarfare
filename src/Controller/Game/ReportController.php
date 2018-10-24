@@ -22,8 +22,7 @@ final class ReportController extends BaseGameController
      */
     public function __construct(
         ReportRepository $reportRepository
-    )
-    {
+    ) {
         $this->reportRepository = $reportRepository;
     }
 
@@ -35,33 +34,14 @@ final class ReportController extends BaseGameController
     {
         switch ($type):
             case Report::TYPE_ATTACKED:
-                $reportQueryVariable = "attacked";
-                $reportSubject = "Battle reports";
-                $reportSummary = "You will see your battle reports here.";
-                break;
-
             case Report::TYPE_GENERAL:
-                $reportQueryVariable = "general";
-                $reportSubject = "General reports";
-                $reportSummary = "You will see your general reports here.";
-                break;
-
             case Report::TYPE_MARKET:
-                $reportQueryVariable = "market";
-                $reportSubject = "Market reports";
-                $reportSummary = "You will see your market reports here.";
-                break;
-
             case Report::TYPE_AID:
-                $reportQueryVariable = "aid";
-                $reportSubject = "Aid reports";
-                $reportSummary = "You will see your aid reports here.";
+                $reports = $this->reportRepository->findReportsByType($this->getPlayer(), $type);
                 break;
 
             default:
-                $reportQueryVariable = "all";
-                $reportSubject = "All reports";
-                $reportSummary = "You will see your reports here.";
+                $reports = $this->reportRepository->findReports($this->getPlayer());
         endswitch;
 
         /**
@@ -74,17 +54,10 @@ final class ReportController extends BaseGameController
          *
          */
 
-        if ($reportQueryVariable == 'all') {
-            $reports = $this->reportRepository->findReports($this->getPlayer());
-        } else {
-            $reports = $this->reportRepository->findReportsByType($this->getPlayer(), $type);
-        }
-
         return $this->render('game/reports.html.twig', [
             'player' => $this->getPlayer(),
             'reports' => $reports,
-            'reportSummary' => $reportSummary,
-            'reportSubject' => $reportSubject
+            'reportSubject' => Report::getReportSubject($type)
         ]);
     }
 }

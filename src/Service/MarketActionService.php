@@ -261,7 +261,6 @@ final class MarketActionService
                 default:
                     throw new RunTimeException("Unknown resource type!");
             }
-
         } else {
             throw new RunTimeException("Invalid option!");
         }
