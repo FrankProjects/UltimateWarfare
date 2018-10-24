@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\Report:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\ReportRepository
     table: report
     indexes:
         hq_reports:
