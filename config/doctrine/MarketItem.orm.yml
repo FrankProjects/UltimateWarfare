@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\MarketItem:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\MarketItemRepository
     table: market_item
     id:
         id:
@@ -22,6 +21,9 @@ FrankProjects\UltimateWarfare\Entity\MarketItem:
             nullable: false
             options:
                 unsigned: false
+        type:
+            type: string
+            nullable: false
     manyToOne:
         player:
             targetEntity: Player
@@ -40,11 +42,5 @@ FrankProjects\UltimateWarfare\Entity\MarketItem:
             inversedBy: marketItems
             joinColumn:
                 name: game_resource_id
-                referencedColumnName: id
-        marketItemType:
-            targetEntity: MarketItemType
-            inversedBy: marketItems
-            joinColumn:
-                name: market_item_type_id
                 referencedColumnName: id
     lifecycleCallbacks: {  }
