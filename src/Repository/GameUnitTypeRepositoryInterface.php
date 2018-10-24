@@ -19,7 +19,6 @@ interface GameUnitTypeRepositoryInterface
      */
     public function findAll(): array;
 
-
     /**
      * @param GameUnitType $gameUnitType
      */

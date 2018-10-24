@@ -1,73 +1,83 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use Symfony\Component\HttpFoundation\Request;
+use FrankProjects\UltimateWarfare\Entity\Report;
+use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ReportController extends BaseGameController
 {
     /**
-     * @param Request $request
+     * @var ReportRepository
+     */
+    private $reportRepository;
+
+    /**
+     * ReportController constructor.
+     *
+     * @param ReportRepository $reportRepository
+     */
+    public function __construct(
+        ReportRepository $reportRepository
+    )
+    {
+        $this->reportRepository = $reportRepository;
+    }
+
+    /**
      * @param int $type
      * @return Response
      */
-    public function report(Request $request, int $type): Response
+    public function report(int $type): Response
     {
         switch ($type):
-            case 1:
+            case Report::TYPE_ATTACKED:
                 $reportQueryVariable = "attacked";
-        $reportSubject = "Battle reports";
-        $reportSummary = "You will see your battle reports here.";
-        $reportType = 1;
-        break;
+                $reportSubject = "Battle reports";
+                $reportSummary = "You will see your battle reports here.";
+                break;
 
-        case 2:
+            case Report::TYPE_GENERAL:
                 $reportQueryVariable = "general";
-        $reportSubject = "General reports";
-        $reportSummary = "You will see your general reports here.";
-        $reportType = 2;
-        break;
+                $reportSubject = "General reports";
+                $reportSummary = "You will see your general reports here.";
+                break;
 
-        case 4:
+            case Report::TYPE_MARKET:
                 $reportQueryVariable = "market";
-        $reportSubject = "Market reports";
-        $reportSummary = "You will see your market reports here.";
-        $reportType = 4;
-        break;
+                $reportSubject = "Market reports";
+                $reportSummary = "You will see your market reports here.";
+                break;
 
-        case 5:
+            case Report::TYPE_AID:
                 $reportQueryVariable = "aid";
-        $reportSubject = "Aid reports";
-        $reportSummary = "You will see your aid reports here.";
-        $reportType = 5;
-        break;
+                $reportSubject = "Aid reports";
+                $reportSummary = "You will see your aid reports here.";
+                break;
 
-        default:
+            default:
                 $reportQueryVariable = "all";
-        $reportSubject = "All reports";
-        $reportSummary = "You will see your reports here.";
-        $reportType = 10;
+                $reportSubject = "All reports";
+                $reportSummary = "You will see your reports here.";
         endswitch;
 
         /**
          * XXX TODO: fix me
          *     if ($report_query_variable =="all") {
-        $query = "update player set general = 0, aid = 0, attacked = 0, market = 0 where id = $player_id";
-        }else{
-        $query = "update player set $report_query_variable = 0 where id = $player_id";
-        }
+         * $query = "update player set general = 0, aid = 0, attacked = 0, market = 0 where id = $player_id";
+         * }else{
+         * $query = "update player set $report_query_variable = 0 where id = $player_id";
+         * }
          *
          */
 
-        $em = $this->getEm();
-
         if ($reportQueryVariable == 'all') {
-            $reports = $em->getRepository('Game:Report')
-                ->findReports($this->getPlayer());
+            $reports = $this->reportRepository->findReports($this->getPlayer());
         } else {
-            $reports = $em->getRepository('Game:Report')
-                ->findReportsByType($this->getPlayer(), $reportType);
+            $reports = $this->reportRepository->findReportsByType($this->getPlayer(), $type);
         }
 
         return $this->render('game/reports.html.twig', [

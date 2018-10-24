@@ -10,7 +10,11 @@ use Doctrine\Common\Collections\Collection;
  */
 class Player
 {
+    /**
+     * @var int
+     */
     const PRICE_PER_REGION = 10000;
+
     /**
      * @var int
      */

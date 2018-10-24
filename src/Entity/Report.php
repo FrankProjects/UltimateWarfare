@@ -7,6 +7,11 @@ namespace FrankProjects\UltimateWarfare\Entity;
  */
 class Report
 {
+    const TYPE_ATTACKED = 1;
+    const TYPE_GENERAL = 2;
+    const TYPE_MARKET = 4;
+    const TYPE_AID = 5;
+
     /**
      * @var int
      */
