@@ -2,17 +2,17 @@
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Repository\PlayerRepositoryInterface;
+use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 final class RankingController extends BaseGameController
 {
     /**
      * @param string $sortBy
-     * @param PlayerRepositoryInterface $playerRepository
+     * @param PlayerRepository $playerRepository
      * @return Response
      */
-    public function ranking(string $sortBy, PlayerRepositoryInterface $playerRepository): Response
+    public function ranking(string $sortBy, PlayerRepository $playerRepository): Response
     {
         $player = $this->getPlayer();
 
