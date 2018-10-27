@@ -63,8 +63,6 @@ final class FleetActionService
      * @param int $fleetId
      * @param Player $player
      * @return bool
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function recall(int $fleetId, Player $player): bool
     {
@@ -83,8 +81,6 @@ final class FleetActionService
      * @param int $fleetId
      * @param Player $player
      * @return bool
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function reinforce(int $fleetId, Player $player): bool
     {
@@ -164,8 +160,6 @@ final class FleetActionService
     /**
      * @param Fleet $fleet
      * @param WorldRegion $worldRegion
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function addFleetUnitsToWorldRegion(Fleet $fleet, WorldRegion $worldRegion): void
     {
@@ -179,8 +173,6 @@ final class FleetActionService
     /**
      * @param FleetUnit $fleetUnit
      * @param WorldRegion $worldRegion
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function addFleetUnitToWorldRegion(FleetUnit $fleetUnit, WorldRegion $worldRegion): void
     {
@@ -206,8 +198,6 @@ final class FleetActionService
      * @param GameUnit $gameUnit
      * @param int $amount
      * @param Fleet $fleet
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function addFleetUnitToFleet(WorldRegion $region, GameUnit $gameUnit, int $amount, Fleet $fleet): void
     {

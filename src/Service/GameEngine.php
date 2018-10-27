@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMException;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
+use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 
 final class GameEngine
 {
@@ -17,6 +18,11 @@ final class GameEngine
      * @var ConstructionRepository
      */
     private $constructionRepository;
+
+    /**
+     * @var ResearchPlayerRepository
+     */
+    private $researchPlayerRepository;
 
     /**
      * @var EntityManagerInterface $em
@@ -27,11 +33,16 @@ final class GameEngine
      * GameEngine constructor.
      *
      * @param ConstructionRepository $constructionRepository
+     * @param ResearchPlayerRepository $researchPlayerRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(ConstructionRepository $constructionRepository, EntityManagerInterface $em)
-    {
+    public function __construct(
+        ConstructionRepository $constructionRepository,
+        ResearchPlayerRepository $researchPlayerRepository,
+        EntityManagerInterface $em
+    ) {
         $this->constructionRepository = $constructionRepository;
+        $this->researchPlayerRepository = $researchPlayerRepository;
         $this->em = $em;
     }
 
@@ -69,7 +80,6 @@ final class GameEngine
     {
         $constructions = $this->constructionRepository->getCompletedConstructions($timestamp);
 
-        /** @var \FrankProjects\UltimateWarfare\Entity\Construction $construction */
         foreach ($constructions as $construction) {
             $worldRegion = $construction->getWorldRegion();
 
@@ -77,7 +87,7 @@ final class GameEngine
                 // Never process construction queue items for a region that no longer belongs to this player
                 try {
                     $this->constructionRepository->remove($construction);
-                } catch (ORMException $e) {
+                } catch (\Exception $e) {
                     return false;
                 }
                 continue;
@@ -149,7 +159,7 @@ final class GameEngine
                 $this->em->persist($report);
                 $this->constructionRepository->remove($construction);
                 $this->em->flush();
-            } catch (ORMException $e) {
+            } catch (\Exception $e) {
                 return false;
             }
         }
@@ -164,10 +174,8 @@ final class GameEngine
      */
     public function processResearchQueue(int $timestamp): bool
     {
-        $researches = $this->em->getRepository('Game:ResearchPlayer')
-            ->getNonActiveCompletedResearch($timestamp);
+        $researches = $this->researchPlayerRepository->getNonActiveCompletedResearch($timestamp);
 
-        /** @var \FrankProjects\UltimateWarfare\Entity\ResearchPlayer $researchPlayer */
         foreach ($researches as $researchPlayer) {
             // Process income before updating income...
             $this->processPlayerIncome($researchPlayer->getPlayer(), $timestamp);
@@ -192,10 +200,10 @@ final class GameEngine
                 }
 
                 $this->em->persist($report);
-                $this->em->persist($researchPlayer);
+                $this->researchPlayerRepository->save($researchPlayer);
                 $this->em->persist($player);
                 $this->em->flush();
-            } catch (ORMException $e) {
+            } catch (\Exception $e) {
                 return false;
             }
         }
@@ -256,7 +264,7 @@ final class GameEngine
         try {
             $this->em->persist($player);
             $this->em->flush();
-        } catch (ORMException $e) {
+        } catch (\Exception $e) {
             return false;
         }
 

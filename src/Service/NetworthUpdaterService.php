@@ -37,8 +37,6 @@ final class NetworthUpdaterService
 
     /**
      * @param Player $player
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function updateNetworthForPlayer(Player $player): void
     {

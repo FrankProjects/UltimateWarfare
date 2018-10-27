@@ -222,8 +222,6 @@ final class ConstructionActionService
      * @param WorldRegion $worldRegion
      * @param GameUnit $gameUnit
      * @param int $amount
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function removeGameUnitsFromWorldRegion(WorldRegion $worldRegion, GameUnit $gameUnit, int $amount): void
     {

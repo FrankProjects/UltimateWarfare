@@ -73,7 +73,6 @@ class BaseGameController extends BaseController
 
     /**
      * @param Player $player
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     private function updateGameState(Player $player)
     {

@@ -91,7 +91,6 @@ final class RegionController extends BaseGameController
     /**
      * @param int $regionId
      * @return Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function region(int $regionId): Response
     {

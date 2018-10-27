@@ -98,8 +98,6 @@ final class RegionActionService
     /**
      * @param int $worldRegionId
      * @param Player $player
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws WorldRegionNotFoundException
      */
     public function buyWorldRegion(int $worldRegionId, Player $player): void
