@@ -27,8 +27,5 @@ services:
     FrankProjects\UltimateWarfare\Repository\:
         resource: ../src/Repository
 
-    FrankProjects\UltimateWarfare\Service\Fleet:
-        public: true
-
     FrankProjects\UltimateWarfare\Service\GameEngine:
         public: true
