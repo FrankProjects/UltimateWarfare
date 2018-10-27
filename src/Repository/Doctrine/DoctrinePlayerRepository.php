@@ -43,6 +43,16 @@ final class DoctrinePlayerRepository implements PlayerRepository
     }
 
     /**
+     * @param string $playerName
+     * @param World $world
+     * @return Player|null
+     */
+    public function findByNameAndWorld(string $playerName, World $world): ?Player
+    {
+        return $this->repository->findOneBy(['name' => $playerName, 'world' => $world]);
+    }
+
+    /**
      * @param Player $player
      */
     public function save(Player $player): void

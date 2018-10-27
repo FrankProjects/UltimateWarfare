@@ -4,6 +4,9 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldSector;
+use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -11,14 +14,43 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 final class WorldController extends BaseGameController
 {
     /**
-     * @param Request $request
+     * @var PlayerRepository
+     */
+    private $playerRepository;
+
+    /**
+     * @var WorldRepository
+     */
+    private $worldRepository;
+
+    /**
+     * @var WorldRegionRepository
+     */
+    private $worldRegionRepository;
+
+    /**
+     * WorldController constructor.
+     *
+     * @param PlayerRepository $playerRepository
+     * @param WorldRepository $worldRepository
+     * @param WorldRegionRepository $worldRegionRepository
+     */
+    public function __construct(
+        PlayerRepository $playerRepository,
+        WorldRepository $worldRepository,
+        WorldRegionRepository $worldRegionRepository
+    ) {
+        $this->playerRepository = $playerRepository;
+        $this->worldRepository = $worldRepository;
+        $this->worldRegionRepository = $worldRegionRepository;
+    }
+
+    /**
      * @return Response
      */
-    public function selectWorld(Request $request): Response
+    public function selectWorld(): Response
     {
-        $em = $this->getEm();
-        $worlds = $em->getRepository('Game:World')
-            ->findByPublic(1);
+        $worlds = $this->worldRepository->findByPublic(true);
 
         return $this->render('game/selectWorld.html.twig', [
             'worlds' => $worlds,
@@ -27,15 +59,12 @@ final class WorldController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @param int $worldId
      * @return Response
      */
-    public function selectName(Request $request, int $worldId): Response
+    public function selectName(int $worldId): Response
     {
-        $em = $this->getEm();
-        $world = $em->getRepository('Game:World')
-            ->find($worldId);
+        $world = $this->worldRepository->find($worldId);
 
         return $this->render('game/selectName.html.twig', [
             'world' => $world,
@@ -53,30 +82,24 @@ final class WorldController extends BaseGameController
         $name = $request->request->get('name', null);
 
         $user = $this->getGameUser();
-        $em = $this->getEm();
-        $world = $em->getRepository('Game:World')
-            ->find($worldId);
+        $world = $this->worldRepository->find($worldId);
 
-        $players = $em->getRepository('Game:Player')
-            ->findByUser($user);
-        foreach ($players as $player) {
+        foreach ($user->getPlayers() as $player) {
             if ($player->getWorld()->getId() == $worldId) {
                 throw new AccessDeniedException("Player already in this world!");
             }
         }
 
         $player = Player::create($user, $name, $world);
-        $em->persist($player);
-        $em->flush();
+        $this->playerRepository->save($player);
 
         return $this->redirectToRoute('Game/Login', array(), 302);
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function world(Request $request): Response
+    public function world(): Response
     {
         $player = $this->getPlayer();
         $world = $player->getWorld();
@@ -100,10 +123,9 @@ final class WorldController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function searchFree(Request $request): Response
+    public function searchFree(): Response
     {
         $player = $this->getPlayer();
         $world = $player->getWorld();
@@ -134,14 +156,11 @@ final class WorldController extends BaseGameController
     {
         $playerName = $request->request->get('playerName');
         $player = $this->getPlayer();
-        $em = $this->getEm();
         $world = $player->getWorld();
 
-        $playerSearch = $em->getRepository('Game:Player')
-            ->findBy(['name' => $playerName, 'world' => $player->getWorld()]);
+        $playerSearch = $this->playerRepository->findByNameAndWorld($playerName, $world);
 
         if ($playerSearch) {
-            $playerSearch = $playerSearch[0];
             $searchFound = true;
         } else {
             $searchFound = false;
@@ -177,14 +196,8 @@ final class WorldController extends BaseGameController
      */
     private function getRegionCount(WorldSector $sector, $player = null): int
     {
-        $em = $this->getEm();
-        $regionCount = $em->getRepository('Game:WorldRegion')
-            ->findBy([
-                'worldSector' => $sector,
-                'player' => $player
-            ]);
-
-        return count($regionCount);
+        $worldRegions = $this->worldRegionRepository->findByWorldSectorAndPlayer($sector, $player);
+        return count($worldRegions);
     }
 
     /**

@@ -16,9 +16,11 @@ interface PlayerRepository
     public function find(int $id): ?Player;
 
     /**
-     * @param Player $player
+     * @param string $playerName
+     * @param World $world
+     * @return Player|null
      */
-    public function save(Player $player): void;
+    public function findByNameAndWorld(string $playerName, World $world): ?Player;
 
     /**
      * @param World $world
@@ -33,4 +35,9 @@ interface PlayerRepository
      * @return Player[]
      */
     public function findByWorldAndNetworth(World $world, $limit = 10): array;
+
+    /**
+     * @param Player $player
+     */
+    public function save(Player $player): void;
 }
