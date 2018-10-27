@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\GameNews:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\GameNewsRepository
     table: game_news
     id:
         id:

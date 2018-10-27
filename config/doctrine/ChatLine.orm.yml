@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\ChatLine:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\ChatLineRepository
     table: chat_line
     id:
         id:

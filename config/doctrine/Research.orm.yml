@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\Research:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\ResearchRepository
     table: research
     id:
         id:

@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\ChatUser:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\ChatUserRepository
     table: chat_user
     uniqueConstraints:
         name:
