@@ -23,7 +23,7 @@ final class DoctrineGameResourceRepository implements GameResourceRepository
     private $repository;
 
     /**
-     * GameResourceRepository constructor.
+     * DoctrineGameResourceRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */

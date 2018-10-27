@@ -1,24 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 
-class ResearchPlayerRepository extends EntityRepository
+interface ResearchPlayerRepository
 {
     /**
      * @param int $timestamp
-     * @return array
+     * @return ResearchPlayer[]
      */
-    public function getNonActiveCompletedResearch(int $timestamp)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT rp
-              FROM Game:ResearchPlayer rp
-              JOIN Game:Research r WITH rp.research = r
-              WHERE rp.active = 0 AND (rp.timestamp + r.timestamp) < :timestamp'
-            )->setParameter('timestamp', $timestamp
-            )->getResult();
-    }
+    public function getNonActiveCompletedResearch(int $timestamp): array;
+
+    /**
+     * @param ResearchPlayer $researchPlayer
+     */
+    public function remove(ResearchPlayer $researchPlayer): void;
+
+    /**
+     * @param ResearchPlayer $researchPlayer
+     */
+    public function save(ResearchPlayer $researchPlayer): void;
 }

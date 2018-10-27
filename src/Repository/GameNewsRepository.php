@@ -1,27 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Repository;
 
 use FrankProjects\UltimateWarfare\Entity\GameNews;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class GameNewsRepository extends ServiceEntityRepository
+interface GameNewsRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, GameNews::class);
-    }
+    /**
+     * @return GameNews[]
+     */
+    public function findActiveMainPageNews(): array;
 
     /**
-     * @return array
+     * @param GameNews $gameNews
      */
-    public function findActiveMainPageNews()
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT gn.title, gn.message, gn.createDateTime FROM Game:GameNews gn WHERE gn.mainpage = 1 AND gn.enabled = 1 ORDER BY gn.createDateTime DESC'
-            )
-            ->getResult();
-    }
+    public function remove(GameNews $gameNews): void;
+
+    /**
+     * @param GameNews $gameNews
+     */
+    public function save(GameNews $gameNews): void;
 }

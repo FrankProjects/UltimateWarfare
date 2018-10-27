@@ -23,7 +23,7 @@ final class DoctrineFleetUnitRepository implements FleetUnitRepository
     private $repository;
 
     /**
-     * FleetUnitRepository constructor.
+     * DoctrineFleetUnitRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */

@@ -23,7 +23,7 @@ final class DoctrineGameUnitTypeRepository implements GameUnitTypeRepository
     private $repository;
 
     /**
-     * GameUnitTypeRepository constructor.
+     * DoctrineGameUnitTypeRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */

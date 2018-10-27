@@ -24,7 +24,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     private $repository;
 
     /**
-     * WorldRegionRepository constructor.
+     * DoctrineWorldRegionRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */

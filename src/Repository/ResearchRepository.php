@@ -1,59 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\Research;
 
-class ResearchRepository extends EntityRepository
+interface ResearchRepository
 {
     /**
      * @param Player $player
-     * @return array
+     * @return Research[]
      */
-    public function findOngoingByPlayer(Player $player)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT rp
-              FROM Game:ResearchPlayer rp
-              JOIN Game:Research r WITH rp.research = r
-              WHERE rp.player = :player AND rp.active = 0'
-            )->setParameter('player', $player
-            )->getResult();
-    }
+    public function findOngoingByPlayer(Player $player): array;
 
     /**
      * @param Player $player
-     * @return array
+     * @return Research[]
      */
-    public function findFinishedByPlayer(Player $player)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT r
-              FROM Game:ResearchPlayer rp
-              JOIN Game:Research r WITH rp.research = r
-              WHERE rp.player = :player AND rp.active = 1
-              ORDER BY rp.timestamp DESC'
-            )->setParameter('player', $player
-            )->getResult();
-    }
+    public function findFinishedByPlayer(Player $player): array;
 
     /**
      * @param Player $player
-     * @return array
+     * @return Research[]
      */
-    public function findUnresearchedByPlayer(Player $player)
-    {
-        //$result = $db->query("SELECT research.id, research.name, research.pic, research.cost, research.timestamp, research.description from research WHERE research.active = 1 AND research.id NOT IN (SELECT research_id FROM research_player WHERE research_id = research.id AND player_id = $player_id) AND research.id NOT IN (SELECT research_id FROM researching WHERE research_id = research.id AND player_id = $player_id)");
+    public function findUnresearchedByPlayer(Player $player): array;
 
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT r
-              FROM Game:Research r
-              WHERE r.active = 1 AND r.id NOT IN (SELECT rp.id FROM Game:ResearchPlayer rp WHERE rp.player = :player)'
-            )->setParameter('player', $player
-            )->getResult();
-    }
+    /**
+     * @param Research $research
+     */
+    public function remove(Research $research): void;
+
+    /**
+     * @param Research $research
+     */
+    public function save(Research $research): void;
 }

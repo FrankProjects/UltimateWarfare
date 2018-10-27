@@ -1,45 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\Message;
 use FrankProjects\UltimateWarfare\Entity\Player;
 
-class MessageRepository extends EntityRepository
+interface MessageRepository
 {
     /**
      * @param Player $player
-     * @param integer $limit
-     * @return array
+     * @param int $limit
+     * @return Message[]
      */
-    public function findNonDeletedMessagesToPlayer(Player $player, $limit = 100)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT m
-              FROM Game:Message m
-              WHERE m.toPlayer = :player AND m.toDelete = false
-              ORDER BY m.timestamp DESC'
-            )->setParameter('player', $player
-            )->setMaxResults($limit)
-            ->getResult();
-    }
+    public function findNonDeletedMessagesToPlayer(Player $player, int $limit = 100): array;
 
     /**
      * @param Player $player
-     * @param integer $limit
-     * @return array
+     * @param int $limit
+     * @return Message[]
      */
-    public function findNonDeletedMessagesFromPlayer(Player $player, $limit = 100)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT m
-              FROM Game:Message m
-              WHERE m.fromPlayer = :player AND m.fromDelete = false
-              ORDER BY m.timestamp DESC'
-            )->setParameter('player', $player
-            )->setMaxResults($limit)
-            ->getResult();
-    }
+    public function findNonDeletedMessagesFromPlayer(Player $player, int $limit = 100): array;
+
+    /**
+     * @param Message $message
+     */
+    public function remove(Message $message): void;
+
+    /**
+     * @param Message $message
+     */
+    public function save(Message $message): void;
 }

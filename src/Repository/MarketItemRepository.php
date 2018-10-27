@@ -23,7 +23,7 @@ interface MarketItemRepository
     /**
      * @param World $world
      * @param string $type
-     * @return array
+     * @return MarketItem[]
      */
     public function findByWorldMarketItemType(World $world, string $type): array;
 

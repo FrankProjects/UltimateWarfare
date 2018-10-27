@@ -24,7 +24,7 @@ final class DoctrineFleetRepository implements FleetRepository
     private $repository;
 
     /**
-     * FleetRepository constructor.
+     * DoctrineFleetRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */
@@ -45,7 +45,7 @@ final class DoctrineFleetRepository implements FleetRepository
 
     /**
      * @param Player $player
-     * @return array
+     * @return Fleet[]
      */
     public function findByPlayer(Player $player): array
     {

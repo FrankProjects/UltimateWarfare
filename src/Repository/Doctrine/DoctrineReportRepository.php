@@ -24,7 +24,7 @@ final class DoctrineReportRepository implements ReportRepository
     private $repository;
 
     /**
-     * ReportRepository constructor.
+     * DoctrineReportRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */

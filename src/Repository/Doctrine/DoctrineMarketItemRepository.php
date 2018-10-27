@@ -24,7 +24,7 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
     private $repository;
 
     /**
-     * MarketItemRepository constructor.
+     * DoctrineMarketItemRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */
@@ -54,7 +54,7 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
     /**
      * @param World $world
      * @param string $type
-     * @return array
+     * @return MarketItem[]
      */
     public function findByWorldMarketItemType(World $world, string $type): array
     {

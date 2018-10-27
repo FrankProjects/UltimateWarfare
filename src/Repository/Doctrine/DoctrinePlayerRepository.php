@@ -23,7 +23,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
     private $repository;
 
     /**
-     * PlayerRepository constructor.
+     * DoctrinePlayerRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */

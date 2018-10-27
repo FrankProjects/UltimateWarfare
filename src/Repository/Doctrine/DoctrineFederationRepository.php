@@ -23,7 +23,7 @@ final class DoctrineFederationRepository implements FederationRepository
     private $repository;
 
     /**
-     * FederationRepository constructor.
+     * DoctrineFederationRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */

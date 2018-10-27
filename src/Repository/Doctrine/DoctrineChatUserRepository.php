@@ -7,10 +7,10 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
+use FrankProjects\UltimateWarfare\Entity\ChatUser;
+use FrankProjects\UltimateWarfare\Repository\ChatUserRepository;
 
-final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitRepository
+final class DoctrineChatUserRepository implements ChatUserRepository
 {
     /**
      * @var EntityManager
@@ -23,44 +23,48 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
     private $repository;
 
     /**
-     * DoctrineWorldRegionUnitRepository constructor.
+     * DoctrineChatUserRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->repository = $this->entityManager->getRepository(WorldRegionUnit::class);
+        $this->repository = $this->entityManager->getRepository(ChatUser::class);
     }
 
     /**
-     * @param int $id
-     * @return WorldRegionUnit|null
+     * @return ChatUser[]
      */
-    public function find(int $id): ?WorldRegionUnit
+    public function findInactiveChatUsers(): array
     {
-        return $this->repository->find($id);
+        return $this->entityManager->createQuery(
+                'SELECT cu
+              FROM Game:ChatUser cu
+              WHERE cu.timestampActivity < :timestamp'
+            )->setParameter('timestamp', time() - 25)
+            ->getResult();
     }
 
     /**
-     * @param WorldRegionUnit $worldRegionUnit
+     * @param ChatUser $chatUser
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function remove(WorldRegionUnit $worldRegionUnit): void
+    public function remove(ChatUser $chatUser): void
     {
-        $this->entityManager->remove($worldRegionUnit);
+        $this->entityManager->remove($chatUser);
         $this->entityManager->flush();
     }
 
     /**
-     * @param WorldRegionUnit $worldRegionUnit
+     * @param ChatUser $chatUser
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function save(WorldRegionUnit $worldRegionUnit): void
+    public function save(ChatUser $chatUser): void
     {
-        $this->entityManager->persist($worldRegionUnit);
+        $this->entityManager->persist($chatUser);
         $this->entityManager->flush();
     }
 }

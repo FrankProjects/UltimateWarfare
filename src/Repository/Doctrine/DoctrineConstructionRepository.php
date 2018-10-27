@@ -26,7 +26,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
     private $repository;
 
     /**
-     * FleetRepository constructor.
+     * DoctrineConstructionRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */
