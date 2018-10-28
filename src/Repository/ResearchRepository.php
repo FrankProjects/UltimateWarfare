@@ -10,6 +10,11 @@ use FrankProjects\UltimateWarfare\Entity\Research;
 interface ResearchRepository
 {
     /**
+     * @return Research[]
+     */
+    public function findAll(): array;
+
+    /**
      * @param Player $player
      * @return Research[]
      */

@@ -35,6 +35,14 @@ final class DoctrineResearchRepository implements ResearchRepository
     }
 
     /**
+     * @return Research[]
+     */
+    public function findAll(): array
+    {
+        return $this->repository->findAll();
+    }
+
+    /**
      * @param Player $player
      * @return Research[]
      */
