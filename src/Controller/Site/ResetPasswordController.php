@@ -100,7 +100,7 @@ final class ResetPasswordController extends Controller
                 $em->persist($user);
                 $em->flush();
 
-                $this->addFlash('success', 'You succesfully changed your password!');
+                $this->addFlash('success', 'You successfully changed your password!');
                 return $this->redirectToRoute('Site/Login');
             }
 

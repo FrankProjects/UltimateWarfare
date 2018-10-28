@@ -164,7 +164,7 @@ final class UserController extends BaseGameController
             $user->setMapDesign($mapDesign);
             $em->persist($user);
             $em->flush();
-            $this->addFlash('success', 'Map design succesfully changed!');
+            $this->addFlash('success', 'Map design successfully changed!');
         }
     }
 

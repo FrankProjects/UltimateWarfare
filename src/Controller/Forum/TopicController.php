@@ -107,7 +107,7 @@ class TopicController extends BaseForumController
             $em->persist($topic);
             $em->flush();
 
-            $this->addFlash('success', 'Succesfully created topic');
+            $this->addFlash('success', 'Successfully created topic');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
@@ -204,7 +204,7 @@ class TopicController extends BaseForumController
             $em->persist($topic);
             $em->flush();
 
-            $this->addFlash('success', 'Succesfully edited topic');
+            $this->addFlash('success', 'Successfully edited topic');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 

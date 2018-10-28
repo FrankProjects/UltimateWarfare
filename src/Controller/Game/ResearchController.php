@@ -165,7 +165,7 @@ final class ResearchController extends BaseGameController
         $em->remove($researching);
         $em->flush();
 
-        $this->addFlash('success', 'Succesfully cancelled your research project!');
+        $this->addFlash('success', 'Successfully cancelled your research project!');
         return $this->redirectToRoute('Game/Research');
     }
 }

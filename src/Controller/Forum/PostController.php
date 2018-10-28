@@ -92,7 +92,7 @@ class PostController extends BaseForumController
             $em->persist($post);
             $em->flush();
 
-            $this->addFlash('success', 'Succesfully edited post');
+            $this->addFlash('success', 'Successfully edited post');
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 

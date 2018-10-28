@@ -7,7 +7,6 @@ namespace FrankProjects\UltimateWarfare\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
@@ -190,7 +189,7 @@ final class GameEngine
 
             $research = $researchPlayer->getResearch();
             $finishedTimestamp = $researchPlayer->getTimestamp() + $research->getTimestamp();
-            $message = "You succesfully researched a new technology: {$research->getName()}";
+            $message = "You successfully researched a new technology: {$research->getName()}";
             $report = Report::create($player, $finishedTimestamp, 2, $message);
 
             try {
