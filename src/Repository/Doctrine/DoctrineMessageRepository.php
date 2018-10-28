@@ -35,6 +35,15 @@ final class DoctrineMessageRepository implements MessageRepository
     }
 
     /**
+     * @param int $id
+     * @return Message|null
+     */
+    public function find(int $id): ?Message
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
      * @param Player $player
      * @param int $limit
      * @return Message[]

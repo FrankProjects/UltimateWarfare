@@ -10,6 +10,12 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 interface MessageRepository
 {
     /**
+     * @param int $id
+     * @return Message|null
+     */
+    public function find(int $id): ?Message;
+
+    /**
      * @param Player $player
      * @param int $limit
      * @return Message[]
