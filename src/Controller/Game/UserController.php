@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\MapDesign;
@@ -182,14 +184,14 @@ final class UserController extends BaseGameController
                 $user->setAdviser(true);
                 $em->persist($user);
                 $em->flush();
-                $this->addFlash('success', 'Succesfully changed settings!');
+                $this->addFlash('success', 'Successfully changed settings!');
             }
         } else {
             if ($user->getAdviser() == 1) {
                 $user->setAdviser(false);
                 $em->persist($user);
                 $em->flush();
-                $this->addFlash('success', 'Succesfully changed settings!');
+                $this->addFlash('success', 'Successfully changed settings!');
             }
         }
     }
