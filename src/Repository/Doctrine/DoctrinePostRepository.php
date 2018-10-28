@@ -35,6 +35,15 @@ final class DoctrinePostRepository implements PostRepository
     }
 
     /**
+     * @param int $id
+     * @return Post|null
+     */
+    public function find(int $id): ?Post
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
      * @param User $user
      * @return Post|null
      * @throws \Doctrine\ORM\NonUniqueResultException

@@ -10,6 +10,12 @@ use FrankProjects\UltimateWarfare\Entity\Topic;
 interface TopicRepository
 {
     /**
+     * @param int $id
+     * @return Topic|null
+     */
+    public function find(int $id): ?Topic;
+
+    /**
      * @param int $limit
      * @return Topic[]
      */

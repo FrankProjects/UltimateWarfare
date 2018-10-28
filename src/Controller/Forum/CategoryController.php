@@ -4,26 +4,44 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
-use FrankProjects\UltimateWarfare\Entity\Category;
-use FrankProjects\UltimateWarfare\Entity\Topic;
-use Symfony\Component\HttpFoundation\Request;
+use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
+use FrankProjects\UltimateWarfare\Repository\TopicRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends BaseForumController
 {
     /**
-     * @param Request $request
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
+
+    /**
+     * @var TopicRepository
+     */
+    private $topicRepository;
+
+    /**
+     * CategoryController constructor.
+     *
+     * @param CategoryRepository $categoryRepository
+     * @param TopicRepository $topicRepository
+     */
+    public function __construct(
+        CategoryRepository $categoryRepository,
+        TopicRepository $topicRepository
+    ) {
+        $this->categoryRepository = $categoryRepository;
+        $this->topicRepository = $topicRepository;
+    }
+
+    /**
      * @param int $categoryId
      * @return Response
      */
-    public function category(Request $request, int $categoryId): Response
+    public function category(int $categoryId): Response
     {
-        $em = $this->getEm();
-        $category = $em->getRepository(Category::class)
-            ->find($categoryId);
-
-        $topics = $em->getRepository(Topic::class)
-            ->getByCategorySortedByStickyAndDate($category);
+        $category = $this->categoryRepository->find($categoryId);
+        $topics = $this->topicRepository->getByCategorySortedByStickyAndDate($category);
 
         return $this->render('forum/category.html.twig', [
             'category' => $category,

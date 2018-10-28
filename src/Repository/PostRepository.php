@@ -10,6 +10,12 @@ use FrankProjects\UltimateWarfare\Entity\User;
 interface PostRepository
 {
     /**
+     * @param int $id
+     * @return Post|null
+     */
+    public function find(int $id): ?Post;
+
+    /**
      * @param User $user
      * @return Post|null
      */

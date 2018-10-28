@@ -35,6 +35,15 @@ final class DoctrineTopicRepository implements TopicRepository
     }
 
     /**
+     * @param int $id
+     * @return Topic|null
+     */
+    public function find(int $id): ?Topic
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
      * @param int $limit
      * @return Topic[]
      */

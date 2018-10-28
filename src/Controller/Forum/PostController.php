@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
 use FrankProjects\UltimateWarfare\Form\Forum\PostType;
+use FrankProjects\UltimateWarfare\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,15 +13,28 @@ use Symfony\Component\HttpFoundation\Response;
 class PostController extends BaseForumController
 {
     /**
-     * @param Request $request
+     * @var PostRepository
+     */
+    private $postRepository;
+
+    /**
+     * PostController constructor.
+     *
+     * @param PostRepository $postRepository
+     */
+    public function __construct(
+        PostRepository $postRepository
+    ) {
+        $this->postRepository = $postRepository;
+    }
+
+    /**
      * @param int $postId
      * @return RedirectResponse
      */
-    public function remove(Request $request, int $postId): RedirectResponse
+    public function remove(int $postId): RedirectResponse
     {
-        $em = $this->getEm();
-        $post = $em->getRepository('Game:Post')
-            ->find($postId);
+        $post = $this->postRepository->find($postId);
 
         if ($post === null) {
             $this->addFlash('error', 'No such post!');
@@ -42,9 +56,9 @@ class PostController extends BaseForumController
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
-        $em->remove($post);
-        $em->flush();
+        $this->postRepository->remove($post);
         $this->addFlash('success', 'Post removed');
+
         return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
     }
 
@@ -55,9 +69,7 @@ class PostController extends BaseForumController
      */
     public function edit(Request $request, int $postId)
     {
-        $em = $this->getEm();
-        $post = $em->getRepository('Game:Post')
-            ->find($postId);
+        $post = $this->postRepository->find($postId);
 
         if ($post === null) {
             $this->addFlash('error', 'No such post!');
@@ -79,8 +91,7 @@ class PostController extends BaseForumController
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByUser($this->getGameUser());
+            $lastPost = $this->postRepository->getLastPostByUser($this->getGameUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
@@ -89,10 +100,9 @@ class PostController extends BaseForumController
 
             $post->setEditUser($this->getGameUser());
 
-            $em->persist($post);
-            $em->flush();
-
+            $this->postRepository->save($post);
             $this->addFlash('success', 'Successfully edited post');
+
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 

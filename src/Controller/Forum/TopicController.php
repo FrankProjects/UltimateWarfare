@@ -8,6 +8,9 @@ use FrankProjects\UltimateWarfare\Entity\Topic;
 use FrankProjects\UltimateWarfare\Entity\Post;
 use FrankProjects\UltimateWarfare\Form\Forum\PostType;
 use FrankProjects\UltimateWarfare\Form\Forum\TopicType;
+use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
+use FrankProjects\UltimateWarfare\Repository\PostRepository;
+use FrankProjects\UltimateWarfare\Repository\TopicRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,15 +18,45 @@ use Symfony\Component\HttpFoundation\Response;
 class TopicController extends BaseForumController
 {
     /**
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
+
+    /**
+     * @var PostRepository
+     */
+    private $postRepository;
+
+    /**
+     * @var TopicRepository
+     */
+    private $topicRepository;
+
+    /**
+     * TopicController constructor.
+     *
+     * @param CategoryRepository $categoryRepository
+     * @param PostRepository $postRepository
+     * @param TopicRepository $topicRepository
+     */
+    public function __construct(
+        CategoryRepository $categoryRepository,
+        PostRepository $postRepository,
+        TopicRepository $topicRepository
+    ) {
+        $this->categoryRepository = $categoryRepository;
+        $this->postRepository = $postRepository;
+        $this->topicRepository = $topicRepository;
+    }
+
+    /**
      * @param Request $request
      * @param int $topicId
      * @return Response
      */
     public function topic(Request $request, int $topicId): Response
     {
-        $em = $this->getEm();
-        $topic = $em->getRepository(Topic::class)
-            ->find($topicId);
+        $topic = $this->topicRepository->find($topicId);
 
         if ($topic === null) {
             $this->addFlash('error', 'No such topic!');
@@ -36,8 +69,7 @@ class TopicController extends BaseForumController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && $this->getGameUser() !== null) {
-            $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByUser($this->getGameUser());
+            $lastPost = $this->postRepository->getLastPostByUser($this->getGameUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
@@ -48,8 +80,7 @@ class TopicController extends BaseForumController
                 $post->setCreateDateTime(new \DateTime());
                 $post->setUser($this->getGameUser());
 
-                $em->persist($post);
-                $em->flush();
+                $this->postRepository->save($post);
                 $this->addFlash('success', 'Post added');
             }
         }
@@ -71,9 +102,7 @@ class TopicController extends BaseForumController
      */
     public function create(Request $request, int $categoryId)
     {
-        $em = $this->getEm();
-        $category = $em->getRepository('Game:Category')
-            ->find($categoryId);
+        $category = $this->categoryRepository->find($categoryId);
 
         if ($category === null) {
             $this->addFlash('error', 'No such category!');
@@ -92,8 +121,7 @@ class TopicController extends BaseForumController
         $form = $this->createForm(TopicType::class, $topic);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByUser($this->getGameUser());
+            $lastPost = $this->postRepository->getLastPostByUser($this->getGameUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
@@ -104,10 +132,9 @@ class TopicController extends BaseForumController
             $topic->setCreateDateTime(new \DateTime());
             $topic->setUser($this->getGameUser());
 
-            $em->persist($topic);
-            $em->flush();
-
+            $this->topicRepository->save($topic);
             $this->addFlash('success', 'Successfully created topic');
+
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 
@@ -119,15 +146,12 @@ class TopicController extends BaseForumController
     }
 
     /**
-     * @param Request $request
      * @param int $topicId
      * @return RedirectResponse
      */
-    public function remove(Request $request, int $topicId): RedirectResponse
+    public function remove(int $topicId): RedirectResponse
     {
-        $em = $this->getEm();
-        $topic = $em->getRepository('Game:Topic')
-            ->find($topicId);
+        $topic = $this->topicRepository->find($topicId);
 
         if ($topic === null) {
             $this->addFlash('error', 'No such topic!');
@@ -150,12 +174,12 @@ class TopicController extends BaseForumController
         }
 
         foreach ($topic->getPosts() as $post) {
-            $em->remove($post);
+            $this->postRepository->remove($post);
         }
 
-        $em->remove($topic);
-        $em->flush();
+        $this->topicRepository->remove($topic);
         $this->addFlash('success', 'Topic removed');
+
         return $this->redirect($this->generateUrl('Forum/Category', ['categoryId' => $category->getId()]));
     }
 
@@ -168,9 +192,7 @@ class TopicController extends BaseForumController
      */
     public function edit(Request $request, int $topicId)
     {
-        $em = $this->getEm();
-        $topic = $em->getRepository('Game:Topic')
-            ->find($topicId);
+        $topic = $this->topicRepository->find($topicId);
 
         if ($topic === null) {
             $this->addFlash('error', 'No such topic!');
@@ -191,8 +213,7 @@ class TopicController extends BaseForumController
         $form = $this->createForm(TopicType::class, $topic);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $lastPost = $em->getRepository('Game:Post')
-                ->getLastPostByUser($this->getGameUser());
+            $lastPost = $this->postRepository->getLastPostByUser($this->getGameUser());
 
             if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
                 $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
@@ -201,10 +222,9 @@ class TopicController extends BaseForumController
 
             $topic->setEditUser($this->getGameUser());
 
-            $em->persist($topic);
-            $em->flush();
-
+            $this->topicRepository->save($topic);
             $this->addFlash('success', 'Successfully edited topic');
+
             return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
         }
 

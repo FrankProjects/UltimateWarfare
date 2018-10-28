@@ -9,6 +9,18 @@ use FrankProjects\UltimateWarfare\Entity\ChatUser;
 interface ChatUserRepository
 {
     /**
+     * @param string $name
+     * @return ChatUser|null
+     */
+    public function findByName(string $name): ?ChatUser;
+
+    /**
+     * @param int $limit
+     * @return ChatUser[]
+     */
+    public function findWithLimit(int $limit): array;
+
+    /**
      * @return ChatUser[]
      */
     public function findInactiveChatUsers(): array;

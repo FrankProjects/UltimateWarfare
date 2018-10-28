@@ -34,6 +34,28 @@ final class DoctrineChatUserRepository implements ChatUserRepository
     }
 
     /**
+     * @param string $name
+     * @return ChatUser
+     */
+    public function findByName(string $name): ?ChatUser
+    {
+        return $this->repository->findOneBy(['name' => $name]);
+    }
+
+    /**
+     * @param int $limit
+     * @return ChatUser[]
+     */
+    public function findWithLimit(int $limit): array
+    {
+        return $this->repository->findBy(
+            [],
+            ['name' => 'ASC'],
+            $limit
+        );
+    }
+
+    /**
      * @return ChatUser[]
      */
     public function findInactiveChatUsers(): array
