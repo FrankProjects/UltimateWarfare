@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
@@ -73,7 +75,6 @@ class BaseGameController extends BaseController
 
     /**
      * @param Player $player
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     private function updateGameState(Player $player)
     {

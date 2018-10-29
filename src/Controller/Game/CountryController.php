@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use Symfony\Component\HttpFoundation\Request;
+use FrankProjects\UltimateWarfare\Repository\WorldCountryRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 final class CountryController extends BaseGameController
 {
     /**
-     * @param Request $request
      * @param int $countryId
+     * @param WorldCountryRepository $worldCountryRepository
      * @return Response
      */
-    public function country(Request $request, int $countryId): Response
+    public function country(int $countryId, WorldCountryRepository $worldCountryRepository): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-        $country = $em->getRepository('Game:WorldCountry')
-            -> findOneBy(['id' => $countryId]);
+        $country = $worldCountryRepository->find($countryId);
 
         if (!$country) {
             return $this->render('game/countryNotFound.html.twig', [
@@ -32,9 +32,6 @@ final class CountryController extends BaseGameController
                 'player' => $player,
             ]);
         }
-
-        #$worldRegions = $em->getRepository('Game:WorldRegion')
-        #    ->findBy(['worldId' => $player->getWorldId(), 'countryId' => $countryId]);
 
         $regions = [];
         foreach ($country->getWorldRegions() as $region) {

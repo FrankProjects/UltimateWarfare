@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\User:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\UserRepository
     table: user
     id:
         id:

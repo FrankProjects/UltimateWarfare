@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Form\Game\NotepadType;
-use FrankProjects\UltimateWarfare\Repository\PlayerRepositoryInterface;
+use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -11,10 +13,10 @@ final class NotepadController extends BaseGameController
 {
     /**
      * @param Request $request
-     * @param PlayerRepositoryInterface $playerRepository
+     * @param PlayerRepository $playerRepository
      * @return Response
      */
-    public function notepad(Request $request, PlayerRepositoryInterface $playerRepository): Response
+    public function notepad(Request $request, PlayerRepository $playerRepository): Response
     {
         $player = $this->getPlayer();
         $notepadForm = $this->createForm(NotepadType::class, $player);

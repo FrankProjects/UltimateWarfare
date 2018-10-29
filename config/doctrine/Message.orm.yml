@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\Message:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\MessageRepository
     table: messages
     id:
         id:

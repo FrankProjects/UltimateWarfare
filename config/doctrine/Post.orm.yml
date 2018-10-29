@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\Post:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\PostRepository
     table: post
     id:
         id:

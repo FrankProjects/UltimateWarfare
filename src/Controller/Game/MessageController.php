@@ -1,13 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Message;
+use FrankProjects\UltimateWarfare\Repository\MessageRepository;
+use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class MessageController extends BaseGameController
 {
+    /**
+     * @var PlayerRepository
+     */
+    private $playerRepository;
+
+    /**
+     * @var MessageRepository
+     */
+    private $messageRepository;
+
+    /**
+     * MessageController constructor.
+     *
+     * @param PlayerRepository $playerRepository
+     * @param MessageRepository $messageRepository
+     */
+    public function __construct(
+        PlayerRepository $playerRepository,
+        MessageRepository $messageRepository
+    ) {
+        $this->playerRepository = $playerRepository;
+        $this->messageRepository = $messageRepository;
+    }
+
     /**
      * XXX TODO: Fix pagination
      *
@@ -31,9 +59,7 @@ final class MessageController extends BaseGameController
             }
         }
 
-        $em = $this->getEm();
-        $messages = $em->getRepository('Game:Message')
-            ->findNonDeletedMessagesToPlayer($player);
+        $messages = $this->messageRepository->findNonDeletedMessagesToPlayer($player);
 
         return $this->render('game/message/inbox.html.twig', [
             'player' => $player,
@@ -44,18 +70,20 @@ final class MessageController extends BaseGameController
     /**
      * XXX TODO: Fix smilies display
      *
-     * @param Request $request
      * @param int $messageId
      * @return Response
      */
-    public function inboxRead(Request $request, int $messageId): Response
+    public function inboxRead(int $messageId): Response
     {
-        $em = $this->getEm();
-        $message = $em->getRepository('Game:Message')
-            ->findOneBy(['id' => $messageId, 'toPlayer' => $this->getPlayer()]);
+        $message = $this->messageRepository->find($messageId);
 
         if (!$message) {
             $this->addFlash('error', 'No such message');
+            return $this->redirectToRoute('Game/Message/Inbox');
+        }
+
+        if ($message->getToPlayer()->getId() !== $this->getPlayer()->getId()) {
+            $this->addFlash('error', 'This is not your message!');
             return $this->redirectToRoute('Game/Message/Inbox');
         }
 
@@ -66,12 +94,11 @@ final class MessageController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @param int $messageId
      * @return Response
      * @throws \Exception
      */
-    public function inboxDelete(Request $request, int $messageId): Response
+    public function inboxDelete(int $messageId): Response
     {
         $this->deleteMessageFromInbox($messageId);
 
@@ -84,18 +111,22 @@ final class MessageController extends BaseGameController
      */
     private function deleteMessageFromInbox(int $messageId)
     {
-        $em = $this->getEm();
-        $message = $em->getRepository('Game:Message')
-            ->findOneBy(['id' => $messageId, 'toPlayer' => $this->getPlayer()]);
+        $message = $this->messageRepository->find($messageId);
+
         if (!$message) {
             $this->addFlash('error', 'No such message');
             return;
         }
 
+        if ($message->getToPlayer()->getId() !== $this->getPlayer()->getId()) {
+            $this->addFlash('error', 'This is not your message!');
+            return;
+        }
+
         $message->setToDelete(true);
-        $em->persist($message);
-        $em->flush();
-        $this->addFlash('success', 'Message succesfully deleted!');
+        $this->messageRepository->save($message);
+
+        $this->addFlash('success', 'Message successfully deleted!');
     }
 
     /**
@@ -121,9 +152,7 @@ final class MessageController extends BaseGameController
             }
         }
 
-        $em = $this->getEm();
-        $messages = $em->getRepository('Game:Message')
-            ->findNonDeletedMessagesFromPlayer($player);
+        $messages = $this->messageRepository->findNonDeletedMessagesFromPlayer($player);
 
         return $this->render('game/message/outbox.html.twig', [
             'player' => $player,
@@ -134,18 +163,20 @@ final class MessageController extends BaseGameController
     /**
      * XXX TODO: Fix smilies display
      *
-     * @param Request $request
      * @param int $messageId
      * @return Response
      */
-    public function outboxRead(Request $request, int $messageId): Response
+    public function outboxRead(int $messageId): Response
     {
-        $em = $this->getEm();
-        $message = $em->getRepository('Game:Message')
-            ->findOneBy(['id' => $messageId, 'fromPlayer' => $this->getPlayer()]);
+        $message = $this->messageRepository->find($messageId);
 
         if (!$message) {
             $this->addFlash('error', 'No such message');
+            return $this->redirectToRoute('Game/Message/Outbox');
+        }
+
+        if ($message->getFromPlayer()->getId() !== $this->getPlayer()->getId()) {
+            $this->addFlash('error', 'This is not your message!');
             return $this->redirectToRoute('Game/Message/Outbox');
         }
 
@@ -156,12 +187,11 @@ final class MessageController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @param int $messageId
      * @return Response
      * @throws \Exception
      */
-    public function outboxDelete(Request $request, int $messageId): Response
+    public function outboxDelete(int $messageId): Response
     {
         $this->deleteMessageFromOutbox($messageId);
 
@@ -174,18 +204,22 @@ final class MessageController extends BaseGameController
      */
     private function deleteMessageFromOutbox(int $messageId)
     {
-        $em = $this->getEm();
-        $message = $em->getRepository('Game:Message')
-            ->findOneBy(['id' => $messageId, 'fromPlayer' => $this->getPlayer()]);
+        $message = $this->messageRepository->find($messageId);
+
         if (!$message) {
             $this->addFlash('error', 'No such message');
             return;
         }
 
+        if ($message->getFromPlayer()->getId() !== $this->getPlayer()->getId()) {
+            $this->addFlash('error', 'This is not your message!');
+            return;
+        }
+
         $message->setFromDelete(true);
-        $em->persist($message);
-        $em->flush();
-        $this->addFlash('success', 'Message succesfully deleted!');
+        $this->messageRepository->save($message);
+
+        $this->addFlash('success', 'Message successfully deleted!');
     }
 
     /**
@@ -234,9 +268,8 @@ final class MessageController extends BaseGameController
             return;
         }
 
-        $em = $this->getEm();
-        $toPlayer = $em->getRepository('Game:Player')
-            ->findOneBy(['name' => $request->request->get('to'), 'world' => $this->getPlayer()->getWorld()]);
+        $toPlayer = $this->playerRepository->findByNameAndWorld($request->request->get('to'), $this->getPlayer()->getWorld());
+
         if (!$toPlayer) {
             $this->addFlash('error', 'No such player');
             return;
@@ -247,9 +280,8 @@ final class MessageController extends BaseGameController
 
         $message = Message::create($this->getPlayer(), $toPlayer, $subject, $message, $adminMessage);
         $toPlayer->setMessage($toPlayer->getMessage() + 1);
-        $em->persist($message);
-        $em->persist($toPlayer);
-        $em->flush();
+        $this->messageRepository->save($message);
+        $this->playerRepository->save($toPlayer);
 
         $this->addFlash('success', 'Message send!');
     }

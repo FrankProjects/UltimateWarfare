@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FrankProjects\UltimateWarfare\Service;
+namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\GameUnit;
@@ -13,6 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
+use FrankProjects\UltimateWarfare\Service\NetworthUpdaterService;
 use RuntimeException;
 
 final class ConstructionActionService
@@ -222,8 +223,6 @@ final class ConstructionActionService
      * @param WorldRegion $worldRegion
      * @param GameUnit $gameUnit
      * @param int $amount
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function removeGameUnitsFromWorldRegion(WorldRegion $worldRegion, GameUnit $gameUnit, int $amount): void
     {

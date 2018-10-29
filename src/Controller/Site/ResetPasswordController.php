@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Form\ResetPasswordType;
@@ -98,7 +100,7 @@ final class ResetPasswordController extends Controller
                 $em->persist($user);
                 $em->flush();
 
-                $this->addFlash('success', 'You succesfully changed your password!');
+                $this->addFlash('success', 'You successfully changed your password!');
                 return $this->redirectToRoute('Site/Login');
             }
 

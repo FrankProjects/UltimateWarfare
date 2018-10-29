@@ -1,39 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\ChatLine;
 
-class ChatLineRepository extends EntityRepository
+interface ChatLineRepository
 {
     /**
      * @param int $chatLineId
-     * @return array
+     * @return ChatLine[]
      */
-    public function findChatLinesByLastChatLineId(int $chatLineId)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT cl
-              FROM Game:ChatLine cl
-              WHERE cl.id > :chatLineId
-              ORDER BY cl.timestamp ASC'
-            )->setParameter('chatLineId', $chatLineId)
-            ->getResult();
-    }
+    public function findChatLinesByLastChatLineId(int $chatLineId): array;
 
     /**
      * @param int $seconds
-     * @return array
+     * @return ChatLine[]
      */
-    public function findChatLinesOlderThanSeconds(int $seconds)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT cl
-              FROM Game:ChatLine cl
-              WHERE cl.timestamp < :timestamp'
-            )->setParameter('timestamp', time() - $seconds)
-            ->getResult();
-    }
+    public function findChatLinesOlderThanSeconds(int $seconds): array;
+
+    /**
+     * @param ChatLine $chatLine
+     */
+    public function remove(ChatLine $chatLine): void;
+
+    /**
+     * @param ChatLine $chatLine
+     */
+    public function save(ChatLine $chatLine): void;
 }

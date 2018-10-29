@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\User;
@@ -54,7 +56,8 @@ final class SurrenderController extends BaseGameController
         $plainPassword = $confirmPasswordForm->get('plainPassword')->getData();
 
         if ($encoder->isPasswordValid($user, $plainPassword)) {
-            $em = $this->getEm();
+            // XXX TODO: Rewrite to repositories
+            $em = $this->getDoctrine()->getManager();
 
             $player = $this->getPlayer();
             foreach ($player->getMarketItems() as $marketItem) {

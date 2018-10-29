@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FrankProjects\UltimateWarfare\Service;
+namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
@@ -98,8 +98,6 @@ final class RegionActionService
     /**
      * @param int $worldRegionId
      * @param Player $player
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws WorldRegionNotFoundException
      */
     public function buyWorldRegion(int $worldRegionId, Player $player): void

@@ -1,48 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Repository;
 
 use FrankProjects\UltimateWarfare\Entity\Category;
 use FrankProjects\UltimateWarfare\Entity\Topic;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class TopicRepository extends ServiceEntityRepository
+interface TopicRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Topic::class);
-    }
+    /**
+     * @param int $id
+     * @return Topic|null
+     */
+    public function find(int $id): ?Topic;
 
     /**
      * @param int $limit
-     * @return array
+     * @return Topic[]
      */
-    public function findLastAnnouncements(int $limit): array
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT t.id, t.title FROM Game:Topic t WHERE t.category = :category ORDER BY t.createDateTime DESC'
-            )
-            ->setParameter('category', 1)
-            ->setMaxResults(intval($limit))
-            ->getResult();
-    }
+    public function findLastAnnouncements(int $limit): array;
 
     /**
      * @param Category $category
-     * @return array
+     * @return Topic[]
      */
-    public function getByCategorySortedByStickyAndDate(Category $category): array
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT t FROM Game:Topic t
-                 LEFT JOIN Game:Post p WITH p.topic = t 
-                 WHERE t.category = :category
-                 ORDER BY t.sticky, p.createDateTime DESC'
-            )
-            ->setParameter('category', $category->getId())
-            ->getResult();
-    }
+    public function getByCategorySortedByStickyAndDate(Category $category): array;
+
+    /**
+     * @param Topic $topic
+     */
+    public function remove(Topic $topic): void;
+
+    /**
+     * @param Topic $topic
+     */
+    public function save(Topic $topic): void;
 }

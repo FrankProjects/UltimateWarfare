@@ -1,40 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
-use Symfony\Component\HttpFoundation\Request;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
+use FrankProjects\UltimateWarfare\Repository\OperationRepository;
+use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 final class GuideController extends BaseController
 {
     /**
-     * @param Request $request
      * @return Response
      */
-    public function attack(Request $request): Response
+    public function attack(): Response
     {
         return $this->render('site/guide/attack.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function construction(Request $request): Response
+    public function construction(): Response
     {
         return $this->render('site/guide/construction.html.twig');
     }
 
     /**
-     * @param Request $request
+     * @param int $gameUnitId
+     * @param GameUnitRepository $gameUnitRepository
      * @return Response
      */
-    public function gameUnit(Request $request, int $gameUnitId): Response
+    public function gameUnit(int $gameUnitId, GameUnitRepository $gameUnitRepository): Response
     {
-        $em = $this->getEm();
-        $gameUnit = $em->getRepository('Game:GameUnit')
-            ->find($gameUnitId);
+        $gameUnit = $gameUnitRepository->find($gameUnitId);
 
         if ($gameUnit === null) {
             $this->addFlash('error', 'No such game unit!');
@@ -47,50 +49,44 @@ final class GuideController extends BaseController
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function federation(Request $request): Response
+    public function federation(): Response
     {
         return $this->render('site/guide/federation.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function fleet(Request $request): Response
+    public function fleet(): Response
     {
         return $this->render('site/guide/fleet.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function headquarter(Request $request): Response
+    public function headquarter(): Response
     {
         return $this->render('site/guide/headquarter.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
         return $this->render('site/guide/index.html.twig');
     }
 
     /**
-     * @param Request $request
+     * @param OperationRepository $operationRepository
      * @return Response
      */
-    public function listOperations(Request $request): Response
+    public function listOperations(OperationRepository $operationRepository): Response
     {
-        $em = $this->getEm();
-        $operations = $em->getRepository('Game:Operation')
-            ->findAll();
+        $operations = $operationRepository->findAll();
 
         return $this->render('site/guide/listOperations.html.twig', [
             'operations' => $operations
@@ -98,15 +94,12 @@ final class GuideController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param ResearchRepository $researchRepository
      * @return Response
      */
-    public function listResearch(Request $request): Response
+    public function listResearch(ResearchRepository $researchRepository): Response
     {
-        $em = $this->getEm();
-        $researches = $em->getRepository('Game:Research')
-            ->findAll();
-
+        $researches = $researchRepository->findAll();
 
         return $this->render('site/guide/listResearch.html.twig', [
             'researches' => $researches
@@ -114,20 +107,19 @@ final class GuideController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param int $gameUnitTypeId
+     * @param GameUnitTypeRepository $gameUnitTypeRepository
      * @return Response
      */
-    public function listUnits(Request $request, int $gameUnitTypeId): Response
+    public function listUnits(int $gameUnitTypeId, GameUnitTypeRepository $gameUnitTypeRepository): Response
     {
-        $em = $this->getEm();
-        $gameUnitType = $em->getRepository('Game:GameUnitType')
-            ->find($gameUnitTypeId);
+        $gameUnitType = $gameUnitTypeRepository->find($gameUnitTypeId);
 
         if ($gameUnitType === null) {
             $this->addFlash('error', 'No such game unit type!');
 
-            $gameUnitTypes = $em->getRepository('Game:GameUnitType')
-                ->findAll();
+            $gameUnitTypes =$gameUnitTypeRepository->findAll();
+
             return $this->render('site/guide/selectGameUnitType.html.twig', [
                 'gameUnitTypes' => $gameUnitTypes
             ]);
@@ -139,91 +131,81 @@ final class GuideController extends BaseController
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function logOff(Request $request): Response
+    public function logOff(): Response
     {
         return $this->render('site/guide/logOff.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function market(Request $request): Response
+    public function market(): Response
     {
         return $this->render('site/guide/market.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function mission(Request $request): Response
+    public function mission(): Response
     {
         return $this->render('site/guide/mission.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function ranking(Request $request): Response
+    public function ranking(): Response
     {
         return $this->render('site/guide/ranking.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function region(Request $request): Response
+    public function region(): Response
     {
         return $this->render('site/guide/region.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function report(Request $request): Response
+    public function report(): Response
     {
         return $this->render('site/guide/report.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function research(Request $request): Response
+    public function research(): Response
     {
         return $this->render('site/guide/research.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function rules(Request $request): Response
+    public function rules(): Response
     {
         return $this->render('site/guide/rules.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function surrender(Request $request): Response
+    public function surrender(): Response
     {
         return $this->render('site/guide/surrender.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function world(Request $request): Response
+    public function world(): Response
     {
         return $this->render('site/guide/world.html.twig');
     }

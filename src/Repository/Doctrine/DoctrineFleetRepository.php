@@ -1,0 +1,80 @@
+<?php
+
+declare(strict_types=1);
+
+namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
+
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\Fleet;
+use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Repository\FleetRepository;
+
+final class DoctrineFleetRepository implements FleetRepository
+{
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * @var EntityRepository
+     */
+    private $repository;
+
+    /**
+     * DoctrineFleetRepository constructor.
+     *
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+        $this->repository = $this->entityManager->getRepository(Fleet::class);
+    }
+
+    /**
+     * @param int $id
+     * @return Fleet|null
+     */
+    public function find(int $id): ?Fleet
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * @param Player $player
+     * @return Fleet[]
+     */
+    public function findByPlayer(Player $player): array
+    {
+        return $this->repository->findBy(['player' => $player]);
+    }
+
+    /**
+     * @param Fleet $fleet
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function remove(Fleet $fleet): void
+    {
+        foreach ($fleet->getFleetUnits() as $fleetUnit) {
+            $this->entityManager->remove($fleetUnit);
+        }
+
+        $this->entityManager->remove($fleet);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param Fleet $fleet
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function save(Fleet $fleet): void
+    {
+        $this->entityManager->persist($fleet);
+        $this->entityManager->flush();
+    }
+}

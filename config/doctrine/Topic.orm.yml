@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\Topic:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\TopicRepository
     table: topic
     id:
         id:

@@ -1,22 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
-use FrankProjects\UltimateWarfare\Entity\Category;
-use Symfony\Component\HttpFoundation\Request;
+use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 class ForumController extends BaseForumController
 {
     /**
-     * @param Request $request
+     * @param CategoryRepository $categoryRepository
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(CategoryRepository $categoryRepository): Response
     {
-        $em = $this->getEm();
-        $categories = $em->getRepository(Category::class)
-            ->findAll();
+        $categories = $categoryRepository->findAll();
 
         return $this->render('forum/forum.html.twig', [
             'categories' => $categories,

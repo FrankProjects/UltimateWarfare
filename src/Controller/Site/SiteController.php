@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
@@ -9,37 +11,33 @@ use Symfony\Component\HttpFoundation\Response;
 final class SiteController extends BaseController
 {
     /**
-     * @param Request $request
      * @return Response
      */
-    public function about(Request $request): Response
+    public function about(): Response
     {
         return $this->render('site/about.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function advertise(Request $request): Response
+    public function advertise(): Response
     {
         return $this->render('site/advertise.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function community(Request $request): Response
+    public function community(): Response
     {
         return $this->render('site/community.html.twig');
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function donate(Request $request): Response
+    public function donate(): Response
     {
         return $this->render('site/donate.html.twig');
     }
@@ -47,10 +45,9 @@ final class SiteController extends BaseController
     /**
      * XXX TODO: Fix me
      *
-     * @param Request $request
      * @return Response
      */
-    public function statistics(Request $request): Response
+    public function statistics(): Response
     {
         return $this->render('site/statistics.html.twig', [
             'lastLogin' => '',

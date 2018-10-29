@@ -1,6 +1,5 @@
 FrankProjects\UltimateWarfare\Entity\ResearchPlayer:
     type: entity
-    repositoryClass: FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository
     table: research_player
     indexes:
         player_id:

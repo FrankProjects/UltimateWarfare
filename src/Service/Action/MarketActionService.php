@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FrankProjects\UltimateWarfare\Service;
+namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
 use FrankProjects\UltimateWarfare\Entity\Player;
@@ -58,8 +58,6 @@ final class MarketActionService
     /**
      * @param Player $player
      * @param int $marketItemId
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function buyOrder(Player $player, int $marketItemId): void
     {
@@ -118,8 +116,6 @@ final class MarketActionService
     /**
      * @param Player $player
      * @param int $marketItemId
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function cancelOrder(Player $player, int $marketItemId): void
     {
@@ -158,8 +154,6 @@ final class MarketActionService
     /**
      * @param Player $player
      * @param int $marketItemId
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function sellOrder(Player $player, int $marketItemId): void
     {
@@ -217,8 +211,6 @@ final class MarketActionService
      * @param int $price
      * @param int $amount
      * @param string $action
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function placeOffer(Player $player, int $gameResourceId, int $price, int $amount, string $action): void
     {

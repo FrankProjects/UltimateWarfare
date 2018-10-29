@@ -1,22 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\ChatUser;
 
-class ChatUserRepository extends EntityRepository
+interface ChatUserRepository
 {
     /**
-     * @return array
+     * @param string $name
+     * @return ChatUser|null
      */
-    public function findInactiveChatUsers()
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT cu
-              FROM Game:ChatUser cu
-              WHERE cu.timestampActivity < :timestamp'
-            )->setParameter('timestamp', time() - 25)
-                ->getResult();
-    }
+    public function findByName(string $name): ?ChatUser;
+
+    /**
+     * @param int $limit
+     * @return ChatUser[]
+     */
+    public function findWithLimit(int $limit): array;
+
+    /**
+     * @return ChatUser[]
+     */
+    public function findInactiveChatUsers(): array;
+
+    /**
+     * @param ChatUser $chatUser
+     */
+    public function remove(ChatUser $chatUser): void;
+
+    /**
+     * @param ChatUser $chatUser
+     */
+    public function save(ChatUser $chatUser): void;
 }

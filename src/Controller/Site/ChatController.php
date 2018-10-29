@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
 use FrankProjects\UltimateWarfare\Entity\ChatLine;
 use FrankProjects\UltimateWarfare\Entity\ChatUser;
+use FrankProjects\UltimateWarfare\Repository\ChatLineRepository;
+use FrankProjects\UltimateWarfare\Repository\ChatUserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,10 +17,33 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class ChatController extends BaseController
 {
     /**
-     * @param Request $request
+     * @var ChatLineRepository
+     */
+    private $chatLineRepository;
+
+    /**
+     * @var ChatUserRepository
+     */
+    private $chatUserRepository;
+
+    /**
+     * ChatController constructor.
+     *
+     * @param ChatLineRepository $chatLineRepository
+     * @param ChatUserRepository $chatUserRepository
+     */
+    public function __construct(
+        ChatLineRepository $chatLineRepository,
+        ChatUserRepository $chatUserRepository
+    ) {
+        $this->chatLineRepository = $chatLineRepository;
+        $this->chatUserRepository = $chatUserRepository;
+    }
+
+    /**
      * @return Response
      */
-    public function chat(Request $request): Response
+    public function chat(): Response
     {
         $isGuest = true;
         $user = $this->getUser();
@@ -40,37 +67,23 @@ final class ChatController extends BaseController
     }
 
     /**
-     * @param Request $request
      * @return JsonResponse
      */
-    public function getUsers(Request $request): JsonResponse
+    public function getUsers(): JsonResponse
     {
-        $em = $this->getEm();
-
-        // Remove inactive chat users
-        $chatUsers = $em->getRepository('Game:ChatUser')
-            ->findInactiveChatUsers();
+        $chatUsers = $this->chatUserRepository->findInactiveChatUsers();
 
         if (count($chatUsers) > 0) {
             foreach ($chatUsers as $chatUser) {
                 $text = $chatUser->getName() . ' left the chat';
                 $chatLine = ChatLine::create('[System]', $text, time());
-                $em->persist($chatLine);
-                $em->remove($chatUser);
+                $this->chatLineRepository->save($chatLine);
+                $this->chatUserRepository->remove($chatUser);
             }
-
-            $em->flush();
         }
 
-
         // With too many users the chat will freeze...
-        $limitUsers = 18;
-        $chatUsers = $em->getRepository('Game:ChatUser')
-            ->findBy(
-                [],
-                ['name' => 'ASC'],
-                $limitUsers
-            );
+        $chatUsers = $this->chatUserRepository->findWithLimit(18);
 
         $chatUserArray = [];
         foreach ($chatUsers as $chatUser) {
@@ -83,32 +96,24 @@ final class ChatController extends BaseController
         ]);
     }
 
-
     /**
-     * @param Request $request
      * @param int $lastChatLineId
      * @return JsonResponse
      */
-    public function getChat(Request $request, int $lastChatLineId): JsonResponse
+    public function getChat(int $lastChatLineId): JsonResponse
     {
-        $em = $this->getEm();
-
         $this->updateUser();
 
         // Deleting chats older than 30 minutes
-        $chatLines = $em->getRepository('Game:ChatLine')
-            ->findChatLinesOlderThanSeconds(1800);
+        $chatLines = $this->chatLineRepository->findChatLinesOlderThanSeconds(1800);
 
         if (count($chatLines) > 0) {
             foreach ($chatLines as $chatLine) {
-                $em->remove($chatLine);
+                $this->chatLineRepository->remove($chatLine);
             }
-
-            $em->flush();
         }
 
-        $chatLines = $em->getRepository('Game:ChatLine')
-            ->findChatLinesByLastChatLineId($lastChatLineId);
+        $chatLines = $this->chatLineRepository->findChatLinesByLastChatLineId($lastChatLineId);
 
         $chats = [];
         foreach ($chatLines as $chatLine) {
@@ -146,10 +151,8 @@ final class ChatController extends BaseController
 
         $chatName = $this->get('session')->get('chatName');
 
-        $em = $this->getEm();
         $chatLine = ChatLine::create($chatName, $text, time());
-        $em->persist($chatLine);
-        $em->flush();
+        $this->chatLineRepository->save($chatLine);
 
         return $this->json([
             'status'   => 1,
@@ -164,20 +167,16 @@ final class ChatController extends BaseController
     {
         $chatName = $this->get('session')->get('chatName');
 
-        $em = $this->getEm();
-        $chatUser = $em->getRepository('Game:ChatUser')
-            -> findOneBy(['name' => $chatName]);
+        $chatUser = $this->chatUserRepository->findByName($chatName);
 
         if ($chatUser) {
             $chatUser->setTimestampActivity(time());
-            $em->persist($chatUser);
-            $em->flush();
+            $this->chatUserRepository->save($chatUser);
         } else {
             $chatUser = ChatUser::create($chatName, time());
             $chatLine = ChatLine::create('[System]', $chatName .' joined the chat', time());
-            $em->persist($chatUser);
-            $em->persist($chatLine);
-            $em->flush();
+            $this->chatUserRepository->save($chatUser);
+            $this->chatLineRepository->save($chatLine);
         }
     }
 }
