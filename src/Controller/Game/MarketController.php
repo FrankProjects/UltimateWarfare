@@ -7,7 +7,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
 use FrankProjects\UltimateWarfare\Repository\GameResourceRepository;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
-use FrankProjects\UltimateWarfare\Service\MarketActionService;
+use FrankProjects\UltimateWarfare\Service\Action\MarketActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
