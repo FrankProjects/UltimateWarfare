@@ -10,6 +10,12 @@ use FrankProjects\UltimateWarfare\Entity\Research;
 interface ResearchRepository
 {
     /**
+     * @param int $id
+     * @return Research|null
+     */
+    public function find(int $id): ?Research;
+
+    /**
      * @return Research[]
      */
     public function findAll(): array;

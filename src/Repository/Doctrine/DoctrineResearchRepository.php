@@ -35,6 +35,15 @@ final class DoctrineResearchRepository implements ResearchRepository
     }
 
     /**
+     * @param int $id
+     * @return Research|null
+     */
+    public function find(int $id): ?Research
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
      * @return Research[]
      */
     public function findAll(): array
