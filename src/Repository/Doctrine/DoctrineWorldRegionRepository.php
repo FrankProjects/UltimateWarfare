@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\WorldCountry;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldSector;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -42,6 +43,16 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     public function find(int $id): ?WorldRegion
     {
         return $this->repository->find($id);
+    }
+
+    /**
+     * @param WorldCountry $worldCountry
+     * @param Player|null $player
+     * @return WorldRegion[]
+     */
+    public function findByWorldCountryAndPlayer(WorldCountry $worldCountry, ?Player $player): array
+    {
+        return $this->repository->findBy(['worldCountry' => $worldCountry, 'player' => $player]);
     }
 
     /**

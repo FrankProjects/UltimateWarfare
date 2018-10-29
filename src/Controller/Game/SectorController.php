@@ -6,22 +6,54 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldCountry;
+use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldSectorRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SectorController extends BaseGameController
 {
     /**
-     * @param Request $request
+     * @var WorldSectorRepository
+     */
+    private $worldSectorRepository;
+
+    /**
+     * @var WorldRegionRepository
+     */
+    private $worldRegionRepository;
+
+    /**
+     * @var PlayerRepository
+     */
+    private $playerRepository;
+
+    /**
+     * SectorController
+     *
+     * @param WorldSectorRepository $worldSectorRepository
+     * @param WorldRegionRepository $worldRegionRepository
+     * @param PlayerRepository $playerRepository
+     */
+    public function __construct(
+        WorldSectorRepository $worldSectorRepository,
+        WorldRegionRepository $worldRegionRepository,
+        PlayerRepository $playerRepository
+    ) {
+        $this->worldSectorRepository = $worldSectorRepository;
+        $this->worldRegionRepository = $worldRegionRepository;
+        $this->playerRepository = $playerRepository;
+    }
+
+    /**
      * @param int $sectorId
      * @return Response
      */
-    public function sector(Request $request, int $sectorId): Response
+    public function sector(int $sectorId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-        $sector = $em->getRepository('Game:WorldSector')
-            -> findOneBy(['id' => $sectorId, 'world' => $player->getWorld()]);
+        $sector = $this->worldSectorRepository->findByIdAndWorld($sectorId, $player->getWorld());
 
         if (!$sector) {
             return $this->render('game/sectorNotFound.html.twig', [
@@ -49,16 +81,13 @@ final class SectorController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @param int $sectorId
      * @return Response
      */
-    public function searchFree(Request $request, int $sectorId): Response
+    public function searchFree(int $sectorId): Response
     {
         $player = $this->getPlayer();
-        $em = $this->getEm();
-        $sector = $em->getRepository('Game:WorldSector')
-            -> findOneBy(['id' => $sectorId, 'world' => $player->getWorld()]);
+        $sector = $this->worldSectorRepository->findByIdAndWorld($sectorId, $player->getWorld());
 
         if (!$sector) {
             return $this->render('game/sectorNotFound.html.twig', [
@@ -94,9 +123,8 @@ final class SectorController extends BaseGameController
     {
         $playerName = $request->request->get('playerName');
         $player = $this->getPlayer();
-        $em = $this->getEm();
-        $sector = $em->getRepository('Game:WorldSector')
-            -> findOneBy(['id' => $sectorId, 'world' => $player->getWorld()]);
+
+        $sector = $this->worldSectorRepository->findByIdAndWorld($sectorId, $player->getWorld());
 
         if (!$sector) {
             return $this->render('game/sectorNotFound.html.twig', [
@@ -104,11 +132,9 @@ final class SectorController extends BaseGameController
             ]);
         }
 
-        $playerSearch = $em->getRepository('Game:Player')
-            ->findBy(['name' => $playerName, 'world' => $player->getWorld()]);
+        $playerSearch = $this->playerRepository->findByNameAndWorld($playerName, $player->getWorld());
 
         if ($playerSearch) {
-            $playerSearch = $playerSearch[0];
             $searchFound = true;
         } else {
             $searchFound = false;
@@ -146,14 +172,8 @@ final class SectorController extends BaseGameController
      */
     private function getRegionCount(WorldCountry $country, $player = null): int
     {
-        $em = $this->getEm();
-        $regionCount = $em->getRepository('Game:WorldRegion')
-            ->findBy([
-                'worldCountry' => $country,
-                'player' => $player
-            ]);
-
-        return count($regionCount);
+        $worldRegions = $this->worldRegionRepository->findByWorldCountryAndPlayer($country, $player);
+        return count($worldRegions);
     }
 
     /**
