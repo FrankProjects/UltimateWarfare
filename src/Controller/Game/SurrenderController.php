@@ -56,7 +56,8 @@ final class SurrenderController extends BaseGameController
         $plainPassword = $confirmPasswordForm->get('plainPassword')->getData();
 
         if ($encoder->isPasswordValid($user, $plainPassword)) {
-            $em = $this->getEm();
+            // XXX TODO: Rewrite to repositories
+            $em = $this->getDoctrine()->getManager();
 
             $player = $this->getPlayer();
             foreach ($player->getMarketItems() as $marketItem) {
