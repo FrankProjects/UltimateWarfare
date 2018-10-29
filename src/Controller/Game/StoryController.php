@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class StoryController extends BaseGameController
 {
     /**
-     * @param Request $request
      * @param int $page
      * @return Response
      */
-    public function page(Request $request, int $page): Response
+    public function page(int $page): Response
     {
         switch ($page) {
             case 1:
