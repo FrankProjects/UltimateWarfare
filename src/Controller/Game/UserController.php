@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\MapDesign;
 use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
 use FrankProjects\UltimateWarfare\Form\ChangePasswordType;
+use FrankProjects\UltimateWarfare\Repository\MapDesignRepository;
+use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
+use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -14,10 +16,41 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 final class UserController extends BaseGameController
 {
     /**
-     * @param Request $request
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
+     * @var UnbanRequestRepository
+     */
+    private $unbanRequestRepository;
+
+    /**
+     * @var MapDesignRepository
+     */
+    private $mapDesignRepository;
+
+    /**
+     * UserController constructor.
+     *
+     * @param UserRepository $userRepository
+     * @param UnbanRequestRepository $unbanRequestRepository
+     * @param MapDesignRepository $mapDesignRepository
+     */
+    public function __construct(
+        UserRepository $userRepository,
+        UnbanRequestRepository $unbanRequestRepository,
+        MapDesignRepository $mapDesignRepository
+    ) {
+        $this->userRepository = $userRepository;
+        $this->unbanRequestRepository = $unbanRequestRepository;
+        $this->mapDesignRepository = $mapDesignRepository;
+    }
+
+    /**
      * @return Response
      */
-    public function account(Request $request): Response
+    public function account(): Response
     {
         return $this->render('game/account.html.twig', [
             'user' => $this->getGameUser()
@@ -27,7 +60,6 @@ final class UserController extends BaseGameController
     /**
      * @param Request $request
      * @return Response
-     * @throws \Exception
      */
     public function banned(Request $request): Response
     {
@@ -37,22 +69,18 @@ final class UserController extends BaseGameController
             return $this->redirectToRoute('Game/Account');
         }
 
-        $em = $this->getEm();
-        $unbanRequest = $em->getRepository('Game:UnbanRequest')
-            ->findOneBy(['user' => $user]);
+        $unbanRequest = $this->unbanRequestRepository->findByUser($user);
 
         if ($unbanRequest === null) {
             $unbanRequest = new UnbanRequest();
         }
 
         if ($request->getMethod() == 'POST') {
-            $em = $this->getEm();
             $unbanReason = trim($request->request->get('post'));
 
             $unbanRequest->setPost($unbanReason);
             $unbanRequest->setUser($user);
-            $em->persist($unbanRequest);
-            $em->flush();
+            $this->unbanRequestRepository->save($unbanRequest);
 
             $this->addFlash('success', 'We have received your request, we will try to read your request ASAP...');
         }
@@ -67,7 +95,6 @@ final class UserController extends BaseGameController
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
-     * @throws \Exception
      */
     public function edit(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
@@ -85,10 +112,8 @@ final class UserController extends BaseGameController
                 } else {
                     $newEncodedPassword = $encoder->encodePassword($user, $plainPassword);
                     $user->setPassword($newEncodedPassword);
-                    $em = $this->getEm();
-                    $em->persist($user);
+                    $this->userRepository->save($user);
 
-                    $em->flush();
                     $this->addFlash('success', "Password change successfully!");
                 }
             } else {
@@ -98,7 +123,8 @@ final class UserController extends BaseGameController
 
         if ($request->getMethod() == 'POST') {
             if ($request->request->get('change_map') && $request->request->get('map')) {
-                $this->changeMapDesign($request);
+                $mapDesignId = intval($request->request->get('map'));
+                $this->changeMapDesign($mapDesignId);
             }
 
             if ($request->request->get('change_settings')) {
@@ -108,22 +134,10 @@ final class UserController extends BaseGameController
 
         return $this->render('game/editAccount.html.twig', [
             'user' => $this->getGameUser(),
-            'mapDesigns' => $this->getAllMapDesigns(),
+            'mapDesigns' => $this->mapDesignRepository->findAll(),
             'userType' => $this->getAccountType(),
             'changePasswordForm' => $changePasswordForm->createView()
         ]);
-    }
-
-    /**
-     * Get all MapDesigns
-     *
-     * @return MapDesign[]
-     */
-    private function getAllMapDesigns(): array
-    {
-        $em = $this->getEm();
-        $repository = $em->getRepository('Game:MapDesign');
-        return $repository->findAll();
     }
 
     /**
@@ -148,22 +162,19 @@ final class UserController extends BaseGameController
     /**
      * Change map design
      *
-     * @param Request $request
-     * @throws \Exception
+     * @param int $mapDesignId
      */
-    private function changeMapDesign(Request $request)
+    private function changeMapDesign(int $mapDesignId)
     {
         $user = $this->getGameUser();
-        $em = $this->getEm();
-        $mapDesign = $em->getRepository('Game:MapDesign')
-            ->find($request->request->get('map'));
+        $mapDesign = $this->mapDesignRepository->find($mapDesignId);
 
         if (!$mapDesign) {
             $this->addFlash('error', 'No such map design');
         } elseif ($mapDesign->getId() != $user->getMapDesign()->getId()) {
             $user->setMapDesign($mapDesign);
-            $em->persist($user);
-            $em->flush();
+            $this->userRepository->save($user);
+
             $this->addFlash('success', 'Map design successfully changed!');
         }
     }
@@ -172,25 +183,23 @@ final class UserController extends BaseGameController
      * Change settings
      *
      * @param Request $request
-     * @throws \Exception
      */
     private function changeSettings(Request $request)
     {
         $user = $this->getGameUser();
-        $em = $this->getEm();
 
         if ($request->request->get('adviser')) {
             if ($user->getAdviser() == 0) {
                 $user->setAdviser(true);
-                $em->persist($user);
-                $em->flush();
+                $this->userRepository->save($user);
+
                 $this->addFlash('success', 'Successfully changed settings!');
             }
         } else {
             if ($user->getAdviser() == 1) {
                 $user->setAdviser(false);
-                $em->persist($user);
-                $em->flush();
+                $this->userRepository->save($user);
+
                 $this->addFlash('success', 'Successfully changed settings!');
             }
         }
