@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\Message;
 use FrankProjects\UltimateWarfare\Repository\MessageRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Service\Action\MessageActionService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class MessageController extends BaseGameController
 {
@@ -23,17 +24,25 @@ final class MessageController extends BaseGameController
     private $messageRepository;
 
     /**
+     * @var MessageActionService
+     */
+    private $messageActionService;
+
+    /**
      * MessageController constructor.
      *
      * @param PlayerRepository $playerRepository
      * @param MessageRepository $messageRepository
+     * @param MessageActionService $messageActionService
      */
     public function __construct(
         PlayerRepository $playerRepository,
-        MessageRepository $messageRepository
+        MessageRepository $messageRepository,
+        MessageActionService $messageActionService
     ) {
         $this->playerRepository = $playerRepository;
         $this->messageRepository = $messageRepository;
+        $this->messageActionService = $messageActionService;
     }
 
     /**
@@ -47,14 +56,15 @@ final class MessageController extends BaseGameController
     {
         $player = $this->getPlayer();
 
-        if ($request->getMethod() == 'POST') {
+        if ($request->isMethod('POST')) {
             if ($request->request->get('action') == 'delete' && $request->request->get('message') != null) {
-                $this->deleteMessageFromInbox($request->request->get('message'));
+                $messageId = intval($request->get('message'));
+                $this->messageActionService->deleteMessageFromInbox($player, $messageId);
             }
 
             if ($request->request->get('del') && $request->request->get('selected_messages') != null) {
                 foreach ($request->request->get('selected_messages') as $messageId) {
-                    $this->deleteMessageFromInbox($messageId);
+                    $this->messageActionService->deleteMessageFromInbox($player, $messageId);
                 }
             }
         }
@@ -100,33 +110,14 @@ final class MessageController extends BaseGameController
      */
     public function inboxDelete(int $messageId): Response
     {
-        $this->deleteMessageFromInbox($messageId);
+        try {
+            $this->messageActionService->deleteMessageFromInbox($this->getPlayer(), $messageId);
+            $this->addFlash('success', 'Message successfully deleted!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
 
         return $this->redirectToRoute('Game/Message/Inbox');
-    }
-
-    /**
-     * @param int $messageId
-     * @throws \Exception
-     */
-    private function deleteMessageFromInbox(int $messageId)
-    {
-        $message = $this->messageRepository->find($messageId);
-
-        if (!$message) {
-            $this->addFlash('error', 'No such message');
-            return;
-        }
-
-        if ($message->getToPlayer()->getId() !== $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'This is not your message!');
-            return;
-        }
-
-        $message->setToDelete(true);
-        $this->messageRepository->save($message);
-
-        $this->addFlash('success', 'Message successfully deleted!');
     }
 
     /**
@@ -140,14 +131,15 @@ final class MessageController extends BaseGameController
     {
         $player = $this->getPlayer();
 
-        if ($request->getMethod() == 'POST') {
+        if ($request->isMethod('POST')) {
             if ($request->request->get('action') == 'delete' && $request->request->get('message') != null) {
-                $this->deleteMessageFromOutbox($request->request->get('message'));
+                $messageId = intval($request->get('message'));
+                $this->messageActionService->deleteMessageFromOutbox($player, $messageId);
             }
 
             if ($request->request->get('del') && $request->request->get('selected_messages') != null) {
                 foreach ($request->request->get('selected_messages') as $messageId) {
-                    $this->deleteMessageFromOutbox($messageId);
+                    $this->messageActionService->deleteMessageFromOutbox($player, $messageId);
                 }
             }
         }
@@ -189,37 +181,17 @@ final class MessageController extends BaseGameController
     /**
      * @param int $messageId
      * @return Response
-     * @throws \Exception
      */
     public function outboxDelete(int $messageId): Response
     {
-        $this->deleteMessageFromOutbox($messageId);
+        try {
+            $this->messageActionService->deleteMessageFromOutbox($this->getPlayer(), $messageId);
+            $this->addFlash('success', 'Message successfully deleted!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
 
         return $this->redirectToRoute('Game/Message/Outbox');
-    }
-
-    /**
-     * @param int $messageId
-     * @throws \Exception
-     */
-    private function deleteMessageFromOutbox(int $messageId)
-    {
-        $message = $this->messageRepository->find($messageId);
-
-        if (!$message) {
-            $this->addFlash('error', 'No such message');
-            return;
-        }
-
-        if ($message->getFromPlayer()->getId() !== $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'This is not your message!');
-            return;
-        }
-
-        $message->setFromDelete(true);
-        $this->messageRepository->save($message);
-
-        $this->addFlash('success', 'Message successfully deleted!');
     }
 
     /**
@@ -236,9 +208,13 @@ final class MessageController extends BaseGameController
             $playerName = $request->request->get('toPlayerName');
         }
 
-        if ($request->getMethod() == 'POST') {
-            if ($request->request->get('submit')) {
-                $this->sendMessage($request);
+        if ($request->isMethod('POST')) {
+            try {
+                $this->messageActionService->sendMessage($player, $request->get('subject'), $request->get('message'), $playerName);
+
+                $this->addFlash('success', 'Message send!');
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
         }
 
@@ -248,41 +224,5 @@ final class MessageController extends BaseGameController
             'subject' => $request->request->get('subject'),
             'message' => $request->request->get('message')
         ]);
-    }
-
-    /**
-     * @param Request $request
-     * @throws \Exception
-     */
-    private function sendMessage(Request $request)
-    {
-        $subject = trim($request->request->get('subject'));
-        if ($subject == '') {
-            $this->addFlash('error', 'Please type a subject');
-            return;
-        }
-
-        $message = trim($request->request->get('message'));
-        if ($message == '') {
-            $this->addFlash('error', 'Please type a message');
-            return;
-        }
-
-        $toPlayer = $this->playerRepository->findByNameAndWorld($request->request->get('to'), $this->getPlayer()->getWorld());
-
-        if (!$toPlayer) {
-            $this->addFlash('error', 'No such player');
-            return;
-        }
-
-        // XXX TODO: Fix permissions checking for admin, always disable for now...
-        $adminMessage = false;
-
-        $message = Message::create($this->getPlayer(), $toPlayer, $subject, $message, $adminMessage);
-        $toPlayer->setMessage($toPlayer->getMessage() + 1);
-        $this->messageRepository->save($message);
-        $this->playerRepository->save($toPlayer);
-
-        $this->addFlash('success', 'Message send!');
     }
 }
