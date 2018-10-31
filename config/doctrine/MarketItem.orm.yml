@@ -12,12 +12,12 @@ FrankProjects\UltimateWarfare\Entity\MarketItem:
                 strategy: IDENTITY
     fields:
         amount:
-            type: bigint
+            type: integer
             nullable: false
             options:
                 unsigned: false
         price:
-            type: bigint
+            type: integer
             nullable: false
             options:
                 unsigned: false

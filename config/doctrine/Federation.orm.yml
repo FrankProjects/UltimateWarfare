@@ -25,25 +25,25 @@ FrankProjects\UltimateWarfare\Entity\Federation:
                 fixed: false
             column: leader_message
         cashbank:
-            type: bigint
+            type: integer
             nullable: false
             options:
                 unsigned: true
                 default: '0'
         woodbank:
-            type: bigint
+            type: integer
             nullable: false
             options:
                 unsigned: true
                 default: '0'
         steelbank:
-            type: bigint
+            type: integer
             nullable: false
             options:
                 unsigned: true
                 default: '0'
         foodbank:
-            type: bigint
+            type: integer
             nullable: false
             options:
                 unsigned: true
