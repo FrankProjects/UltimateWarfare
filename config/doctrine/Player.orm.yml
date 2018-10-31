@@ -112,4 +112,3 @@ FrankProjects\UltimateWarfare\Entity\Player:
             columnPrefix: false
         notifications:
             class: FrankProjects\UltimateWarfare\Entity\Player\Notifications
-            columnPrefix: false
