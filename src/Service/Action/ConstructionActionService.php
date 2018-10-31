@@ -117,20 +117,23 @@ final class ConstructionActionService
             }
         }
 
-        if ($priceCash > $player->getCash()) {
+        $resources = $player->getResources();
+
+        if ($priceCash > $resources->getCash()) {
             throw new RunTimeException("You don't have enough cash to build that.");
         }
-        if ($priceWood > $player->getWood()) {
+        if ($priceWood > $resources->getWood()) {
             throw new RunTimeException("You don't have enough wood to build that.");
         }
-        if ($priceSteel > $player->getSteel()) {
+        if ($priceSteel > $resources->getSteel()) {
             throw new RunTimeException("You don't have enough steel to build that.");
         }
 
-        $player->setCash($player->getCash() - $priceCash);
-        $player->setWood($player->getWood() - $priceWood);
-        $player->setSteel($player->getSteel() - $priceSteel);
+        $resources->setCash($resources->getCash() - $priceCash);
+        $resources->setWood($resources->getWood() - $priceWood);
+        $resources->setSteel($resources->getSteel() - $priceSteel);
 
+        $player->setResources($resources);
         $this->playerRepository->save($player);
 
         foreach ($constructions as $construction) {

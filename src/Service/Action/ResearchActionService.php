@@ -61,8 +61,10 @@ final class ResearchActionService
         $researchPlayer->setResearch($research);
         $researchPlayer->setTimestamp(time());
 
-        $player->setCash($player->getCash() - $research->getCost());
+        $resources = $player->getResources();
+        $resources->setCash($resources->getCash() - $research->getCost());
 
+        $player->setResources($resources);
         $this->playerRepository->save($player);
         $this->researchPlayerRepository->save($researchPlayer);
     }
@@ -135,7 +137,7 @@ final class ResearchActionService
             }
         }
 
-        if ($research->getCost() > $player->getCash()) {
+        if ($research->getCost() > $player->getResources()->getCash()) {
             throw new RunTimeException('You can not afford that!');
         }
     }
