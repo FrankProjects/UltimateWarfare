@@ -56,16 +56,14 @@ final class MessageController extends BaseGameController
     {
         $player = $this->getPlayer();
 
-        if ($request->isMethod('POST')) {
-            if ($request->request->get('action') == 'delete' && $request->request->get('message') != null) {
-                $messageId = intval($request->get('message'));
+        if ($request->isMethod('POST') &&
+            $request->get('del') !== null &&
+            $request->get('selected_messages') !== null
+        ) {
+            foreach ($request->get('selected_messages') as $messageId) {
+                $messageId = intval($messageId);
                 $this->messageActionService->deleteMessageFromInbox($player, $messageId);
-            }
-
-            if ($request->request->get('del') && $request->request->get('selected_messages') != null) {
-                foreach ($request->request->get('selected_messages') as $messageId) {
-                    $this->messageActionService->deleteMessageFromInbox($player, $messageId);
-                }
+                $this->addFlash('success', 'Message successfully deleted!');
             }
         }
 
@@ -106,7 +104,6 @@ final class MessageController extends BaseGameController
     /**
      * @param int $messageId
      * @return Response
-     * @throws \Exception
      */
     public function inboxDelete(int $messageId): Response
     {
@@ -131,16 +128,14 @@ final class MessageController extends BaseGameController
     {
         $player = $this->getPlayer();
 
-        if ($request->isMethod('POST')) {
-            if ($request->request->get('action') == 'delete' && $request->request->get('message') != null) {
-                $messageId = intval($request->get('message'));
+        if ($request->isMethod('POST') &&
+            $request->get('del') !== null &&
+            $request->get('selected_messages') !== null
+        ) {
+            foreach ($request->get('selected_messages') as $messageId) {
+                $messageId = intval($messageId);
                 $this->messageActionService->deleteMessageFromOutbox($player, $messageId);
-            }
-
-            if ($request->request->get('del') && $request->request->get('selected_messages') != null) {
-                foreach ($request->request->get('selected_messages') as $messageId) {
-                    $this->messageActionService->deleteMessageFromOutbox($player, $messageId);
-                }
+                $this->addFlash('success', 'Message successfully deleted!');
             }
         }
 
@@ -198,9 +193,8 @@ final class MessageController extends BaseGameController
      * @param Request $request
      * @param string $playerName
      * @return Response
-     * @throws \Exception
      */
-    public function new(Request $request, $playerName = ''): Response
+    public function newMessage(Request $request, $playerName = ''): Response
     {
         $player = $this->getPlayer();
 

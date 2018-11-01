@@ -95,7 +95,7 @@ final class MessageActionService
         $message = Message::create($player, $toPlayer, $subject, $message, $adminMessage);
 
         $toPlayerNotifications = $toPlayer->getNotifications();
-        $toPlayerNotifications->setMessage($toPlayerNotifications->getMessage() + 1);
+        $toPlayerNotifications->setMessage(true);
         $toPlayer->setNotifications($toPlayerNotifications);
 
         $this->messageRepository->save($message);
