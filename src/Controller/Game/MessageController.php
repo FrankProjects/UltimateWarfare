@@ -56,15 +56,9 @@ final class MessageController extends BaseGameController
     {
         $player = $this->getPlayer();
 
-        if ($request->isMethod('POST') &&
-            $request->get('del') !== null &&
-            $request->get('selected_messages') !== null
-        ) {
-            foreach ($request->get('selected_messages') as $messageId) {
-                $messageId = intval($messageId);
-                $this->messageActionService->deleteMessageFromInbox($player, $messageId);
-                $this->addFlash('success', 'Message successfully deleted!');
-            }
+        foreach ($this->getSelectedMessagesFromRequest($request) as $messageId) {
+            $this->messageActionService->deleteMessageFromInbox($player, $messageId);
+            $this->addFlash('success', 'Message successfully deleted!');
         }
 
         $messages = $this->messageRepository->findNonDeletedMessagesToPlayer($player);
@@ -128,15 +122,9 @@ final class MessageController extends BaseGameController
     {
         $player = $this->getPlayer();
 
-        if ($request->isMethod('POST') &&
-            $request->get('del') !== null &&
-            $request->get('selected_messages') !== null
-        ) {
-            foreach ($request->get('selected_messages') as $messageId) {
-                $messageId = intval($messageId);
-                $this->messageActionService->deleteMessageFromOutbox($player, $messageId);
-                $this->addFlash('success', 'Message successfully deleted!');
-            }
+        foreach ($this->getSelectedMessagesFromRequest($request) as $messageId) {
+            $this->messageActionService->deleteMessageFromOutbox($player, $messageId);
+            $this->addFlash('success', 'Message successfully deleted!');
         }
 
         $messages = $this->messageRepository->findNonDeletedMessagesFromPlayer($player);
@@ -218,5 +206,25 @@ final class MessageController extends BaseGameController
             'subject' => $request->request->get('subject'),
             'message' => $request->request->get('message')
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function getSelectedMessagesFromRequest(Request $request): array
+    {
+        $selectedMessages = [];
+
+        if ($request->isMethod('POST') &&
+            $request->get('del') !== null &&
+            $request->get('selected_messages') !== null
+        ) {
+            foreach ($request->get('selected_messages') as $messageId) {
+                $selectedMessages[] = intval($messageId);
+            }
+        }
+
+        return $selectedMessages;
     }
 }
