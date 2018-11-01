@@ -103,16 +103,19 @@ final class RegionActionService
     public function buyWorldRegion(int $worldRegionId, Player $player): void
     {
         $worldRegion = $this->getWorldRegionByIdAndPlayer($worldRegionId, $player);
+        $resources = $player->getResources();
 
         if ($worldRegion->getPlayer() !== null) {
             throw new RunTimeException('Region is already owned by somebody!');
         }
 
-        if ($player->getCash() < $player->getRegionPrice()) {
+        if ($resources->getCash() < $player->getRegionPrice()) {
             throw new RunTimeException('You do not have enough money!');
         }
 
-        $player->setCash($player->getCash() - $player->getRegionPrice());
+        $resources->setCash($resources->getCash() - $player->getRegionPrice());
+
+        $player->setResources($resources);
         $player->setRegions($player->getRegions() + 1);
 
         // XXX TODO: Fix me

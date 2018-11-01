@@ -1,27 +1,27 @@
-<img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" /> <b>{{ player.cash|number_format }}</b> ( {{ player.incomeCash - player.upkeepCash }}/h ) -
-<img src="{{ asset('images/icons/resource_food.jpg') }}" width="25" height="25" alt="Food" /> <b>{{ player.food|number_format }}</b> ( {{ player.incomeFood - player.upkeepFood }}/h ) -
-<img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood" /> <b>{{ player.wood|number_format }}</b> ( {{ player.incomeWood - player.upkeepWood }}/h ) -
-<img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" /> <b>{{ player.steel|number_format }}</b> ( {{ player.incomeSteel - player.upkeepSteel }}/h )
+<img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" /> <b>{{ player.resources.cash|number_format }}</b> ( {{ player.resources.incomeCash - player.resources.upkeepCash }}/h ) -
+<img src="{{ asset('images/icons/resource_food.jpg') }}" width="25" height="25" alt="Food" /> <b>{{ player.resources.food|number_format }}</b> ( {{ player.resources.incomeFood - player.resources.upkeepFood }}/h ) -
+<img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood" /> <b>{{ player.resources.wood|number_format }}</b> ( {{ player.resources.incomeWood - player.resources.upkeepWood }}/h ) -
+<img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" /> <b>{{ player.resources.steel|number_format }}</b> ( {{ player.resources.incomeSteel - player.resources.upkeepSteel }}/h )
 
 <br />
 <br />
 
-{% if player.attacked != 0 %}
+{% if player.notifications.attacked != 0 %}
     * <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}"><b>You are under attack!</b></a><br /><br />
 {% endif %}
 
-{% if player.general != 0 %}
+{% if player.notifications.general != 0 %}
     * <a class="B" href="{{ path('Game/Reports', {'type': 2}) }}"><b>General Report!</b></a><br /><br />
 {% endif %}
 
-{% if player.message != 0 %}
-    * <a class="B" href="{{ path('Game/Message/Inbox') }}"><b>You have {{ player.message|escape }} new message(s).</b></a><br /><br />
+{% if player.notifications.message != 0 %}
+    * <a class="B" href="{{ path('Game/Message/Inbox') }}"><b>You have new message(s).</b></a><br /><br />
 {% endif %}
 
-{% if player.aid != 0 %}
+{% if player.notifications.aid != 0 %}
     * <a class="B" href="{{ path('Game/Reports', {'type': 5}) }}"><b>You recieved aid!</b></a><br /><br />
 {% endif %}
 
-{% if player.market != 0 %}
+{% if player.notifications.market != 0 %}
     * <a class="B" href="{{ path('Game/Reports', {'type': 4}) }}"><b>You sold/bought something on the market!</b></a><br /><br />
 {% endif %}

@@ -33,26 +33,6 @@ FrankProjects\UltimateWarfare\Entity\Player:
             options:
                 unsigned: true
             column: timestamp_update
-        cash:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-        steel:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-        wood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-        food:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
         regions:
             type: integer
             nullable: false
@@ -65,36 +45,6 @@ FrankProjects\UltimateWarfare\Entity\Player:
             options:
                 unsigned: true
                 default: '0'
-        general:
-            type: boolean
-            nullable: false
-            options:
-                default: '0'
-        attacked:
-            type: boolean
-            nullable: false
-            options:
-                default: '0'
-        message:
-            type: boolean
-            nullable: false
-            options:
-                default: '0'
-        market:
-            type: boolean
-            nullable: false
-            options:
-                default: '0'
-        aid:
-            type: boolean
-            nullable: false
-            options:
-                default: '0'
-        news:
-            type: boolean
-            nullable: false
-            options:
-                default: '0'
         federationHierarchy:
             type: integer
             nullable: false
@@ -102,62 +52,6 @@ FrankProjects\UltimateWarfare\Entity\Player:
                 unsigned: true
                 default: '0'
             column: federation_hierarchy
-        incomeCash:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: income_cash
-        incomeFood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: income_food
-        incomeWood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: income_wood
-        incomeSteel:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: income_steel
-        upkeepCash:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: upkeep_cash
-        upkeepFood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: upkeep_food
-        upkeepWood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: upkeep_wood
-        upkeepSteel:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: upkeep_steel
         notepad:
             type: text
             nullable: false
@@ -212,3 +106,9 @@ FrankProjects\UltimateWarfare\Entity\Player:
                 name: federation_id
                 referencedColumnName: id
     lifecycleCallbacks: {  }
+    embedded:
+        resources:
+            class: FrankProjects\UltimateWarfare\Entity\Player\Resources
+            columnPrefix: false
+        notifications:
+            class: FrankProjects\UltimateWarfare\Entity\Player\Notifications

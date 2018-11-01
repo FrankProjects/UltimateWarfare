@@ -125,16 +125,18 @@ final class GameEngine
             $player = $construction->getPlayer();
             $player->setNetworth($player->getNetworth() + $networth);
 
-            $player->setUpkeepCash($player->getUpkeepCash() + $upkeepCash);
-            $player->setUpkeepFood($player->getUpkeepFood() + $upkeepFood);
-            $player->setUpkeepWood($player->getUpkeepWood() + $upkeepWood);
-            $player->setUpkeepSteel($player->getUpkeepSteel() + $upkeepSteel);
+            $resources = $player->getResources();
+            $resources->setUpkeepCash($resources->getUpkeepCash() + $upkeepCash);
+            $resources->setUpkeepFood($resources->getUpkeepFood() + $upkeepFood);
+            $resources->setUpkeepWood($resources->getUpkeepWood() + $upkeepWood);
+            $resources->setUpkeepSteel($resources->getUpkeepSteel() + $upkeepSteel);
 
-            $player->setIncomeCash($player->getIncomeCash() + $incomeCash);
-            $player->setIncomeFood($player->getIncomeFood() + $incomeFood);
-            $player->setIncomeWood($player->getIncomeWood() + $incomeWood);
-            $player->setIncomeSteel($player->getIncomeSteel() + $incomeSteel);
+            $resources->setIncomeCash($resources->getIncomeCash() + $incomeCash);
+            $resources->setIncomeFood($resources->getIncomeFood() + $incomeFood);
+            $resources->setIncomeWood($resources->getIncomeWood() + $incomeWood);
+            $resources->setIncomeSteel($resources->getIncomeSteel() + $incomeSteel);
 
+            $player->setResources($resources);
             $federation = $player->getFederation();
 
             $reportType = 2;
@@ -223,41 +225,43 @@ final class GameEngine
         }
 
         $timeDiff = $timestamp - $player->getTimestampUpdate();
-
-        $incomeCashRate = $player->getIncomeCash() - $player->getUpkeepCash();
-        $incomeFoodRate = $player->getIncomeFood() - $player->getUpkeepFood();
-        $incomeWoodRate = $player->getIncomeWood() - $player->getUpkeepWood();
-        $incomeSteelRate = $player->getIncomeSteel() - $player->getUpkeepSteel();
+        $resources = $player->getResources();
+        $incomeCashRate = $resources->getIncomeCash() - $resources->getUpkeepCash();
+        $incomeFoodRate = $resources->getIncomeFood() - $resources->getUpkeepFood();
+        $incomeWoodRate = $resources->getIncomeWood() - $resources->getUpkeepWood();
+        $incomeSteelRate = $resources->getIncomeSteel() - $resources->getUpkeepSteel();
         
         $incomeCash = intval(($incomeCashRate / 3600) * $timeDiff);
         $incomeFood = intval(($incomeFoodRate / 3600) * $timeDiff);
         $incomeWood = intval(($incomeWoodRate / 3600) * $timeDiff);
         $incomeSteel = intval(($incomeSteelRate / 3600) * $timeDiff);
 
-        $newCash = $player->getCash() + $incomeCash;
+        $newCash = $resources->getCash() + $incomeCash;
         if ($newCash < 0) {
             $newCash = 0;
         }
 
-        $newFood = $player->getFood() + $incomeFood;
+        $newFood = $resources->getFood() + $incomeFood;
         if ($newFood < 0) {
             $newFood = 0;
         }
 
-        $newWood = $player->getWood() + $incomeWood;
+        $newWood = $resources->getWood() + $incomeWood;
         if ($newWood < 0) {
             $newWood = 0;
         }
 
-        $newSteel = $player->getSteel() + $incomeSteel;
+        $newSteel = $resources->getSteel() + $incomeSteel;
         if ($newSteel < 0) {
             $newSteel = 0;
         }
 
-        $player->setCash($newCash);
-        $player->setFood($newFood);
-        $player->setWood($newWood);
-        $player->setSteel($newSteel);
+        $resources->setCash($newCash);
+        $resources->setFood($newFood);
+        $resources->setWood($newWood);
+        $resources->setSteel($newSteel);
+
+        $player->setResources($resources);
         $player->setTimestampUpdate($timestamp);
 
         try {

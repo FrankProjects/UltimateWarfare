@@ -211,7 +211,7 @@ Game/Message/Inbox/Read:
 
 Game/Message/New:
     path:      /game/message/new/{playerName}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::new
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::newMessage
     defaults:
         playerName: ''
 

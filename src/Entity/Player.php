@@ -6,6 +6,8 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\Player\Notifications;
+use FrankProjects\UltimateWarfare\Entity\Player\Resources;
 
 /**
  * Player
@@ -40,26 +42,6 @@ class Player
     /**
      * @var int
      */
-    private $cash;
-
-    /**
-     * @var int
-     */
-    private $steel;
-
-    /**
-     * @var int
-     */
-    private $wood;
-
-    /**
-     * @var int
-     */
-    private $food;
-
-    /**
-     * @var int
-     */
     private $regions = 0;
 
     /**
@@ -68,79 +50,9 @@ class Player
     private $networth = 0;
 
     /**
-     * @var bool
-     */
-    private $general = false;
-
-    /**
-     * @var bool
-     */
-    private $attacked = false;
-
-    /**
-     * @var bool
-     */
-    private $message = false;
-
-    /**
-     * @var bool
-     */
-    private $market = false;
-
-    /**
-     * @var bool
-     */
-    private $aid = false;
-
-    /**
-     * @var bool
-     */
-    private $news = false;
-
-    /**
      * @var int
      */
     private $federationHierarchy = 0;
-
-    /**
-     * @var int
-     */
-    private $incomeCash = 0;
-
-    /**
-     * @var int
-     */
-    private $incomeFood = 0;
-
-    /**
-     * @var int
-     */
-    private $incomeWood = 0;
-
-    /**
-     * @var int
-     */
-    private $incomeSteel = 0;
-
-    /**
-     * @var int
-     */
-    private $upkeepCash = 0;
-
-    /**
-     * @var int
-     */
-    private $upkeepFood = 0;
-
-    /**
-     * @var int
-     */
-    private $upkeepWood = 0;
-
-    /**
-     * @var int
-     */
-    private $upkeepSteel = 0;
 
     /**
      * @var string
@@ -208,6 +120,16 @@ class Player
     private $federationApplications = [];
 
     /**
+     * @var Resources
+     */
+    private $resources;
+
+    /**
+     * @var Notifications
+     */
+    private $notifications;
+
+    /**
      * Player constructor.
      */
     public function __construct()
@@ -221,6 +143,8 @@ class Player
         $this->toMessages = new ArrayCollection();
         $this->playerResearch = new ArrayCollection();
         $this->federationApplications = new ArrayCollection();
+        $this->resources = new Resources();
+        $this->notifications = new Notifications();
     }
 
     /**
@@ -294,86 +218,6 @@ class Player
     }
 
     /**
-     * Set cash
-     *
-     * @param int $cash
-     */
-    public function setCash(int $cash)
-    {
-        $this->cash = $cash;
-    }
-
-    /**
-     * Get cash
-     *
-     * @return int
-     */
-    public function getCash(): int
-    {
-        return $this->cash;
-    }
-
-    /**
-     * Set steel
-     *
-     * @param int $steel
-     */
-    public function setSteel(int $steel)
-    {
-        $this->steel = $steel;
-    }
-
-    /**
-     * Get steel
-     *
-     * @return int
-     */
-    public function getSteel(): int
-    {
-        return $this->steel;
-    }
-
-    /**
-     * Set wood
-     *
-     * @param int $wood
-     */
-    public function setWood(int $wood)
-    {
-        $this->wood = $wood;
-    }
-
-    /**
-     * Get wood
-     *
-     * @return int
-     */
-    public function getWood(): int
-    {
-        return $this->wood;
-    }
-
-    /**
-     * Set food
-     *
-     * @param int $food
-     */
-    public function setFood(int $food)
-    {
-        $this->food = $food;
-    }
-
-    /**
-     * Get food
-     *
-     * @return int
-     */
-    public function getFood(): int
-    {
-        return $this->food;
-    }
-
-    /**
      * Set regions
      *
      * @param int $regions
@@ -414,126 +258,6 @@ class Player
     }
 
     /**
-     * Set general
-     *
-     * @param bool $general
-     */
-    public function setGeneral(bool $general)
-    {
-        $this->general = $general;
-    }
-
-    /**
-     * Get general
-     *
-     * @return bool
-     */
-    public function getGeneral(): bool
-    {
-        return $this->general;
-    }
-
-    /**
-     * Set attacked
-     *
-     * @param bool $attacked
-     */
-    public function setAttacked(bool $attacked)
-    {
-        $this->attacked = $attacked;
-    }
-
-    /**
-     * Get attacked
-     *
-     * @return bool
-     */
-    public function getAttacked(): bool
-    {
-        return $this->attacked;
-    }
-
-    /**
-     * Set message
-     *
-     * @param bool $message
-     */
-    public function setMessage(bool $message)
-    {
-        $this->message = $message;
-    }
-
-    /**
-     * Get message
-     *
-     * @return bool
-     */
-    public function getMessage(): bool
-    {
-        return $this->message;
-    }
-
-    /**
-     * Set market
-     *
-     * @param bool $market
-     */
-    public function setMarket(bool $market)
-    {
-        $this->market = $market;
-    }
-
-    /**
-     * Get market
-     *
-     * @return bool
-     */
-    public function getMarket(): bool
-    {
-        return $this->market;
-    }
-
-    /**
-     * Set aid
-     *
-     * @param bool $aid
-     */
-    public function setAid(bool $aid)
-    {
-        $this->aid = $aid;
-    }
-
-    /**
-     * Get aid
-     *
-     * @return bool
-     */
-    public function getAid(): bool
-    {
-        return $this->aid;
-    }
-
-    /**
-     * Set news
-     *
-     * @param bool $news
-     */
-    public function setNews(bool $news)
-    {
-        $this->news = $news;
-    }
-
-    /**
-     * Get news
-     *
-     * @return bool
-     */
-    public function getNews(): bool
-    {
-        return $this->news;
-    }
-
-    /**
      * Set federationHierarchy
      *
      * @param int $federationHierarchy
@@ -551,166 +275,6 @@ class Player
     public function getFederationHierarchy(): int
     {
         return $this->federationHierarchy;
-    }
-
-    /**
-     * Set incomeCash
-     *
-     * @param int $incomeCash
-     */
-    public function setIncomeCash(int $incomeCash)
-    {
-        $this->incomeCash = $incomeCash;
-    }
-
-    /**
-     * Get incomeCash
-     *
-     * @return int
-     */
-    public function getIncomeCash(): int
-    {
-        return $this->incomeCash;
-    }
-
-    /**
-     * Set incomeFood
-     *
-     * @param int $incomeFood
-     */
-    public function setIncomeFood(int $incomeFood)
-    {
-        $this->incomeFood = $incomeFood;
-    }
-
-    /**
-     * Get incomeFood
-     *
-     * @return int
-     */
-    public function getIncomeFood(): int
-    {
-        return $this->incomeFood;
-    }
-
-    /**
-     * Set incomeWood
-     *
-     * @param int $incomeWood
-     */
-    public function setIncomeWood(int $incomeWood)
-    {
-        $this->incomeWood = $incomeWood;
-    }
-
-    /**
-     * Get incomeWood
-     *
-     * @return int
-     */
-    public function getIncomeWood(): int
-    {
-        return $this->incomeWood;
-    }
-
-    /**
-     * Set incomeSteel
-     *
-     * @param int $incomeSteel
-     */
-    public function setIncomeSteel(int $incomeSteel)
-    {
-        $this->incomeSteel = $incomeSteel;
-    }
-
-    /**
-     * Get incomeSteel
-     *
-     * @return int
-     */
-    public function getIncomeSteel(): int
-    {
-        return $this->incomeSteel;
-    }
-
-    /**
-     * Set upkeepCash
-     *
-     * @param int $upkeepCash
-     */
-    public function setUpkeepCash(int $upkeepCash)
-    {
-        $this->upkeepCash = $upkeepCash;
-    }
-
-    /**
-     * Get upkeepCash
-     *
-     * @return int
-     */
-    public function getUpkeepCash(): int
-    {
-        return $this->upkeepCash;
-    }
-
-    /**
-     * Set upkeepFood
-     *
-     * @param int $upkeepFood
-     */
-    public function setUpkeepFood(int $upkeepFood)
-    {
-        $this->upkeepFood = $upkeepFood;
-    }
-
-    /**
-     * Get upkeepFood
-     *
-     * @return int
-     */
-    public function getUpkeepFood(): int
-    {
-        return $this->upkeepFood;
-    }
-
-    /**
-     * Set upkeepWood
-     *
-     * @param int $upkeepWood
-     */
-    public function setUpkeepWood(int $upkeepWood)
-    {
-        $this->upkeepWood = $upkeepWood;
-    }
-
-    /**
-     * Get upkeepWood
-     *
-     * @return int
-     */
-    public function getUpkeepWood(): int
-    {
-        return $this->upkeepWood;
-    }
-
-    /**
-     * Set upkeepSteel
-     *
-     * @param int $upkeepSteel
-     */
-    public function setUpkeepSteel(int $upkeepSteel)
-    {
-        $this->upkeepSteel = $upkeepSteel;
-    }
-
-    /**
-     * Get upkeepSteel
-     *
-     * @return int
-     */
-    public function getUpkeepSteel(): int
-    {
-        return $this->upkeepSteel;
     }
 
     /**
@@ -894,6 +458,38 @@ class Player
     }
 
     /**
+     * @return Resources
+     */
+    public function getResources(): Resources
+    {
+        return $this->resources;
+    }
+
+    /**
+     * @param Resources $resources
+     */
+    public function setResources(Resources $resources): void
+    {
+        $this->resources = $resources;
+    }
+
+    /**
+     * @return Notifications
+     */
+    public function getNotifications(): Notifications
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param Notifications $notifications
+     */
+    public function setNotifications(Notifications $notifications): void
+    {
+        $this->notifications = $notifications;
+    }
+
+    /**
      * @param User $user
      * @param string $name
      * @param World $world
@@ -901,16 +497,19 @@ class Player
      */
     public static function create(User $user, string $name, World $world)
     {
+        $resources = new Resources();
+        $resources->setCash($world->getCash());
+        $resources->setWood($world->getWood());
+        $resources->setSteel($world->getSteel());
+        $resources->setFood($world->getFood());
+
         $player = new Player();
         $player->setUser($user);
         $player->setName($name);
         $player->setWorld($world);
         $player->setTimestampJoined(time());
         $player->setTimestampUpdate(time());
-        $player->setCash($world->getCash());
-        $player->setWood($world->getWood());
-        $player->setSteel($world->getSteel());
-        $player->setFood($world->getFood());
+        $player->setResources($resources);
 
         return $player;
     }

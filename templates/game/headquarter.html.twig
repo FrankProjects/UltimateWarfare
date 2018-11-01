@@ -8,8 +8,8 @@
 
 Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
 
-{% if player.incomeFood < 0 and (player.food + player.incomeFood) < 0 %}
-    {% set runout_food_seconds = 0 - (player.food / player.incomeFood) * 3600 %}
+{% if player.resources.incomeFood < 0 and (player.resources.food + player.resources.incomeFood) < 0 %}
+    {% set runout_food_seconds = 0 - (player.resources.food / player.resources.incomeFood) * 3600 %}
 <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
     <tr>
         <td align="center">
@@ -33,8 +33,8 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 
 {% endif %}
 
-{% if player.incomeCash < 0 and (player.cash + player.incomeCash) < 0 %}
-    {% set runout_cash_seconds = 0 - (player.cash / player.incomeCash) * 3600 %}
+{% if player.resources.incomeCash < 0 and (player.resources.cash + player.resources.incomeCash) < 0 %}
+    {% set runout_cash_seconds = 0 - (player.resources.cash / player.resources.incomeCash) * 3600 %}
 <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
     <tr>
         <td align="center">
@@ -84,7 +84,7 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 
         <tr>
             <td width="150" align="center">Cash:</td>
-            <td width="250" align="center">$ {{ player.cash|number_format }}</td>
+            <td width="250" align="center">$ {{ player.resources.cash|number_format }}</td>
             <td width="300" rowspan="8" align="center">
                 <b>Ingame Announcements:</b>
                 <br />
@@ -93,15 +93,15 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
         </tr>
         <tr>
             <td width="150" align="center">Wood:</td>
-            <td width="250" align="center">{{ player.wood|number_format }}</td>
+            <td width="250" align="center">{{ player.resources.wood|number_format }}</td>
         </tr>
         <tr>
             <td width="150" align="center">Steel:</td>
-            <td width="250" align="center">{{ player.steel|number_format }}</td>
+            <td width="250" align="center">{{ player.resources.steel|number_format }}</td>
         </tr>
         <tr>
             <td width="150" align="center">Food:</td>
-            <td width="250" align="center">{{ player.food|number_format }}</td>
+            <td width="250" align="center">{{ player.resources.food|number_format }}</td>
         </tr>
         <tr>
             <td width="150" align="center">Population:</td>
