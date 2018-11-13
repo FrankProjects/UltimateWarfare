@@ -1,0 +1,43 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Update player roles
+{% endblock title %}
+
+{% block content %}
+    <form action="{{ path('Game/Federation/ChangePlayerHierarchy') }}" method="post">
+        <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+            <tr>
+                <td class="tabletop"><b>Change Ranks</b></td>
+            </tr>
+            <tr>
+                <td><br />Player:<br />
+                    <select name="player">
+                        {% for federationPlayer in player.federation.players %}
+                            <option value="{{ federationPlayer.id }}">{{ federationPlayer.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <br /><br />
+                    Rank:<br />
+
+                    <select name="rank">
+                        <option value="10">General (Federation Owner)</option>
+                        <option value="9">Staff General</option>
+                        <option value="8">Lieutenant General</option>
+                        <option value="7">Major General</option>
+                        <option value="6">Brigadier General</option>
+                        <option value="5">Colonel</option>
+                        <option value="4">Major</option>
+                        <option value="3">Captain</option>
+                        <option value="2">Sergeant</option>
+                        <option value="1">Recruit</option>
+                    </select>
+
+                    <br />
+                    <input type="submit" name="submit" value="Change">
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

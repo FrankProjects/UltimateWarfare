@@ -1,0 +1,128 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Federation
+{% endblock title %}
+
+{% block content %}
+    Options: <a class="B" href="{{ path('Game/Federation/List') }}">Federation List</a> -
+    <a class="B" href="{{ path('Game/Federation/News') }}">Federation News</a> -
+    <a class="B" href="{{ path('Game/Federation/SendAid') }}">Send aid</a>
+
+    {% if player.federationHierarchy == 10 %}
+        <br />
+        <br />
+        Leadership Options:
+        <a class="B" href="{{ path('Game/Federation/ChangePlayerHierarchy') }}">Change Player Ranks</a> -
+        <a class="B" href="{{ path('Game/Federation/ChangeName') }}">Change Federation name</a> -
+        <a class="B" href="{{ path('Game/Federation/UpdateLeadershipMessage') }}">Change leader message</a> -
+        <a class="B" href="{{ path('Game/Federation/Remove') }}">Remove Federation</a> -
+        <a class="B" href="{{ path('Game/Federation/Applications') }}">Applications ({{ player.federation.federationApplications|length }})</a>
+
+{% endif %}
+
+<br />
+<br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td class="tabletop" colspan="6" align="center"><b>{{ player.federation.name }}</b></td>
+        </tr>
+            <tr>
+                <td colspan="6" align="center">
+                    <b>Leader Message:</b><br />
+                    {{ player.federation.leaderMessage }}
+                    <br />
+                    <br />
+
+                    {% if player.federationHierarchy < 10 %}
+                        <a href="{{ path('Game/Federation/Leave') }}"> Leave Federation</a><br /><br />
+                    {% endif %}
+
+                    <table border="1" width="300" cellspacing="0" cellpadding="0" class="table text">
+                        <tr>
+                            <td width="300" colspan="2" class="tabletop" align="center"><b>Federation Bank</b></td>
+                        </tr>
+                        <tr>
+                            <td width="100" align="center">Cash:</td>
+                            <td width="200" align="center">$ {{ player.federation.resources.cash }}</td>
+                        </tr>
+                        <tr>
+                            <td width="100" align="center">Wood:</td>
+                            <td width="200" align="center">{{ player.federation.resources.wood }}</td>
+                        </tr>
+                        <tr>
+                            <td width="100" align="center">Steel: </td>
+                            <td width="200" align="center">{{ player.federation.resources.steel }}</td>
+                        </tr>
+                        <tr>
+                            <td width="100" align="center">Food: </td>
+                            <td width="200" align="center">{{ player.federation.resources.food }}</td>
+                        </tr>
+                        <tr><td colspan="2">
+                                <a class="B" href="{{ path('Game/Federation/Bank/Deposit') }}"> <b>Deposit</b></a><br />
+
+                                {% if player.federationHierarchy > 4 %}
+                                    <a class="B" href="{{ path('Game/Federation/Bank/Withdraw') }}"> <b>Withdraw</b></a><br />
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br />
+
+                </td>
+            </tr>
+            <tr>
+                <td class="tabletop" width="700" align="left" colspan="6">
+                    <b>Federation Chat</b>
+                </td>
+            </tr>
+            <tr>
+                <td align="left" colspan="6">No active chat...</td>
+            </tr>
+
+            <form method="post" action="{{ path('Game/Federation') }}">
+                <tr>
+                    <td colspan="6">
+                        <input type="text" size="30" name="chat_text">
+                        <span class="submit">
+                            <input type="submit" name="submit" value="Send">
+                        </span>
+                    </td>
+                </tr>
+            </form>
+
+        <tr>
+            <td class="tabletop" width="30">Online</td>
+            <td class="tabletop" width="200">Name</td>
+            <td class="tabletop" width="110">Rank</td>
+            <td class="tabletop" width="80">Regions</td>
+            <td class="tabletop" width="90">Networth</td>
+            <td class="tabletop" width="60">Kick</td>
+        </tr>
+
+        {% for federationPlayer in player.federation.players %}
+            <tr>
+                <td>
+                    <div class="bad">Offline</div>
+                </td>
+                <td>
+                    <a class="B" href="{{ path('Game/Profile', {'playerName': federationPlayer.name}) }}">{{ federationPlayer.name }}</a>
+                </td>
+                <td>
+                    {{ federationPlayer.federationHierarchy }}
+                </td>
+                <td>
+                    {{ federationPlayer.regions }}
+                </td>
+                <td>
+                    {{ federationPlayer.networth }}
+                </td>
+                <td>
+                    <a class="B" href="{{ path('Game/Federation/KickPlayer', {'playerId': federationPlayer.id}) }}"><b>Kick</b></a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

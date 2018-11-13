@@ -1,0 +1,33 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Federation news
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td class="tabletop" align="center" colspan="2"><b>Federation News</b></td>
+        </tr>
+        <tr>
+            <td width="150" align="center"><b>Date</b></td>
+            <td width="550" align="left"><b>Report</b></td>
+        </tr>
+
+        {% for federationNews in federationNews %}
+            <tr>
+                <td align="center">
+                    {{ federationNews.timestamp }}
+                </td>
+                <td align="left">
+                    {{ federationNews.news }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td align="center" colspan="2">No federation news yet...</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock %}

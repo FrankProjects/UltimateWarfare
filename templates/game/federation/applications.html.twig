@@ -1,0 +1,30 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Federation news
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td class="tabletop" align="center"><b>Accept new members here!</b></td>
+        </tr>
+
+        {% for federationApplication in player.federation.federationApplications %}
+            <tr>
+                <td>
+                    <b>Username:</b>{{ federationApplication.player.name }}
+                    <br /><br /><b>Application:</b><br />{{ federationApplication.application }}
+                    <br /><br />Click <a class="B" href="{{ path('Game/Federation/Application/Accept', {'federationApplicationId': federationApplication.id}) }}"><b>here</b></a> to Accept.<br />
+                    Click <a class="B" href="{{ path('Game/Federation/Application/Reject', {'federationApplicationId': federationApplication.id}) }}"><b>here</b></a> to Decline.
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>
+                    No Applications at this time!
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

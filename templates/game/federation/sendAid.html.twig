@@ -1,0 +1,77 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Federation aid
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td class="tabletop" align="center"><b>Send Aid</b></td>
+        </tr>
+        <tr>
+            <td>
+                <b>Adviser:</b>
+                <br />
+                Welcome <strong>{{ player.name }}</strong>,
+                <br />
+
+                You can aid Federation members here!
+                <br />
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <form method="post" action="{{ path('Game/Federation/SendAid') }}">
+        <table width="450" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+            <tr>
+                <td class="tabletop" colspan="3" align="center"><b>Resources</b></td>
+            </tr>
+            <tr>
+                <td width="100" align="center">Resources:</td>
+                <td width="100" align="center">You have:</td>
+                <td width="250" align="center">Amount:</td>
+            </tr>
+            <tr>
+                <td>Cash: </td>
+                <td>{{ player.resources.cash }}</td>
+                <td><input type="text" size="12" name="cash"></td>
+            </tr>
+            <tr>
+                <td>Wood: </td>
+                <td>{{ player.resources.wood }}</td>
+                <td><input type="text" size="12" name="wood"></td>
+            </tr>
+            <tr>
+                <td>Steel: </td>
+                <td>{{ player.resources.steel }}</td>
+                <td><input type="text" size="12" name="steel"></td>
+            </tr>
+            <tr>
+                <td>Food:</td>
+                <td>{{ player.resources.food }}</td>
+                <td><input type="text" size="12" name="food"></td>
+            </tr>
+            <tr>
+                <td>To Player</td>
+                <td colspan="2">
+                    <select name="player">
+                        {% for federationPlayer in player.federation.players %}
+                            <option value="{{ federationPlayer.id }}">{{ federationPlayer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="submit">
+                        <input type="submit" name="submit" value="Send">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

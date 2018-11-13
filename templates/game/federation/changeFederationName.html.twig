@@ -1,0 +1,26 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Change Federation name
+{% endblock title %}
+
+{% block content %}
+    <form action="{{ path('Game/Federation/ChangeName') }}" method="post">
+        <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+            <tr>
+                <td class="tabletop"><b>Change Federation Name</b></td>
+            </tr>
+            <tr>
+                <td> Please enter a Federation name.</td>
+            </tr>
+            <tr>
+                <td><input type="text" size="25" name="name"></td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" name="submit" value="Change">
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

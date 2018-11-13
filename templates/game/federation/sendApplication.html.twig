@@ -1,0 +1,26 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Apply for federation
+{% endblock title %}
+
+{% block content %}
+    <form action="{{ path('Game/Federation/Application/Send', {'federationId': federation.id}) }}" method="post">
+        <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+            <tr>
+                <td class="tabletop" align="center"><b>Join a Federation</b></td>
+            </tr>
+            <tr>
+                <td>
+                    Send your application here!
+                </td>
+            </tr>
+            <tr>
+                <td><textarea name="application" rows="9" cols="50"></textarea></td>
+            </tr>
+            <tr>
+                <td><div class="submit"><input type="submit" name="submit" value="Send application"></div></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
