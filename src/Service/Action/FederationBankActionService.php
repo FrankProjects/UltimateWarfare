@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
+use FrankProjects\UltimateWarfare\Entity\FederationNews;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use RuntimeException;
@@ -17,6 +19,11 @@ final class FederationBankActionService
     private $federationRepository;
 
     /**
+     * @var FederationNewsRepository
+     */
+    private $federationNewsRepository;
+
+    /**
      * @var PlayerRepository
      */
     private $playerRepository;
@@ -25,13 +32,16 @@ final class FederationBankActionService
      * FederationBankActionService constructor.
      *
      * @param FederationRepository $federationRepository
+     * @param FederationNewsRepository $federationNewsRepository
      * @param PlayerRepository $playerRepository
      */
     public function __construct(
         FederationRepository $federationRepository,
+        FederationNewsRepository $federationNewsRepository,
         PlayerRepository $playerRepository
     ) {
         $this->federationRepository = $federationRepository;
+        $this->federationNewsRepository = $federationNewsRepository;
         $this->playerRepository = $playerRepository;
     }
 
@@ -43,6 +53,7 @@ final class FederationBankActionService
     {
         $this->ensureFederationEnabled($player);
 
+        $resourceString = '';
         foreach ($resources as $resourceName => $amount) {
             $this->ensureValidResourcename($resourceName);
 
@@ -53,32 +64,22 @@ final class FederationBankActionService
             if ($amount > $player->getResources()->$resourceName) {
                 throw new RunTimeException("You don't have enough {$resourceName}!");
             }
+
+            if ($resourceString !== '') {
+                $resourceString .= ', ';
+            }
+            $resourceString .= $amount . ' ' . $resourceName;
         }
+
+        $news = "{$player->getName()} deposited {$resourceString} to the Federation Bank";
+        $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+        $this->federationNewsRepository->save($federationNews);
 
         /**
-
-        $db->query("UPDATE player set cash = cash - $b_cash, wood = wood - $b_wood, steel = steel - $b_steel, food = food - $b_food WHERE id = $player_id");
-
-        $db->query("UPDATE federation set cashbank = cashbank + $b_cash, woodbank = woodbank + $b_wood, steelbank = steelbank + $b_steel, foodbank = foodbank + $b_food WHERE id = $fed_id");
-
-
-        $updatenews = "INSERT INTO fed_news (world_id, fed_id, timestamp, news) VALUES ($world_id,$fed_id,$time,'".$player['name']." Donated $b_cash cash, $b_wood wood, $b_steel steel and $b_food food to the Federation Bank')";
-        $result = $db->query($updatenews);
-
-        $success[] = '* You succesfully made a Donation...';
-
-        $player['cash'] = $player['cash'] - $b_cash;
-        $player['wood'] = $player['wood'] - $b_wood;
-        $player['steel'] = $player['steel'] - $b_steel;
-        $player['food'] = $player['food'] - $b_food;
-
-        $cashbank = $cashbank + $b_cash;
-        $woodbank = $woodbank + $b_wood;
-        $steelbank = $steelbank + $b_steel;
-        $foodbank = $foodbank + $b_food;
-        }
-        }
-        }
+         * XXX TODO!
+         *
+         * $db->query("UPDATE player set cash = cash - $b_cash, wood = wood - $b_wood, steel = steel - $b_steel, food = food - $b_food WHERE id = $player_id");
+         * $db->query("UPDATE federation set cashbank = cashbank + $b_cash, woodbank = woodbank + $b_wood, steelbank = steelbank + $b_steel, foodbank = foodbank + $b_food WHERE id = $fed_id");
          */
     }
 
@@ -94,6 +95,7 @@ final class FederationBankActionService
             throw new RunTimeException("You don't have permission to use the Federation Bank!");
         }
 
+        $resourceString = '';
         foreach ($resources as $resourceName => $amount) {
             $this->ensureValidResourcename($resourceName);
 
@@ -104,18 +106,22 @@ final class FederationBankActionService
             if ($amount > $player->getFederation()->getResources()->$resourceName) {
                 throw new RunTimeException("Federation Bank doesn't have enough {$resourceName}!");
             }
+
+            if ($resourceString !== '') {
+                $resourceString .= ', ';
+            }
+            $resourceString .= $amount . ' ' . $resourceName;
         }
+
+        $news = "{$player->getName()} withdrew {$resourceString} from the Federation Bank";
+        $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+        $this->federationNewsRepository->save($federationNews);
+
         /**
-
-        $db->query("UPDATE player set cash = cash + $b_cash, wood = wood + $b_wood, steel = steel + $b_steel, food = food + $b_food WHERE id = $player_id");
-
-        $db->query("UPDATE federation set cashbank = cashbank - $b_cash, woodbank = woodbank - $b_wood, steelbank = steelbank - $b_steel, foodbank = foodbank - $b_food WHERE id = $fed_id");
-
-        $updatenews = "INSERT INTO fed_news (world_id, fed_id, timestamp, news) VALUES ($world_id,$fed_id,$time,'".$player['name']." Withdrew $b_cash cash, $b_wood wood, $b_steel steel and $b_food food from the Federation Bank')";
-        $result = $db->query($updatenews);
-
-        $success[] = '* You succesfully made a Withdrawal...';
-
+         * XXX TODO!
+         *
+         * $db->query("UPDATE player set cash = cash + $b_cash, wood = wood + $b_wood, steel = steel + $b_steel, food = food + $b_food WHERE id = $player_id");
+         * $db->query("UPDATE federation set cashbank = cashbank - $b_cash, woodbank = woodbank - $b_wood, steelbank = steelbank - $b_steel, foodbank = foodbank - $b_food WHERE id = $fed_id");
          */
     }
 
