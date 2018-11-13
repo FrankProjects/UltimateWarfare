@@ -103,10 +103,7 @@ final class FederationApplicationActionService
         $federation->setNetworth($federation->getNetworth() + $federationApplication->getPlayer()->getNetworth());
         $federation->setRegions($federation->getRegions() + $federationApplication->getPlayer()->getRegions());
         $this->federationRepository->save($federation);
-        /**
 
-        echo"Player accepted";
-*/
         $this->federationApplicationRepository->remove($federationApplication);
     }
 
@@ -127,9 +124,7 @@ final class FederationApplicationActionService
         $reportString = "You have been rejected by the Federation {$player->getFederation()->getName()}";
         $report = Report::createForPlayer($federationApplication->getPlayer(), time(), Report::TYPE_GENERAL, $reportString);
         $this->reportRepository->save($report);
-        /**
-        echo"Player denied";
-         */
+
         $this->federationApplicationRepository->remove($federationApplication);
     }
 
