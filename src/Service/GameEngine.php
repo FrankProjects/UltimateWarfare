@@ -147,7 +147,7 @@ final class GameEngine
             }
 
             $finishedConstructionTime = $construction->getTimestamp() + $construction->getGameUnit()->getTimestamp();
-            $report = Report::create($player, $finishedConstructionTime, $reportType, $message);
+            $report = Report::createForPlayer($player, $finishedConstructionTime, $reportType, $message);
 
             try {
                 if ($federation !== null) {
@@ -192,7 +192,7 @@ final class GameEngine
             $research = $researchPlayer->getResearch();
             $finishedTimestamp = $researchPlayer->getTimestamp() + $research->getTimestamp();
             $message = "You successfully researched a new technology: {$research->getName()}";
-            $report = Report::create($player, $finishedTimestamp, 2, $message);
+            $report = Report::createForPlayer($player, $finishedTimestamp, 2, $message);
 
             try {
                 if ($federation !== null) {
