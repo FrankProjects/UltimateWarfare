@@ -9,22 +9,22 @@ class Resources
     /**
      * @var int
      */
-    private $cash;
+    private $cash = 0;
 
     /**
      * @var int
      */
-    private $steel;
+    private $steel = 0;
 
     /**
      * @var int
      */
-    private $wood;
+    private $wood = 0;
 
     /**
      * @var int
      */
-    private $food;
+    private $food = 0;
 
     /**
      * @var int

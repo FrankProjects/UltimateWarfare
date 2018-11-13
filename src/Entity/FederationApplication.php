@@ -44,7 +44,7 @@ class FederationApplication
      *
      * @param string $application
      */
-    public function setApplication(string $application)
+    public function setApplication(string $application): void
     {
         $this->application = $application;
     }
@@ -70,7 +70,7 @@ class FederationApplication
     /**
      * @param Federation $federation
      */
-    public function setFederation(Federation $federation)
+    public function setFederation(Federation $federation): void
     {
         $this->federation = $federation;
     }
@@ -86,8 +86,24 @@ class FederationApplication
     /**
      * @param Player $player
      */
-    public function setPlayer(Player $player)
+    public function setPlayer(Player $player): void
     {
         $this->player = $player;
+    }
+
+    /**
+     * @param Federation $federation
+     * @param Player $player
+     * @param string $application
+     * @return FederationApplication
+     */
+    public static function createForFederation(Federation $federation, Player $player, string $application): FederationApplication
+    {
+        $federationApplication = new FederationApplication();
+        $federationApplication->setFederation($federation);
+        $federationApplication->setPlayer($player);
+        $federationApplication->setApplication($application);
+
+        return $federationApplication;
     }
 }

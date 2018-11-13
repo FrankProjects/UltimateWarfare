@@ -22,6 +22,21 @@ class Player
     /**
      * @var int
      */
+    const FEDERATION_HIERARCHY_RECRUIT = 1;
+
+    /**
+     * @var int
+     */
+    const FEDERATION_HIERARCHY_CAPTAIN = 3;
+
+    /**
+     * @var int
+     */
+    const FEDERATION_HIERARCHY_GENERAL = 10;
+
+    /**
+     * @var int
+     */
     private $id;
 
     /**
