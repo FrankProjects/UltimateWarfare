@@ -118,13 +118,87 @@ Game/Federation:
     path:      /game/federation
     controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::federation
 
+Game/Federation/Applications:
+    path:      /game/federation/applications
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::showFederationApplications
+
+Game/Federation/Application/Accept:
+    path:      /game/federation/application/accept/{federationApplicationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::acceptFederationApplication
+    requirements:
+        federationApplicationId: '\d+'
+
+Game/Federation/Application/Reject:
+    path:      /game/federation/application/reject{federationApplicationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::rejectFederationApplication
+    requirements:
+        federationApplicationId: '\d+'
+
+Game/Federation/Application/Send:
+    path:      /game/federation/application/send/{federationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::sendApplication
+    requirements:
+        federationId: '\d+'
+
+Game/Federation/Bank/Deposit:
+    path:      /game/federation/bank/deposit
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationBankController::deposit
+
+Game/Federation/Bank/Withdraw:
+    path:      /game/federation/bank/withdraw
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationBankController::withdraw
+
+Game/Federation/Show:
+    path:      /game/federation/{federationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::showFederation
+    requirements:
+        federationId: '\d+'
+
 Game/Federation/Create:
     path:      /game/federation/create
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::create
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::createFederation
 
 Game/Federation/Join:
     path:      /game/federation/join
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::join
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::joinFederation
+
+Game/Federation/List:
+    path:      /game/federation/list
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::listFederations
+
+Game/Federation/News:
+    path:      /game/federation/news
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::federationNews
+
+Game/Federation/SendAid:
+    path:      /game/federation/send-aid
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::sendAid
+
+Game/Federation/Remove:
+    path:      /game/federation/remove
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::removeFederation
+
+Game/Federation/ChangeName:
+    path:      /game/federation/change-name
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::changeFederationName
+
+Game/Federation/Leave:
+    path:      /game/federation/leave
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::leaveFederation
+
+Game/Federation/KickPlayer:
+    path:      /game/federation/kick/{playerId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::kickPlayer
+    requirements:
+        playerId: '\d+'
+
+Game/Federation/UpdateLeadershipMessage:
+    path:      /game/federation/update-leadership-message
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::updateLeadershipMessage
+
+Game/Federation/ChangePlayerHierarchy:
+    path:      /game/federation/change-roles
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::changePlayerHierarchy
 
 Game/Fleets:
     path:      /game/fleets
