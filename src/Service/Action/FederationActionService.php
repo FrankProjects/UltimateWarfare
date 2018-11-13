@@ -141,7 +141,6 @@ final class FederationActionService
         $reportString = "You have send {$resourceString} to {$aidPlayer->getName()}";
         $report = Report::createForPlayer($player, time(), Report::TYPE_AID, $reportString);
         $this->reportRepository->save($report);
-
     }
 
     /**
