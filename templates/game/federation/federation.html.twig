@@ -1,0 +1,37 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Federation
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+
+            <td class="tabletop" colspan="5" align="center"><b>{{ federation.name }}</b></td>
+        </tr>
+        <tr>
+            <td class="tabletop" width="240">Name</td>
+            <td class="tabletop" width="130">Rank</td>
+            <td class="tabletop" width="110">Regions</td>
+            <td class="tabletop" width="120">Networth</td>
+        </tr>
+
+        {% for federationPlayer in federation.players %}
+            <tr>
+                <td>
+                    <a class="B" href="{{ path('Game/Profile', {'playerName': federationPlayer.name}) }}">{{ federationPlayer.name }}</a>
+                </td>
+                <td>
+                    {{ federationPlayer.federationHierarchy }}
+                </td>
+                <td>
+                    {{ federationPlayer.regions }}
+                </td>
+                <td>
+                    {{ federationPlayer.networth }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

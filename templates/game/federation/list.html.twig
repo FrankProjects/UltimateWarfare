@@ -1,0 +1,44 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Federation list
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <tr>
+            <td class="tabletop" colspan="6" align="center"><b>Federations</b></td>
+        </tr>
+        <tr>
+            <td width="50"><b>Rank</b></td>
+            <td width="220"><b>Name</b></td>
+            <td width="100"><b>Owner</b></td>
+            <td width="60"><b>Players</b></td>
+            <td width="80"><b>Regions</b></td>
+            <td width="90"><b>Networth</b></td>
+        </tr>
+
+        {% for federation in federations %}
+            <tr>
+                <td>
+                    {{ loop.index }}
+                </td>
+                <td>
+                    <a class="B" href="{{ path('Game/Federation/Show', {'federationId': federation.id}) }}">{{ federation.name }}</a>
+                </td>
+                <td>
+                    {{ federation.founder.name }}
+                </td>
+                <td>
+                    {{ federation.players|length }}
+                </td>
+                <td>
+                    {{ federation.regions }}
+                </td>
+                <td>
+                    {{ federation.networth }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,26 +1,67 @@
 {% extends 'game.html.twig' %}
 
 {% block title %}
-    Ultimate Warfare - Federation
+    Ultimate Warfare - Join Federation
 {% endblock title %}
 
 {% block content %}
-    <form action="{{ path('Game/Federation/Create') }}" method="POST">
-        <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
-            <tr>
-                <td class="tabletop"><b>Create Federation</b></td>
-            </tr>
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" align="center"><b>Federations</b></td>
+        </tr>
+        <tr>
+            <td>
+                <b>Adviser:</b>
+                <br />
+                Welcome <strong>{{ player.name }}</strong>,
+                <br />
+                You will see a list of all Federations here.<br />
+                Send an application to join a Federation
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="7" align="center"><b>Federations</b></td>
+        </tr>
+        <tr>
+            <td width="50">Rank</td>
+            <td width="220">Name</td>
+            <td width="120">Owner</td>
+            <td width="50">Players</td>
+            <td width="80">Regions</td>
+            <td width="80">Networth</td>
+            <td width="80">Application</td>
+        </tr>
+
+        {% for federation in federations %}
             <tr>
                 <td>
-                    <div>
-                        <label for="name">Federation name:</label>
-                        <input type="text" name="name" id="name" maxlength="25" value="<?php echo filter_html($name);?>" />
-                    </div>
-                    <div class="submit">
-                        <input type="submit" name="submit" value="Create">
-                    </div>
+                    {{ loop.index }}
+                </td>
+                <td>
+                    <a class="B" href="{{ path('Game/Federation/Show', {'federationId': federation.id}) }}"><b>{{ federation.name }}</b></a>
+                </td>
+                <td>
+                    {{ federation.founder.name }}
+                </td>
+                <td>
+                    {{ federation.players|length }}
+                </td>
+                <td>
+                    {{ federation.regions }}
+                </td>
+                <td>
+                    {{ federation.networth }}
+                </td>
+                <td>
+                    <a class="B" href="{{ path('Game/Federation/Application/Send', {'federationId': federation.id}) }}"><b>Send Application</b></a>
                 </td>
             </tr>
-        </table>
-    </form>
+        {% endfor %}
+    </table>
 {% endblock %}

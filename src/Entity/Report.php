@@ -132,7 +132,7 @@ class Report
      * @param string $message
      * @return Report
      */
-    public static function create(Player $player, int $timestamp, int $type, string $message): Report
+    public static function createForPlayer(Player $player, int $timestamp, int $type, string $message): Report
     {
         $report = new Report();
         $report->setPlayer($player);

@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\Federation\Resources;
 
 /**
  * Federation
@@ -20,7 +21,7 @@ class Federation
     /**
      * @var string
      */
-    private $name;
+    private $name = '';
 
     /**
      * @var Player
@@ -30,37 +31,17 @@ class Federation
     /**
      * @var string
      */
-    private $leaderMessage;
+    private $leaderMessage = '';
 
     /**
      * @var int
      */
-    private $cashbank = 0;
+    private $regions = 0;
 
     /**
      * @var int
      */
-    private $woodbank = 0;
-
-    /**
-     * @var int
-     */
-    private $steelbank = 0;
-
-    /**
-     * @var int
-     */
-    private $foodbank = 0;
-
-    /**
-     * @var int
-     */
-    private $regions;
-
-    /**
-     * @var int
-     */
-    private $networth;
+    private $networth = 0;
 
     /**
      * @var World
@@ -83,6 +64,11 @@ class Federation
     private $federationNews = [];
 
     /**
+     * @var Resources
+     */
+    private $resources;
+
+    /**
      * Federation constructor.
      */
     public function __construct()
@@ -90,6 +76,7 @@ class Federation
         $this->players = new ArrayCollection();
         $this->federationApplications = new ArrayCollection();
         $this->federationNews = new ArrayCollection();
+        $this->resources = new Resources();
     }
 
     /**
@@ -107,7 +94,7 @@ class Federation
      *
      * @param string $name
      */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -127,7 +114,7 @@ class Federation
      *
      * @param Player $founder
      */
-    public function setFounder(Player $founder)
+    public function setFounder(Player $founder): void
     {
         $this->founder = $founder;
     }
@@ -147,7 +134,7 @@ class Federation
      *
      * @param string $leaderMessage
      */
-    public function setLeaderMessage(string $leaderMessage)
+    public function setLeaderMessage(string $leaderMessage): void
     {
         $this->leaderMessage = $leaderMessage;
     }
@@ -163,91 +150,11 @@ class Federation
     }
 
     /**
-     * Set cashbank
-     *
-     * @param int $cashbank
-     */
-    public function setCashbank(int $cashbank)
-    {
-        $this->cashbank = $cashbank;
-    }
-
-    /**
-     * Get cashbank
-     *
-     * @return int
-     */
-    public function getCashbank(): int
-    {
-        return $this->cashbank;
-    }
-
-    /**
-     * Set woodbank
-     *
-     * @param int $woodbank
-     */
-    public function setWoodbank(int $woodbank)
-    {
-        $this->woodbank = $woodbank;
-    }
-
-    /**
-     * Get woodbank
-     *
-     * @return int
-     */
-    public function getWoodbank(): int
-    {
-        return $this->woodbank;
-    }
-
-    /**
-     * Set steelbank
-     *
-     * @param int $steelbank
-     */
-    public function setSteelbank(int $steelbank)
-    {
-        $this->steelbank = $steelbank;
-    }
-
-    /**
-     * Get steelbank
-     *
-     * @return int
-     */
-    public function getSteelbank(): int
-    {
-        return $this->steelbank;
-    }
-
-    /**
-     * Set foodbank
-     *
-     * @param int $foodbank
-     */
-    public function setFoodbank(int $foodbank)
-    {
-        $this->foodbank = $foodbank;
-    }
-
-    /**
-     * Get foodbank
-     *
-     * @return int
-     */
-    public function getFoodbank(): int
-    {
-        return $this->foodbank;
-    }
-
-    /**
      * Set regions
      *
      * @param int $regions
      */
-    public function setRegions(int $regions)
+    public function setRegions(int $regions): void
     {
         $this->regions = $regions;
     }
@@ -267,7 +174,7 @@ class Federation
      *
      * @param int $networth
      */
-    public function setNetworth(int $networth)
+    public function setNetworth(int $networth): void
     {
         $this->networth = $networth;
     }
@@ -293,7 +200,7 @@ class Federation
     /**
      * @param World $world
      */
-    public function setWorld(World $world)
+    public function setWorld(World $world): void
     {
         $this->world = $world;
     }
@@ -309,7 +216,7 @@ class Federation
     /**
      * @param Collection $federationApplications
      */
-    public function setFederationApplications(Collection $federationApplications)
+    public function setFederationApplications(Collection $federationApplications): void
     {
         $this->federationApplications = $federationApplications;
     }
@@ -325,7 +232,7 @@ class Federation
     /**
      * @param Collection $players
      */
-    public function setPlayers(Collection $players)
+    public function setPlayers(Collection $players): void
     {
         $this->players = $players;
     }
@@ -341,8 +248,41 @@ class Federation
     /**
      * @param Collection $federationNews
      */
-    public function setFederationNews(Collection $federationNews)
+    public function setFederationNews(Collection $federationNews): void
     {
         $this->federationNews = $federationNews;
+    }
+
+    /**
+     * @return Resources
+     */
+    public function getResources(): Resources
+    {
+        return $this->resources;
+    }
+
+    /**
+     * @param Resources $resources
+     */
+    public function setResources(Resources $resources): void
+    {
+        $this->resources = $resources;
+    }
+
+    /**
+     * @param Player $player
+     * @param string $name
+     * @return Federation
+     */
+    public static function createForPlayer(Player $player, string $name): Federation
+    {
+        $federation = new Federation();
+        $federation->setName($name);
+        $federation->setFounder($player);
+        $federation->setWorld($player->getWorld());
+        $federation->setRegions($player->getRegions());
+        $federation->setNetworth($player->getNetworth());
+
+        return $federation;
     }
 }

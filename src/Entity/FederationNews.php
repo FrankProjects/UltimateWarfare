@@ -44,7 +44,7 @@ class FederationNews
      *
      * @param int $timestamp
      */
-    public function setTimestamp(int $timestamp)
+    public function setTimestamp(int $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
@@ -64,7 +64,7 @@ class FederationNews
      *
      * @param string $news
      */
-    public function setNews(string $news)
+    public function setNews(string $news): void
     {
         $this->news = $news;
     }
@@ -90,8 +90,23 @@ class FederationNews
     /**
      * @param Federation $federation
      */
-    public function setFederation(Federation $federation)
+    public function setFederation(Federation $federation): void
     {
         $this->federation = $federation;
+    }
+
+    /**
+     * @param Federation $federation
+     * @param string $news
+     * @return FederationNews
+     */
+    public static function createForFederation(Federation $federation, string $news): FederationNews
+    {
+        $federationNews = new FederationNews();
+        $federationNews->setFederation($federation);
+        $federationNews->setNews($news);
+        $federationNews->setTimestamp(time());
+
+        return $federationNews;
     }
 }

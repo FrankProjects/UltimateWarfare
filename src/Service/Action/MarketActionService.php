@@ -112,11 +112,11 @@ final class MarketActionService
         $this->marketItemRepository->remove($marketItem);
 
         $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
-        $buyReport = Report::create($player, time(), 4, $buyMessage);
+        $buyReport = Report::createForPlayer($player, time(), Report::TYPE_MARKET, $buyMessage);
         $this->reportRepository->save($buyReport);
 
         $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
-        $sellReport = Report::create($marketItemPlayer, time(), 4, $sellMessage);
+        $sellReport = Report::createForPlayer($marketItemPlayer, time(), Report::TYPE_MARKET, $sellMessage);
         $this->reportRepository->save($sellReport);
     }
 
@@ -212,11 +212,11 @@ final class MarketActionService
         $this->marketItemRepository->remove($marketItem);
 
         $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
-        $sellReport = Report::create($player, time(), 4, $sellMessage);
+        $sellReport = Report::createForPlayer($player, time(), Report::TYPE_MARKET, $sellMessage);
         $this->reportRepository->save($sellReport);
 
         $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
-        $buyReport = Report::create($marketItemPlayer, time(), 4, $buyMessage);
+        $buyReport = Report::createForPlayer($marketItemPlayer, time(), Report::TYPE_MARKET, $buyMessage);
         $this->reportRepository->save($buyReport);
     }
 

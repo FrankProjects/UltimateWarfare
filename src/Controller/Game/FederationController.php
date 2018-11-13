@@ -4,16 +4,51 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
+use FrankProjects\UltimateWarfare\Repository\FederationRepository;
+use FrankProjects\UltimateWarfare\Service\Action\FederationActionService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class FederationController extends BaseGameController
 {
     /**
-     * @param Request $request
+     * @var FederationRepository
+     */
+    private $federationRepository;
+
+    /**
+     * @var FederationNewsRepository
+     */
+    private $federationNewsRepository;
+
+    /**
+     * @var FederationActionService
+     */
+    private $federationActionService;
+
+    /**
+     * FederationController constructor.
+     *
+     * @param FederationRepository $federationRepository
+     * @param FederationNewsRepository $federationNewsRepository
+     * @param FederationActionService $federationActionService
+     */
+    public function __construct(
+        FederationRepository $federationRepository,
+        FederationNewsRepository $federationNewsRepository,
+        FederationActionService $federationActionService
+    ) {
+        $this->federationRepository = $federationRepository;
+        $this->federationNewsRepository = $federationNewsRepository;
+        $this->federationActionService = $federationActionService;
+    }
+
+    /**
      * @return Response
      */
-    public function federation(Request $request): Response
+    public function federation(): Response
     {
         $player = $this->getPlayer();
         if ($player->getFederation() == null) {
@@ -21,8 +56,42 @@ final class FederationController extends BaseGameController
                 'player' => $this->getPlayer()
             ]);
         }
+
+        return $this->render('game/federation/yourFederation.html.twig', [
+            'player' => $this->getPlayer()
+        ]);
+    }
+
+    /**
+     * @param int $federationId
+     * @return Response
+     */
+    public function showFederation(int $federationId): Response
+    {
+        $federation = $this->federationRepository->findByIdAndWorld($federationId, $this->getPlayer()->getWorld());
+        if ($federation == null) {
+            return $this->render('game/federation/noFederation.html.twig', [
+                'player' => $this->getPlayer()
+            ]);
+        }
+
         return $this->render('game/federation/federation.html.twig', [
-            'player' => $this->getPlayer()
+            'player' => $this->getPlayer(),
+            'federation' => $federation
+        ]);
+    }
+
+    /**
+     * @return Response
+     */
+    public function federationNews(): Response
+    {
+        $player = $this->getPlayer();
+        $federationNews = $this->federationNewsRepository->findByFederationSortedByTimestamp($player->getFederation());
+
+        return $this->render('game/federation/news.html.twig', [
+            'player' => $player,
+            'federationNews' => $federationNews
         ]);
     }
 
@@ -30,9 +99,75 @@ final class FederationController extends BaseGameController
      * @param Request $request
      * @return Response
      */
-    public function create(Request $request): Response
+    public function createFederation(Request $request): Response
     {
+        $federationName = $request->get('name');
+
+        if ($federationName !== null) {
+            $federationName = trim($federationName);
+        }
+
+        try {
+            if ($request->isMethod('POST')) {
+                $this->federationActionService->createFederation($this->getPlayer(), $federationName);
+                $this->addFlash('success', "You successfully created a new Federation");
+
+                return $this->redirectToRoute('Game/Federation');
+            }
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
         return $this->render('game/federation/create.html.twig', [
+            'player' => $this->getPlayer(),
+            'federationName' => $federationName
+        ]);
+    }
+
+    /**
+     * @return Response
+     */
+    public function joinFederation(): Response
+    {
+        $federations = $this->federationRepository->findByWorldSortedByRegion($this->getPlayer()->getWorld());
+
+        return $this->render('game/federation/join.html.twig', [
+            'player' => $this->getPlayer(),
+            'federations' => $federations
+        ]);
+    }
+
+    /**
+     * @return Response
+     */
+    public function listFederations(): Response
+    {
+        $federations = $this->federationRepository->findByWorldSortedByRegion($this->getPlayer()->getWorld());
+
+        return $this->render('game/federation/list.html.twig', [
+            'player' => $this->getPlayer(),
+            'federations' => $federations
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function sendAid(Request $request): Response
+    {
+        try {
+            if ($request->isMethod('POST') && $request->get('player') !== null) {
+                $this->federationActionService->sendAid($this->getPlayer(), $request->get('player'), []);
+                $this->addFlash('success', "You have send aid!");
+
+                return $this->redirectToRoute('Game/Federation');
+            }
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->render('game/federation/sendAid.html.twig', [
             'player' => $this->getPlayer()
         ]);
     }
@@ -41,9 +176,125 @@ final class FederationController extends BaseGameController
      * @param Request $request
      * @return Response
      */
-    public function join(Request $request): Response
+    public function removeFederation(Request $request): Response
     {
-        return $this->render('game/federation/join.html.twig', [
+        try {
+            if ($request->isMethod('POST')) {
+                $this->federationActionService->removeFederation($this->getPlayer());
+                $this->addFlash('success', "You successfully removed a Federation");
+
+                return $this->redirectToRoute('Game/Federation');
+            }
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->render('game/federation/removeFederation.html.twig', [
+            'player' => $this->getPlayer()
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function changeFederationName(Request $request): Response
+    {
+        try {
+            if ($request->isMethod('POST')) {
+                $this->federationActionService->changeFederationName($this->getPlayer(), $request->get('name'));
+                $this->addFlash('success', "You successfully changed the Federation name!");
+
+                return $this->redirectToRoute('Game/Federation');
+            }
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->render('game/federation/changeFederationName.html.twig', [
+            'player' => $this->getPlayer()
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function leaveFederation(Request $request): Response
+    {
+        try {
+            if ($request->isMethod('POST')) {
+                $this->federationActionService->leaveFederation($this->getPlayer());
+                $this->addFlash('success', "You successfully left your Federation");
+
+                return $this->redirectToRoute('Game/Federation');
+            }
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->render('game/federation/leaveFederation.html.twig', [
+            'player' => $this->getPlayer()
+        ]);
+    }
+
+    /**
+     * @param int $playerId
+     * @return Response
+     */
+    public function kickPlayer(int $playerId): Response
+    {
+        try {
+            $this->federationActionService->kickPlayer($this->getPlayer(), $playerId);
+            $this->addFlash('success', "You successfully kicked a player");
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('Game/Federation');
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function updateLeadershipMessage(Request $request): Response
+    {
+        try {
+            if ($request->isMethod('POST') && $request->get('message') !== null) {
+                $this->federationActionService->updateLeadershipMessage($this->getPlayer(), $request->get('message'));
+                $this->addFlash('success', "You successfully updated the leadership message");
+
+                return $this->redirectToRoute('Game/Federation');
+            }
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->render('game/federation/updateLeadershipMessage.html.twig', [
+            'player' => $this->getPlayer()
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function changePlayerHierarchy(Request $request): Response
+    {
+        try {
+            if ($request->isMethod('POST') &&
+                $request->get('playerId') !== null &&
+                $request->get('role') !== null
+            ) {
+                $this->federationActionService->changePlayerHierarchy($this->getPlayer(), $request->get('playerId'), $request->get('role'));
+                $this->addFlash('success', "You successfully updated a player rank");
+            }
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->render('game/federation/changePlayerHierarchy.html.twig', [
             'player' => $this->getPlayer()
         ]);
     }

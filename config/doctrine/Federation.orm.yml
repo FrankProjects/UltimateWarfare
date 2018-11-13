@@ -24,30 +24,6 @@ FrankProjects\UltimateWarfare\Entity\Federation:
             options:
                 fixed: false
             column: leader_message
-        cashbank:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-        woodbank:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-        steelbank:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-        foodbank:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
         regions:
             type: integer
             nullable: false
@@ -82,3 +58,6 @@ FrankProjects\UltimateWarfare\Entity\Federation:
                 name: founder_player_id
                 referencedColumnName: id
     lifecycleCallbacks: {  }
+    embedded:
+        resources:
+            class: FrankProjects\UltimateWarfare\Entity\Federation\Resources

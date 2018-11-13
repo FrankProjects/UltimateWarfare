@@ -1,0 +1,84 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}
+    Ultimate Warfare - Federation bank deposit
+{% endblock title %}
+
+{% block content %}
+    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <tr>
+            <td class="tabletop" colspan="3" align="center"><b>Federation bank deposit</b></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <b>Adviser:</b><br />
+                Welcome <strong>{{ player.name }}</strong>,
+                <br />
+                You can make deposits to your Federation bank here!
+                <br />
+                <br />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="tabletop" align="center"><b>Cash and resources</b></td>
+        </tr>
+        <tr>
+            <td width="200">Resources</td><td width="200">You</td><td width="200">Bank</td>
+        </tr>
+        <tr>
+            <td align="center">Cash:</td>
+            <td align="center">$ {{ player.resources.cash }}</td>
+            <td align="center">$ {{ player.federation.resources.cash }}</td>
+        </tr>
+        <tr>
+            <td align="center">Wood:</td>
+            <td align="center">{{ player.resources.wood }}</td>
+            <td align="center">{{ player.federation.resources.wood }}</td>
+        </tr>
+        <tr>
+            <td align="center">Steel:</td>
+            <td align="center">{{ player.resources.steel }}</td>
+            <td align="center">{{ player.federation.resources.steel }}</td>
+        </tr>
+        <tr>
+            <td align="center">Food:</td>
+            <td align="center">{{ player.resources.food }}</td>
+            <td align="center">{{ player.federation.resources.food }}</td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <form method="post" action="{{ path('Game/Federation/Bank/Deposit') }}">
+        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+            <tr>
+                <td class="tabletop" colspan="2" align="center"><b>Deposit</b></td>
+            </tr>
+            <tr>
+                <td width="100" align="center">Resource: </td>
+                <td width="200" align="center">Amount: </td>
+            </tr>
+            <tr>
+                <td align="center">Cash:</td>
+                <td><input type="text" size="12" name="cash"></td>
+            </tr>
+            <tr>
+                <td align="center">Wood:</td>
+                <td><input type="text" size="12" name="wood"></td>
+            </tr>
+            <tr>
+                <td align="center">Steel:</td>
+                <td><input type="text" size="12" name="steel"></td>
+            </tr>
+            <tr>
+                <td align="center">Food:</td>
+                <td><input type="text" size="12" name="food"></td>
+            </tr>
+
+            <tr>
+                <td><input type="submit" name="submit" value="Donate"></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

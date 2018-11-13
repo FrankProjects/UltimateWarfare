@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Federation;
+use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 
 final class DoctrineFederationRepository implements FederationRepository
@@ -35,11 +37,56 @@ final class DoctrineFederationRepository implements FederationRepository
 
     /**
      * @param int $id
+     * @param World $world
      * @return Federation|null
      */
-    public function find(int $id): ?Federation
+    public function findByIdAndWorld(int $id, World $world): ?Federation
     {
-        return $this->repository->find($id);
+        return $this->repository->findOneBy(['id' => $id, 'world' => $world]);
+    }
+
+    /**
+     * @param string $name
+     * @param World $world
+     * @return Federation|null
+     */
+    public function findByNameAndWorld(string $name, World $world): ?Federation
+    {
+        return $this->repository->findOneBy(['name' => $name, 'world' => $world]);
+    }
+
+    /**
+     * @param World $world
+     * @return Federation[]
+     */
+    public function findByWorldSortedByRegion(World $world): array
+    {
+        return $this->repository->findBy(['world' => $world], ['regions' => 'DESC']);
+    }
+
+    /**
+     * @param Federation $federation
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function remove(Federation $federation): void
+    {
+        foreach ($federation->getFederationApplications() as $application) {
+            $this->entityManager->remove($application);
+        }
+
+        foreach ($federation->getFederationNews() as $news) {
+            $this->entityManager->remove($news);
+        }
+
+        foreach ($federation->getPlayers() as $player) {
+            $player->setFederationHierarchy(0);
+            $player->setFederation(null);
+            $this->entityManager->persist($player);
+        }
+
+        $this->entityManager->remove($federation);
+        $this->entityManager->flush();
     }
 
     /**
