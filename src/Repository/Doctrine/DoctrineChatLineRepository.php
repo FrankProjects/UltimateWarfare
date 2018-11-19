@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\ChatLine;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\ChatLineRepository;
 final class DoctrineChatLineRepository implements ChatLineRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -64,8 +63,6 @@ final class DoctrineChatLineRepository implements ChatLineRepository
 
     /**
      * @param ChatLine $chatLine
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(ChatLine $chatLine): void
     {
@@ -75,8 +72,6 @@ final class DoctrineChatLineRepository implements ChatLineRepository
 
     /**
      * @param ChatLine $chatLine
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(ChatLine $chatLine): void
     {

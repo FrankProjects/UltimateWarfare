@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
@@ -14,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 final class DoctrineMarketItemRepository implements MarketItemRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -70,8 +69,6 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
 
     /**
      * @param MarketItem $marketItem
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(MarketItem $marketItem): void
     {
@@ -81,8 +78,6 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
 
     /**
      * @param MarketItem $marketItem
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(MarketItem $marketItem): void
     {

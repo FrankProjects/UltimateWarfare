@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Post;
@@ -14,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\PostRepository;
 final class DoctrinePostRepository implements PostRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -60,8 +59,6 @@ final class DoctrinePostRepository implements PostRepository
 
     /**
      * @param Post $post
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(Post $post): void
     {
@@ -71,8 +68,6 @@ final class DoctrinePostRepository implements PostRepository
 
     /**
      * @param Post $post
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(Post $post): void
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Federation;
@@ -14,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 final class DoctrineFederationNewsRepository implements FederationNewsRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -45,8 +44,6 @@ final class DoctrineFederationNewsRepository implements FederationNewsRepository
 
     /**
      * @param FederationNews $federationNews
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(FederationNews $federationNews): void
     {
@@ -56,8 +53,6 @@ final class DoctrineFederationNewsRepository implements FederationNewsRepository
 
     /**
      * @param FederationNews $federationNews
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(FederationNews $federationNews): void
     {

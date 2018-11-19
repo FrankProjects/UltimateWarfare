@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\MapDesign;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\MapDesignRepository;
 final class DoctrineMapDesignRepository implements MapDesignRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -52,8 +51,6 @@ final class DoctrineMapDesignRepository implements MapDesignRepository
 
     /**
      * @param MapDesign $mapDesign
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(MapDesign $mapDesign): void
     {

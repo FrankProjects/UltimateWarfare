@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 final class DoctrineGameUnitTypeRepository implements GameUnitTypeRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -52,8 +51,6 @@ final class DoctrineGameUnitTypeRepository implements GameUnitTypeRepository
 
     /**
      * @param GameUnitType $gameUnitType
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(GameUnitType $gameUnitType): void
     {

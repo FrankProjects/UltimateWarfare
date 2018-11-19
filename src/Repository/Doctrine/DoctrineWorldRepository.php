@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\World;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 final class DoctrineWorldRepository implements WorldRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -53,8 +52,6 @@ final class DoctrineWorldRepository implements WorldRepository
 
     /**
      * @param World $world
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(World $world): void
     {
@@ -64,8 +61,6 @@ final class DoctrineWorldRepository implements WorldRepository
 
     /**
      * @param World $world
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(World $world): void
     {

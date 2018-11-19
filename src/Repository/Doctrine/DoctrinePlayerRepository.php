@@ -53,15 +53,6 @@ final class DoctrinePlayerRepository implements PlayerRepository
     }
 
     /**
-     * @param Player $player
-     */
-    public function save(Player $player): void
-    {
-        $this->entityManager->persist($player);
-        $this->entityManager->flush();
-    }
-
-    /**
      * @param World $world
      * @param integer $limit
      * @return Player[]
@@ -95,5 +86,23 @@ final class DoctrinePlayerRepository implements PlayerRepository
             )->setParameter('world', $world
             )->setMaxResults($limit)
             ->getResult();
+    }
+
+    /**
+     * @param Player $player
+     */
+    public function remove(Player $player): void
+    {
+        $this->entityManager->remove($player);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param Player $player
+     */
+    public function save(Player $player): void
+    {
+        $this->entityManager->persist($player);
+        $this->entityManager->flush();
     }
 }

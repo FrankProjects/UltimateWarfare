@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
@@ -14,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 final class DoctrineReportRepository implements ReportRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -91,8 +90,6 @@ final class DoctrineReportRepository implements ReportRepository
 
     /**
      * @param Report $report
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(Report $report): void
     {

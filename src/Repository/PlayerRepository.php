@@ -39,5 +39,10 @@ interface PlayerRepository
     /**
      * @param Player $player
      */
+    public function remove(Player $player): void;
+
+    /**
+     * @param Player $player
+     */
     public function save(Player $player): void;
 }

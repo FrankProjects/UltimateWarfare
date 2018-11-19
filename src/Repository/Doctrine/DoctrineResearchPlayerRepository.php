@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -50,8 +49,6 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
 
     /**
      * @param ResearchPlayer $researchPlayer
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(ResearchPlayer $researchPlayer): void
     {
@@ -61,8 +58,6 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
 
     /**
      * @param ResearchPlayer $researchPlayer
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(ResearchPlayer $researchPlayer): void
     {

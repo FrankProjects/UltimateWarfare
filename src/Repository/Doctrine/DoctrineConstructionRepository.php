@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Construction;
@@ -16,7 +15,7 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 final class DoctrineConstructionRepository implements ConstructionRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -139,8 +138,6 @@ final class DoctrineConstructionRepository implements ConstructionRepository
 
     /**
      * @param Construction $construction
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(Construction $construction): void
     {
@@ -150,8 +147,6 @@ final class DoctrineConstructionRepository implements ConstructionRepository
 
     /**
      * @param Construction $construction
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(Construction $construction): void
     {

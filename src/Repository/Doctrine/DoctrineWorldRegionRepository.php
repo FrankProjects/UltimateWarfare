@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
@@ -16,7 +15,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 final class DoctrineWorldRegionRepository implements WorldRegionRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -133,8 +132,6 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
 
     /**
      * @param WorldRegion $worldRegion
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(WorldRegion $worldRegion): void
     {

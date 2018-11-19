@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -44,8 +43,6 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
 
     /**
      * @param WorldRegionUnit $worldRegionUnit
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(WorldRegionUnit $worldRegionUnit): void
     {
@@ -55,8 +52,6 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
 
     /**
      * @param WorldRegionUnit $worldRegionUnit
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(WorldRegionUnit $worldRegionUnit): void
     {
