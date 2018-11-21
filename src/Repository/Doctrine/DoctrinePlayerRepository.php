@@ -93,6 +93,58 @@ final class DoctrinePlayerRepository implements PlayerRepository
      */
     public function remove(Player $player): void
     {
+        foreach ($player->getMarketItems() as $marketItem) {
+            $this->entityManager->remove($marketItem);
+        }
+
+        $federation = $player->getFederation();
+        if ($federation !== null) {
+            // XXX TODO: Delete Federation if you are owner
+            $federation->setNetworth($federation->getNetworth() - $player->getNetworth());
+            $federation->setRegions($federation->getRegions() - $player->getRegions());
+            $this->entityManager->persist($federation);
+        }
+
+
+        foreach ($player->getConstructions() as $construction) {
+            $this->entityManager->remove($construction);
+        }
+
+        foreach ($player->getReports() as $report) {
+            $this->entityManager->remove($report);
+        }
+
+        foreach ($player->getFederationApplications() as $federationApplication) {
+            $this->entityManager->remove($federationApplication);
+        }
+
+        foreach ($player->getFleets() as $fleet) {
+            $this->entityManager->remove($fleet);
+        }
+
+        foreach ($player->getPlayerResearch() as $playerResearch) {
+            $this->entityManager->remove($playerResearch);
+        }
+
+        foreach ($player->getWorldRegions() as $worldRegion) {
+            foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
+                $this->entityManager->remove($worldRegionUnit);
+            }
+
+            $worldRegion->setName('');
+            $worldRegion->setPlayer(null);
+            $this->entityManager->persist($worldRegion);
+        }
+
+        // XXX TODO: Do we want to keep messages so other players don't lose messages from their in/outbox?
+        foreach ($player->getFromMessages() as $message) {
+            $this->entityManager->remove($message);
+        }
+
+        foreach ($player->getToMessages() as $message) {
+            $this->entityManager->remove($message);
+        }
+
         $this->entityManager->remove($player);
         $this->entityManager->flush();
     }

@@ -91,6 +91,15 @@ final class DoctrineReportRepository implements ReportRepository
     /**
      * @param Report $report
      */
+    public function remove(Report $report): void
+    {
+        $this->entityManager->remove($report);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param Report $report
+     */
     public function save(Report $report): void
     {
         $this->entityManager->persist($report);

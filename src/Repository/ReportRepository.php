@@ -38,5 +38,10 @@ interface ReportRepository
     /**
      * @param Report $report
      */
+    public function remove(Report $report): void;
+
+    /**
+     * @param Report $report
+     */
     public function save(Report $report): void;
 }
