@@ -127,13 +127,17 @@ final class ConstructionController extends BaseGameController
         }
 
         if ($request->isMethod('POST')) {
-            $this->constructionActionService->constructGameUnits($worldRegion, $player, $gameUnitType, $request->get('construct'));
+            try {
+                $this->constructionActionService->constructGameUnits($worldRegion, $player, $gameUnitType, $request->get('construct'));
 
-            // XXX TODO: Refactor to show what!
-            if ($gameUnitType->getId() == 4) {
-                $this->addFlash('success', 'New units are now being trained!');
-            } else {
-                $this->addFlash('success', 'New buildings are now being built!');
+                // XXX TODO: Refactor to show what!
+                if ($gameUnitType->getId() == 4) {
+                    $this->addFlash('success', 'New units are now being trained!');
+                } else {
+                    $this->addFlash('success', 'New buildings are now being built!');
+                }
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
         }
 
@@ -182,13 +186,17 @@ final class ConstructionController extends BaseGameController
         }
 
         if ($request->isMethod('POST')) {
-            $this->constructionActionService->removeGameUnits($worldRegion, $player, $gameUnitType, $request->get('destroy'));
+            try {
+                $this->constructionActionService->removeGameUnits($worldRegion, $player, $gameUnitType, $request->get('destroy'));
 
-            // XXX TODO: Refactor to show what!
-            if ($gameUnitType->getId() == 4) {
-                $this->addFlash('success', "You have disbanded units!");
-            } else {
-                $this->addFlash('success', "You have destroyed buildings!");
+                // XXX TODO: Refactor to show what!
+                if ($gameUnitType->getId() == 4) {
+                    $this->addFlash('success', "You have disbanded units!");
+                } else {
+                    $this->addFlash('success', "You have destroyed buildings!");
+                }
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
         }
 
