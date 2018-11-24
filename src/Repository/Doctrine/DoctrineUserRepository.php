@@ -33,6 +33,33 @@ final class DoctrineUserRepository implements UserRepository
     }
 
     /**
+     * @param string $confirmationToken
+     * @return User|null
+     */
+    public function findByConfirmationToken(string $confirmationToken): ?User
+    {
+        return $this->repository->findOneBy(['confirmationToken' => $confirmationToken]);
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email): ?User
+    {
+        return $this->repository->findOneBy(['email' => $email]);
+    }
+
+    /**
+     * @param string $username
+     * @return User|null
+     */
+    public function findByUsername(string $username): ?User
+    {
+        return $this->repository->findOneBy(['username' => $username]);
+    }
+
+    /**
      * @param string $username
      * @return User|null
      * @throws \Doctrine\ORM\NonUniqueResultException
