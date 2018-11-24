@@ -92,6 +92,7 @@ final class WorldController extends BaseGameController
             }
         }
 
+        // XXX TODO: Add unique constraint to playername + world
         $player = Player::create($user, $name, $world);
         $this->playerRepository->save($player);
 
