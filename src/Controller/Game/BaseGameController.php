@@ -55,22 +55,16 @@ class BaseGameController extends BaseController
             throw new AccessDeniedException('Player is not set');
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $player = $em->getRepository(Player::class)
-            ->find($playerId);
+        foreach ($user->getPlayers() as $player) {
+            if ($player->getId() === $playerId) {
+                // XXX TODO: Should be run once on page request
+                $this->updateGameState($player);
 
-        if (!$player) {
-            throw new AccessDeniedException('Player is not set');
+                return $player;
+            }
         }
 
-        if ($player->getUser()->getId() != $user->getId()) {
-            throw new AccessDeniedException('Player does not belong to User');
-        }
-
-        // XXX TODO: Should be run once on page request
-        $this->updateGameState($player);
-
-        return $player;
+        throw new AccessDeniedException('Player is not set');
     }
 
     /**
