@@ -5,6 +5,9 @@ FrankProjects\UltimateWarfare\Entity\Player:
         name:
             columns:
                 - name
+    uniqueConstraints:
+        unique_player_name_world:
+            columns: [ name, world_id ]
     id:
         id:
             type: integer
