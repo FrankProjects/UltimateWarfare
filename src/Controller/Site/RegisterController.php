@@ -32,7 +32,6 @@ final class RegisterController extends Controller
 
     /**
      * XXX TODO: Add captcha
-     * XXX TODO: username, email already in use
      *
      * @param Request $request
      * @return Response
