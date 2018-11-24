@@ -39,7 +39,6 @@ final class SurrenderController extends BaseGameController
                     $playerRepository->remove($player);
                     $this->addFlash('success', "You have surrendered your empire...");
                     return $this->redirectToRoute('Game/Account');
-
                 } catch (Throwable $e) {
                     $this->addFlash('error', $e->getMessage());
                 }
