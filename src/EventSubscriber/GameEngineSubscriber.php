@@ -4,21 +4,26 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\EventSubscriber;
 
+use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use FrankProjects\UltimateWarfare\Service\GameEngine;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-final class PlayerSubscriber extends BaseUserSubscriber implements EventSubscriberInterface
+final class GameEngineSubscriber extends BaseUserSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var RouterInterface
+     * @var GameEngine
      */
-    private $router;
+    private $gameEngine;
+
+    /**
+     * @var SessionInterface
+     */
+    private $session;
 
     /**
      * @var PlayerRepository
@@ -28,17 +33,20 @@ final class PlayerSubscriber extends BaseUserSubscriber implements EventSubscrib
     /**
      * PlayerSubscriber constructor.
      *
+     * @param GameEngine $gameEngine
+     * @param SessionInterface $session
      * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
      * @param PlayerRepository $playerRepository
      */
     public function __construct(
+        GameEngine $gameEngine,
+        SessionInterface $session,
         TokenStorageInterface $tokenStorage,
-        RouterInterface $router,
         PlayerRepository $playerRepository
     ) {
         parent::__construct($tokenStorage);
-        $this->router = $router;
+        $this->gameEngine = $gameEngine;
+        $this->session = $session;
         $this->playerRepository = $playerRepository;
     }
 
@@ -56,33 +64,33 @@ final class PlayerSubscriber extends BaseUserSubscriber implements EventSubscrib
             return;
         }
 
-        if ($user->getActive() === false) {
-            $this->checkBannedAndRedirect($event);
+        if ($user->getActive() !== false) {
+            $this->runGameEngine($user);
         }
     }
 
     /**
-     * @param GetResponseEvent $event
+     * @param User $user
      */
-    private function checkBannedAndRedirect(GetResponseEvent $event): void
+    private function runGameEngine(User $user): void
     {
-        if (
-            strpos($event->getRequest()->getRequestUri(), '/game') === false &&
-            strpos($event->getRequest()->getRequestUri(), '/forum') === false
-        ) {
+        $playerId = $this->session->get('playerId');
+
+        if (!$playerId) {
             return;
         }
 
-        if (strpos($event->getRequest()->getRequestUri(), '/game/banned') !== false) {
+        $player = $this->playerRepository->find($playerId);
+        if ($player->getUser()->getId() !== $user->getId()) {
             return;
         }
 
-        $response = new RedirectResponse(
-            $this->router->generate('Game/Banned', [], UrlGeneratorInterface::ABSOLUTE_PATH)
-        );
-        $event->setResponse($response);
+        try {
+            $this->gameEngine->run($player);
+        } catch (\Exception $exception) {
+            // Do nothing...
+        }
     }
-
     /**
      * @return array
      */
