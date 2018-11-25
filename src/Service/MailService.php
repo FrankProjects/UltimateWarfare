@@ -51,35 +51,24 @@ final class MailService
      */
     public function sendRegistrationMail(User $user): void
     {
-        try {
-            $message = (new Swift_Message('Welcome to Ultimate-Warfare'))
-                ->setFrom('no-reply@ultimate-warfare.com')
-                ->setTo($user->getEmail())
-                ->setBody(
-                    $this->twig->render(
-                        'email/register.html.twig',
-                        [
-                            'username' => $user->getUsername(),
-                            'token' => $user->getConfirmationToken()
-                        ]),
-                    'text/html'
-                )
-                ->addPart(
-                    $this->twig->render(
-                        'email/register.txt.twig',
-                        [
-                            'username' => $user->getUsername(),
-                            'token' => $user->getConfirmationToken()
-                        ]
-                    ),
-                    'text/plain'
-                );
+        $mailParameters = [
+            'username' => $user->getUsername(),
+            'token' => $user->getConfirmationToken()
+        ];
 
-            $this->sendMail($message, $user->getEmail(), 'registration');
-        } catch (Exception $exception) {
-            $this->logger->error("Send a registration email to {$user->getEmail()} failed");
-            throw new RunTimeException('Sending the registration email failed!');
-        }
+        $message = (new Swift_Message('Welcome to Ultimate-Warfare'))
+            ->setFrom('no-reply@ultimate-warfare.com')
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->generateMailBody('email/register.html.twig', $mailParameters),
+                'text/html'
+            )
+            ->addPart(
+                $this->generateMailBody('email/register.txt.twig', $mailParameters),
+                'text/plain'
+            );
+
+        $this->sendMail($message, $user->getEmail(), 'registration');
     }
 
     /**
@@ -88,26 +77,34 @@ final class MailService
      */
     public function sendPasswordResetMail(User $user, string $ipAddress): void
     {
-        try {
-            $message = (new Swift_Message('Username & Password request'))
-                ->setFrom('no-reply@ultimate-warfare.com')
-                ->setTo($user->getEmail())
-                ->setBody(
-                    $this->twig->render(
-                        'email/passwordReset.html.twig',
-                        [
-                            'username' => $user->getUsername(),
-                            'token' => $user->getConfirmationToken(),
-                            'ipAddress' => $ipAddress
-                        ]
-                    ),
-                    'text/html'
-                );
+        $mailParameters = [
+            'username' => $user->getUsername(),
+            'token' => $user->getConfirmationToken(),
+            'ipAddress' => $ipAddress
+        ];
 
-            $this->sendMail($message, $user->getEmail(), 'password reset');
+        $message = (new Swift_Message('Username & Password request'))
+            ->setFrom('no-reply@ultimate-warfare.com')
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->generateMailBody('email/passwordReset.html.twig', $mailParameters),
+                'text/html'
+            );
+
+        $this->sendMail($message, $user->getEmail(), 'password reset');
+    }
+
+    /**
+     * @param string $templateName
+     * @param array $parameters
+     * @return string
+     */
+    private function generateMailBody(string $templateName, array $parameters): string
+    {
+        try {
+            return $this->twig->render($templateName, $parameters);
         } catch (Exception $exception) {
-            $this->logger->error("Send a password reset email to {$user->getEmail()} failed");
-            throw new RunTimeException('Sending the password reset email failed!');
+            throw new RunTimeException('Rendering mail failed!');
         }
     }
 
