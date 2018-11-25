@@ -4,38 +4,63 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\EventSubscriber;
 
-use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Service\GameEngine;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class PlayerSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var ContainerInterface
+     * @var GameEngine
      */
-    private $container;
+    private $gameEngine;
+
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
+     * @var RouterInterface
+     */
+    private $router;
 
     /**
      * PlayerSubscriber constructor.
      *
-     * @param ContainerInterface $container
+     * @param GameEngine $gameEngine
+     * @param SessionInterface $session
+     * @param TokenStorageInterface $tokenStorage
+     * @param RouterInterface $router
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        GameEngine $gameEngine,
+        SessionInterface $session,
+        TokenStorageInterface $tokenStorage,
+        RouterInterface $router
+    ) {
+        $this->gameEngine = $gameEngine;
+        $this->session = $session;
+        $this->tokenStorage = $tokenStorage;
+        $this->router = $router;
     }
 
     /**
-     * @param FilterResponseEvent $event
+     * @param GetResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event): void
+    public function onKernelRequest(GetResponseEvent $event): void
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -58,8 +83,7 @@ final class PlayerSubscriber implements EventSubscriberInterface
      */
     private function getUser(): ?User
     {
-        /** @var TokenInterface $token */
-        $token = $this->container->get('security.token_storage')->getToken();
+        $token = $this->tokenStorage->getToken();
         if ($token === null) {
             return null;
         }
@@ -70,9 +94,9 @@ final class PlayerSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param FilterResponseEvent $event
+     * @param GetResponseEvent $event
      */
-    private function checkBannedAndRedirect(FilterResponseEvent $event): void
+    private function checkBannedAndRedirect(GetResponseEvent $event): void
     {
         if (
             strpos($event->getRequest()->getRequestUri(), '/game') === false &&
@@ -86,7 +110,7 @@ final class PlayerSubscriber implements EventSubscriberInterface
         }
 
         $response = new RedirectResponse(
-            $this->container->get('router')->generate('Game/Banned', [], UrlGeneratorInterface::ABSOLUTE_PATH)
+            $this->router->generate('Game/Banned', [], UrlGeneratorInterface::ABSOLUTE_PATH)
         );
         $event->setResponse($response);
     }
@@ -96,7 +120,7 @@ final class PlayerSubscriber implements EventSubscriberInterface
      */
     private function runGameEngine(User $user): void
     {
-        $playerId = $this->container->get('session')->get('playerId');
+        $playerId = $this->session->get('playerId');
 
         if (!$playerId) {
             return;
@@ -104,8 +128,11 @@ final class PlayerSubscriber implements EventSubscriberInterface
 
         foreach ($user->getPlayers() as $player) {
             if ($player->getId() === $playerId) {
-                $gameEngine = $this->container->get(GameEngine::class);
-                $gameEngine->run($player);
+                try {
+                    $this->gameEngine->run($player);
+                } catch (\Exception $exception) {
+                    // Do nothing...
+                }
             }
         }
     }
@@ -115,7 +142,7 @@ final class PlayerSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::RESPONSE => 'onKernelResponse'
+            KernelEvents::REQUEST => 'onKernelRequest'
         ];
     }
 }
