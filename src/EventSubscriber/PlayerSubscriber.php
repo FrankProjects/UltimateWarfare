@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\EventSubscriber;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Service\GameEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -40,49 +41,74 @@ final class PlayerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var TokenInterface $token */
-        $token = $this->container->get('security.token_storage')->getToken();
-        if ($token === null) {
-            return;
-        }
-
-        $user = $token->getUser();
+        $user = $this->getUser();
         if ($user === null) {
             return;
         }
+
         if ($user->getActive() === false) {
-            if (
-                strpos($event->getRequest()->getRequestUri(), '/game') === false &&
-                strpos($event->getRequest()->getRequestUri(), '/forum') === false
-            ) {
-                return;
-            }
-
-            if (strpos($event->getRequest()->getRequestUri(), '/game/banned') !== false) {
-                return;
-            }
-
-            $response = new RedirectResponse(
-                $this->container->get('router')->generate('Game/Banned', [], UrlGeneratorInterface::ABSOLUTE_PATH)
-            );
-            $event->setResponse($response);
+            $this->checkBannedAndRedirect($event);
         } else {
-            $playerId = $this->container->get('session')->get('playerId');
-
-            if (!$playerId) {
-                return;
-            }
-
-            /** @var Player $player */
-            foreach ($user->getPlayers() as $player) {
-                if ($player->getId() === $playerId) {
-                    $gameEngine = $this->container->get(GameEngine::class);
-                    $gameEngine->run($player);
-                }
-            }
+            $this->runGameEngine($user);
         }
     }
 
+    /**
+     * @return User|null
+     */
+    private function getUser(): ?User
+    {
+        /** @var TokenInterface $token */
+        $token = $this->container->get('security.token_storage')->getToken();
+        if ($token === null) {
+            return null;
+        }
+
+        /** @var User $user */
+        $user = $token->getUser();
+        return $user;
+    }
+
+    /**
+     * @param FilterResponseEvent $event
+     */
+    private function checkBannedAndRedirect(FilterResponseEvent $event): void
+    {
+        if (
+            strpos($event->getRequest()->getRequestUri(), '/game') === false &&
+            strpos($event->getRequest()->getRequestUri(), '/forum') === false
+        ) {
+            return;
+        }
+
+        if (strpos($event->getRequest()->getRequestUri(), '/game/banned') !== false) {
+            return;
+        }
+
+        $response = new RedirectResponse(
+            $this->container->get('router')->generate('Game/Banned', [], UrlGeneratorInterface::ABSOLUTE_PATH)
+        );
+        $event->setResponse($response);
+    }
+
+    /**
+     * @param User $user
+     */
+    private function runGameEngine(User $user): void
+    {
+        $playerId = $this->container->get('session')->get('playerId');
+
+        if (!$playerId) {
+            return;
+        }
+
+        foreach ($user->getPlayers() as $player) {
+            if ($player->getId() === $playerId) {
+                $gameEngine = $this->container->get(GameEngine::class);
+                $gameEngine->run($player);
+            }
+        }
+    }
     /**
      * @return array
      */
