@@ -7,7 +7,6 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 use FrankProjects\UltimateWarfare\Controller\BaseController;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class BaseGameController extends BaseController
@@ -15,9 +14,10 @@ class BaseGameController extends BaseController
     /**
      * Get User
      *
+     * @param bool $checkActive
      * @return User
      */
-    public function getGameUser(): User
+    public function getGameUser(bool $checkActive = true): User
     {
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof User) {
@@ -28,7 +28,7 @@ class BaseGameController extends BaseController
             throw new AccessDeniedException('User is not enabled!');
         }
 
-        if ($user->getActive() !== true) {
+        if ($checkActive && $user->getActive() !== true) {
             throw new AccessDeniedException('User is not active!');
         }
 
@@ -43,8 +43,6 @@ class BaseGameController extends BaseController
     public function getPlayer(): Player
     {
         /**
-         * XXX TODO: banned screen
-         * XXX TODO: update screen
          * XXX TODO: Fix counter in missions/chat/messages navigation bar
          * XXX TODO: Fix session expired page
          */
@@ -57,22 +55,10 @@ class BaseGameController extends BaseController
 
         foreach ($user->getPlayers() as $player) {
             if ($player->getId() === $playerId) {
-                // XXX TODO: Should be run once on page request
-                $this->updateGameState($player);
-
                 return $player;
             }
         }
 
         throw new AccessDeniedException('Player is not set');
-    }
-
-    /**
-     * @param Player $player
-     */
-    private function updateGameState(Player $player)
-    {
-        $gameEngine = $this->container->get(GameEngine::class);
-        $gameEngine->run($player);
     }
 }
