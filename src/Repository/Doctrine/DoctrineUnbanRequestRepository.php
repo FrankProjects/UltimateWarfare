@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
@@ -14,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -53,8 +52,6 @@ final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
 
     /**
      * @param UnbanRequest $unbanRequest
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(UnbanRequest $unbanRequest): void
     {
@@ -64,8 +61,6 @@ final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
 
     /**
      * @param UnbanRequest $unbanRequest
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(UnbanRequest $unbanRequest): void
     {

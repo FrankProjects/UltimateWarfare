@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Form\ResetPasswordType;
+use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Util\TokenGenerator;
 use Psr\Log\LoggerInterface;
 use Swift_Mailer;
@@ -16,18 +17,55 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 final class ResetPasswordController extends Controller
 {
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var Swift_Mailer
+     */
+    private $mailer;
+
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private $passwordEncoder;
+
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
+     * ResetPasswordController constructor
+     *
+     * @param LoggerInterface $logger
+     * @param Swift_Mailer $mailer
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserRepository $userRepository
+     */
+    public function __construct(
+        LoggerInterface $logger,
+        Swift_Mailer $mailer,
+        UserPasswordEncoderInterface $passwordEncoder,
+        UserRepository $userRepository
+    ) {
+        $this->logger = $logger;
+        $this->mailer = $mailer;
+        $this->passwordEncoder = $passwordEncoder;
+        $this->userRepository = $userRepository;
+    }
+
+    /**
      * @param Request $request
      * @return Response
      * @throws \Exception
      */
-    public function requestPasswordReset(Request $request, Swift_Mailer $mailer, LoggerInterface $logger): Response
+    public function requestPasswordReset(Request $request): Response
     {
         $email = $request->request->get('email');
         if ($email) {
-            $em = $this->getDoctrine()->getManager();
-
-            $user = $em->getRepository('Game:User')
-                ->findOneBy(['email' => $email]);
+            $user = $this->userRepository->findByEmail($email);
 
             if ($user) {
                 if (!$user->isEnabled()) {
@@ -38,9 +76,7 @@ final class ResetPasswordController extends Controller
 
                     $user->setPasswordRequestedAt(new \DateTime());
                     $user->setConfirmationToken($token);
-
-                    $em->persist($user);
-                    $em->flush();
+                    $this->userRepository->save($user);
 
                     $message = (new \Swift_Message('Username & Password request'))
                         ->setFrom('no-reply@ultimate-warfare.com')
@@ -57,12 +93,12 @@ final class ResetPasswordController extends Controller
                             'text/html'
                         );
 
-                    $messages = $mailer->send($message);
+                    $messages = $this->mailer->send($message);
                     if ($messages == 0) {
-                        $logger->error("Send a password reset email to {$user->getEmail()} failed");
+                        $this->logger->error("Send a password reset email to {$user->getEmail()} failed");
                         $this->addFlash('error', 'An error occurred while sending a password recover email. Send an email to admin@ultimate-warfare.com with your email and username.');
                     } else {
-                        $logger->info("Send a password reset email to {$user->getEmail()}");
+                        $this->logger->info("Send a password reset email to {$user->getEmail()}");
                         $this->addFlash('success', "An e-mail has been sent to {$user->getEmail()} with your recovery instructions... Check your Spam mail if you didn't receive an email");
                     }
                 } else {
@@ -79,26 +115,21 @@ final class ResetPasswordController extends Controller
     /**
      * @param Request $request
      * @param string $token
-     * @param UserPasswordEncoderInterface $passwordEncoder
      * @return Response
      */
-    public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function resetPassword(Request $request, string $token): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $user = $em->getRepository('Game:User')
-            ->findOneBy(['confirmationToken' => $token]);
+        $user = $this->userRepository->findByConfirmationToken($token);
 
         if ($user) {
             $form = $this->createForm(ResetPasswordType::class, $user);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
+                $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
                 $user->setPassword($password);
                 $user->setConfirmationToken(null);
-                $em->persist($user);
-                $em->flush();
+                $this->userRepository->save($user);
 
                 $this->addFlash('success', 'You successfully changed your password!');
                 return $this->redirectToRoute('Site/Login');

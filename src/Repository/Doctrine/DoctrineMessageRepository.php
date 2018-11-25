@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Message;
@@ -14,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\MessageRepository;
 final class DoctrineMessageRepository implements MessageRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -79,8 +78,6 @@ final class DoctrineMessageRepository implements MessageRepository
 
     /**
      * @param Message $message
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(Message $message): void
     {
@@ -90,8 +87,6 @@ final class DoctrineMessageRepository implements MessageRepository
 
     /**
      * @param Message $message
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(Message $message): void
     {

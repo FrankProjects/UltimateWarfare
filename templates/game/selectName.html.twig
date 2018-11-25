@@ -7,6 +7,17 @@
 {% block body %}
     <tr>
         <td>
+            {% for msg in app.flashes('success') %}
+                <div class="success" id="success">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+
+            {% for msg in app.flashes('error') %}
+                <div class="error" id="error">
+                    {{ msg }}
+                </div>
+            {% endfor %}
             <form action="{{ path('Game/StartWorld', {'worldId': world.id}) }}" method="POST">
                 <table border="1" width="700" cellspacing="0" cellpadding="0" align="center" class="table text">
                     <tr>

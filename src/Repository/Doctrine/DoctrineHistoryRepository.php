@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\History;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\HistoryRepository;
 final class DoctrineHistoryRepository implements HistoryRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -43,8 +42,6 @@ final class DoctrineHistoryRepository implements HistoryRepository
 
     /**
      * @param History $history
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(History $history): void
     {

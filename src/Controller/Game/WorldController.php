@@ -88,14 +88,19 @@ final class WorldController extends BaseGameController
 
         foreach ($user->getPlayers() as $player) {
             if ($player->getWorld()->getId() == $worldId) {
-                throw new AccessDeniedException("Player already in this world!");
+                $this->addFlash('error', 'You are already playing in this world!');
+                return $this->redirectToRoute('Game/SelectName', ['worldId' => $worldId], 302);
             }
+        }
+
+        if ($this->playerRepository->findByNameAndWorld($name, $world) !== null) {
+            $this->addFlash('error', 'Another player with this name already exist!');
+            return $this->redirectToRoute('Game/SelectName', ['worldId' => $worldId], 302);
         }
 
         $player = Player::create($user, $name, $world);
         $this->playerRepository->save($player);
-
-        return $this->redirectToRoute('Game/Login', array(), 302);
+        return $this->redirectToRoute('Game/Login', [], 302);
     }
 
     /**

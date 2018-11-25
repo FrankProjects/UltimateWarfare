@@ -49,9 +49,6 @@ Missing features compared to old game code:
 - Federations
     - Chat
     - Forum
-    - Bank
-    - News
-    - Sending aid
 - Moderator panel
 - Battle system
 - Special operations

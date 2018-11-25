@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
 final class DoctrineFleetUnitRepository implements FleetUnitRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -35,8 +34,6 @@ final class DoctrineFleetUnitRepository implements FleetUnitRepository
 
     /**
      * @param FleetUnit $fleetUnit
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(FleetUnit $fleetUnit): void
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\GameNews;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\GameNewsRepository;
 final class DoctrineGameNewsRepository implements GameNewsRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -46,8 +45,6 @@ final class DoctrineGameNewsRepository implements GameNewsRepository
 
     /**
      * @param GameNews $gameNews
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(GameNews $gameNews): void
     {
@@ -57,8 +54,6 @@ final class DoctrineGameNewsRepository implements GameNewsRepository
 
     /**
      * @param GameNews $gameNews
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(GameNews $gameNews): void
     {

@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Federation;
-use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 
 final class DoctrineFederationRepository implements FederationRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -66,8 +64,6 @@ final class DoctrineFederationRepository implements FederationRepository
 
     /**
      * @param Federation $federation
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(Federation $federation): void
     {
@@ -91,8 +87,6 @@ final class DoctrineFederationRepository implements FederationRepository
 
     /**
      * @param Federation $federation
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(Federation $federation): void
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\User;
@@ -13,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\UserRepository;
 final class DoctrineUserRepository implements UserRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -34,6 +33,33 @@ final class DoctrineUserRepository implements UserRepository
     }
 
     /**
+     * @param string $confirmationToken
+     * @return User|null
+     */
+    public function findByConfirmationToken(string $confirmationToken): ?User
+    {
+        return $this->repository->findOneBy(['confirmationToken' => $confirmationToken]);
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email): ?User
+    {
+        return $this->repository->findOneBy(['email' => $email]);
+    }
+
+    /**
+     * @param string $username
+     * @return User|null
+     */
+    public function findByUsername(string $username): ?User
+    {
+        return $this->repository->findOneBy(['username' => $username]);
+    }
+
+    /**
      * @param string $username
      * @return User|null
      * @throws \Doctrine\ORM\NonUniqueResultException
@@ -49,8 +75,6 @@ final class DoctrineUserRepository implements UserRepository
 
     /**
      * @param User $user
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(User $user): void
     {

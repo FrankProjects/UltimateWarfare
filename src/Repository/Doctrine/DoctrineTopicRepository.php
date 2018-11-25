@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Category;
@@ -14,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\TopicRepository;
 final class DoctrineTopicRepository implements TopicRepository
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -75,8 +74,6 @@ final class DoctrineTopicRepository implements TopicRepository
 
     /**
      * @param Topic $topic
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function remove(Topic $topic): void
     {
@@ -86,8 +83,6 @@ final class DoctrineTopicRepository implements TopicRepository
 
     /**
      * @param Topic $topic
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(Topic $topic): void
     {
