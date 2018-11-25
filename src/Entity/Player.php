@@ -536,4 +536,16 @@ class Player
     {
         return $this->getRegions() * self::PRICE_PER_REGION;
     }
+
+    /**
+     * @return bool
+     */
+    public function canSurrender(): bool
+    {
+        if ($this->getTimestampJoined() + 3600 * 24 * 2 < time()) {
+            return true;
+        }
+
+        return false;
+    }
 }
