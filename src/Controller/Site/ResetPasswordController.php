@@ -6,25 +6,20 @@ namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Form\ResetPasswordType;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
+use FrankProjects\UltimateWarfare\Service\MailService;
 use FrankProjects\UltimateWarfare\Util\TokenGenerator;
-use Psr\Log\LoggerInterface;
-use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Throwable;
 
 final class ResetPasswordController extends Controller
 {
     /**
-     * @var LoggerInterface
+     * @var MailService
      */
-    private $logger;
-
-    /**
-     * @var Swift_Mailer
-     */
-    private $mailer;
+    private $mailService;
 
     /**
      * @var UserPasswordEncoderInterface
@@ -39,19 +34,16 @@ final class ResetPasswordController extends Controller
     /**
      * ResetPasswordController constructor
      *
-     * @param LoggerInterface $logger
-     * @param Swift_Mailer $mailer
+     * @param MailService $mailService
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param UserRepository $userRepository
      */
     public function __construct(
-        LoggerInterface $logger,
-        Swift_Mailer $mailer,
+        MailService $mailService,
         UserPasswordEncoderInterface $passwordEncoder,
         UserRepository $userRepository
     ) {
-        $this->logger = $logger;
-        $this->mailer = $mailer;
+        $this->mailService = $mailService;
         $this->passwordEncoder = $passwordEncoder;
         $this->userRepository = $userRepository;
     }
@@ -78,34 +70,17 @@ final class ResetPasswordController extends Controller
                     $user->setConfirmationToken($token);
                     $this->userRepository->save($user);
 
-                    $message = (new \Swift_Message('Username & Password request'))
-                        ->setFrom('no-reply@ultimate-warfare.com')
-                        ->setTo($user->getEmail())
-                        ->setBody(
-                            $this->renderView(
-                                'email/passwordReset.html.twig',
-                                [
-                                    'username' => $user->getUsername(),
-                                    'token' => $token,
-                                    'ipAddress' => $request->getClientIp()
-                                ]
-                            ),
-                            'text/html'
-                        );
-
-                    $messages = $this->mailer->send($message);
-                    if ($messages == 0) {
-                        $this->logger->error("Send a password reset email to {$user->getEmail()} failed");
-                        $this->addFlash('error', 'An error occurred while sending a password recover email. Send an email to admin@ultimate-warfare.com with your email and username.');
-                    } else {
-                        $this->logger->info("Send a password reset email to {$user->getEmail()}");
+                    try {
+                        $this->mailService->sendPasswordResetMail($user, $request->getClientIp());
                         $this->addFlash('success', "An e-mail has been sent to {$user->getEmail()} with your recovery instructions... Check your Spam mail if you didn't receive an email");
+                    } catch (Throwable $e) {
+                        $this->addFlash('error', $e->getMessage());
                     }
                 } else {
                     $this->addFlash('error', 'Already has active reset token, please check your email!');
                 }
             } else {
-                $this->addFlash('error', 'Unknown email adress');
+                $this->addFlash('error', 'Unknown email address');
             }
         }
 
