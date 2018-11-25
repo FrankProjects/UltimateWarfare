@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\EventSubscriber;
 
 use FrankProjects\UltimateWarfare\Entity\User;
+use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -38,23 +39,31 @@ final class PlayerSubscriber implements EventSubscriberInterface
     private $router;
 
     /**
+     * @var PlayerRepository
+     */
+    private $playerRepository;
+
+    /**
      * PlayerSubscriber constructor.
      *
      * @param GameEngine $gameEngine
      * @param SessionInterface $session
      * @param TokenStorageInterface $tokenStorage
      * @param RouterInterface $router
+     * @param PlayerRepository $playerRepository
      */
     public function __construct(
         GameEngine $gameEngine,
         SessionInterface $session,
         TokenStorageInterface $tokenStorage,
-        RouterInterface $router
+        RouterInterface $router,
+        PlayerRepository $playerRepository
     ) {
         $this->gameEngine = $gameEngine;
         $this->session = $session;
         $this->tokenStorage = $tokenStorage;
         $this->router = $router;
+        $this->playerRepository = $playerRepository;
     }
 
     /**
@@ -126,14 +135,15 @@ final class PlayerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        foreach ($user->getPlayers() as $player) {
-            if ($player->getId() === $playerId) {
-                try {
-                    $this->gameEngine->run($player);
-                } catch (\Exception $exception) {
-                    // Do nothing...
-                }
-            }
+        $player = $this->playerRepository->find($playerId);
+        if ($player->getUser()->getId() !== $user->getId()) {
+            return;
+        }
+
+        try {
+            $this->gameEngine->run($player);
+        } catch (\Exception $exception) {
+            // Do nothing...
         }
     }
     /**
