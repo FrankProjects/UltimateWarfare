@@ -7,7 +7,7 @@ namespace FrankProjects\UltimateWarfare\EventSubscriber;
 use FrankProjects\UltimateWarfare\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-abstract class BaseUserSubscriber
+abstract class AbstractUserSubscriber
 {
     /**
      * @var TokenStorageInterface
@@ -15,7 +15,7 @@ abstract class BaseUserSubscriber
     private $tokenStorage;
 
     /**
-     * BasePlayerSubscriber constructor.
+     * AbstractPlayerSubscriber constructor.
      *
      * @param TokenStorageInterface $tokenStorage
      */

@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-final class GameEngineSubscriber extends BaseUserSubscriber implements EventSubscriberInterface
+final class GameEngineSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
     /**
      * @var GameEngine

@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-final class PlayerSubscriber extends BaseUserSubscriber implements EventSubscriberInterface
+final class PlayerSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
     /**
      * @var RouterInterface
