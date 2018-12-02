@@ -59,6 +59,6 @@ class BaseGameController extends BaseController
             }
         }
 
-        throw new AccessDeniedException('Player is not set');
+        throw new AccessDeniedException('Player can not be found!');
     }
 }
