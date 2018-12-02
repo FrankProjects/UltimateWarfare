@@ -7,12 +7,12 @@ namespace FrankProjects\UltimateWarfare\Controller\Site;
 use FrankProjects\UltimateWarfare\Form\RegistrationType;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Service\Action\RegisterActionService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-final class RegisterController extends Controller
+final class RegisterController extends AbstractController
 {
     /**
      * @var RegisterActionService

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-final class SecurityController extends Controller
+final class SecurityController extends AbstractController
 {
     /**
      * @param AuthenticationUtils $authUtils

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class BaseController extends Controller
+class BaseController extends AbstractController
 {
 }

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Form\ContactType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ContactController extends Controller
+final class ContactController extends AbstractController
 {
     /**
      * @param Request $request
