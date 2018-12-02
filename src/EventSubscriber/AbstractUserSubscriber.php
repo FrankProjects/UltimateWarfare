@@ -37,6 +37,10 @@ abstract class AbstractUserSubscriber
 
         /** @var User $user */
         $user = $token->getUser();
+        if ($user === 'anon.') {
+            return null;
+        }
+
         return $user;
     }
 }
