@@ -22,7 +22,7 @@ class UnbanRequest
     /**
      * @var string
      */
-    private $post;
+    private $post = '';
 
     /**
      * @var int
@@ -45,7 +45,7 @@ class UnbanRequest
      *
      * @param User $user
      */
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
@@ -65,7 +65,7 @@ class UnbanRequest
      *
      * @param string $post
      */
-    public function setPost(string $post)
+    public function setPost(string $post): void
     {
         $this->post = $post;
     }
@@ -85,7 +85,7 @@ class UnbanRequest
      *
      * @param int $status
      */
-    public function setStatus(int $status)
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }

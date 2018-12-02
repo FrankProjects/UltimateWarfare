@@ -8,13 +8,13 @@ use FrankProjects\UltimateWarfare\Form\ResetPasswordType;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Service\MailService;
 use FrankProjects\UltimateWarfare\Util\TokenGenerator;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Throwable;
 
-final class ResetPasswordController extends Controller
+final class ResetPasswordController extends AbstractController
 {
     /**
      * @var MailService

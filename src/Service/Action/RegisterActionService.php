@@ -72,7 +72,6 @@ final class RegisterActionService
 
     /**
      * XXX TODO: Add captcha
-     * XXX TODO: username, email already in use
      *
      * @param User $user
      */

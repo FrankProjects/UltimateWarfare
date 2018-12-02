@@ -63,7 +63,7 @@ final class UserController extends BaseGameController
      */
     public function banned(Request $request): Response
     {
-        $user = $this->getGameUser();
+        $user = $this->getGameUser(false);
         if ($user->getActive()) {
             $this->addFlash('error', 'You are not banned!');
             return $this->redirectToRoute('Game/Account');
@@ -86,7 +86,7 @@ final class UserController extends BaseGameController
         }
 
         return $this->render('game/banned.html.twig', [
-            'user' => $this->getGameUser(),
+            'user' => $user,
             'unbanRequest' => $unbanRequest
         ]);
     }
