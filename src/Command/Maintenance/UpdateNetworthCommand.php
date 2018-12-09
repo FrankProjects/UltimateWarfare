@@ -74,7 +74,6 @@ class UpdateNetworthCommand extends Command
                     $output->writeln("Mismatch found: {$player->getName()} {$player->getNetworth()} => {$networth}");
                     $player->setNetworth($networth);
                     $this->playerRepository->save($player);
-
                 }
             }
         }
