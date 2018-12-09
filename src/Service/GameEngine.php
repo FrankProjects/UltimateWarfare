@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ConstructionProcessor;
@@ -28,28 +27,20 @@ final class GameEngine
     private $playerRepository;
 
     /**
-     * @var EntityManagerInterface $em
-     */
-    private $em;
-
-    /**
      * GameEngine constructor.
      *
      * @param ConstructionProcessor $constructionProcessor
      * @param ResearchProcessor $researchProcessor
      * @param PlayerRepository $playerRepository
-     * @param EntityManagerInterface $em
      */
     public function __construct(
         ConstructionProcessor $constructionProcessor,
         ResearchProcessor $researchProcessor,
-        PlayerRepository $playerRepository,
-        EntityManagerInterface $em
+        PlayerRepository $playerRepository
     ) {
         $this->constructionProcessor = $constructionProcessor;
         $this->researchProcessor = $researchProcessor;
         $this->playerRepository = $playerRepository;
-        $this->em = $em;
     }
 
     /**
