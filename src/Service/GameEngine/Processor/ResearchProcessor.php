@@ -5,28 +5,17 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
 
 use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Repository\FederationRepository;
-use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
+use FrankProjects\UltimateWarfare\Service\NetworthUpdaterService;
 
 final class ResearchProcessor implements Processor
 {
     /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
-
-    /**
      * @var ResearchPlayerRepository
      */
     private $researchPlayerRepository;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
 
     /**
      * @var ReportRepository
@@ -34,23 +23,25 @@ final class ResearchProcessor implements Processor
     private $reportRepository;
 
     /**
+     * @var NetworthUpdaterService
+     */
+    private $networthUpdaterService;
+
+    /**
      * ResearchProcessor constructor.
      *
-     * @param FederationRepository $federationRepository
      * @param ResearchPlayerRepository $researchPlayerRepository
-     * @param PlayerRepository $playerRepository
      * @param ReportRepository $reportRepository
+     * @param NetworthUpdaterService $networthUpdaterService
      */
     public function __construct(
-        FederationRepository $federationRepository,
         ResearchPlayerRepository $researchPlayerRepository,
-        PlayerRepository $playerRepository,
-        ReportRepository $reportRepository
+        ReportRepository $reportRepository,
+        NetworthUpdaterService $networthUpdaterService
     ) {
-        $this->federationRepository = $federationRepository;
         $this->researchPlayerRepository = $researchPlayerRepository;
-        $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
+        $this->networthUpdaterService = $networthUpdaterService;
     }
 
     /**
@@ -63,25 +54,17 @@ final class ResearchProcessor implements Processor
         foreach ($researches as $researchPlayer) {
             $researchPlayer->setActive(true);
 
-            $researchNetworth = 1250;
             $player = $researchPlayer->getPlayer();
-            $player->setNetworth($player->getNetworth() + $researchNetworth);
-
-            $federation = $player->getFederation();
 
             $research = $researchPlayer->getResearch();
             $finishedTimestamp = $researchPlayer->getTimestamp() + $research->getTimestamp();
             $message = "You successfully researched a new technology: {$research->getName()}";
             $report = Report::createForPlayer($player, $finishedTimestamp, 2, $message);
 
-            if ($federation !== null) {
-                $federation->setNetworth($federation->getNetworth() + $researchNetworth);
-                $this->federationRepository->save($federation);
-            }
-
             $this->reportRepository->save($report);
             $this->researchPlayerRepository->save($researchPlayer);
-            $this->playerRepository->save($player);
+
+            $this->networthUpdaterService->updateNetworthForPlayer($player);
         }
     }
 }
