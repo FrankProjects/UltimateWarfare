@@ -2,6 +2,7 @@
 
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Util\NetworthCalculator;
@@ -68,16 +69,27 @@ class UpdateNetworthCommand extends Command
         ]);
 
         foreach ($this->worldRepository->findByPublic(true) as $world) {
-            foreach ($world->getPlayers() as $player) {
-                $networth = $this->networthCalculator->calculateNetworthForPlayer($player);
-                if ($player->getNetworth() !== $networth) {
-                    $output->writeln("Mismatch found: {$player->getName()} {$player->getNetworth()} => {$networth}");
-                    $player->setNetworth($networth);
-                    $this->playerRepository->save($player);
-                }
-            }
+            $this->processWorld($output, $world);
         }
 
         $output->writeln('Done!');
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param World $world
+     */
+    private function processWorld(OutputInterface $output, World $world): void
+    {
+        $output->writeln("Processing World: {$world->getName()}");
+
+        foreach ($world->getPlayers() as $player) {
+            $networth = $this->networthCalculator->calculateNetworthForPlayer($player);
+            if ($player->getNetworth() !== $networth) {
+                $output->writeln("Mismatch found: {$player->getName()} {$player->getNetworth()} => {$networth}");
+                $player->setNetworth($networth);
+                $this->playerRepository->save($player);
+            }
+        }
     }
 }
