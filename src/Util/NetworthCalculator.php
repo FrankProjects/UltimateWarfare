@@ -3,6 +3,7 @@
 namespace FrankProjects\UltimateWarfare\Util;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 
 final class NetworthCalculator
@@ -21,6 +22,15 @@ final class NetworthCalculator
             foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
                 $networth += $worldRegionUnit->getGameUnit()->getNetworth() * $worldRegionUnit->getAmount();
             }
+        }
+
+        /** @var ResearchPlayer $playerResearch */
+        foreach ($player->getPlayerResearch() as $playerResearch) {
+            if (!$playerResearch->getActive()) {
+                continue;
+            }
+
+            $networth += 1250;
         }
 
         return $networth;
