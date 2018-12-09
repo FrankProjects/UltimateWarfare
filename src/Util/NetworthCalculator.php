@@ -12,12 +12,12 @@ final class NetworthCalculator
      * @param Player $player
      * @return int
      */
-    public static function calculateNetworthForPlayer(Player $player): int
+    public function calculateNetworthForPlayer(Player $player): int
     {
         $networth = 0;
         $networth += count($player->getWorldRegions()) * 1000;
-        $networth += self::getNetworthFromWorldRegionUnits($player);
-        $networth += self::getNetworthFromResearch($player);
+        $networth += $this->getNetworthFromWorldRegionUnits($player);
+        $networth += $this->getNetworthFromResearch($player);
 
         return $networth;
     }
@@ -26,7 +26,7 @@ final class NetworthCalculator
      * @param Player $player
      * @return int
      */
-    private static function getNetworthFromWorldRegionUnits(Player $player): int
+    private function getNetworthFromWorldRegionUnits(Player $player): int
     {
         $networth = 0;
 
@@ -44,7 +44,7 @@ final class NetworthCalculator
      * @param Player $player
      * @return int
      */
-    private static function getNetworthFromResearch(Player $player): int
+    private function getNetworthFromResearch(Player $player): int
     {
         $networth = 0;
 

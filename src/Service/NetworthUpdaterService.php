@@ -22,17 +22,25 @@ final class NetworthUpdaterService
     private $playerRepository;
 
     /**
+     * @var NetworthCalculator
+     */
+    private $networthCalculator;
+
+    /**
      * NetworthUpdaterService constructor.
      *
      * @param FederationRepository $federationRepository
      * @param PlayerRepository $playerRepository
+     * @param NetworthCalculator $networthCalculator
      */
     public function __construct(
         FederationRepository $federationRepository,
-        PlayerRepository $playerRepository
+        PlayerRepository $playerRepository,
+        NetworthCalculator $networthCalculator
     ) {
         $this->federationRepository = $federationRepository;
         $this->playerRepository = $playerRepository;
+        $this->networthCalculator = $networthCalculator;
     }
 
     /**
@@ -40,7 +48,7 @@ final class NetworthUpdaterService
      */
     public function updateNetworthForPlayer(Player $player): void
     {
-        $networth = NetworthCalculator::calculateNetworthForPlayer($player);
+        $networth = $this->networthCalculator->calculateNetworthForPlayer($player);
         $player->setNetworth($networth);
 
         if ($player->getFederation() !== null) {
@@ -48,7 +56,7 @@ final class NetworthUpdaterService
             $federationNetworth = 0;
 
             foreach ($federation->getPlayers() as $federationPlayer) {
-                $federationNetworth += NetworthCalculator::calculateNetworthForPlayer($federationPlayer);
+                $federationNetworth += $this->networthCalculator->calculateNetworthForPlayer($federationPlayer);
             }
 
             $federation->setNetworth($federationNetworth);
