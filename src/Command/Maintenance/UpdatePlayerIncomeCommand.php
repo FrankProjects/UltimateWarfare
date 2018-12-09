@@ -32,7 +32,7 @@ class UpdatePlayerIncomeCommand extends Command
     private $networthCalculator;
 
     /**
-     * UpdateNetworthCommand constructor.
+     * UpdatePlayerIncomeCommand constructor.
      *
      * @param PlayerRepository $playerRepository
      * @param WorldRepository $worldRepository
@@ -52,8 +52,8 @@ class UpdatePlayerIncomeCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Update networth of all players');
-        $this->setHelp('Fix incosistencies by updating networth of all players...');
+        $this->setDescription('Update resource income of all players');
+        $this->setHelp('Fix incosistencies by updating resource income of all players...');
     }
 
     /**
@@ -70,6 +70,8 @@ class UpdatePlayerIncomeCommand extends Command
         ]);
 
         foreach ($this->worldRepository->findByPublic(true) as $world) {
+            $output->writeln("Processing World: {$world->getName()}");
+
             foreach ($world->getPlayers() as $player) {
                 $this->syncPlayerResources($output, $player);
             }
