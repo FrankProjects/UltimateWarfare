@@ -81,41 +81,7 @@ final class ConstructionProcessor implements Processor
                 continue;
             }
 
-            // XXX TODO: Process income before updating income...
-            //$this->processPlayerIncome($construction->getPlayer(), $timestamp);
-
-            $worldRegionUnit = null;
-            foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnitObject) {
-                if ($worldRegionUnitObject->getGameUnit()->getId() == $construction->getGameUnit()->getId()) {
-                    $worldRegionUnit = $worldRegionUnitObject;
-                    break;
-                }
-            }
-
-            if ($worldRegionUnit !== null) {
-                $worldRegionUnit->setAmount($construction->getNumber());
-            } else {
-                $worldRegionUnit = WorldRegionUnit::create($worldRegion, $construction->getGameUnit(), $construction->getNumber());
-            }
-
-            $player = $this->updatePlayerResources($construction->getPlayer(), $construction);
-
-            $reportType = 2;
-            if ($construction->getNumber() > 1) {
-                $message = "You completed {$construction->getNumber()} {$construction->getGameUnit()->getNameMulti()}!";
-            } else {
-                $message = "You completed {$construction->getNumber()} {$construction->getGameUnit()->getName()}!";
-            }
-
-            $finishedConstructionTime = $construction->getTimestamp() + $construction->getGameUnit()->getTimestamp();
-            $report = Report::createForPlayer($player, $finishedConstructionTime, $reportType, $message);
-
-            $this->worldRegionUnitRepository->save($worldRegionUnit);
-            $this->playerRepository->save($player);
-            $this->reportRepository->save($report);
-            $this->constructionRepository->remove($construction);
-
-            $this->networthUpdaterService->updateNetworthForPlayer($player);
+            $this->processConstruction($construction);
         }
     }
 
@@ -150,5 +116,66 @@ final class ConstructionProcessor implements Processor
         $player->setResources($resources);
 
         return $player;
+    }
+
+    /**
+     * @param Construction $construction
+     */
+    private function processConstruction(Construction $construction): void
+    {
+        // XXX TODO: Process income before processing construction...
+        //$this->processPlayerIncome($construction->getPlayer(), $timestamp);
+
+        $worldRegionUnit = $this->getWorldRegionUnit($construction);
+
+        if ($worldRegionUnit !== null) {
+            $worldRegionUnit->setAmount($construction->getNumber());
+        } else {
+            $worldRegionUnit = WorldRegionUnit::create($construction->getWorldRegion(), $construction->getGameUnit(), $construction->getNumber());
+        }
+
+        $player = $this->updatePlayerResources($construction->getPlayer(), $construction);
+        $this->createConstructionReport($construction);
+
+        $this->worldRegionUnitRepository->save($worldRegionUnit);
+        $this->playerRepository->save($player);
+        $this->constructionRepository->remove($construction);
+
+        $this->networthUpdaterService->updateNetworthForPlayer($player);
+    }
+
+    /**
+     * @param Construction $construction
+     */
+    private function createConstructionReport(Construction $construction): void
+    {
+        $reportType = Report::TYPE_GENERAL;
+        if ($construction->getNumber() > 1) {
+            $message = "You completed {$construction->getNumber()} {$construction->getGameUnit()->getNameMulti()}!";
+        } else {
+            $message = "You completed {$construction->getNumber()} {$construction->getGameUnit()->getName()}!";
+        }
+
+        $finishedConstructionTime = $construction->getTimestamp() + $construction->getGameUnit()->getTimestamp();
+        $report = Report::createForPlayer($construction->getPlayer(), $finishedConstructionTime, $reportType, $message);
+        $this->reportRepository->save($report);
+    }
+
+    /**
+     * @param Construction $construction
+     * @return WorldRegionUnit|null
+     */
+    private function getWorldRegionUnit(Construction $construction): ?WorldRegionUnit
+    {
+        $worldRegion = $construction->getWorldRegion();
+        $worldRegionUnit = null;
+        foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnitObject) {
+            if ($worldRegionUnitObject->getGameUnit()->getId() == $construction->getGameUnit()->getId()) {
+                $worldRegionUnit = $worldRegionUnitObject;
+                break;
+            }
+        }
+
+        return $worldRegionUnit;
     }
 }
