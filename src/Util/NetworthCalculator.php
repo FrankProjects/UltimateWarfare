@@ -16,6 +16,19 @@ final class NetworthCalculator
     {
         $networth = 0;
         $networth += count($player->getWorldRegions()) * 1000;
+        $networth += self::getNetworthFromWorldRegionUnits($player);
+        $networth += self::getNetworthFromResearch($player);
+
+        return $networth;
+    }
+
+    /**
+     * @param Player $player
+     * @return int
+     */
+    private static function getNetworthFromWorldRegionUnits(Player $player): int
+    {
+        $networth = 0;
 
         foreach ($player->getWorldRegions() as $worldRegion) {
             /** @var WorldRegion $worldRegion */
@@ -23,6 +36,17 @@ final class NetworthCalculator
                 $networth += $worldRegionUnit->getGameUnit()->getNetworth() * $worldRegionUnit->getAmount();
             }
         }
+
+        return $networth;
+    }
+
+    /**
+     * @param Player $player
+     * @return int
+     */
+    private static function getNetworthFromResearch(Player $player): int
+    {
+        $networth = 0;
 
         /** @var ResearchPlayer $playerResearch */
         foreach ($player->getPlayerResearch() as $playerResearch) {
