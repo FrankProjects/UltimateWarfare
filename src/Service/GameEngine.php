@@ -4,45 +4,43 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
-use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
-use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
+use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ConstructionProcessor;
+use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ResearchProcessor;
 
 final class GameEngine
 {
     /**
-     * @var ConstructionRepository
+     * @var ConstructionProcessor
      */
-    private $constructionRepository;
+    private $constructionProcessor;
 
     /**
-     * @var ResearchPlayerRepository
+     * @var ResearchProcessor
      */
-    private $researchPlayerRepository;
+    private $researchProcessor;
 
     /**
-     * @var EntityManagerInterface $em
+     * @var PlayerRepository
      */
-    private $em;
+    private $playerRepository;
 
     /**
      * GameEngine constructor.
      *
-     * @param ConstructionRepository $constructionRepository
-     * @param ResearchPlayerRepository $researchPlayerRepository
-     * @param EntityManagerInterface $em
+     * @param ConstructionProcessor $constructionProcessor
+     * @param ResearchProcessor $researchProcessor
+     * @param PlayerRepository $playerRepository
      */
     public function __construct(
-        ConstructionRepository $constructionRepository,
-        ResearchPlayerRepository $researchPlayerRepository,
-        EntityManagerInterface $em
+        ConstructionProcessor $constructionProcessor,
+        ResearchProcessor $researchProcessor,
+        PlayerRepository $playerRepository
     ) {
-        $this->constructionRepository = $constructionRepository;
-        $this->researchPlayerRepository = $researchPlayerRepository;
-        $this->em = $em;
+        $this->constructionProcessor = $constructionProcessor;
+        $this->researchProcessor = $researchProcessor;
+        $this->playerRepository = $playerRepository;
     }
 
     /**
@@ -53,163 +51,13 @@ final class GameEngine
     {
         $timestamp = time();
 
-        $this->em->getConnection()->beginTransaction();
-        try {
-            if ($player !== null) {
-                $this->processPlayerIncome($player, $timestamp);
-            }
-
-            $this->processConstructionQueue($timestamp);
-            $this->processResearchQueue($timestamp);
-            $this->processPopulationGrowth($timestamp);
-
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-            throw $e;
-        }
-    }
-
-    /**
-     * @param int $timestamp
-     * @return bool
-     * @throws \Exception
-     */
-    public function processConstructionQueue(int $timestamp): bool
-    {
-        $constructions = $this->constructionRepository->getCompletedConstructions($timestamp);
-
-        foreach ($constructions as $construction) {
-            $worldRegion = $construction->getWorldRegion();
-
-            if ($worldRegion->getPlayer()->getId() !== $construction->getPlayer()->getId()) {
-                // Never process construction queue items for a region that no longer belongs to this player
-                try {
-                    $this->constructionRepository->remove($construction);
-                } catch (\Exception $e) {
-                    return false;
-                }
-                continue;
-            }
-
-            // Process income before updating income...
-            $this->processPlayerIncome($construction->getPlayer(), $timestamp);
-
-            $gameUnitExist = false;
-            foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId() == $construction->getGameUnit()->getId()) {
-                    $gameUnitExist = true;
-                    break;
-                }
-            }
-
-
-            if ($gameUnitExist) {
-                $worldRegionUnit->setAmount($construction->getNumber());
-            } else {
-                $worldRegionUnit = WorldRegionUnit::create($worldRegion, $construction->getGameUnit(), $construction->getNumber());
-            }
-
-            $networth = $construction->getNumber() * $construction->getGameUnit()->getNetworth();
-
-            $upkeepCash = $construction->getNumber() * $construction->getGameUnit()->getUpkeepCash();
-            $upkeepFood = $construction->getNumber() * $construction->getGameUnit()->getUpkeepFood();
-            $upkeepWood = $construction->getNumber() * $construction->getGameUnit()->getUpkeepWood();
-            $upkeepSteel = $construction->getNumber() * $construction->getGameUnit()->getUpkeepSteel();
-
-            $incomeCash = $construction->getNumber() * $construction->getGameUnit()->getIncomeCash();
-            $incomeFood = $construction->getNumber() * $construction->getGameUnit()->getIncomeFood();
-            $incomeWood = $construction->getNumber() * $construction->getGameUnit()->getIncomeWood();
-            $incomeSteel = $construction->getNumber() * $construction->getGameUnit()->getIncomeSteel();
-
-            $player = $construction->getPlayer();
-            $player->setNetworth($player->getNetworth() + $networth);
-
-            $resources = $player->getResources();
-            $resources->setUpkeepCash($resources->getUpkeepCash() + $upkeepCash);
-            $resources->setUpkeepFood($resources->getUpkeepFood() + $upkeepFood);
-            $resources->setUpkeepWood($resources->getUpkeepWood() + $upkeepWood);
-            $resources->setUpkeepSteel($resources->getUpkeepSteel() + $upkeepSteel);
-
-            $resources->setIncomeCash($resources->getIncomeCash() + $incomeCash);
-            $resources->setIncomeFood($resources->getIncomeFood() + $incomeFood);
-            $resources->setIncomeWood($resources->getIncomeWood() + $incomeWood);
-            $resources->setIncomeSteel($resources->getIncomeSteel() + $incomeSteel);
-
-            $player->setResources($resources);
-            $federation = $player->getFederation();
-
-            $reportType = 2;
-            if ($construction->getNumber() > 1) {
-                $message = "You completed {$construction->getNumber()} {$construction->getGameUnit()->getNameMulti()}!";
-            } else {
-                $message = "You completed {$construction->getNumber()} {$construction->getGameUnit()->getName()}!";
-            }
-
-            $finishedConstructionTime = $construction->getTimestamp() + $construction->getGameUnit()->getTimestamp();
-            $report = Report::createForPlayer($player, $finishedConstructionTime, $reportType, $message);
-
-            try {
-                if ($federation !== null) {
-                    $federation->setNetworth($federation->getNetworth() + $networth);
-                    $this->em->persist($federation);
-                }
-
-                $this->em->persist($worldRegionUnit);
-                $this->em->persist($player);
-                $this->em->persist($report);
-                $this->constructionRepository->remove($construction);
-                $this->em->flush();
-            } catch (\Exception $e) {
-                return false;
-            }
+        if ($player !== null) {
+            $this->processPlayerIncome($player, $timestamp);
         }
 
-        return true;
-    }
-
-    /**
-     * @param int $timestamp
-     * @return bool
-     * @throws \Exception
-     */
-    public function processResearchQueue(int $timestamp): bool
-    {
-        $researches = $this->researchPlayerRepository->getNonActiveCompletedResearch($timestamp);
-
-        foreach ($researches as $researchPlayer) {
-            // Process income before updating income...
-            $this->processPlayerIncome($researchPlayer->getPlayer(), $timestamp);
-
-            $researchPlayer->setActive(true);
-
-            $researchNetworth = 1250;
-            $player = $researchPlayer->getPlayer();
-            $player->setNetworth($player->getNetworth() + $researchNetworth);
-
-            $federation = $player->getFederation();
-
-            $research = $researchPlayer->getResearch();
-            $finishedTimestamp = $researchPlayer->getTimestamp() + $research->getTimestamp();
-            $message = "You successfully researched a new technology: {$research->getName()}";
-            $report = Report::createForPlayer($player, $finishedTimestamp, 2, $message);
-
-            try {
-                if ($federation !== null) {
-                    $federation->setNetworth($federation->getNetworth() + $researchNetworth);
-                    $this->em->persist($federation);
-                }
-
-                $this->em->persist($report);
-                $this->researchPlayerRepository->save($researchPlayer);
-                $this->em->persist($player);
-                $this->em->flush();
-            } catch (\Exception $e) {
-                return false;
-            }
-        }
-
-        return true;
+        $this->constructionProcessor->run($timestamp);
+        $this->researchProcessor->run($timestamp);
+        $this->processPopulationGrowth($timestamp);
     }
 
     /**
@@ -265,8 +113,7 @@ final class GameEngine
         $player->setTimestampUpdate($timestamp);
 
         try {
-            $this->em->persist($player);
-            $this->em->flush();
+            $this->playerRepository->save($player);
         } catch (\Exception $e) {
             return false;
         }

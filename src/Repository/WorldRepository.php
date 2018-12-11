@@ -15,6 +15,11 @@ interface WorldRepository
     public function find(int $id): ?World;
 
     /**
+     * @return World[]
+     */
+    public function findAll(): array;
+
+    /**
      * @param bool $public
      * @return World[]
      */

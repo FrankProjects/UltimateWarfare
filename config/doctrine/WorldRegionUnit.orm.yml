@@ -1,6 +1,9 @@
 FrankProjects\UltimateWarfare\Entity\WorldRegionUnit:
     type: entity
     table: world_region_unit
+    uniqueConstraints:
+        unique_world_region_unit:
+            columns: [ unit_id, region_id ]
     id:
         id:
             type: integer

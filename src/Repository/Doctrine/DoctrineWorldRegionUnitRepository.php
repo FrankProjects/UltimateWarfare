@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 
@@ -42,6 +43,22 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
     }
 
     /**
+     * @param Player $player
+     * @return array
+     */
+    public function findAmountAndNetworthByPlayer(Player $player): array
+    {
+        return $this->entityManager->createQuery(
+            'SELECT wru.amount, gu.networth
+              FROM Game:WorldRegionUnit wru
+              JOIN Game:WorldRegion wr WITH wru.worldRegion = wr
+              JOIN Game:GameUnit gu WITH wru.gameUnit = gu
+              WHERE wr.player = :player'
+        )->setParameter('player', $player
+        )->getResult();
+    }
+
+    /**
      * @param WorldRegionUnit $worldRegionUnit
      */
     public function remove(WorldRegionUnit $worldRegionUnit): void
@@ -55,7 +72,7 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
      */
     public function save(WorldRegionUnit $worldRegionUnit): void
     {
-        $this->entityManager->persist($worldRegionUnit);
+        $this->entityManager->merge($worldRegionUnit);
         $this->entityManager->flush();
     }
 }

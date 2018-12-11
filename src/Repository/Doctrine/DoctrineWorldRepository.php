@@ -42,6 +42,14 @@ final class DoctrineWorldRepository implements WorldRepository
     }
 
     /**
+     * @return World[]
+     */
+    public function findAll(): array
+    {
+        return $this->repository->findAll();
+    }
+
+    /**
      * @param bool $public
      * @return World[]
      */
