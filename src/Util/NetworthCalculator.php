@@ -4,10 +4,26 @@ namespace FrankProjects\UltimateWarfare\Util;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
-use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 
 final class NetworthCalculator
 {
+    /**
+     * @var WorldRegionUnitRepository
+     */
+    private $worldRegionUnitRepository;
+
+    /**
+     * NetworthCalculator constructor.
+     *
+     * @param WorldRegionUnitRepository $worldRegionUnitRepository
+     */
+    public function __construct(
+        WorldRegionUnitRepository $worldRegionUnitRepository
+    ) {
+        $this->worldRegionUnitRepository = $worldRegionUnitRepository;
+    }
+
     /**
      * @param Player $player
      * @return int
@@ -30,11 +46,8 @@ final class NetworthCalculator
     {
         $networth = 0;
 
-        foreach ($player->getWorldRegions() as $worldRegion) {
-            /** @var WorldRegion $worldRegion */
-            foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
-                $networth += $worldRegionUnit->getGameUnit()->getNetworth() * $worldRegionUnit->getAmount();
-            }
+        foreach ($this->worldRegionUnitRepository->findAmountAndNetworthByPlayer($player) as $data) {
+            $networth += $data['networth'] * $data['amount'];
         }
 
         return $networth;
