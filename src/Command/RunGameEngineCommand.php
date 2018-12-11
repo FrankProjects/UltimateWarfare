@@ -9,7 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RunGameEngineCommand extends Command
 {
-    // the name of the command (the part after "bin/console")
     protected static $defaultName = 'game:engine:run';
 
     /**
@@ -18,7 +17,7 @@ class RunGameEngineCommand extends Command
     private $gameEngine;
 
     /**
-     * RunGameEngineCommandCommand constructor.
+     * RunGameEngineCommand constructor.
      *
      * @param GameEngine $gameEngine
      */
