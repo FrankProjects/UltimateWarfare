@@ -8,11 +8,11 @@ use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Util\NetworthCalculator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateNetworthCommand extends Command
 {
-    // the name of the command (the part after "bin/console")
     protected static $defaultName = 'game:maintenance:update:networth';
 
     /**
@@ -51,8 +51,15 @@ class UpdateNetworthCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Update networth of all players');
-        $this->setHelp('Fix incosistencies by updating networth of all players...');
+        $this->setDescription('Update networth of all players')
+            ->setHelp('Fix inconsistencies by updating networth of all players...')
+            ->addOption(
+                'commit',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Should I save the changes?',
+                false
+            );
     }
 
     /**
@@ -68,8 +75,14 @@ class UpdateNetworthCommand extends Command
             '',
         ]);
 
-        foreach ($this->worldRepository->findByPublic(true) as $world) {
-            $this->processWorld($output, $world);
+        $commit = $input->getOption('commit');
+
+        foreach ($this->worldRepository->findAll() as $world) {
+            $this->processWorld($output, $world, $commit);
+        }
+
+        if (!$commit) {
+            $output->writeln('Use --commit to actually save the changes!');
         }
 
         $output->writeln('Done!');
@@ -78,8 +91,9 @@ class UpdateNetworthCommand extends Command
     /**
      * @param OutputInterface $output
      * @param World $world
+     * @param bool $commit
      */
-    private function processWorld(OutputInterface $output, World $world): void
+    private function processWorld(OutputInterface $output, World $world, bool $commit): void
     {
         $output->writeln("Processing World: {$world->getName()}");
 
@@ -88,7 +102,10 @@ class UpdateNetworthCommand extends Command
             if ($player->getNetworth() !== $networth) {
                 $output->writeln("Mismatch found: {$player->getName()} {$player->getNetworth()} => {$networth}");
                 $player->setNetworth($networth);
-                $this->playerRepository->save($player);
+
+                if ($commit) {
+                    $this->playerRepository->save($player);
+                }
             }
         }
     }

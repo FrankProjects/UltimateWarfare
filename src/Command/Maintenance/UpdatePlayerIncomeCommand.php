@@ -9,11 +9,11 @@ use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Util\NetworthCalculator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdatePlayerIncomeCommand extends Command
 {
-    // the name of the command (the part after "bin/console")
     protected static $defaultName = 'game:maintenance:update:income';
 
     /**
@@ -52,8 +52,15 @@ class UpdatePlayerIncomeCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Update resource income of all players');
-        $this->setHelp('Fix incosistencies by updating resource income of all players...');
+        $this->setDescription('Update resource income of all players')
+            ->setHelp('Fix inconsistencies by updating resource income of all players...')
+            ->addOption(
+                'commit',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Should I save the changes?',
+                false
+            );
     }
 
     /**
@@ -69,24 +76,31 @@ class UpdatePlayerIncomeCommand extends Command
             '',
         ]);
 
-        foreach ($this->worldRepository->findByPublic(true) as $world) {
+        $commit = $input->getOption('commit');
+
+        foreach ($this->worldRepository->findAll() as $world) {
             $output->writeln("Processing World: {$world->getName()}");
 
             foreach ($world->getPlayers() as $player) {
-                $this->syncPlayerResources($output, $player);
+                $this->syncPlayerResources($output, $player, $commit);
             }
+        }
+
+        if (!$commit) {
+            $output->writeln('Use --commit to actually save the changes!');
         }
 
         $output->writeln('Done!');
     }
 
     /**
-     * XXX TODO: Improve function
+     * XXX TODO: Improve function & move to ResourceService
      *
      * @param OutputInterface $output
      * @param Player $player
+     * @param bool $commit
      */
-    private function syncPlayerResources(OutputInterface $output, Player $player): void
+    private function syncPlayerResources(OutputInterface $output, Player $player, bool $commit): void
     {
         $upkeepCash = 0;
         $upkeepFood = 0;
@@ -164,7 +178,7 @@ class UpdatePlayerIncomeCommand extends Command
             $resources->setIncomeSteel($incomeSteel);
         }
 
-        if ($changes) {
+        if ($changes && $commit) {
             $player->setResources($resources);
             $this->playerRepository->save($player);
         }
