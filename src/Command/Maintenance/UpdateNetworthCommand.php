@@ -2,6 +2,7 @@
 
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
@@ -98,14 +99,26 @@ class UpdateNetworthCommand extends Command
         $output->writeln("Processing World: {$world->getName()}");
 
         foreach ($world->getPlayers() as $player) {
-            $networth = $this->networthCalculator->calculateNetworthForPlayer($player);
-            if ($player->getNetworth() !== $networth) {
-                $output->writeln("Mismatch found: {$player->getName()} {$player->getNetworth()} => {$networth}");
-                $player->setNetworth($networth);
+            $this->processPlayer($output, $player, $commit);
+        }
+    }
 
-                if ($commit) {
-                    $this->playerRepository->save($player);
-                }
+    /**
+     * @param OutputInterface $output
+     * @param Player $player
+     * @param bool $commit
+     */
+    private function processPlayer(OutputInterface $output, Player $player, bool $commit): void
+    {
+        $output->writeln("Processing Player: {$player->getName()}");
+
+        $networth = $this->networthCalculator->calculateNetworthForPlayer($player);
+        if ($player->getNetworth() !== $networth) {
+            $output->writeln("Mismatch found: {$player->getName()} {$player->getNetworth()} => {$networth}");
+            $player->setNetworth($networth);
+
+            if ($commit) {
+                $this->playerRepository->save($player);
             }
         }
     }
