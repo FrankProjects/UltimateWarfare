@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <main class="col-sm-12 justify-content-center">
+        {% include 'flashes.html.twig' %}
+
+        {% block content %}{% endblock %}
+    </main>
+{% endblock %}

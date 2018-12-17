@@ -1,24 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<tr>
-    <td id="container_bar" class="text2">
+    <nav class="navbar col-sm-3 col-md-2 align-items-start">
         {% include 'site/navigation.html.twig' %}
-    </td>
-    <td id="container_content" align="center" class="text">
-        {% for msg in app.flashes('success') %}
-            <div class="success" id="success">
-                {{ msg }}
-            </div>
-        {% endfor %}
+    </nav>
 
-        {% for msg in app.flashes('error') %}
-            <div class="error" id="error">
-                {{ msg }}
-            </div>
-        {% endfor %}
+    <main class="col-sm-9 col-md-10 justify-content-center">
+        {% include 'flashes.html.twig' %}
 
         {% block content %}{% endblock %}
-    </td>
-</tr>
+    </main>
 {% endblock %}
