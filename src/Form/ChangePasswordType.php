@@ -4,6 +4,7 @@ namespace FrankProjects\UltimateWarfare\Form;
 
 use FrankProjects\UltimateWarfare\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -29,6 +30,9 @@ class ChangePasswordType extends AbstractType
                     'label' => 'label.password_repeat',
                     'translation_domain' => 'account'
                 ]
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Change Password'
             ]);
     }
 

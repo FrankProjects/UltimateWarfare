@@ -3,6 +3,7 @@
 namespace FrankProjects\UltimateWarfare\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -24,6 +25,9 @@ class ContactType extends AbstractType
             ->add('message', TextareaType::class, [
                 'label' => 'label.message',
                 'translation_domain' => 'contact'
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Send'
             ]);
     }
 }
