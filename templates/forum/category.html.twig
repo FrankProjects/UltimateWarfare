@@ -31,9 +31,11 @@
         {% endfor %}
 
         {% if user != null and category.id > 1 or is_granted('ROLE_ADMIN') %}
-            <tr><td colspan="5" align="right"><a class="B" href="{{ path('Forum/Topic/Create', {'categoryId': category.id}) }}">Make a new Topic</a></td></tr>
+            <tr>
+                <td colspan="5" align="right">
+                    <a class="B" href="{{ path('Forum/Topic/Create', {'categoryId': category.id}) }}">Make a new Topic</a>
+                </td>
+            </tr>
         {% endif %}
     </table>
-    <br />
-    <br />
 {% endblock %}
