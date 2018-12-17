@@ -32,10 +32,7 @@
             </div>
 
             <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-
-            <div class="submit">
-                <input type="submit" id="_submit" name="_submit" value="{{ 'label.login'|trans }}" />
-            </div>
+            <input class="btn btn-primary" type="submit" id="_submit" name="_submit" value="{{ 'label.login'|trans }}" />
         </form>
 
     </fieldset>
@@ -43,7 +40,7 @@
     <br />
     <br />
 
-    <div>
+    <p class="text-center">
         <a class="B" href="{{ url('Site/ResetPassword') }}">{{ 'label.lost_password'|trans({}, 'login') }}</a>
-    </div>
+    </p>
 {% endblock %}
