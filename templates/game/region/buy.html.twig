@@ -22,7 +22,7 @@
             <td>
                 <form action="{{ path('Game/World/Region/Buy', {'regionId': region.id}) }}" method = "post">
                     <div>Do you really want to buy this region for $ {{ price }} ?</div>
-                    <div class="submit"><input type="submit" name="submit" value="Buy" /></div>
+                    <input class="btn btn-primary" type="submit" name="submit" value="Buy" />
                 </form>
             </td>
         </tr>

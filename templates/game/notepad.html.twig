@@ -5,20 +5,16 @@
 {% endblock title %}
 
 {% block content %}
-    {{ form_start(form) }}
-        <table border="1" cellspacing="0" cellpadding="0" width="700" class="table text">
-            <tr>
-                <td class="tabletop" width="700" align="center"><b>{{ form_label(form.notepad) }}</b></td>
-            </tr>
-            <tr>
-                <td align="center">
-                    {{ form_errors(form.notepad) }}
-                    {{ form_widget(form.notepad) }}
-                    {{ form_help(form.notepad) }}
-                    <br>
-                    <div class="submit"><input type="submit" name="submit" value="Update"></div>
-                </td>
-            </tr>
-        </table>
-    {{ form_end(form) }}
+    <table border="1" cellspacing="0" cellpadding="0" width="700" class="table text">
+        <tr>
+            <td class="tabletop" width="700" align="center"><b>Notepad</b></td>
+        </tr>
+        <tr>
+            <td align="center">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+            </td>
+        </tr>
+    </table>
 {% endblock %}

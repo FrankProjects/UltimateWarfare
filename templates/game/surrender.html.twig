@@ -28,9 +28,7 @@
 
                     {{ form_start(confirmPasswordForm, {'attr': {'class': 'general'}}) }}
                     {{ form_row(confirmPasswordForm.plainPassword) }}
-                    <div class="submit">
-                        <input type="submit" name="submit" value="Surrender" />
-                    </div>
+                    <input class="btn btn-primary" type="submit" name="submit" value="Surrender" />
                     {{ form_end(confirmPasswordForm) }}
                 {% else %}
                     You can not surrender for the first 48 Hours!

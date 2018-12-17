@@ -1,13 +1,14 @@
-<img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" /> <b>{{ player.resources.cash|number_format }}</b> ( {{ player.resources.incomeCash - player.resources.upkeepCash }}/h ) -
-<img src="{{ asset('images/icons/resource_food.jpg') }}" width="25" height="25" alt="Food" /> <b>{{ player.resources.food|number_format }}</b> ( {{ player.resources.incomeFood - player.resources.upkeepFood }}/h ) -
-<img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood" /> <b>{{ player.resources.wood|number_format }}</b> ( {{ player.resources.incomeWood - player.resources.upkeepWood }}/h ) -
-<img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" /> <b>{{ player.resources.steel|number_format }}</b> ( {{ player.resources.incomeSteel - player.resources.upkeepSteel }}/h )
-
-<br />
-<br />
+<p class="text-center">
+    <img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" /> <b>{{ player.resources.cash|number_format }}</b> ( {{ player.resources.incomeCash - player.resources.upkeepCash }}/h ) -
+    <img src="{{ asset('images/icons/resource_food.jpg') }}" width="25" height="25" alt="Food" /> <b>{{ player.resources.food|number_format }}</b> ( {{ player.resources.incomeFood - player.resources.upkeepFood }}/h ) -
+    <img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood" /> <b>{{ player.resources.wood|number_format }}</b> ( {{ player.resources.incomeWood - player.resources.upkeepWood }}/h ) -
+    <img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" /> <b>{{ player.resources.steel|number_format }}</b> ( {{ player.resources.incomeSteel - player.resources.upkeepSteel }}/h )
+</p>
 
 {% if player.notifications.attacked != 0 %}
-    * <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}"><b>You are under attack!</b></a><br /><br />
+    <p>
+        * <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}"><b>You are under attack!</b></a>
+    </p>
 {% endif %}
 
 {% if player.notifications.general != 0 %}
@@ -15,7 +16,9 @@
 {% endif %}
 
 {% if player.notifications.message != 0 %}
-    * <a class="B" href="{{ path('Game/Message/Inbox') }}"><b>You have new message(s).</b></a><br /><br />
+    <p>
+        * <a class="B" href="{{ path('Game/Message/Inbox') }}"><b>You have new message(s).</b></a>
+    </p>
 {% endif %}
 
 {% if player.notifications.aid != 0 %}

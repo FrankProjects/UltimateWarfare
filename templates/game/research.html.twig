@@ -50,7 +50,7 @@
                     <div><b>Name:</b> {{ research.name|escape }}</div>
                     <div><b>Costs:</b> ${{ research.cost }}</div>
                     <div><b>Duration:</b> {{ research.timestamp }}</div>
-                    <div class="submit"><a class="B" href="{{ path('Game/Research/Perform', {'researchId': research.id}) }}"><b>Research</b></a></div>
+                    <a class="btn btn-primary" href="{{ path('Game/Research/Perform', {'researchId': research.id}) }}"><b>Research</b></a>
                     </td><td align="center" valign="top">
                     <b>Requirements:</b><br />
                     {% for researchNeed in research.needs['notDone'] %}
