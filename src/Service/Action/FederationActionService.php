@@ -291,7 +291,7 @@ final class FederationActionService
          * $sql = $db->query("UPDATE player SET fedlvl = $rank WHERE id = $fed_player;");
          * $sql2 = $db->query("UPDATE player SET fedlvl = 9 WHERE id = $player_id;");
          *
-         * <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+         * <table width="700" border="1" align="center" class="table text">
          * <tr><td class="tabletop"><b>Changing Federation Owner</b></td></tr>
          *
          * <form action="" method="post" />

@@ -10,7 +10,7 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 
 {% if player.resources.incomeFood < 0 and (player.resources.food + player.resources.incomeFood) < 0 %}
     {% set runout_food_seconds = 0 - (player.resources.food / player.resources.incomeFood) * 3600 %}
-<table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+<table width="700" border="1" class="table text">
     <tr>
         <td align="center">
             <br />
@@ -35,7 +35,7 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 
 {% if player.resources.incomeCash < 0 and (player.resources.cash + player.resources.incomeCash) < 0 %}
     {% set runout_cash_seconds = 0 - (player.resources.cash / player.resources.incomeCash) * 3600 %}
-<table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+<table width="700" border="1" class="table text">
     <tr>
         <td align="center">
             <br />
@@ -56,7 +56,7 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 {% endif %}
 
     <br />
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table width="700" border="1" class="table text">
         <tr>
             <td class="tabletop" width="600" align="center"><b>Headquarter</b></td>
 
@@ -77,7 +77,7 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 
     <br />
 
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table width="700" border="1" class="table text">
         <tr>
             <td class="tabletop" colspan="3" align="center"><b>Status</b></td>
         </tr>
@@ -123,7 +123,7 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
     <br />
     <br />
 
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table width="700" border="1" class="table text">
         <tr>
             <td class="tabletop" align="center" colspan="2"><b>Recent Reports (Last 10) </b></td>
         </tr>

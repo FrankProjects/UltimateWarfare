@@ -4,7 +4,7 @@
 
 {% block content %}
     <form action="{{ path('Game/StartWorld', {'worldId': world.id}) }}" method="POST">
-        <table border="1" width="700" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <table border="1" width="700" align="center" class="table text">
             <tr>
                 <td class="tabletop"><b>Select your Name</b></td>
             </tr>
@@ -21,7 +21,7 @@
         <br />
         <br />
 
-        <table border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <table border="1" align="center" class="table text">
             <tr>
                 <td width="400">
                     <b>{{ world.name|escape }}</b><br />
