@@ -1,29 +1,35 @@
 {% extends 'game.html.twig' %}
 {% block content %}
-    <a class="B" href="{{ path('Game/Market') }}">Buy</a> - <a class="B" href="{{ path('Game/Market/Sell') }}">Sell</a> - <a class="B" href="{{ path('Game/Market/PlaceOffer') }}">Place offer</a> - <a class="B" href="{{ path('Game/Market/Offers') }}">Your offers</a>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Market') }}">Buy</a> -
+        <a class="B" href="{{ path('Game/Market/Sell') }}">Sell</a> -
+        <a class="B" href="{{ path('Game/Market/PlaceOffer') }}">Place offer</a> -
+        <a class="B" href="{{ path('Game/Market/Offers') }}">Your offers</a>
+    </p>
 
-    <br />
-    <br />
-
-    <table width="700" border="1" align="center" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="5" align="center"><b>Your offers</b> </td>
+            <td class="tabletop" colspan="5"><b>Your offers</b> </td>
         </tr>
         <tr>
-            <td class="col_center"><b>Type</b></td><td class="col_center"><b>Resource</b></td><td class="col_center"><b>Amount</b></td><td class="col_center"><b>Price</b></td><td class="col_center"><b>Cancel</b></td>
+            <td><b>Type</b></td>
+            <td><b>Resource</b></td>
+            <td><b>Amount</b></td>
+            <td><b>Price</b></td>
+            <td><b>Cancel</b></td>
         </tr>
 
         {% for item in marketItems %}
             <tr>
-                <td class="col_center">{{ item.type }}</td>
-                <td class="col_center">{{ item.gameResource.name }}</td>
-                <td class="col_center">{{ item.amount }}</td>
-                <td class="col_center">{{ item.price }}</td>
-                <td class="col_center"><a class="B" href="{{ path('Game/Market/Cancel/Order', {'marketItemId': item.id}) }}"><b>Cancel</b></a></td>
+                <td>{{ item.type }}</td>
+                <td>{{ item.gameResource.name }}</td>
+                <td>{{ item.amount }}</td>
+                <td>{{ item.price }}</td>
+                <td><a class="B" href="{{ path('Game/Market/Cancel/Order', {'marketItemId': item.id}) }}"><b>Cancel</b></a></td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5" class="col_center">No offers...</td>
+                <td colspan="5">No offers...</td>
             </tr>
         {% endfor %}
     </table>

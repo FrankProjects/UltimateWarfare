@@ -5,12 +5,12 @@
 {% endblock title %}
 
 {% block content %}
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" align="center"><b>Surrender</b></td>
+            <td class="tabletop"><b>Surrender</b></td>
         </tr>
         <tr>
-            <td align="center">
+            <td>
                 {% if canSurrender == true %}
                     You really want to surrender your empire?
                     <br />
@@ -26,7 +26,7 @@
                     <br />
                     <br />
 
-                    {{ form_start(confirmPasswordForm, {'attr': {'class': 'general'}}) }}
+                    {{ form_start(confirmPasswordForm) }}
                     {{ form_row(confirmPasswordForm.plainPassword) }}
                     <input class="btn btn-primary" type="submit" name="submit" value="Surrender" />
                     {{ form_end(confirmPasswordForm) }}

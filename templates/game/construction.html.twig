@@ -13,20 +13,20 @@
     <br />
     <br />
 
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="5" align="center"><b>Construction</b></td>
+            <td class="tabletop" colspan="5"><b>Construction</b></td>
         </tr>
         <tr>
-            <td align="center">Building</td>
-            <td align="center">Region</td>
-            <td align="center">Time left</td>
-            <td align="center">Finishing at</td>
-            <td align="center">Option</td>
+            <td>Building</td>
+            <td>Region</td>
+            <td>Time left</td>
+            <td>Finishing at</td>
+            <td>Option</td>
         </tr>
 
         {% for construction in constructions %}
-            <tr align="center">
+            <tr>
                 {% set timestampFinished = construction.timestamp + construction.gameUnit.timestamp %}
                 {% set timestampLeft = timestampFinished - date().timestamp %}
 
@@ -41,7 +41,9 @@
                 <td><a class="B" href="{{ path('Game/Construction/Cancel', {'constructionId': construction.id}) }}">Cancel</a></td>
             </tr>
         {% else %}
-            <tr><td align="center" colspan="7">No {{ gameUnitType.name }} under construction....</td></tr>
+            <tr>
+                <td colspan="7">No {{ gameUnitType.name }} under construction....</td>
+            </tr>
         {% endfor %}
     </table>
 {% endblock %}

@@ -5,29 +5,28 @@
 {% endblock title %}
 
 {% block content %}
-    <table width="700" border="1" align="center" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" align="center" colspan="2"><b>Federation News</b></td>
+            <td class="tabletop" colspan="2"><b>Federation News</b></td>
         </tr>
         <tr>
-            <td width="150" align="center"><b>Date</b></td>
-            <td width="550" align="left"><b>Report</b></td>
+            <td width="150"><b>Date</b></td>
+            <td class="text-left" width="550"><b>Report</b></td>
         </tr>
 
         {% for federationNews in federationNews %}
             <tr>
-                <td align="center">
+                <td>
                     {{ federationNews.timestamp }}
                 </td>
-                <td align="left">
+                <td class="text-left">
                     {{ federationNews.news }}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td align="center" colspan="2">No federation news yet...</td>
+                <td colspan="2">No federation news yet...</td>
             </tr>
         {% endfor %}
-
     </table>
 {% endblock %}

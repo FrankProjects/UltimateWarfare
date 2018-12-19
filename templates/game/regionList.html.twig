@@ -5,16 +5,16 @@
 {% endblock title %}
 
 {% block content %}
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table width="700" class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="3" align="center"><b>Regions</b></td>
+            <td class="tabletop" colspan="3"><b>Regions</b></td>
         </tr>
         {% for region in regions %}
             <tr>
                 <td width="120">
                     <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100">
                 </td>
-                <td width="370" align="left">
+                <td class="text-left" width="370">
                     <ul>
                         <li>Position: {{ region.x }}, {{ region.y }}: {{ region.region }}</li>
                         <li>Built: {{ region.buildings }}
@@ -24,14 +24,14 @@
                             / {{ region.space }}
                         </li>
                         <li>Population: {{ region.population }} / {{ region.population * 500 }}
-                        <li>Click <a class="B" href="{{ path('Game/World/Region', {'regionId': region.id}) }}"><b>here</b></a> to go to this region.</li>
+                        <li>Click <a class="B" href="{{ path('Game/World/Region', {'regionId': region.id}) }}">here</a> to go to this region.</li>
                         <li>Quick Links:
                             <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Build</a> -
                             <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Build Units</a>
                         </li>
                     </ul>
                 </td>
-                <td width="210" align="left">
+                <td class="text-left" width="210">
                     {% for unit in region.worldRegionUnits %}
                         {{ unit.gameUnit.name }}: {{ unit.amount }}
                         <br />
@@ -42,7 +42,7 @@
             </tr>
         {% else %}
             <tr>
-                <td align="center" colspan="3">You have to buy a region on the map first!</td>
+                <td colspan="3">You have to buy a region on the map first!</td>
             </tr>
         {% endfor %}
     </table>

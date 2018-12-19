@@ -24,12 +24,12 @@
 <br />
 <br />
 
-    <table width="700" border="1" align="center" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="6" align="center"><b>{{ player.federation.name }}</b></td>
+            <td class="tabletop" colspan="6"><b>{{ player.federation.name }}</b></td>
         </tr>
             <tr>
-                <td colspan="6" align="center">
+                <td colspan="6">
                     <b>Leader Message:</b><br />
                     {{ player.federation.leaderMessage }}
                     <br />
@@ -39,25 +39,25 @@
                         <a href="{{ path('Game/Federation/Leave') }}"> Leave Federation</a><br /><br />
                     {% endif %}
 
-                    <table border="1" width="300" class="table text">
+                    <table width="300" class="table text text-center">
                         <tr>
-                            <td width="300" colspan="2" class="tabletop" align="center"><b>Federation Bank</b></td>
+                            <td colspan="2" class="tabletop"><b>Federation Bank</b></td>
                         </tr>
                         <tr>
-                            <td width="100" align="center">Cash:</td>
-                            <td width="200" align="center">$ {{ player.federation.resources.cash }}</td>
+                            <td width="100">Cash:</td>
+                            <td width="200">$ {{ player.federation.resources.cash }}</td>
                         </tr>
                         <tr>
-                            <td width="100" align="center">Wood:</td>
-                            <td width="200" align="center">{{ player.federation.resources.wood }}</td>
+                            <td width="100">Wood:</td>
+                            <td width="200">{{ player.federation.resources.wood }}</td>
                         </tr>
                         <tr>
-                            <td width="100" align="center">Steel: </td>
-                            <td width="200" align="center">{{ player.federation.resources.steel }}</td>
+                            <td width="100">Steel: </td>
+                            <td width="200">{{ player.federation.resources.steel }}</td>
                         </tr>
                         <tr>
-                            <td width="100" align="center">Food: </td>
-                            <td width="200" align="center">{{ player.federation.resources.food }}</td>
+                            <td width="100">Food: </td>
+                            <td width="200">{{ player.federation.resources.food }}</td>
                         </tr>
                         <tr><td colspan="2">
                                 <a class="B" href="{{ path('Game/Federation/Bank/Deposit') }}"> <b>Deposit</b></a><br />
@@ -74,12 +74,12 @@
                 </td>
             </tr>
             <tr>
-                <td class="tabletop" width="700" align="left" colspan="6">
+                <td class="tabletop" colspan="6">
                     <b>Federation Chat</b>
                 </td>
             </tr>
             <tr>
-                <td align="left" colspan="6">No active chat...</td>
+                <td colspan="6">No active chat...</td>
             </tr>
 
             <form method="post" action="{{ path('Game/Federation') }}">

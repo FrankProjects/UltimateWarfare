@@ -5,18 +5,15 @@
 {% endblock title %}
 
 {% block content %}
-    <br />
-    <br />
-
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" align="center" colspan="2"><b>Region</b></td>
+            <td class="tabletop" colspan="2"><b>Region</b></td>
         </tr>
         <tr>
-            <td width="120" align="center" rowspan="2">
+            <td width="120" rowspan="2">
                 <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100"><br />
             </td>
-            <td width="580" align="center">Location: <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}</td>
+            <td width="580">Location: <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}</td>
         </tr>
         <tr>
             <td>
@@ -27,7 +24,4 @@
             </td>
         </tr>
     </table>
-
-    <br />
-    <br />
 {% endblock %}

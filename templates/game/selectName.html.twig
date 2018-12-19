@@ -4,12 +4,12 @@
 
 {% block content %}
     <form action="{{ path('Game/StartWorld', {'worldId': world.id}) }}" method="POST">
-        <table border="1" width="700" align="center" class="table text">
+        <table class="table text text-center">
             <tr>
                 <td class="tabletop"><b>Select your Name</b></td>
             </tr>
             <tr>
-                <td align="center">
+                <td>
                     <div>
                         <label for="name">Name:</label>
                         <input type="text" id="name" name="name" size="12"/>
@@ -21,7 +21,7 @@
         <br />
         <br />
 
-        <table border="1" align="center" class="table text">
+        <table class="table text">
             <tr>
                 <td width="400">
                     <b>{{ world.name|escape }}</b><br />

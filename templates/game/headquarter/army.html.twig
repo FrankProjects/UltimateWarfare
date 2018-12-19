@@ -1,57 +1,63 @@
 {% extends 'game.html.twig' %}
 {% block content %}
-    Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+    <p class="text-center">
+        Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+    </p>
 
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="4" align="center"><b>Army</b></td>
-        </tr>
-        <tr><td width="350" colspan="2" class="tabletop"><b>Units</b></td><td width="350" colspan="2" class="tabletop"><b>Special ops</b></td></tr>
-        <tr><td width="200"> Soldiers:</td><td width="150">
-            </td>
-            <td width="200"> Guards:</td><td width="150">
-            </td>
+            <td class="tabletop" colspan="4"><b>Army</b></td>
         </tr>
         <tr>
-            <td width="200"> Tanks:</td><td width="150">
-            </td>
-            <td width="200"> Special ops:</td><td width="150">
-            </td>
+            <td width="350" colspan="2" class="tabletop"><b>Units</b></td>
+            <td width="350" colspan="2" class="tabletop"><b>Special ops</b></td>
         </tr>
         <tr>
-            <td width="200"> Airplanes:</td><td width="150">
-            </td>
-            <td width="200"> Snipers:</td><td width="150">
-            </td>
+            <td width="200"> Soldiers:</td>
+            <td width="150"></td>
+            <td width="200"> Guards:</td>
+            <td width="150"></td>
         </tr>
         <tr>
-            <td width="200"> Ships:</td><td width="150">
-            </td>
-            <td width="200"> Submarines:</td><td width="150">
-            </td>
+            <td width="200"> Tanks:</td>
+            <td width="150"></td>
+            <td width="200"> Special ops:</td>
+            <td width="150"></td>
         </tr>
         <tr>
-            <td width="200"> Minesweepers:</td><td width="150">
-            </td>
-            <td width="200"> Stealth bombers:</td><td width="150">
-            </td>
+            <td width="200"> Airplanes:</td>
+            <td width="150"></td>
+            <td width="200"> Snipers:</td>
+            <td width="150"></td>
+        </tr>
+        <tr>
+            <td width="200"> Ships:</td>
+            <td width="150"></td>
+            <td width="200"> Submarines:</td>
+            <td width="150"></td>
+        </tr>
+        <tr>
+            <td width="200"> Minesweepers:</td>
+            <td width="150"></td>
+            <td width="200"> Stealth bombers:</td>
+            <td width="150"></td>
         </tr>
         <tr>
             <td width="350" colspan="2" rowspan="4"></td>
-            <td width="200"> Rockets:</td><td width="150">
-            </td>
+            <td width="200"> Rockets:</td>
+            <td width="150"></td>
         </tr>
         <tr>
-            <td width="200"> Chemical rockets:</td><td width="150">
-            </td>
+            <td width="200"> Chemical rockets:</td>
+            <td width="150"></td>
         </tr>
         <tr>
-            <td width="200"> Spies:</td><td width="150">
-            </td>
+            <td width="200"> Spies:</td>
+            <td width="150"></td>
         </tr>
         <tr>
-            <td width="200"> Nuclear Missiles:</td><td width="150">
-            </td>
+            <td width="200"> Nuclear Missiles:</td>
+            <td width="150"></td>
         </tr>
     </table>
 {% endblock %}

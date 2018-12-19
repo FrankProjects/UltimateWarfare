@@ -5,12 +5,12 @@
 {% endblock title %}
 
 {% block content %}
-    <table border="1" cellspacing="0" cellpadding="0" width="700" class="table text">
+    <table width="700" class="table text text-center">
         <tr>
-            <td class="tabletop" width="700" align="center"><b>Notepad</b></td>
+            <td class="tabletop"><b>Notepad</b></td>
         </tr>
         <tr>
-            <td align="center">
+            <td>
                 {{ form_start(form) }}
                 {{ form_widget(form) }}
                 {{ form_end(form) }}

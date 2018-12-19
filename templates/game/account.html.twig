@@ -3,18 +3,17 @@
 {% block title %}Ultimate Warfare - Account{% endblock title %}
 
 {% block content %}
-    <table class="text table" width="700" border="1" align="center">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" align="center">
+            <td class="tabletop">
                 <b>Ultimate Warfare Account Management</b>
             </td>
         </tr>
-
         <tr>
-            <td align="center">
-                Welcome  General <strong>{{ user.username|escape }}</strong>
-                <br />
-                <br />
+            <td>
+                <p>
+                    Welcome General <strong>{{ user.username|escape }}</strong>
+                </p>
 
                 {% if user.active == 0 %}
                     <a href="{{ path('Game/Banned') }}">You are banned!</a>

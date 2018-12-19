@@ -6,25 +6,31 @@
 </p>
 
 {% if player.notifications.attacked != 0 %}
-    <p>
-        * <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}"><b>You are under attack!</b></a>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}"><b>You are under attack!</b></a>
     </p>
 {% endif %}
 
 {% if player.notifications.general != 0 %}
-    * <a class="B" href="{{ path('Game/Reports', {'type': 2}) }}"><b>General Report!</b></a><br /><br />
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Reports', {'type': 2}) }}"><b>General Report!</b></a><br /><br />
+    </p>
 {% endif %}
 
 {% if player.notifications.message != 0 %}
-    <p>
-        * <a class="B" href="{{ path('Game/Message/Inbox') }}"><b>You have new message(s).</b></a>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Message/Inbox') }}"><b>You have new message(s).</b></a>
     </p>
 {% endif %}
 
 {% if player.notifications.aid != 0 %}
-    * <a class="B" href="{{ path('Game/Reports', {'type': 5}) }}"><b>You recieved aid!</b></a><br /><br />
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Reports', {'type': 5}) }}"><b>You recieved aid!</b></a><br /><br />
+    </p>
 {% endif %}
 
 {% if player.notifications.market != 0 %}
-    * <a class="B" href="{{ path('Game/Reports', {'type': 4}) }}"><b>You sold/bought something on the market!</b></a><br /><br />
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Reports', {'type': 4}) }}"><b>You sold/bought something on the market!</b></a><br /><br />
+    </p>
 {% endif %}

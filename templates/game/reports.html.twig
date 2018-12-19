@@ -1,36 +1,34 @@
 {% extends 'game.html.twig' %}
 {% block content %}
-    <a class="B" href="{{ path('Game/Reports') }}">All Reports</a> -
-    <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}">Battle Reports</a> -
-    <a class="B" href="{{ path('Game/Reports', {'type': 2}) }}">General Reports</a> -
-    <a class="B" href="{{ path('Game/Reports', {'type': 4}) }}">Market Reports</a> -
-    <a class="B" href="{{ path('Game/Reports', {'type': 5}) }}">Aid Reports</a>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Reports') }}">All Reports</a> -
+        <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}">Battle Reports</a> -
+        <a class="B" href="{{ path('Game/Reports', {'type': 2}) }}">General Reports</a> -
+        <a class="B" href="{{ path('Game/Reports', {'type': 4}) }}">Market Reports</a> -
+        <a class="B" href="{{ path('Game/Reports', {'type': 5}) }}">Aid Reports</a>
+    </p>
 
-    <br />
-    <br />
-
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" width="700" align="center" colspan="2"><b>{{ reportSubject }}</b></td>
+            <td class="tabletop" colspan="2"><b>{{ reportSubject }}</b></td>
         </tr>
-
         <tr>
-            <td width="150" align="center"><b>Date</b></td>
-            <td width="550" align="left"><b>Report</b></td>
+            <td width="150"><b>Date</b></td>
+            <td class="text-left" width="550"><b>Report</b></td>
         </tr>
-
         {% for report in reports %}
             <tr>
-                <td align="center">
+                <td>
                     {{ report.timestamp|date }}
                 </td>
-                <td align="left">
+                <td class="text-left">
                     {{ report.report|escape }}
                 </td>
             </tr>
-
         {% else %}
-            <tr><td align="center" colspan="2">No reports for you....</td></tr>
+            <tr>
+                <td colspan="2">No reports for you....</td>
+            </tr>
         {% endfor %}
     </table>
 {% endblock %}

@@ -1,12 +1,17 @@
 {% extends 'game.html.twig' %}
 {% block content %}
-    Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+    <p class="text-center">
+        Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+    </p>
 
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="4" align="center"><b>Infrastructure</b></td>
+            <td class="tabletop" colspan="4"><b>Infrastructure</b></td>
         </tr>
-        <tr><td width="350" colspan="2" class="tabletop"><b>Buildings</b></td><td width="350" colspan="2" class="tabletop"><b>Defences</b></td></tr>
+        <tr>
+            <td width="350" colspan="2" class="tabletop"><b>Buildings</b></td>
+            <td width="350" colspan="2" class="tabletop"><b>Defences</b></td>
+        </tr>
         <tr>
             <td width="200"> Economic Centers:</td>
             <td width="150">
@@ -39,7 +44,10 @@
             </td>
         </tr>
 
-        <tr><td width="350" colspan="2" class="tabletop"><b>Special Buildings</b></td><td width="350" colspan="2" class="tabletop"></td></tr>
+        <tr>
+            <td width="350" colspan="2" class="tabletop"><b>Special Buildings</b></td>
+            <td width="350" colspan="2" class="tabletop"></td>
+        </tr>
         <tr>
             <td width="200"> Airports:</td>
             <td width="150">

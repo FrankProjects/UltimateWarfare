@@ -5,15 +5,16 @@
 {% endblock title %}
 
 {% block content %}
-    <table class="table text">
+    <table class="table text text-center">
         <tr class="tabletop">
-            <td align="center"><b>Ultimate Warfare Statistics</b></td>
+            <td><b>Ultimate Warfare Statistics</b></td>
         </tr>
         <tr>
-            <td align="center">
+            <td>
                 Last Login:  {{ lastLogin|escape }}<br />
                 Last Registered: {{ lastRegistered|escape }}<br />
                 Total users: {{ totalUsers }}
-            </td></tr>
+            </td>
+        </tr>
     </table>
 {% endblock %}

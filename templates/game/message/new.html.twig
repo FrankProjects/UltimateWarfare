@@ -5,14 +5,15 @@
 {% endblock title %}
 
 {% block content %}
-    <a class="B" href="{{ path('Game/Message/Inbox') }}">Inbox</a> - <a class="B" href="{{ path('Game/Message/Outbox') }}">Outbox</a> - <a class="B" href="{{ path('Game/Message/New') }}">New message</a>
-
-    <br />
-    <br />
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Message/Inbox') }}">Inbox</a> -
+        <a class="B" href="{{ path('Game/Message/Outbox') }}">Outbox</a> -
+        <a class="B" href="{{ path('Game/Message/New') }}">New message</a>
+    </p>
 
     <form method="post" action="{{ path('Game/Message/New') }}" >
 
-    <table border="1" width="700" class="table text">
+    <table class="table text text-center">
         <tr>
             <td width=150>To:</td>
             <td width=550><input type='text' value='{{ toPlayerName|escape }}' name='toPlayerName' size='12' /></td>
@@ -29,7 +30,7 @@
         </tr>
 
         <tr>
-            <td colspan="2" align="center">
+            <td colspan="2">
                 <textarea name="message" cols="60" rows="10" >{{ message|escape }}</textarea>
                 <br>
                 <input class="btn btn-primary" type="submit" name="submit" value="Send">

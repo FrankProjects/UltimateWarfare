@@ -74,6 +74,7 @@ fieldset {
 .worldtable {
     background-color:#F8F4E8;
     border:1px solid #804000;
+    margin: 0 auto;
 }
 
 .worldtable td{
@@ -88,4 +89,13 @@ fieldset {
 div.worldmaptext{
     position: absolute;
     color: #f3e6c1;
+}
+
+.good {
+    color:#66DD00;
+    font-weight:bold;
+}
+
+.bad {
+    color:#FF2200;
 }

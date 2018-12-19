@@ -1,15 +1,15 @@
 {% extends 'site/guideBase.html.twig' %}
 
 {% block content %}
-    <table class="table text">
+    <table class="table text text-center">
         <tr class="tabletop">
-            <td align="center" colspan="2"><b>Research</b></td>
+            <td colspan="2"><b>Research</b></td>
         </tr>
         {% for research in researches %}
             <tr>
                 <td width="150"><img src="{{ asset('images/research/' ~ research.pic) }}" width="150" height="130"></td>
 
-                <td width="450" align="left">
+                <td class="text-left" width="450">
                     {{ research.description }}<br /><br />
                     Name: {{ research.name }}<br />
                     Cash: {{ research.cost }}<br />

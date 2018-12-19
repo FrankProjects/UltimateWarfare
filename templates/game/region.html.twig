@@ -1,9 +1,9 @@
 {% extends 'game.html.twig' %}
 {% block content %}
-    <table width="700" border="1" align="center" class="table text">
+    <table class="table text text-center">
         <tr>
             {% if player.regions > 1 and region.player.id is defined and region.player.id == player.id %}
-            <td class="tabletop" colspan="3" align="center">
+            <td class="tabletop" colspan="3">
                 {% if previousRegion is not null %}
                     <a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegion.id}) }}"><<</a>
                 {% endif %}
@@ -13,29 +13,29 @@
                 {% endif %}
             </td>
             {% else %}
-            <td class="tabletop" colspan="3" align="center"><b>Region</b></td>
+            <td class="tabletop" colspan="3"><b>Region</b></td>
             {% endif %}
         </tr>
         <tr>
             <td rowspan="3" width="120">
                 <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100"><br />
             </td>
-            <td width="300" align="center">Location:</td>
-            <td width="280" align="center">
+            <td width="300">Location:</td>
+            <td width="280">
                 <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}
             </td>
         </tr>
         <tr>
-            <td width="300" align="center">Owner:</td>
+            <td width="300">Owner:</td>
             {% if region.player is not null %}
-                <td width="280" align="center"><a class="B" href="{{ path('Game/Profile', {'playerName': region.player.name}) }}">{{ region.player.name|escape }}</a></td>
+                <td width="280"><a class="B" href="{{ path('Game/Profile', {'playerName': region.player.name}) }}">{{ region.player.name|escape }}</a></td>
             {% else %}
-                <td width="280" align="center">Nobody</td>
+                <td width="280">Nobody</td>
             {% endif %}
         </tr>
         <tr>
-            <td width="300" align="center">Space:</td>
-            <td width="280" align="center">
+            <td width="300">Space:</td>
+            <td width="280">
                 {{ region.space }}
             </td>
         </tr>
@@ -54,31 +54,30 @@
     {% elseif region.player == null %}
         <a class="B" href="{{ path('Game/World/Region/Buy', {'regionId': region.id}) }}">Buy</a>
     {% elseif region.player.id == player.id %}
-    <br /><br />
 
     {% for gameUnitType in gameUnitTypes %}
-        <table width="700" border="1" align="center" class="table text">
+        <table class="table text text-center">
             <tr>
-                <td width="700" class="tabletop" colspan="2" align="center"><b>{{ gameUnitType.name }}</b></td>
+                <td class="tabletop" colspan="2"><b>{{ gameUnitType.name }}</b></td>
             </tr>
             {% set hasGameUnit = 0 %}
             {% for gameUnit in gameUnitType.gameUnits %}
                 {% if gameUnitsData[gameUnit.id] is defined and gameUnitsData[gameUnit.id] > 0 %}
                     {% set hasGameUnit = 1 %}
                     <tr>
-                        <td width="350" align="center">{{ gameUnit.name }}</td>
-                        <td width="350" align="center">{{ gameUnitsData[gameUnit.id] }}</td>
+                        <td width="350">{{ gameUnit.name }}</td>
+                        <td width="350">{{ gameUnitsData[gameUnit.id] }}</td>
                     </tr>
                 {% endif %}
             {% endfor %}
 
             {% if hasGameUnit == 0 %}
                 <tr>
-                    <td colspan="2" width="700" align="center">You don't have any {{ gameUnitType.name }}</td>
+                    <td colspan="2">You don't have any {{ gameUnitType.name }}</td>
                 </tr>
             {% endif %}
 
-            <td colspan="2" align="center">
+            <td colspan="2">
                 <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">{{ gameUnitType.name }}</a><br />
                 <a class="B" href="{{ path('Game/World/Region/RemoveGameUnits', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">Demolish {{ gameUnitType.name }}</a><br />
             </td>
@@ -86,12 +85,12 @@
     {% endfor %}
 
         <br />
-    <table width="350" border="1" align="center" class="table text">
+    <table width="350" class="table text text-center">
         <tr>
-            <td width="350" class="tabletop" colspan="2" align="center"><b>Other Actions</b></td>
+            <td width="350" class="tabletop" colspan="2"><b>Other Actions</b></td>
         </tr>
         <tr>
-            <td colspan="2" align="center">
+            <td colspan="2">
                  <a class="B" href="{{ path('Game/World/Region/SendUnits', {'regionId': region.id}) }}">Send Units</a>
             </td>
         </tr>

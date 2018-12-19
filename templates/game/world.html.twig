@@ -7,27 +7,24 @@
 
 {% block content %}
     {% if not mapSettings.searchFound %}
-        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <table class="table text text-center">
             <tr>
-                <td align="center">
-                    <br />
-                    No such Player found!
-                    <br />
-                    <br />
+                <td>
+                    <p>
+                        No such Player found!
+                    </p>
                 </td>
             </tr>
         </table>
-        <br />
     {% endif %}
 
     {% if mapSettings.searchFree %}
-        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <table class="table text text-center">
             <tr>
-                <td align="center">
-                    <br />
-                    You are searching for free regions <a class="B" href="{{ path('Game/World') }}">[Cancel Search]</a>
-                    <br />
-                    <br />
+                <td>
+                    <p>
+                        You are searching for free regions <a class="B" href="{{ path('Game/World') }}">[Cancel Search]</a>
+                    </p>
                 </td>
             </tr>
         </table>
@@ -35,27 +32,26 @@
     {% endif %}
 
     {% if mapSettings.searchPlayerName %}
-        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <table class="table text text-center">
             <tr>
-                <td align="center">
-                    <br />
-                    You are searching for player {{ mapSettings.playerName }} <a class="B" href="{{ path('Game/World') }}">[Cancel Search]</a>
-                    <br />
-                    <br />
+                <td>
+                    <p>
+                        You are searching for player {{ mapSettings.playerName }} <a class="B" href="{{ path('Game/World') }}">[Cancel Search]</a>
+                    </p>
                 </td>
             </tr>
         </table>
         <br />
     {% endif %}
 
-    <table width="595" border="1" cellspacing="0" cellpadding="0" class="worldtable text">
+    <table width="595" class="worldtable text text-center">
         <tr>
-            <td width="15" align="center">x</td>
-            <td width="119" align="center">1 - 5</td>
-            <td width="119" align="center">6 - 10</td>
-            <td width="119" align="center">11 - 15</td>
-            <td width="119" align="center">16 - 20</td>
-            <td width="119" align="center">21 - 25</td>
+            <td width="15">x</td>
+            <td width="119">1 - 5</td>
+            <td width="119">6 - 10</td>
+            <td width="119">11 - 15</td>
+            <td width="119">16 - 20</td>
+            <td width="119">21 - 25</td>
         </tr>
         {% for y in 1..5 %}
             <tr>
@@ -71,12 +67,12 @@
     <br />
 
     <form method="post" action="{{ path('Game/World/Search/Player') }}">
-        <table border="1" cellspacing="0" cellpadding="0" align="center" class="text table">
+        <table class="table text text-center">
             <tr>
                 <td class="tabletop" width="250"><b>UW Player Finder</b></td>
             </tr>
             <tr>
-                <td align="center" width="100">
+                <td width="100">
                     <div>
                         <label for="playerName">Player name</label>
                         <input type="text" id="playerName" name="playerName" size="20" />
@@ -85,7 +81,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="center">OR <br />
+                <td>OR <br />
                     <a class="B" href="{{ path('Game/World/Search/Free') }}">Show free regions</a>
                 </td>
             </tr>

@@ -60,15 +60,15 @@
                 <img src="{{ asset('images/world_nuclear.png') }}" alt="Nuclear blast" border="0" />
             </a>
         {% elseif tileData.player == null %}
-            <font color="#ffffff">{{ tileData.region }},</font><br />
+            <span style="color:white">{{ tileData.region }},</span><br />
             <a class="A" href="{{ path('Game/World/Region/Buy', {'regionId': tileData.id}) }}">Buy</a>
         {% elseif tileData.player.id is defined and tileData.player.id == player.id %}
-            <font color="#ffffff">{{ tileData.region }},</font><br />
+            <span style="color:white">{{ tileData.region }},</span><br />
             <a href="{{ path('Game/World/Region', {'regionId': tileData.id}) }}">
-                <font color="gold"><b>Building<br />{{ player.name|escape }}</b></font>
+                <span style="color:gold"><b>Building<br />{{ player.name|escape }}</b></span>
             </a>
         {% else %}
-            <font color="#ffffff">{{ tileData.region }},</font><br />
+            <span style="color:white">{{ tileData.region }},</span><br />
             <a class="A" href="{{ path('Game/World/Region', {'regionId': tileData.id}) }}">
                 <b>Attack<br />{{ tileData.player.name|escape }}</b>
             </a>

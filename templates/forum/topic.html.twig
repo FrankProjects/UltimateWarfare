@@ -2,7 +2,7 @@
 {% block content %}
     {% trans_default_domain 'forum' %}
 
-    <div align="center">
+    <div class="text-center">
         <a class="B" href="{{ path('Forum') }}">{{ 'label.forum'|trans }}</a> -
         <a class="B" href="{{ path('Forum/Category', {'categoryId': topic.category.id}) }}">{{ 'label.topics'|trans }}</a>
     </div>
@@ -15,7 +15,7 @@
         {% endif %}
     {% endif %}
 
-    <table class="table text" width="900" border="0" align="center" cellpadding="3" cellspacing="1">
+    <table class="table text text-center">
         <tr class="tabletop">
             <td colspan="2"><b>{{ topic.title|escape }}</b></td>
         </tr>
@@ -54,7 +54,7 @@
 
     {% if user != null %}
         {{ form_start(form) }}
-        <table width="550" border="1" align="center" cellpadding="0" cellspacing="1" class="table text">
+        <table class="table text text-center">
             <tr class="tabletop">
                 <td><b>{{ 'label.add_reaction'|trans }}</b></td>
             </tr>

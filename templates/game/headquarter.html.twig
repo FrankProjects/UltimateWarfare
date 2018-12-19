@@ -5,14 +5,15 @@
 {% endblock title %}
 
 {% block content %}
-
-Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+<p class="text-center">
+    Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
+</p>
 
 {% if player.resources.incomeFood < 0 and (player.resources.food + player.resources.incomeFood) < 0 %}
     {% set runout_food_seconds = 0 - (player.resources.food / player.resources.incomeFood) * 3600 %}
-<table width="700" border="1" class="table text">
+<table class="table text text-center">
     <tr>
-        <td align="center">
+        <td>
             <br />
             {% if runout_food_seconds == 0 %}
                 <b>You don't have enough food to feed your Population</b><br />
@@ -35,9 +36,9 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 
 {% if player.resources.incomeCash < 0 and (player.resources.cash + player.resources.incomeCash) < 0 %}
     {% set runout_cash_seconds = 0 - (player.resources.cash / player.resources.incomeCash) * 3600 %}
-<table width="700" border="1" class="table text">
+<table class="table text text-center">
     <tr>
-        <td align="center">
+        <td>
             <br />
             {% if runout_cash_seconds == 0 %}
                 <b>You don't have enough cash to pay your army</b><br />
@@ -54,16 +55,12 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 <br />
 
 {% endif %}
-
-    <br />
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" width="600" align="center"><b>Headquarter</b></td>
-
+            <td class="tabletop"><b>Headquarter</b></td>
         </tr>
-
         <tr>
-            <td align="center">
+            <td>
                 <b>Adviser:</b>
                 <br />
                 Welcome  <strong>{{ player.name|escape }}</strong>,
@@ -77,72 +74,72 @@ Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income
 
     <br />
 
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="3" align="center"><b>Status</b></td>
+            <td class="tabletop" colspan="3"><b>Status</b></td>
         </tr>
 
         <tr>
-            <td width="150" align="center">Cash:</td>
-            <td width="250" align="center">$ {{ player.resources.cash|number_format }}</td>
-            <td width="300" rowspan="8" align="center">
+            <td width="150">Cash:</td>
+            <td width="250">$ {{ player.resources.cash|number_format }}</td>
+            <td width="300" rowspan="8">
                 <b>Ingame Announcements:</b>
                 <br />
                 No news for now...
             </td>
         </tr>
         <tr>
-            <td width="150" align="center">Wood:</td>
-            <td width="250" align="center">{{ player.resources.wood|number_format }}</td>
+            <td width="150">Wood:</td>
+            <td width="250">{{ player.resources.wood|number_format }}</td>
         </tr>
         <tr>
-            <td width="150" align="center">Steel:</td>
-            <td width="250" align="center">{{ player.resources.steel|number_format }}</td>
+            <td width="150">Steel:</td>
+            <td width="250">{{ player.resources.steel|number_format }}</td>
         </tr>
         <tr>
-            <td width="150" align="center">Food:</td>
-            <td width="250" align="center">{{ player.resources.food|number_format }}</td>
+            <td width="150">Food:</td>
+            <td width="250">{{ player.resources.food|number_format }}</td>
         </tr>
         <tr>
-            <td width="150" align="center">Population:</td>
-            <td width="250" align="center">-</td>
+            <td width="150">Population:</td>
+            <td width="250">-</td>
         </tr>
         <tr>
-            <td width="150" align="center">Regions:</td>
-            <td width="250" align="center">{{ player.regions }}</td>
+            <td width="150">Regions:</td>
+            <td width="250">{{ player.regions }}</td>
         </tr>
         <tr>
-            <td width="150" align="center">Networth:</td>
-            <td width="250" align="center">{{ player.networth|number_format }}</td>
+            <td width="150">Networth:</td>
+            <td width="250">{{ player.networth|number_format }}</td>
         </tr>
         <tr>
-            <td width="150" align="center">Server time:</td>
-            <td width="250" align="center">{{ "now"|date("Y-m-d H:i:s") }}</td>
+            <td width="150">Server time:</td>
+            <td width="250">{{ "now"|date("Y-m-d H:i:s") }}</td>
         </tr>
     </table>
     <br />
     <br />
 
-    <table width="700" border="1" class="table text">
+    <table width="700" class="table text text-center">
         <tr>
-            <td class="tabletop" align="center" colspan="2"><b>Recent Reports (Last 10) </b></td>
+            <td class="tabletop" colspan="2"><b>Recent Reports (Last 10) </b></td>
         </tr>
         <tr>
-            <td width="150" align="center"><b>Date</b></td>
-            <td width="550" align="center"><b>Report</b></td>
+            <td width="150"><b>Date</b></td>
+            <td class="text-left" width="550"><b>Report</b></td>
         </tr>
         {% for report in reports %}
             <tr>
                 <td>
                     {{ report.timestamp|date }}
                 </td>
-                <td>
+                <td class="text-left">
                     {{ report.report|escape }}
                 </td>
             </tr>
 
         {% else %}
-            <tr><td align="center" colspan="2">No reports for you....</td></tr>
+            <tr><td colspan="2">No reports for you....</td></tr>
         {% endfor %}
     </table>
 {% endblock %}

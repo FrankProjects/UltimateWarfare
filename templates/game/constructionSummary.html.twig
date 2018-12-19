@@ -5,21 +5,20 @@
 {% endblock title %}
 
 {% block content %}
-    <a class="B" href="{{ path('Game/Construction') }}">Summary</a>
-    {% for gameUnitType in gameUnitTypes %}
-        - <a class="B" href="{{ path('Game/Construction', {'type': gameUnitType.id}) }}">{{ gameUnitType.name }}</a>
-    {% endfor %}
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Construction') }}">Summary</a>
+        {% for gameUnitType in gameUnitTypes %}
+            - <a class="B" href="{{ path('Game/Construction', {'type': gameUnitType.id}) }}">{{ gameUnitType.name }}</a>
+        {% endfor %}
+    </p>
 
-    <br />
-    <br />
-
-    <table width="700" border="1" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="2" align="center"><b>Construction summary</b></td>
+            <td class="tabletop" colspan="2"><b>Construction summary</b></td>
         </tr>
         {% for gameUnitType in gameUnitTypes %}
             <tr>
-                <td width="700" colspan="2" class="tabletop"><b>{{ gameUnitType.name }}</b></td>
+                <td colspan="2" class="tabletop"><b>{{ gameUnitType.name }}</b></td>
             </tr>
 
             {% set gameUnitInConstruction = 0 %}
@@ -37,7 +36,7 @@
 
             {% if gameUnitInConstruction == 0 %}
                 <tr>
-                    <td colspan="2" width="700" align="center">You don't have any {{ gameUnitType.name }} in construction</td>
+                    <td colspan="2">You don't have any {{ gameUnitType.name }} in construction</td>
                 </tr>
             {% endif %}
         {% endfor %}

@@ -14,13 +14,13 @@
 {% endblock javascripts %}
 
 {% block content %}
-    <a class="B" href="{{ path('Game/World') }}">World</a> -
-    <a class="B" href="{{ path('Game/World/Sector', {'sectorId': sector.id}) }}">Sector {{ sector.id }}</a> -
-    <b>Country: {{ country.x }}, {{ country.y }}</b>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/World') }}">World</a> -
+        <a class="B" href="{{ path('Game/World/Sector', {'sectorId': sector.id}) }}">Sector {{ sector.id }}</a> -
+        <b>Country: {{ country.x }}, {{ country.y }}</b>
+    </p>
 
-    <br />
-    <br />
-    <table width="595" border="1" class="worldtable text">
+    <table width="595" class="worldtable text">
         {% for y in 1..5 %}
             <tr>
                 {% for x in 1..5 %}
@@ -29,9 +29,6 @@
             </tr>
         {% endfor %}
     </table>
-
-    <br />
-    <br />
 
     <script>
         $('[title!=""]').qtip();

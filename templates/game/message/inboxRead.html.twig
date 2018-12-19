@@ -5,24 +5,25 @@
 {% endblock title %}
 
 {% block content %}
-    <a class="B" href="{{ path('Game/Message/Inbox') }}">Inbox</a> - <a class="B" href="{{ path('Game/Message/Outbox') }}">Outbox</a> - <a class="B" href="{{ path('Game/Message/New') }}">New message</a>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Message/Inbox') }}">Inbox</a> -
+        <a class="B" href="{{ path('Game/Message/Outbox') }}">Outbox</a> -
+        <a class="B" href="{{ path('Game/Message/New') }}">New message</a>
+    </p>
 
-    <br />
-    <br />
-
-    <table border="1" width="700" class="table text">
+    <table class="table text text-left">
         <tr>
-            <td align="left" class="tabletop">
+            <td class="tabletop">
                 <b>
                     {% if message.adminMessage == 1 %}
-                        <font color="#CC0000">ADMIN:</font>
+                        <span style="color:#CC0000"><b>ADMIN:</b></span>
                     {% endif %}
                     {{ message.subject|escape }}
                 </b>
             </td>
         </tr>
         <tr>
-            <td width="700" align="left">
+            <td>
                 <div class="pm_date">
                     From {{ message.fromPlayer.name|escape }} on {{ message.timestamp|date }}
                 </div>

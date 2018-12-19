@@ -1,23 +1,23 @@
 {% extends 'forumBase.html.twig' %}
 {% block content %}
-    <table class="table text" width="900" border="0" align="center" cellpadding="3" cellspacing="1">
+    <table class="table text text-center">
         <tr class="tabletop">
-            <td width="20" align="center"><strong>#</strong></td>
-            <td width="480" align="left"><strong>The Forums</strong></td>
-            <td width="100" align="center"><strong>Topics</strong></td>
-            <td width="300" align="left"><strong>Last topic</strong></td>
+            <td width="20"><strong>#</strong></td>
+            <td class="text-left" width="480"><strong>The Forums</strong></td>
+            <td width="100"><strong>Topics</strong></td>
+            <td class="text-left" width="300"><strong>Last topic</strong></td>
         </tr>
 
         {% for category in categories %}
             {% set lastTopic = category.topics|last %}
             <tr>
-                <td align="center">{{ category.id }}</td>
-                <td align="left"><a class="B" href="{{ path('Forum/Category', {'categoryId': category.id}) }}">{{ category.title|escape }}</a></td>
-                <td align="center">{{ category.topics|length }}</td>
+                <td>{{ category.id }}</td>
+                <td class="text-left"><a class="B" href="{{ path('Forum/Category', {'categoryId': category.id}) }}">{{ category.title|escape }}</a></td>
+                <td>{{ category.topics|length }}</td>
                 {% if lastTopic == null %}
-                    <td align="left">No topics yet</td>
+                    <td class="text-left">No topics yet</td>
                 {% else %}
-                    <td align="left">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.user.username|escape }}</td>
+                    <td class="text-left">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.user.username|escape }}</td>
                 {% endif %}
             </tr>
         {% endfor %}

@@ -13,29 +13,29 @@
 {% endblock javascripts %}
 
 {% block content %}
-    <table border="1" width="600" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="2" align="center"><b>Account Settings</b> </td>
+            <td class="tabletop" colspan="2"><b>Account Settings</b> </td>
         </tr>
         <tr>
-            <td width="150" align="center">Username: </td>
-            <td width="450" align="center"><b>{{ user.username|escape }}</b></td>
+            <td width="150">Username: </td>
+            <td width="450"><b>{{ user.username|escape }}</b></td>
         </tr>
         <tr>
-            <td width="150" align="center">Email: </td>
-            <td width="450" align="center"><b>{{ user.email|escape }}</b></td>
+            <td width="150">Email: </td>
+            <td width="450"><b>{{ user.email|escape }}</b></td>
         </tr>
         <tr>
-            <td width="150" align="center">Signup date: </td>
-            <td width="450" align="center"><b>{{ user.signup|date("Y-m-d H:i:s") }}</b></td>
+            <td width="150">Signup date: </td>
+            <td width="450"><b>{{ user.signup|date("Y-m-d H:i:s") }}</b></td>
         </tr>
         <tr>
-            <td width="150" align="center">Account Type: </td>
-            <td width="450" align="center"><b>{{ userType }}</b></td>
+            <td width="150">Account Type: </td>
+            <td width="450"><b>{{ userType }}</b></td>
         </tr>
         <tr>
-            <td width="150" align="center">Account Status: </td>
-            <td width="450" align="center">
+            <td width="150">Account Status: </td>
+            <td width="450">
                 <b>
                     {% if user.active == 1 %}
                         <span class="good">Activated</span>
@@ -46,33 +46,32 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="tabletop" align="center">
+            <td colspan="2" class="tabletop">
                 <div><b>Change Password</b></div>
             </td>
         </tr>
         <tr>
             <td colspan="2">
 
-                {{ form_start(changePasswordForm, {'attr': {'class': 'general'}}) }}
+                {{ form_start(changePasswordForm) }}
                     {{ form_row(changePasswordForm.oldPassword) }}
                     {{ form_row(changePasswordForm.plainPassword) }}
-                <input class="btn btn-primary" type="submit" name="change_pass" value="Change Password" />
                 {{ form_end(changePasswordForm) }}
             </td>
         </tr>
         <tr>
-            <td class="tabletop" colspan="2" align="center"><b>Avatar Upload </b></td>
+            <td class="tabletop" colspan="2"><b>Avatar Upload </b></td>
         </tr>
         <tr>
-            <td align="center" colspan="2">
+            <td colspan="2">
                 Not implemented yet!
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="tabletop" align="center"><b>Map Design</b></td>
+            <td colspan="2" class="tabletop"><b>Map Design</b></td>
         </tr>
         <tr>
-            <td align="center" colspan="2">
+            <td colspan="2">
                 Current mapdesign: {{ user.mapDesign.name }}<br />
 
                 <img src="{{ asset('images/map/map7' ~ user.mapDesign.url) }}" width="120" height="100"><br /><br />
@@ -93,7 +92,7 @@
             </td>
         </tr>
         <tr>
-            <td class="tabletop" colspan="2" align="center"><b>Other Settings</b></td>
+            <td class="tabletop" colspan="2"><b>Other Settings</b></td>
         </tr>
         <tr>
             <td colspan="2">

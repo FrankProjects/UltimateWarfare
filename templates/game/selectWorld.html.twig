@@ -5,23 +5,27 @@
 {% endblock title %}
 
 {% block content %}
-    <table border="1" width="700" align="center" class="table text">
-        <tr><td class="tabletop"><b>Select your World</b></td></tr>
+    <table class="table text text-center">
+        <tr>
+            <td class="tabletop"><b>Select your World</b></td>
+        </tr>
         <tr>
             <td>
-                Welcome <strong>{{ user.username|escape }}</strong>
-                <br />
-                <br />
-                On this page you will see a list of all "game worlds", select the world you would like to play here!<br>
-                You are able to play in multiple worlds at the same time on 1 account!<br />
-                <b>BUT</b> you are not allowed to create multiple accounts to play in 1 world!
+                <p>
+                    Welcome <strong>{{ user.username|escape }}</strong>
+                </p>
+                <p>
+                    On this page you will see a list of all "game worlds", select the world you would like to play here!<br>
+                    You are able to play in multiple worlds at the same time on 1 account!<br />
+                    <b>BUT</b> you are not allowed to create multiple accounts to play in 1 world!
+                </p>
             </td>
         </tr>
     </table>
     <br /><br />
 
     {% for world in worlds %}
-        <table border="1" align="center" class="table text">
+        <table class="table text">
             <tr>
                 <td width="400">
                     <b>{{ world.name|escape }}</b><br />
@@ -38,7 +42,6 @@
                     Food: {{ world.food|escape }}<br /><br />
                     <a class="B" href="{{ path('Game/SelectName', {'worldId': world.id}) }}"><b>Play this World</b></a>
                 </td>
-
             </tr>
         </table>
     {% endfor %}
