@@ -1,8 +1,10 @@
 {% extends 'game.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - Message inbox
-{% endblock title %}
+{% block title %}Ultimate Warfare - Message inbox{% endblock title %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/messages.js') }}"></script>
+{% endblock javascripts %}
 
 {% block content %}
     <p class="text-center">
