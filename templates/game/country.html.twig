@@ -1,17 +1,7 @@
 {% import "game/macros/map.html.twig" as mapMacros %}
 {% extends 'game.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - World Map
-{% endblock title %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/jquery.qtip.min.css') }}" />
-{% endblock stylesheets %}
-
-{% block javascripts %}
-    <script type="text/javascript" src="{{ asset('js/jquery.qtip.3.0.3.min.js') }}"></script>
-{% endblock javascripts %}
+{% block title %}Ultimate Warfare - World Map{% endblock title %}
 
 {% block content %}
     <p class="text-center">
@@ -29,8 +19,4 @@
             </tr>
         {% endfor %}
     </table>
-
-    <script>
-        $('[title!=""]').qtip();
-    </script>
 {% endblock %}

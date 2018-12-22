@@ -50,7 +50,7 @@
 
 {% macro tileRegion(tileData, settings, player) %}
     {% if tileData.player.id is defined and tileData.player.id == player.id %}
-        <td class="tile" width="119" height="103" background="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}" title="XXX TODO: Fix units">
+        <td class="tile" width="119" height="103" background="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}">
     {% else %}
         <td class="tile" width="119" height="103" background="{{ asset('images/map/' ~ tileData.image ~ settings.mapUrl) }}">
     {% endif %}
