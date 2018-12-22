@@ -1,16 +1,6 @@
 {% extends 'noBarBase.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - Game account settings
-{% endblock title %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/dd.css') }}" />
-{% endblock stylesheets %}
-
-{% block javascripts %}
-    <script type="text/javascript" src="{{ asset('js/jquery.dd.2.37.5.min.js') }}"></script>
-{% endblock javascripts %}
+{% block title %}Ultimate Warfare - Game account settings{% endblock title %}
 
 {% block content %}
     <table class="table text text-center">
@@ -72,23 +62,23 @@
         </tr>
         <tr>
             <td colspan="2">
-                Current mapdesign: {{ user.mapDesign.name }}<br />
-
-                <img src="{{ asset('images/map/map7' ~ user.mapDesign.url) }}" width="120" height="100"><br /><br />
-                <form class="general" action="{{ path('Game/Account/Edit') }}" method="post">
-                Change map to:<br />
-                <select name="map" id="map" onclick="$('#map option:selected').text();" style="width:320px;">
+                <table class="table">
                     {% for mapDesign in mapDesigns %}
-                        {% if mapDesign.id == user.mapDesign.id %}
-                            <option value="{{ mapDesign.id }}" title="{{ asset('images/map/map7' ~ mapDesign.url) }}" selected="selected">{{ mapDesign.name }}</option>
-                        {% else %}
-                            <option value="{{ mapDesign.id }}" title="{{ asset('images/map/map7' ~ mapDesign.url) }}">{{ mapDesign.name }}</option>
-                        {% endif %}
+                        <tr>
+                            <td>{{ mapDesign.name }}</td>
+                            <td>
+                                <img src="{{ asset('images/map/map7' ~ mapDesign.url) }}" width="120" height="100">
+                            </td>
+                            <td>
+                                {% if mapDesign.id == user.mapDesign.id %}
+                                    <a class="btn btn-primary disabled" href="{{ path('Game/Account/Edit/MapDesign', {'mapDesignId': mapDesign.id}) }}" role="button">Currently in use</a>
+                                {% else %}
+                                    <a class="btn btn-primary" href="{{ path('Game/Account/Edit/MapDesign', {'mapDesignId': mapDesign.id}) }}" role="button">Use map design</a>
+                                {% endif %}
+                            </td>
+                        </tr>
                     {% endfor %}
-                </select>
-                <br />
-                    <input class="btn btn-primary" type="submit" name="change_map" value="Change map design">
-                </form>
+                </table>
             </td>
         </tr>
         <tr>

@@ -122,11 +122,6 @@ final class UserController extends BaseGameController
         }
 
         if ($request->getMethod() == 'POST') {
-            if ($request->request->get('change_map') && $request->request->get('map')) {
-                $mapDesignId = intval($request->request->get('map'));
-                $this->changeMapDesign($mapDesignId);
-            }
-
             if ($request->request->get('change_settings')) {
                 $this->changeSettings($request);
             }
@@ -138,6 +133,27 @@ final class UserController extends BaseGameController
             'userType' => $this->getAccountType(),
             'changePasswordForm' => $changePasswordForm->createView()
         ]);
+    }
+
+    /**
+     * @param int $mapDesignId
+     * @return Response
+     */
+    public function editMapDesign(int $mapDesignId): Response
+    {
+        $user = $this->getGameUser();
+        $mapDesign = $this->mapDesignRepository->find($mapDesignId);
+
+        if (!$mapDesign) {
+            $this->addFlash('error', 'No such map design');
+        } elseif ($mapDesign->getId() != $user->getMapDesign()->getId()) {
+            $user->setMapDesign($mapDesign);
+            $this->userRepository->save($user);
+
+            $this->addFlash('success', 'Map design successfully changed!');
+        }
+
+        return $this->redirectToRoute('Game/Account/Edit');
     }
 
     /**
@@ -157,26 +173,6 @@ final class UserController extends BaseGameController
         }
 
         return 'Guest';
-    }
-
-    /**
-     * Change map design
-     *
-     * @param int $mapDesignId
-     */
-    private function changeMapDesign(int $mapDesignId)
-    {
-        $user = $this->getGameUser();
-        $mapDesign = $this->mapDesignRepository->find($mapDesignId);
-
-        if (!$mapDesign) {
-            $this->addFlash('error', 'No such map design');
-        } elseif ($mapDesign->getId() != $user->getMapDesign()->getId()) {
-            $user->setMapDesign($mapDesign);
-            $this->userRepository->save($user);
-
-            $this->addFlash('success', 'Map design successfully changed!');
-        }
     }
 
     /**
