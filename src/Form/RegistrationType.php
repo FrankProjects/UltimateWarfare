@@ -19,38 +19,34 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'label.email',
-                'translation_domain' => 'register'
+                'label' => 'label.email'
             ])
             ->add('username', TextType::class, [
-                'label' => 'label.username',
-                'translation_domain' => 'register'
+                'label' => 'label.username'
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options'  => [
-                    'label' => 'label.password',
-                    'translation_domain' => 'register'
+                    'label' => 'label.password'
                 ],
                 'second_options' => [
-                    'label' => 'label.password_repeat',
-                    'translation_domain' => 'register'
+                    'label' => 'label.password_repeat'
                 ]
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
-                'label' => 'label.accept_rules',
-                'translation_domain' => 'register'
+                'label' => 'label.accept_rules'
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Register'
+                'label' => 'label.register'
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => User::class,
-        ));
+            'translation_domain' => 'register'
+        ]);
     }
 }
