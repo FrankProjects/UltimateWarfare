@@ -1,8 +1,6 @@
 {% extends 'game.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - Send units
-{% endblock title %}
+{% block title %}Ultimate Warfare - Send units{% endblock title %}
 
 {% block content %}
     <form method="post" action="{{ path('Game/World/Region/SendUnits', {'regionId': region.id}) }}">

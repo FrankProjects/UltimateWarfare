@@ -1,8 +1,6 @@
 {% extends 'game.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - Apply for federation
-{% endblock title %}
+{% block title %}Ultimate Warfare - Apply for federation{% endblock title %}
 
 {% block content %}
     <form action="{{ path('Game/Federation/Application/Send', {'federationId': federation.id}) }}" method="post">

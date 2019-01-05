@@ -1,8 +1,6 @@
 {% extends 'game.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - Update player roles
-{% endblock title %}
+{% block title %}Ultimate Warfare - Update player roles{% endblock title %}
 
 {% block content %}
     <form action="{{ path('Game/Federation/ChangePlayerHierarchy') }}" method="post">

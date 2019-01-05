@@ -1,4 +1,7 @@
 {% extends 'game.html.twig' %}
+
+{% block title %}Ultimate Warfare - Rankings{% endblock title %}
+
 {% block content %}
     <p class="text-center">
         Rankings by: <a class="B" href="{{ path('Game/Rankings', {'sortBy': 'networth'}) }}">Networth</a> - <a class="B" href="{{ path('Game/Rankings') }}">Regions</a>

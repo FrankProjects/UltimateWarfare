@@ -1,8 +1,6 @@
 {% extends 'game.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - Update leadership message
-{% endblock title %}
+{% block title %}Ultimate Warfare - Update leadership message{% endblock title %}
 
 {% block content %}
     <form action="{{ path('Game/Federation/UpdateLeadershipMessage') }}" method="post">
