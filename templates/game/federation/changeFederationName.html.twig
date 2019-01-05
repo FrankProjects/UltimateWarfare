@@ -1,8 +1,6 @@
 {% extends 'game.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - Change Federation name
-{% endblock title %}
+{% block title %}Ultimate Warfare - Change Federation name{% endblock title %}
 
 {% block content %}
     <form action="{{ path('Game/Federation/ChangeName') }}" method="post">
