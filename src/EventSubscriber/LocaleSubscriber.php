@@ -16,6 +16,14 @@ class LocaleSubscriber implements EventSubscriberInterface
     private $defaultLocale;
 
     /**
+     * @var array
+     */
+    private $validLocales = [
+        'en',
+        'nl'
+    ];
+
+    /**
      * LocaleSubscriber constructor.
      *
      * @param string $defaultLocale
@@ -31,11 +39,12 @@ class LocaleSubscriber implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event): void
     {
         $request = $event->getRequest();
-        if (!$request->hasPreviousSession()) {
+        if (!$event->isMasterRequest() || !$request->hasPreviousSession()) {
             return;
         }
 
-        if ($locale = $request->query->get('_locale')) {
+        $locale = $request->query->get('_locale');
+        if ($locale !== null && in_array($locale, $this->validLocales)) {
             $request->getSession()->set('_locale', $locale);
         } else {
             // if no explicit locale has been set on this request, use one from the session
