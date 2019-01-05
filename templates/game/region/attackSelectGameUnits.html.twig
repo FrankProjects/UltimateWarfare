@@ -6,10 +6,9 @@
 
 {% block content %}
     <form method="post" action="{{ path('Game/World/Region/AttackSelectGameUnits', {'regionId': region.id, 'playerRegionId': playerRegion.id}) }}">
-
-        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <table class="table text text-center">
             <tr>
-                <td class="tabletop" align="center" colspan="4"><b>Send units</b></td>
+                <td class="tabletop" colspan="4"><b>Send units</b></td>
             </tr>
             <tr>
                 <td></td>
@@ -19,32 +18,30 @@
             </tr>
             {% for gameUnit in gameUnitType.gameUnits %}
                 <tr>
-                    <td width="150"><img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}"
-                                         width="150" height="130"></td>
-
-                    <td width="150" align="center">
+                    <td width="150">
+                        <img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130">
+                    </td>
+                    <td width="150">
                         <a class="B" href="{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}"
-                           ONCLICK="popup('{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}', 1000, 600);return false;"
                            target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
                             <b>{{ gameUnit.name }}</b>
                         </a>
                     </td>
-                    <td width="100" align="center">
+                    <td width="100">
                         {% if gameUnitsData[gameUnit.id] is defined and gameUnitsData[gameUnit.id] > 0 %}
                             {{ gameUnitsData[gameUnit.id] }}
                         {% else %}
                             0
                         {% endif %}
                     </td>
-
-                    <td width="200" align="center">
+                    <td width="200">
                         <input type="text" size="12" name="{{ gameUnit.id }}"/>
                     </td>
                 </tr>
             {% endfor %}
             <tr>
                 <td colspan="4">
-                    <div class="submit"><input type="submit" name="submit" value="Attack"></div>
+                    <input class="btn btn-primary" type="submit" name="submit" value="Attack">
                 </td>
             </tr>
         </table>

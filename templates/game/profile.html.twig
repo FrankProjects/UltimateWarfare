@@ -5,33 +5,33 @@
 {% endblock title %}
 
 {% block content %}
-    <table border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="2" width="600" align="center"><b>Player</b></td>
+            <td class="tabletop" colspan="2"><b>Player</b></td>
         </tr>
         <tr>
-            <td width="150" align="center">Name:</td>
-            <td width="350" align="center">{{ profilePlayer.name|escape }}</td>
+            <td width="150">Name:</td>
+            <td width="350">{{ profilePlayer.name|escape }}</td>
         </tr>
         <tr>
-            <td width="150" align="center">Join date:</td>
-            <td width="350" align="center">{{ profilePlayer.timestampJoined|date("Y-m-d H:i:s") }}</td>
+            <td width="150">Join date:</td>
+            <td width="350">{{ profilePlayer.timestampJoined|date("Y-m-d H:i:s") }}</td>
         </tr>
         <tr>
-            <td class="tabletop" colspan="2" width="600" align="center"><b>Player stats</b></td>
+            <td class="tabletop" colspan="2"><b>Player stats</b></td>
         </tr>
         <tr>
-            <td width="150" align="center">Regions:</td>
-            <td width="350" align="center">{{ profilePlayer.worldRegions|length }}</td>
+            <td width="150">Regions:</td>
+            <td width="350">{{ profilePlayer.worldRegions|length }}</td>
         </tr>
         <tr>
-            <td width="150" align="center">Networth:</td>
-            <td width="350" align="center">{{ profilePlayer.networth }}</td>
+            <td width="150">Networth:</td>
+            <td width="350">{{ profilePlayer.networth }}</td>
         </tr>
         {% if profilePlayer.federation is not null %}
             <tr>
-                <td width="150" align="center">Federation:</td>
-                <td width="350" align="center">{{ profilePlayer.federation.name|escape }}</td>
+                <td width="150">Federation:</td>
+                <td width="350">{{ profilePlayer.federation.name|escape }}</td>
             </tr>
         {% endif %}
     </table>

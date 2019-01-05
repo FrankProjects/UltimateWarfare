@@ -1,25 +1,43 @@
-        {{ 'label.navigation'|trans({}, 'navigation') }}<br />
-        :<a class="A" href="{{ path('Site/Homepage') }}" title="Ultimate Warfare - Home Page">{{ 'label.home'|trans({}, 'navigation') }}</a><br />
-        :<a class="A" href="{{ path('Site/Login') }}" title="Ultimate Warfare - Login">{{ 'label.login'|trans({}, 'navigation') }}</a><br />
-        :<a class="A" href="{{ path('Site/Register') }}" title="Ultimate Warfare - Register free account">{{ 'label.register'|trans({}, 'navigation') }}</a><br />
-        :<a class="A" href="{{ path('Forum') }}" title="Ultimate Warfare - Forum">{{ 'label.forum'|trans({}, 'navigation') }}</a><br />
-
-        :<a class="A" href="{{ path('Site/Chat') }}" title="Ultimate Warfare - Chat">{{ 'label.chat'|trans({}, 'navigation') }}</a><br />
-        :<a class="A" href="{{ path('Guide') }}" title="Ultimate Warfare - Guide/FAQ">{{ 'label.guide'|trans({}, 'navigation') }}</a><br /><br /><br />
-
-        :<a class="A" href="{{ path('Site/HallOfFame') }}" title="Hall of Fame">{{ 'label.hall_of_fame'|trans({}, 'navigation') }}</a><br />
-        :<a class="A" href="{{ path('Site/Donate') }}" title="Donate">{{ 'label.donate'|trans({}, 'navigation') }}</a><br />
-        :<a class="A" href="{{ path('Guide/Rules') }}" title="Ultimate Warfare - Rules">{{ 'label.rules'|trans({}, 'navigation') }}</a><br />
-        :<a class="A" href="{{ path('Site/ResetPassword') }}" title="Ultimate Warfare - Lost password">{{ 'label.lost_password'|trans({}, 'navigation') }}</a>
-        <br />
-        <br />
-        <br />
-        {{ 'another_language'|trans({}, 'navigation') }}<br />
-
-        <a href="{{ path('Site/Homepage', {'_locale': 'nl'}) }}"><img
-                    src="{{ asset('images/flag/nl.jpg') }}"
-                    alt="Dutch Version" height="20" width="30" /></a>
-
-        <a href="{{ path('Site/Homepage', {'_locale': 'en'}) }}"><img
-                    src="{{ asset('images/flag/en.jpg') }}"
-                    alt="English Version" height="20" width="30" /></a>
+<ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Site/Homepage') }}" title="Ultimate Warfare - Home Page">{{ 'label.home'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Site/Login') }}" title="Ultimate Warfare - Login">{{ 'label.login'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Site/Register') }}" title="Ultimate Warfare - Register free account">{{ 'label.register'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Forum') }}" title="Ultimate Warfare - Forum">{{ 'label.forum'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Site/Chat') }}" title="Ultimate Warfare - Chat">{{ 'label.chat'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Guide') }}" title="Ultimate Warfare - Guide/FAQ">{{ 'label.guide'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Site/HallOfFame') }}" title="Hall of Fame">{{ 'label.hall_of_fame'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Site/Donate') }}" title="Donate">{{ 'label.donate'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Guide/Rules') }}" title="Ultimate Warfare - Rules">{{ 'label.rules'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item">
+                <a class="nav-link" href="{{ path('Site/ResetPassword') }}" title="Ultimate Warfare - Lost password">{{ 'label.lost_password'|trans({}, 'navigation') }}</a>
+        </li>
+        <li class="nav-item text2">
+                {{ 'another_language'|trans({}, 'navigation') }}<br />
+                <a href="{{ path('Site/Homepage', {'_locale': 'nl'}) }}"><img
+                                src="{{ asset('images/flag/nl.jpg') }}"
+                                alt="Dutch Version" height="20" width="30" /></a>
+        </li>
+        <li class="nav-item">
+                <a href="{{ path('Site/Homepage', {'_locale': 'en'}) }}"><img
+                                src="{{ asset('images/flag/en.jpg') }}"
+                                alt="English Version" height="20" width="30" /></a>
+        </li>
+</ul>

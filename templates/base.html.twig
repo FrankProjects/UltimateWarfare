@@ -1,48 +1,43 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Content-Language" content="en-us" />
-    <meta name="description" content="Ultimate Warfare is a free browser based multiplayer strategy game with over 2000 registered accounts. Join the battle and compete with thousands of others for world domination!" />
-    <meta name="keywords" content="Ultimate Warfare, online, game, war, multiplayer, strategy, wargames, role-playing, rpg, browser game, battles, domination, world map" />
-    <meta name="author" content="Frank Schreuder" />
-    <title>{% block title %}Ultimate Warfare - Online multiplayer strategy game{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/main.css?r=1') }}" />
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    <script type="text/javascript" src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/game.js') }}"></script>
-    {% block stylesheets %}{% endblock %}
-    {% block javascripts %}{% endblock %}
-</head>
-<body>
-<table width="1000" align="center" cellpadding="1" cellspacing="0" id="container_page">
-    <tr>
-        <td>
-            <img src="{{ asset('images/banner.jpg') }}" alt="Ultimate Warfare Online multiplayer Text-based game" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <table id="container_main" cellpadding="20" cellspacing="0" width="1000">
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="description" content="Ultimate Warfare is a free browser based multiplayer strategy game with over 2000 registered accounts. Join the battle and compete with thousands of others for world domination!" />
+        <meta name="keywords" content="Ultimate Warfare, online, game, war, multiplayer, strategy, wargames, role-playing, rpg, browser game, battles, domination, world map" />
+        <meta name="author" content="Frank Schreuder" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}Ultimate Warfare - Online multiplayer strategy game{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/main.css') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </head>
+    <body>
+        <div class="container border border-primary">
+            <div class="row">
+                <img src="{{ asset('images/banner.jpg') }}" class="img-fluid" alt="Ultimate Warfare Online multiplayer Text-based game" />
+            </div>
+            <div class="row">
                 {% block body %}{% endblock %}
-                <tr>
-                    <td colspan="2">
-                        <hr />
-
-                        <div align="center">
-                            <a class="B" href="{{ path('Site/About') }}" title="Ultimate Warfare - About">About</a> -
-                            <a class="B" href="{{ path('Site/Advertise') }}" title="Ultimate Warfare - Advertising">Advertising</a> -
-                            <a class="B" href="{{ path('Site/Contact') }}" title="Ultimate Warfare - Contact">Contact</a> -
-                            <a class="B" href="{{ path('Site/Statistics') }}" title="Ultimate Warfare - Statistics">Statistics</a> -
-                            <a class="B" href="{{ path('Site/Community') }}" title="Ultimate Warfare - Community">Community</a>
-                        </div>
-                        <div align="center" class="text">copyright &copy; 2006 - 2018 ultimate-warfare.com</div>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-
-</body>
+            </div>
+            <div class="row">
+                <hr />
+            </div>
+            <div class="row justify-content-center">
+                <p class="text-center">
+                    <a class="B" href="{{ path('Site/About') }}" title="Ultimate Warfare - About">About</a> -
+                    <a class="B" href="{{ path('Site/Advertise') }}" title="Ultimate Warfare - Advertising">Advertising</a> -
+                    <a class="B" href="{{ path('Site/Contact') }}" title="Ultimate Warfare - Contact">Contact</a> -
+                    <a class="B" href="{{ path('Site/Statistics') }}" title="Ultimate Warfare - Statistics">Statistics</a> -
+                    <a class="B" href="{{ path('Site/Community') }}" title="Ultimate Warfare - Community">Community</a>
+                </p>
+            </div>
+            <div class="row justify-content-center">
+                <p class="text-center">
+                    copyright &copy; 2006 - 2018 ultimate-warfare.com
+                </p>
+            </div>
+        </div>
+    </body>
 </html>

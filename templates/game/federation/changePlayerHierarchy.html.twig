@@ -6,7 +6,7 @@
 
 {% block content %}
     <form action="{{ path('Game/Federation/ChangePlayerHierarchy') }}" method="post">
-        <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <table class="table text text-center">
             <tr>
                 <td class="tabletop"><b>Change Ranks</b></td>
             </tr>
@@ -35,7 +35,7 @@
                     </select>
 
                     <br />
-                    <input type="submit" name="submit" value="Change">
+                    <input class="btn btn-primary" type="submit" name="submit" value="Change">
                 </td>
             </tr>
         </table>

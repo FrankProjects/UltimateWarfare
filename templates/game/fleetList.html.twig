@@ -5,9 +5,9 @@
 {% endblock title %}
 
 {% block content %}
-    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="7" align="center"><b>Fleets</b></td>
+            <td class="tabletop" colspan="7"><b>Fleets</b></td>
         </tr>
 
         {% for fleet in player.fleets %}
@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     {% if player.federation != null and player.federation.id == fleet.targetWorldRegion.player.federation.id %}
-                        <font color="green">{{ fleet.targetWorldRegion.player.name|escape }}</font>
+                        <span class="good">{{ fleet.targetWorldRegion.player.name|escape }}</span>
                     {% elseif fleet.targetWorldRegion.player != null %}
                         {{ fleet.targetWorldRegion.player.name|escape }}
                     {% else %}
@@ -74,7 +74,9 @@
                 </td>
             </tr>
         {% else %}
-            <tr><td align="center" colspan="7">No fleets sent out....</td></tr>
+            <tr>
+                <td colspan="7">No fleets sent out....</td>
+            </tr>
         {% endfor %}
     </table>
 {% endblock %}

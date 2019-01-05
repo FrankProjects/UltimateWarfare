@@ -1,26 +1,16 @@
 {% import "game/macros/map.html.twig" as mapMacros %}
 {% extends 'game.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - World Map
-{% endblock title %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/jquery.qtip.min.css') }}" />
-{% endblock stylesheets %}
-
-{% block javascripts %}
-    <script type="text/javascript" src="{{ asset('js/jquery.qtip.3.0.3.min.js') }}"></script>
-{% endblock javascripts %}
+{% block title %}Ultimate Warfare - World Map{% endblock title %}
 
 {% block content %}
-    <a class="B" href="{{ path('Game/World') }}">World</a> -
-    <a class="B" href="{{ path('Game/World/Sector', {'sectorId': sector.id}) }}">Sector {{ sector.id }}</a> -
-    <b>Country: {{ country.x }}, {{ country.y }}</b>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/World') }}">World</a> -
+        <a class="B" href="{{ path('Game/World/Sector', {'sectorId': sector.id}) }}">Sector {{ sector.id }}</a> -
+        <b>Country: {{ country.x }}, {{ country.y }}</b>
+    </p>
 
-    <br />
-    <br />
-    <table width="595" border="1" cellspacing="0" cellpadding="0" class="worldtable text">
+    <table width="595" class="worldtable text">
         {% for y in 1..5 %}
             <tr>
                 {% for x in 1..5 %}
@@ -29,11 +19,4 @@
             </tr>
         {% endfor %}
     </table>
-
-    <br />
-    <br />
-
-    <script>
-        $('[title!=""]').qtip();
-    </script>
 {% endblock %}

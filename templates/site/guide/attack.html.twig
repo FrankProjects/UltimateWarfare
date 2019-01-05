@@ -1,6 +1,6 @@
 {% extends 'site/guideBase.html.twig' %}
 {% block content %}
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table class="table text text-left">
         <tr>
             <td>
                 The attack system is a quite advanced system. When your attack fleet arrives and attacks there so no way
@@ -30,49 +30,54 @@
     <br/>
     <br/>
 
-    <table width="360" border="1" cellspacing="0" cellpadding="0" class="worldtable text">
+    <table width="360" class="worldtable text text-center">
         <tr>
-            <td width="15" align="center">x</td>
-            <td width="119" align="center">1</td>
-            <td width="119" align="center">2</td>
-            <td width="119" align="center">3</td>
+            <td width="15">x</td>
+            <td width="119">1</td>
+            <td width="119">2</td>
+            <td width="119">3</td>
         </tr>
         <tr>
-            <td width="15" align="center">1</td>
-            <td width="119" height="103" background="{{ asset('images/map/map15-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a href="{{ url('Guide/Attack') }}"><font color="gold"><b>Building<br/>ATTACKER</b></font></a>
+            <td width="15">1</td>
+            <td width="119" height="103" background="{{ asset('images/map/map15-3.jpg') }}" valign="top">
+                <br/><a href="{{ url('Guide/Attack') }}"><span style="color:gold"><b>Building<br/>YOU</b></span></a>
             </td>
-            <td width="119" height="103" background="{{ asset('images/map/map8-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
-            <td width="119" height="103" background="{{ asset('images/map/map8-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Buy</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map8-3.jpg') }}" valign="top">
+                <br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a>
+            </td>
+            <td width="119" height="103" background="{{ asset('images/map/map8-3.jpg') }}" valign="top">
+                <br/><a class="A" href="{{ url('Guide/Attack') }}">Buy</a>
+            </td>
         </tr>
         <tr>
-            <td width="15" align="center">2</td>
-            <td width="119" height="103" background="{{ asset('images/map/map6-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a href="{{ url('Guide/Attack') }}"><font color="gold"><b>Building<br/>ATTACKER</b></font></a>
+            <td width="15">2</td>
+            <td width="119" height="103" background="{{ asset('images/map/map6-3.jpg') }}" valign="top">
+                <br/><a href="{{ url('Guide/Attack') }}"><span style="color:gold"><b>Building<br/>YOU</b></span></a>
             </td>
-            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
-            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top">
+                <br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a>
+            </td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top">
+                <br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
         </tr>
         <tr>
-            <td width="15" align="center">3</td>
-            <td width="119" height="103" background="{{ asset('images/map/map6-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a href="{{ url('Guide/Attack') }}"><font color="gold"><b>Building<br/>ATTACKER</b></font></a>
+            <td width="15">3</td>
+            <td width="119" height="103" background="{{ asset('images/map/map6-3.jpg') }}" valign="top">
+                <br/><a href="{{ url('Guide/Attack') }}"><span style="color:gold"><b>Building<br/>YOU</b></span></a>
             </td>
-            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
-            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top"><font
-                        color="#ffffff"/><br/><a class="A" href="{{ url('Guide/Attack') }}">Buy</a></td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top">
+                <br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a>
+            </td>
+            <td width="119" height="103" background="{{ asset('images/map/map18-3.jpg') }}" valign="top">
+                <br/><a class="A" href="{{ url('Guide/Attack') }}">Buy</a>
+            </td>
         </tr>
     </table>
 
     <br/>
     <br/>
 
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table class="table text text-left">
         <tr>
             <td>
                 <br/>
@@ -146,9 +151,9 @@
     <br/>
 
 
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" width="600"><b>Ultimate Warfare Battle Report</b></td>
+            <td class="tabletop"><b>Ultimate Warfare Battle Report</b></td>
         </tr>
         <tr>
             <td><b>Air Battle</b>
@@ -198,7 +203,4 @@
             </td>
         </tr>
     </table>
-
-    <br/>
-    <br/>
 {% endblock %}

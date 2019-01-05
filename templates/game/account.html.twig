@@ -1,63 +1,40 @@
-{% extends 'base.html.twig' %}
+{% extends 'noBarBase.html.twig' %}
 
-{% block title %}
-    Ultimate Warfare - Account
-{% endblock title %}
+{% block title %}Ultimate Warfare - Account{% endblock title %}
 
-{% block body %}
-    <tr>
-        <td id="container_content" align="center" class="text">
-            {% for msg in app.flashes('success') %}
-                <div class="success" id="success">
-                    {{ msg }}
-                </div>
-            {% endfor %}
+{% block content %}
+    <table class="table text text-center">
+        <tr>
+            <td class="tabletop">
+                <b>Ultimate Warfare Account Management</b>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>
+                    Welcome General <strong>{{ user.username|escape }}</strong>
+                </p>
 
-            {% for msg in app.flashes('error') %}
-                <div class="error" id="error">
-                    {{ msg }}
-                </div>
-            {% endfor %}
+                {% if user.active == 0 %}
+                    <a href="{{ path('Game/Banned') }}">You are banned!</a>
+                    <br /><small>Contact a mod here to unban yourself.</small>
+                {% else %}
+                    {% for player in user.players %}
+                    <a href="{{ path('Game/Login/Player', {'playerId': player.id}) }}"><img src="{{ asset('images/button/b_a_play.jpg') }}" alt="Click here to play." height="150" width="150" /></a><br />
+                    <a class="B" href="{{ path('Game/Login/Player', {'playerId': player.id}) }}">You are playing in {{ player.world.name }} as {{ player.name|escape }}!</a><br />
+                    {% endfor %}
+                {% endif %}
 
-            <br />
-            <br />
+                <br />
+                <a href="{{ path('Game/SelectWorld') }}"><img src="{{ asset('images/button/b_a_join.jpg') }}" alt="Click here to join another world." height="150" width="150" /></a>
+                <a href="{{ path('Game/Story/Chapter1', {'page': 1}) }}"><img src="{{ asset('images/button/b_a_story.jpg') }}" alt="Click here to view The Story." height="150" width="150" /></a>
+                <a href="{{ path('Forum') }}"><img src="{{ asset('images/button/b_a_forum.jpg') }}" alt="Talk with other members about the game, and share your tactics here." height="150" width="150" /></a>
 
-            <table class="text table" width="700" border="1" cellspacing="0" cellpadding="0" align="center">
-                <tr>
-                    <td class="tabletop" align="center">
-                        <b>Ultimate Warfare Account Management</b>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td align="center">
-                        Welcome  General <strong>{{ user.username|escape }}</strong>
-                        <br />
-                        <br />
-
-                        {% if user.active == 0 %}
-                            <a href="{{ path('Game/Banned') }}">You are banned!</a>
-                            <br /><small>Contact a mod here to unban yourself.</small>
-                        {% else %}
-                            {% for player in user.players %}
-                            <a href="{{ path('Game/Login/Player', {'playerId': player.id}) }}"><img src="{{ asset('images/button/b_a_play.jpg') }}" alt="Click here to play." height="150" width="150" /></a><br />
-                            <a class="B" href="{{ path('Game/Login/Player', {'playerId': player.id}) }}">You are playing in {{ player.world.name }} as {{ player.name|escape }}!</a><br />
-                            {% endfor %}
-                        {% endif %}
-
-                        <br />
-                        <a href="{{ path('Game/SelectWorld') }}"><img src="{{ asset('images/button/b_a_join.jpg') }}" alt="Click here to join another world." height="150" width="150" /></a>
-                        <a href="{{ path('Game/Story/Chapter1', {'page': 1}) }}"><img src="{{ asset('images/button/b_a_story.jpg') }}" alt="Click here to view The Story." height="150" width="150" /></a>
-                        <a href="{{ path('Forum') }}"><img src="{{ asset('images/button/b_a_forum.jpg') }}" alt="Talk with other members about the game, and share your tactics here." height="150" width="150" /></a>
-
-                        <br />
-                        <a href="{{ path('Site/Chat') }}"><img src="{{ asset('images/button/b_a_chat.jpg') }}" alt="Visit the chat and share your ideas and tactics or ask for help." height="150" width="150" /></a>
-                        <a href="{{ path('Game/Account/Edit') }}"><img src="{{ asset('images/button/b_settings.jpg') }}" alt="You can edit your preferences here." height="150" width="150" /></a>
-                        <a href="{{ path('Site/Logout') }}"><img src="{{ asset('images/button/b_logout.jpg') }}" alt="Click here to protect your account when you are away." height="150" width="150" /></a>
-                    </td>
-                </tr>
-
-            </table>
-        </td>
-    </tr>
+                <br />
+                <a href="{{ path('Site/Chat') }}"><img src="{{ asset('images/button/b_a_chat.jpg') }}" alt="Visit the chat and share your ideas and tactics or ask for help." height="150" width="150" /></a>
+                <a href="{{ path('Game/Account/Edit') }}"><img src="{{ asset('images/button/b_settings.jpg') }}" alt="You can edit your preferences here." height="150" width="150" /></a>
+                <a href="{{ path('Site/Logout') }}"><img src="{{ asset('images/button/b_logout.jpg') }}" alt="Click here to protect your account when you are away." height="150" width="150" /></a>
+            </td>
+        </tr>
+    </table>
 {% endblock %}

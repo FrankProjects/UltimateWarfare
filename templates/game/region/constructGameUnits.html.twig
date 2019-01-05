@@ -11,13 +11,15 @@
     {% endfor %}
 
     <form method="post" action="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">
-        <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+        <table class="table text text-center">
             <tr>
-                <td class="tabletop" align="center" colspan="4"><b>Units</b></td>
+                <td class="tabletop" colspan="4"><b>Units</b></td>
             </tr>
 
             {% if gameUnitType.id == 1 %}
-                <tr><td colspan="4">You have <b>{{ spaceLeft }}</b> building space left on this region.</td></tr>
+                <tr>
+                    <td colspan="4">You have <b>{{ spaceLeft }}</b> building space left on this region.</td>
+                </tr>
             {% endif %}
             <tr>
                 <td></td>
@@ -27,10 +29,11 @@
             </tr>
             {% for gameUnit in gameUnitType.gameUnits %}
                 <tr>
-                    <td width="150"><img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130"></td>
-
-                    <td width="150" align="center">
-                        <a class="B" href="{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}" ONCLICK="popup('{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}', 1000, 600);return false;" target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
+                    <td width="150">
+                        <img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130">
+                    </td>
+                    <td width="150">
+                        <a class="B" href="{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}" target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
                             <b>{{ gameUnit.name }}</b>
                         </a><br />
                         <img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" />{{ gameUnit.priceCash }}<br />
@@ -38,7 +41,7 @@
                         <img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" />{{ gameUnit.priceSteel }}<br />
                         <img src="{{ asset('images/icons/time.gif') }}" width="25" height="25" alt="Construction time">{{ gameUnit.timestamp }}
                     </td>
-                    <td width="100" align="center">
+                    <td width="100">
                         {% if gameUnitData[gameUnit.id] is defined and gameUnitData[gameUnit.id] > 0 %}
                             {{ gameUnitData[gameUnit.id] }}
                         {% else %}
@@ -49,17 +52,18 @@
                             ({{ constructionData[gameUnit.id] }})
                         {% endif %}
                     </td>
-
-                    <td width="200" align="center">
+                    <td width="200">
                         <input type="text" size="12" name="construct[{{ gameUnit.id }}]" />
                     </td>
                 </tr>
             {% else %}
-                <tr><td colspan="4">No Units in the UW database!</td></tr>
+                <tr>
+                    <td colspan="4">No Units in the UW database!</td>
+                </tr>
             {% endfor %}
             <tr>
                 <td colspan="4">
-                    <div class="submit"><input type="submit" name="submit" value="Build"></div>
+                    <input class="btn btn-primary" type="submit" name="submit" value="Build">
                 </td>
             </tr>
         </table>

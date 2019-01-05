@@ -1,50 +1,29 @@
-{% extends 'base.html.twig' %}
+{% extends 'noBarBase.html.twig' %}
 
 {% block title %}
     Ultimate Warfare - Account banned
 {% endblock title %}
 
-{% block body %}
-    <tr>
-        <td id="container_content" align="center" class="text">
-            {% for msg in app.flashes('success') %}
-                <div class="success" id="success">
-                    {{ msg }}
-                </div>
-            {% endfor %}
+{% block content %}
+    <form action="{{ path('Game/Banned') }}" method="post">
+        <table class="table text text-center">
+            <tr>
+                <td class="tabletop"><b>Banned account recovery</b></td>
+            </tr>
+            <tr>
+                <td>
+                    Your account have been banned! You are banned because you did something against the rules. To regain access to your account explain below why you did something against the rules...<br /><br /> We will try to take a look at your banned account recovery request as soon as possible.. If this was a mistake, we apology for this!
+                    <br />
+                    <br />
 
-            {% for msg in app.flashes('error') %}
-                <div class="error" id="error">
-                    {{ msg }}
-                </div>
-            {% endfor %}
+                    <textarea name="post" rows="9" cols="80">{{ unbanRequest.post|escape }}</textarea>
 
-            <br />
-            <br />
+                    <br />
+                    <br />
 
-            <form action="{{ path('Game/Banned') }}" method="post">
-                <table border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
-                    <tr>
-                        <td class="tabletop" width="700"><b>Banned account recovery</b></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Your account have been banned! You are banned because you did something against the rules. To regain access to your account explain below why you did something against the rules...<br /><br /> We will try to take a look at your banned account recovery request as soon as possible.. If this was a mistake, we apology for this!
-                            <br />
-                            <br />
-
-                            <textarea name="post" rows="9" cols="80">{{ unbanRequest.post|escape }}</textarea>
-
-                            <br />
-                            <br />
-
-                            <div class="submit">
-                                <input type="submit" name="submit" value="Send recovery request">
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-    </tr>
+                    <input class="btn btn-primary" type="submit" name="submit" value="Send recovery request">
+                </td>
+            </tr>
+        </table>
+    </form>
 {% endblock %}

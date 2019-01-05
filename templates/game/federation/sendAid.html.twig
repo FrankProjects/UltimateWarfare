@@ -5,9 +5,9 @@
 {% endblock title %}
 
 {% block content %}
-    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" align="center"><b>Send Aid</b></td>
+            <td class="tabletop"><b>Send Aid</b></td>
         </tr>
         <tr>
             <td>
@@ -26,14 +26,14 @@
     <br />
 
     <form method="post" action="{{ path('Game/Federation/SendAid') }}">
-        <table width="450" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <table width="450" class="table text text-center">
             <tr>
-                <td class="tabletop" colspan="3" align="center"><b>Resources</b></td>
+                <td class="tabletop" colspan="3"><b>Resources</b></td>
             </tr>
             <tr>
-                <td width="100" align="center">Resources:</td>
-                <td width="100" align="center">You have:</td>
-                <td width="250" align="center">Amount:</td>
+                <td width="100">Resources:</td>
+                <td width="100">You have:</td>
+                <td width="250">Amount:</td>
             </tr>
             <tr>
                 <td>Cash: </td>
@@ -67,9 +67,7 @@
             </tr>
             <tr>
                 <td colspan="3">
-                    <div class="submit">
-                        <input type="submit" name="submit" value="Send">
-                    </div>
+                    <input class="btn btn-primary" type="submit" name="submit" value="Send">
                 </td>
             </tr>
         </table>

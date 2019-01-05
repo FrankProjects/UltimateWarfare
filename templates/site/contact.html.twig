@@ -5,35 +5,20 @@
 {% endblock title %}
 
 {% block content %}
-    <table class="table text" width="700" cellspacing="0" cellpadding="0" border="1" align="center">
+    <table class="table text text-center">
         <tr class="tabletop">
-            <td align="center"><b>Contact</b></td>
+            <td><b>Contact</b></td>
         </tr>
         <tr>
-            <td align="center">
+            <td>
                 <p>
                     I would like to hear what you think. Send me a message, whether it is praise or criticism, a question, a suggestion, or just a hello.
                 </p>
 
-                {{ form_start(form, {'method': 'post', 'action': path('Site/Contact'), 'attr': {'class': 'register'}}) }}
-                <div>
-                    {{ form_errors(form) }}
-                </div>
-
-                {{ form_row(form.name) }}
-                <br />
-                {{ form_row(form.email) }}
-                <br />
-                {{ form_row(form.message) }}
-                <br />
-
-                {{ form_rest(form) }}
-
-                <div class="submit">
-                    <input type="submit" name="submit" value="Send"/>
-                </div>
-
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
                 {{ form_end(form) }}
-            </td></tr>
+            </td>
+        </tr>
     </table>
 {% endblock %}

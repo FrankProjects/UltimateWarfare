@@ -1,35 +1,67 @@
-<p class="text2">
-    {{ 'label.navigation'|trans({}, 'navigation') }}<br />
-    :<a class="A" href="{{ path('Game/Headquarter') }}">Headquarters</a><br />
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Headquarter') }}">Headquarters</a>
+    </li>
 
     {% if player.regions > 0 %}
-        :<a class="A" href="{{ path('Game/Reports') }}">Reports</a><br />
-        :<a class="A" href="{{ path('Game/Construction') }}">Construction</a><br />
-        :<a class="A" href="{{ path('Game/Fleets') }}">Fleets</a><br />
-        :<a class="A" href="{{ path('Game/RegionList') }}">Regions</a><br />
-        :<a class="A" href="{{ path('Game/Market') }}">Market</a><br />
-        :<a class="A" href="{{ path('Game/Federation') }}">Federation</a><br />
-        :<a class="A" href="{{ path('Game/Research') }}">Research</a><br />
-        :<a class="A" href="{{ path('Game/World') }}">World</a>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Reports') }}">Reports</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Construction') }}">Construction</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Fleets') }}">Fleets</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/RegionList') }}">Regions</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Market') }}">Market</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Federation') }}">Federation</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Research') }}">Research</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/World') }}">World</a>
+        </li>
     {% else %}
-        :<a class="A" href="{{ path('Game/World/Search/Free') }}">World</a>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/World/Search/Free') }}">World</a>
+        </li>
     {% endif %}
 
-</p>
-
-<p class="text2">
     {% if player.regions > 0 %}
-        :<a class="A" href="{{ path('Game/Message/Inbox') }}">Messages</a><br />
-        :<a class="A" href="{{ path('Game/Notepad') }}">Notepad</a><br />
-        :<a class="A" href="{{ path('Forum') }}">Forum</a><br />
-        :<a class="A" href="{{ path('Site/Chat') }}" target="main">Chat</a><br />
-        :<a class="A" href="{{ path('Game/Rankings') }}">Rankings</a><br />
-        :<a class="A" href="{{ path('Guide') }}" target="_blank">Help/FAQ</a><br />
-        :<a class="A" href="{{ path('Game/Surrender') }}">Surrender</a><br /><br /><br />
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Message/Inbox') }}">Messages</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Notepad') }}">Notepad</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Forum') }}">Forum</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Site/Chat') }}" target="main">Chat</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Rankings') }}">Rankings</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Guide') }}" target="_blank">Help/FAQ</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Game/Surrender') }}">Surrender</a>
+        </li>
     {% endif %}
 
-    :<a class="A" href="{{ path('Game/Account') }}">Account Management</a><br />
-    :<a class="A" href="{{ path('Site/Logout') }}">Log Out</a>
-</p>
-
-
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Account') }}">Account Management</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Site/Logout') }}">Log out</a>
+    </li>
+</ul>

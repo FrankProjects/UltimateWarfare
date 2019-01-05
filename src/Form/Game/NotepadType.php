@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Form\Game;
 
 use FrankProjects\UltimateWarfare\Entity\player;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,12 +17,15 @@ class NotepadType extends AbstractType
     {
         $builder
             ->add('notepad', TextareaType::class, [
-                'label' => 'label.notepad',
+                'label' => false,
                 'translation_domain' => 'notepad',
                 'attr' => [
                     'rows' => 15,
                     'cols' => 80
                     ]
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Update'
             ]);
     }
 

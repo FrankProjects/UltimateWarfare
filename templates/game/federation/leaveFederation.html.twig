@@ -7,7 +7,7 @@
 {% block content %}
     <form action="{{ path('Game/Federation/Leave') }}" method="post">
 
-        <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <table class="table text text-center">
             <tr>
                 <td class="tabletop"><b>Leave Federation</b></td>
             </tr>
@@ -15,7 +15,7 @@
                 <td>
                     <br />Are you sure you want to do this?<br /><br />
                     <br />
-                    <input type="submit" name="submit" value="Leave">
+                    <input class="btn btn-primary" type="submit" name="submit" value="Leave">
                 </td>
             </tr>
         </table>

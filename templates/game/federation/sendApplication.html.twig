@@ -6,9 +6,9 @@
 
 {% block content %}
     <form action="{{ path('Game/Federation/Application/Send', {'federationId': federation.id}) }}" method="post">
-        <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+        <table class="table text text-center">
             <tr>
-                <td class="tabletop" align="center"><b>Join a Federation</b></td>
+                <td class="tabletop"><b>Join a Federation</b></td>
             </tr>
             <tr>
                 <td>
@@ -19,7 +19,9 @@
                 <td><textarea name="application" rows="9" cols="50"></textarea></td>
             </tr>
             <tr>
-                <td><div class="submit"><input type="submit" name="submit" value="Send application"></div></td>
+                <td>
+                    <input class="btn btn-primary" type="submit" name="submit" value="Send application">
+                </td>
             </tr>
         </table>
     </form>

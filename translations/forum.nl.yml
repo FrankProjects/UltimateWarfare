@@ -1,0 +1,19 @@
+label:
+  add_reaction: Reactie toevoegen
+  close: Sluiten
+  date: Datum/Tijd
+  forum: Forum
+  name: Naam
+  title: Titel
+  topics: Onderwerpen
+  post: Bericht
+action:
+  post:
+    edit: Bericht aanpassen
+  topic:
+    create: Onderwerp aanmaken
+    close: Sluit dit onderwerp
+    delete: Verwijder dit onderwerp
+    edit: Pas onderwerp aan
+    sticky: Sticky onderwerp
+    unsticky: Unsticky onderwerp

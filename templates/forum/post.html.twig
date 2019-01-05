@@ -1,9 +1,8 @@
-<table width="900" border="1" align="center" cellpadding="0" cellspacing="1" class="table text">
+<table class="table text text-center">
     <tr>
         <td width="200">Name: {{ post.user.username|escape }}<br/>
             <b>Forum Moderator</b>
         </td>
-
         <td rowspan="3" width="700">{{ post.content|escape|nl2br }}
             <br/>
             {% if post.edited == true %}
@@ -25,5 +24,5 @@
             {{ post.createDateTime|date("Y-m-d H:i:s") }}
         </td>
     </tr>
-
-</table><br/>
+</table>
+<br/>

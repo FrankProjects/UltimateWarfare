@@ -5,30 +5,30 @@
 {% endblock title %}
 
 {% block content %}
-    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="3" align="center"><b>Region</b></td>
+            <td class="tabletop" colspan="3"><b>Region</b></td>
         </tr>
         <tr>
             <td rowspan="3" width="120">
                 <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100"><br />
             </td>
-            <td width="300" align="center">Location:</td>
-            <td width="280" align="center">
+            <td width="300">Location:</td>
+            <td width="280">
                 <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}
             </td>
         </tr>
         <tr>
-            <td width="300" align="center">Owner:</td>
+            <td width="300">Owner:</td>
             {% if region.player is not null %}
-                <td width="280" align="center"><a class="B" href="{{ path('Game/Profile', {'playerName': region.player.name}) }}">{{ region.player.name|escape }}</a></td>
+                <td width="280"><a class="B" href="{{ path('Game/Profile', {'playerName': region.player.name}) }}">{{ region.player.name|escape }}</a></td>
             {% else %}
-                <td width="280" align="center">Nobody</td>
+                <td width="280">Nobody</td>
             {% endif %}
         </tr>
         <tr>
-            <td width="300" align="center">Space:</td>
-            <td width="280" align="center">
+            <td width="300">Space:</td>
+            <td width="280">
                 {{ region.space }}
             </td>
         </tr>
@@ -37,9 +37,9 @@
     <br />
     <br />
 
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="3" align="center"><b>Attack from...</b></td>
+            <td class="tabletop" colspan="3"><b>Attack from...</b></td>
         </tr>
 
         {% for playerRegion in playerRegions %}
@@ -47,7 +47,7 @@
                 <td width="120">
                     <img src="{{ asset('images/map/' ~ playerRegion.image ~ mapUrl) }}" width="120" height="100">
                 </td>
-                <td width="370" align="left">
+                <td class="text-left" width="370">
                     <ul>
                         <li>Position: {{ playerRegion.x }}, {{ playerRegion.y }}: {{ playerRegion.region }}</li>
                         <li>Travel time to target: {{ playerRegion.distance }}</li>
@@ -56,7 +56,7 @@
                         </li>
                     </ul>
                 </td>
-                <td width="210" align="left">
+                <td class="text-left" width="210">
                     {% for regionUnit in playerRegion.worldRegionUnits %}
                         {% if regionUnit.amount > 1 %}
                             {{ regionUnit.amount }} {{ regionUnit.gameUnit.nameMulti }}<br />

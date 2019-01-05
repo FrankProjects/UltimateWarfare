@@ -1,32 +1,31 @@
 {% extends 'game.html.twig' %}
 {% block content %}
-    <a class="B" href="{{ path('Game/Research/History') }}">Research History</a>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Research/History') }}">Research History</a>
+    </p>
 
-    <br />
-    <br />
-
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="4" align="center"><b>Researching</b></td>
+            <td class="tabletop" colspan="4"><b>Researching</b></td>
         </tr>
         <tr>
-            <td class="col_center"><b>Name</b></td>
-            <td class="col_center"><b>Time left</b></td>
-            <td class="col_center"><b>Finished at</b></td>
-            <td class="col_center"><b>Option</b></td>
+            <td><b>Name</b></td>
+            <td><b>Time left</b></td>
+            <td><b>Finished at</b></td>
+            <td><b>Option</b></td>
         </tr>
         {% for researchPlayer in ongoingResearch %}
             {% set finish = researchPlayer.timestamp + researchPlayer.research.timestamp %}
 
             <tr>
-                <td class="col_center">{{ researchPlayer.research.name|escape }}</td>
-                <td class="col_center"><span class="timer">timestamp_left</span></td>
-                <td class="col_center">{{ finish|date }}</td>
-                <td class="col_center"><a class="B" href="{{ path('Game/Research/Cancel', {'researchId': researchPlayer.research.id}) }}">Cancel</a></td>
+                <td>{{ researchPlayer.research.name|escape }}</td>
+                <td><span class="timer">timestamp_left</span></td>
+                <td>{{ finish|date }}</td>
+                <td><a class="B" href="{{ path('Game/Research/Cancel', {'researchId': researchPlayer.research.id}) }}">Cancel</a></td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4" class="col_center">You are not researching anything right now!</td>
+                <td colspan="4">You are not researching anything right now!</td>
             </tr>
         {% endfor %}
     </table>
@@ -34,24 +33,25 @@
     <br />
     <br />
 
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="3" align="center"><b>Research</b></td>
+            <td class="tabletop" colspan="3"><b>Research</b></td>
         </tr>
         {% for research in unresearched %}
             <tr>
                 <td width="150" rowspan="2">
                     <img src="{{ asset('images/research/' ~ research.pic ) }}" width="150" height="130">
                 </td>
-                <td width="550" align="left" colspan="2">{{ research.description|escape }}</td>
+                <td class="text-left" width="550" colspan="2">{{ research.description|escape }}</td>
             </tr>
             <tr>
-                <td valign="top">
+                <td class="text-left" valign="top">
                     <div><b>Name:</b> {{ research.name|escape }}</div>
                     <div><b>Costs:</b> ${{ research.cost }}</div>
                     <div><b>Duration:</b> {{ research.timestamp }}</div>
-                    <div class="submit"><a class="B" href="{{ path('Game/Research/Perform', {'researchId': research.id}) }}"><b>Research</b></a></div>
-                    </td><td align="center" valign="top">
+                    <a class="btn btn-primary" href="{{ path('Game/Research/Perform', {'researchId': research.id}) }}"><b>Research</b></a>
+                </td>
+                <td valign="top">
                     <b>Requirements:</b><br />
                     {% for researchNeed in research.needs['notDone'] %}
                         <div class="bad">{{ researchNeed.research.name|escape }}</div>
@@ -64,7 +64,7 @@
             </tr>
         {% else %}
             <tr>
-                <td align="center">No research options available for you right now!</td>
+                <td>No research options available for you right now!</td>
             </tr>
         {% endfor %}
     </table>

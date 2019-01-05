@@ -1,33 +1,23 @@
-{% extends 'base.html.twig' %}
+{% extends 'noBarBase.html.twig' %}
 
-{% block body %}
-    <tr>
-        <td>
-            <br />
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop"><b>Ultimate Warfare The Story</b></td>
+        </tr>
+        <tr>
+            <td>
+                The year was 1945. The earth was in a mess. The two main superpowers, America and Russia, had engaged in an massive war. <br />
+                Though both knew that the war was only a cover up. America and Russia had both finally finished creating the ultimate weapon. <br />
+                It was known as the 'Syphon Warhead'.<br /><br />
 
-            <table class="text table" border="1" width="600" cellspacing="0" cellpadding="0" align="center">
-                <tr>
-                    <td width="600" class="tabletop"><b>Ultimate Warfare The Story</b></td>
-                </tr>
-                <tr>
-                    <td>
-                        The year was 1945. The earth was in a mess. The two main superpowers, America and Russia, had engaged in an massive war. <br />
-                        Though both knew that the war was only a cover up. America and Russia had both finally finished creating the ultimate weapon. <br />
-                        It was known as the 'Syphon Warhead'.<br /><br />
+                <img src="{{ asset('images/story1.jpg') }}" width="400" height="300" alt="Syphon Warhead!" />
 
-                        <img src="{{ asset('images/story1.jpg') }}" width="400" height="300" alt="Syphon Warhead!" />
+                <br />
+                <br />
 
-                        <br />
-                        <br />
-
-                        <a class="B" href="{{ path('Game/Story/Chapter1', {'page': 2}) }}"><strong>Next>>></strong></a>
-
-                    </td>
-                </tr>
-            </table>
-
-            <br />
-            <br />
-        </td>
-    </tr>
+                <a class="B" href="{{ path('Game/Story/Chapter1', {'page': 2}) }}"><strong>Next>>></strong></a>
+            </td>
+        </tr>
+    </table>
 {% endblock %}

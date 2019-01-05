@@ -96,6 +96,12 @@ Game/Account/Edit:
     path:      /game/account/edit
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::edit
 
+Game/Account/Edit/MapDesign:
+    path:      /game/account/edit/map-design/{mapDesignId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::editMapDesign
+    requirements:
+        mapDesignId: '\d+'
+
 Game/Banned:
     path:      /game/banned
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::banned

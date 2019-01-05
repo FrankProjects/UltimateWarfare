@@ -1,13 +1,15 @@
 {% extends 'game.html.twig' %}
 {% block content %}
-    <a class="B" href="{{ path('Game/Market') }}">Buy</a> - <a class="B" href="{{ path('Game/Market/Sell') }}">Sell</a> - <a class="B" href="{{ path('Game/Market/PlaceOffer') }}">Place offer</a> - <a class="B" href="{{ path('Game/Market/Offers') }}">Your offers</a>
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Market') }}">Buy</a> -
+        <a class="B" href="{{ path('Game/Market/Sell') }}">Sell</a> -
+        <a class="B" href="{{ path('Game/Market/PlaceOffer') }}">Place offer</a> -
+        <a class="B" href="{{ path('Game/Market/Offers') }}">Your offers</a>
+    </p>
 
-    <br />
-    <br />
-
-    <table width="700" border="1" cellspacing="0" cellpadding="0" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="2" align="center"><b>Place offer</b></td>
+            <td class="tabletop" colspan="2"><b>Place offer</b></td>
         </tr>
         <form method="post" action="{{ path('Game/Market/PlaceOffer') }}">
             <tr>
@@ -43,9 +45,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <div class="submit">
-                        <input type="submit" value="Place Offer" />
-                    </div>
+                    <input class="btn btn-primary" type="submit" value="Place Offer" />
                 </td>
             </tr>
         </form>

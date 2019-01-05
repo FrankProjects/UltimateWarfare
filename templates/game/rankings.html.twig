@@ -1,30 +1,29 @@
 {% extends 'game.html.twig' %}
 {% block content %}
-    Rankings by: <a class="B" href="{{ path('Game/Rankings', {'sortBy': 'networth'}) }}">Networth</a> - <a class="B" href="{{ path('Game/Rankings') }}">Regions</a>
+    <p class="text-center">
+        Rankings by: <a class="B" href="{{ path('Game/Rankings', {'sortBy': 'networth'}) }}">Networth</a> - <a class="B" href="{{ path('Game/Rankings') }}">Regions</a>
+    </p>
 
-    <br />
-    <br />
-
-    <table width="700" border="1" cellspacing="0" cellpadding="0" align="center" class="table text">
+    <table class="table text text-center">
         <tr>
-            <td class="tabletop" colspan="4" align="center"><b>{{ rankingsTitle }}</b></td>
+            <td class="tabletop" colspan="4"><b>{{ rankingsTitle }}</b></td>
         </tr>
         <tr>
-            <td width="100" align="center"><b>Rank</b></td>
-            <td width="300" align="left"><b>Player</b></td>
-            <td width="150" align="center"><b>Regions</b></td>
-            <td width="150" align="center"><b>Networth</b></td>
+            <td width="100"><b>Rank</b></td>
+            <td class="text-left" width="300"><b>Player</b></td>
+            <td width="150"><b>Regions</b></td>
+            <td width="150"><b>Networth</b></td>
         </tr>
         {% for player in players %}
             <tr>
-                <td width="50" align="center">{{ loop.index }}</td>
-                <td width="200" align="left">{{ player.name|escape }}
+                <td width="50">{{ loop.index }}</td>
+                <td class="text-left" width="200">{{ player.name|escape }}
                     {% if player.federation != null %}
                         <i> ( {{ player.federation.name }} )</i>
                     {% endif %}
                 </td>
-                <td align="center">{{ player.regions }}</td>
-                <td align="center">{{ player.networth }}</td>
+                <td>{{ player.regions }}</td>
+                <td>{{ player.networth }}</td>
             </tr>
         {% endfor %}
     </table>

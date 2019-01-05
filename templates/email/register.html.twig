@@ -1,18 +1,50 @@
-Welcome to Ultimate Warfare,
-
-A game where you can recruit friends or strangers and have them fight along side with you.
-Build the strongest army, buy the strongest weapons and conquer countries as a result of which your power becomes larger and allows you to dominate all those who oppose you!
-
-Thank you for joining Ultimate Warfare we hope you enjoy your stay here and also hope that you have lots of fun playing the game and meeting new friends.
-
-Username: {{ username|escape }}
-
-Activation URL:
-{{ url('User/Activation', {'token': token}) }}
-
-Please do not reply to these messages, they are created by an automatic device and replies will not be read.
-
-{{ url('Site/Homepage') }}
-Thanks
-
-~ Frank
+<!DOCTYPE html>
+<html lang="en">
+    <body style="margin: 0;">
+        <table border="0" width="100%">
+            <tr>
+                <td>
+                    <p>Welcome to Ultimate Warfare,</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>A game where you can recruit friends or strangers and have them fight along side with you. Build the strongest army, buy the strongest weapons and conquer countries as a result of which your power becomes larger and allows you to dominate all those who oppose you!</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Thank you for joining Ultimate Warfare we hope you enjoy your stay here and also hope that you have lots of fun playing the game and meeting new friends.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Username: {{ username|escape }}</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><a style="text-decoration: none" href="{{ url('User/Activation', {'token': token}) }}" target="_blank"><span style="color: white; background-color: #443311; display: inline-block; font-size: 16px; border-radius: 2px; text-align: center; height: 40px; line-height: 40px; width: 300px; margin: 0 auto;">Activate account</span></a></td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Please do not reply to these messages, they are created by an automatic device and replies will not be read.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><a href="{{ url('Site/Homepage') }}">{{ url('Site/Homepage') }}</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Thanks,</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Frank</p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

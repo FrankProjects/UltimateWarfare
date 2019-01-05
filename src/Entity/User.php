@@ -56,7 +56,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @var \DateTime
      */
-    private $passwordRequestedAt;
+    private $passwordRequestedAt = null;
 
     /**
      * @var array
@@ -313,9 +313,9 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getPasswordRequestedAt(): \DateTime
+    public function getPasswordRequestedAt(): ?\DateTime
     {
         return $this->passwordRequestedAt;
     }

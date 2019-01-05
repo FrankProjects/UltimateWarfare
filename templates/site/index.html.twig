@@ -1,81 +1,78 @@
 {% extends 'site.html.twig' %}
 {% block content %}
-            <table class="table text" width="700" cellspacing="0" cellpadding="0" border="1" align="center">
-                <tr class="tabletop">
-                    <td align="center"><b>Welcome to Ultimate Warfare</b></td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        Ultimate Warfare is an online multiplayer browser based strategy game where you compete with thousands of others for world domination!
+    <table class="table text">
+        <tr class="tabletop">
+            <td class="text-center"><b>Welcome to Ultimate Warfare</b></td>
+        </tr>
+        <tr>
+            <td class="text-center">
+                <p>
+                    Ultimate Warfare is an online multiplayer browser based strategy game where you compete with thousands of others for world domination!
+                </p>
+                <p>
+                    <a class="btn btn-primary" href="{{ path('Site/Register') }}">-- Register now for free! --</a>
+                </p>
+                <p>
+                    We hope you enjoy your stay, and if there is anything you need help with, please visit the <a class="B" href="{{ url('Forum') }}">forums</a> for assistance.
+                </p>
 
-                        <br />
-                        <br />
+                <div class="text-left">
+                    <b>Features:</b>
+                    <ul>
+                        <li>Free to play MMORPG (Massively multiplayer online role-playing game)</li>
+                        <li>Online / Browser based game (No download required)</li>
+                        <li>Player vs Player (PVP) and Federation (Clan) battles</li>
+                        <li>War game (Conquer regions on a world map)</li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-                        <a class="B" href="{{ path('Site/Register') }}">-- Register now for free! --</a>
+    <br />
 
-                        <br />
-                        <br />
-                        We hope you enjoy your stay, and if there is anything you need help with, please visit the <a class="B" href="{{ url('Forum') }}">forums</a> for assistance.
-
-                        <div align="left">
-                            <b>Features:</b>
-                            <ul>
-                                <li>Free to play MMORPG (Massively multiplayer online role-playing game)</li>
-                                <li>Online / Browser based game (No download required)</li>
-                                <li>Player vs Player (PVP) and Federation (Clan) battles</li>
-                                <li>War game (Conquer regions on a world map)</li>
-                            </ul>
-                        </div>
-
-                    </td></tr>
-            </table>
-
-            <br />
-
-            <table class="table text" width="700" cellspacing="0" cellpadding="0" border="1" align="center">
-                <tr class="tabletop">
-                    <td align="center" width="350"><strong>Latest Announcements</strong></td>
-                    <td align="center" width="350"><strong>Poll</strong></td>
-                </tr>
-                <tr>
-                    <td width="350" align="center">
-                        {% for announcement in latestAnnouncements %}
-                            <div>
-                                <a class="B" href="{{ path('Forum/Topic', {'topicId': announcement.id}) }}">{{ announcement.title|escape }}</a>
-                            </div>
-                        {% endfor %}
-                    </td>
-                    <td width="350" align="center">
-                        {% block poll %}{% endblock %}
-                    </td>
-                </tr>
-            </table>
-
-            <br />
-
-            <table class="table text" width="700" cellspacing="0" cellpadding="0" border="1" align="center">
-                <tr class="tabletop">
-                    <td align="center"><strong>Game News</strong></td>
-                </tr>
-
-                {% for news in gameNews %}
-                    <tr>
-                        <td align="center">
-                            <b>{{ news.title|escape }}</b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            {{ news.message|escape|nl2br }}
-                            <br />
-                            <br />
-                            <i>
-                                Posted on {{ news.createDateTime|date("Y-m-d H:i:s") }}
-                            </i>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr><td align="center">No Game News found!</td></tr>
+    <table class="table text">
+        <tr class="tabletop">
+            <td class="text-center"><strong>Latest Announcements</strong></td>
+        </tr>
+        <tr>
+            <td>
+                {% for announcement in latestAnnouncements %}
+                    <div>
+                        <a class="B" href="{{ path('Forum/Topic', {'topicId': announcement.id}) }}">{{ announcement.title|escape }}</a>
+                    </div>
                 {% endfor %}
-            </table>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+
+    <table class="table text">
+        <tr class="tabletop">
+            <td class="text-center"><strong>Game News</strong></td>
+        </tr>
+
+        {% for news in gameNews %}
+            <tr>
+                <td class="text-center">
+                    <b>{{ news.title|escape }}</b>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ news.message|escape|nl2br }}
+                    <br />
+                    <br />
+                    <i>
+                        Posted on {{ news.createDateTime|date("Y-m-d H:i:s") }}
+                    </i>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="text-center">No Game News found!</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
