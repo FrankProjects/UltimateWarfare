@@ -149,14 +149,6 @@ final class GuideController extends BaseController
     /**
      * @return Response
      */
-    public function mission(): Response
-    {
-        return $this->render('site/guide/mission.html.twig');
-    }
-
-    /**
-     * @return Response
-     */
     public function ranking(): Response
     {
         return $this->render('site/guide/ranking.html.twig');

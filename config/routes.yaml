@@ -512,10 +512,6 @@ Guide/Market:
     path:      /guide/market
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::market
 
-Guide/Mission:
-    path:      /guide/mission
-    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::mission
-
 Guide/Ranking:
     path:      /guide/ranking
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::ranking
