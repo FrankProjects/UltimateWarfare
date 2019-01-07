@@ -18,21 +18,18 @@ class ChangePasswordType extends AbstractType
             ->add('oldPassword', PasswordType::class, [
                 'mapped' => false,
                 'label' => 'label.old_password',
-                'translation_domain' => 'account'
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options'  => [
                     'label' => 'label.password',
-                    'translation_domain' => 'account'
                 ],
                 'second_options' => [
                     'label' => 'label.password_repeat',
-                    'translation_domain' => 'account'
                 ]
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Change Password'
+                'label' => 'label.change_password'
             ]);
     }
 
@@ -40,6 +37,7 @@ class ChangePasswordType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => User::class,
+            'translation_domain' => 'account'
         ));
     }
 }
