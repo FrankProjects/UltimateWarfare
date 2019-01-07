@@ -6,31 +6,31 @@
 </p>
 
 {% if player.notifications.attacked != 0 %}
-    <p class="text-center">
+    <div class="alert alert-danger" role="alert">
         <a class="B" href="{{ path('Game/Reports', {'type': 1}) }}"><b>You are under attack!</b></a>
-    </p>
+    </div>
 {% endif %}
 
 {% if player.notifications.general != 0 %}
-    <p class="text-center">
-        <a class="B" href="{{ path('Game/Reports', {'type': 2}) }}"><b>General Report!</b></a><br /><br />
-    </p>
+    <div class="alert alert-warning" role="alert">
+        <a class="B" href="{{ path('Game/Reports', {'type': 2}) }}"><b>General Report!</b></a>
+    </div>
 {% endif %}
 
 {% if player.notifications.message != 0 %}
-    <p class="text-center">
+    <div class="alert alert-warning" role="alert">
         <a class="B" href="{{ path('Game/Message/Inbox') }}"><b>You have new message(s).</b></a>
-    </p>
+    </div>
 {% endif %}
 
 {% if player.notifications.aid != 0 %}
-    <p class="text-center">
-        <a class="B" href="{{ path('Game/Reports', {'type': 5}) }}"><b>You recieved aid!</b></a><br /><br />
-    </p>
+    <div class="alert alert-warning" role="alert">
+        <a class="B" href="{{ path('Game/Reports', {'type': 5}) }}"><b>You received aid!</b></a>
+    </div>
 {% endif %}
 
 {% if player.notifications.market != 0 %}
-    <p class="text-center">
-        <a class="B" href="{{ path('Game/Reports', {'type': 4}) }}"><b>You sold/bought something on the market!</b></a><br /><br />
-    </p>
+    <div class="alert alert-warning" role="alert">
+        <a class="B" href="{{ path('Game/Reports', {'type': 4}) }}"><b>You sold/bought something on the market!</b></a>
+    </div>
 {% endif %}
