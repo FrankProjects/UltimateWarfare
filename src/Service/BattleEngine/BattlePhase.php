@@ -141,7 +141,6 @@ abstract class BattlePhase implements IBattlePhase
             if ($deaths >= $gameUnit->getAmount()) {
                 unset($this->attackerGameUnits[$index]);
                 $this->addToBattleLog("All attacking {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
-
             } elseif ($deaths > 0) {
                 $this->attackerGameUnits[$index]->setAmount($gameUnit->getAmount() - $deaths);
                 $this->addToBattleLog("{$deaths} attacking {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
