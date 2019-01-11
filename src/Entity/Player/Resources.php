@@ -305,4 +305,26 @@ class Resources
     {
         return $this->upkeepSteel;
     }
+
+    /**
+     * @param Resources $resources
+     * @return bool
+     */
+    public function equals(Resources $resources): bool
+    {
+        if(
+            $resources->incomeCash === $this->incomeCash &&
+            $resources->incomeFood === $this->incomeFood &&
+            $resources->incomeSteel === $this->incomeSteel &&
+            $resources->incomeWood === $this->incomeWood &&
+            $resources->upkeepCash === $this->upkeepCash &&
+            $resources->upkeepFood === $this->upkeepFood &&
+            $resources->upkeepSteel === $this->upkeepSteel &&
+            $resources->upkeepWood === $this->upkeepWood
+
+        ) {
+            return true;
+        }
+        return false;
+    }
 }

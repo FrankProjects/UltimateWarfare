@@ -155,7 +155,7 @@ class Fleet
     }
 
     /**
-     * @return Collection
+     * @return Collection|FleetUnit[]
      */
     public function getFleetUnits(): Collection
     {

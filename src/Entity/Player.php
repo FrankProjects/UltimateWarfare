@@ -243,6 +243,8 @@ class Player
     }
 
     /**
+     * XXX TODO: Remove from model, query regions...
+     *
      * Get regions
      *
      * @return int
@@ -329,7 +331,7 @@ class Player
     }
 
     /**
-     * @return Collection
+     * @return Collection|WorldRegion[]
      */
     public function getWorldRegions(): Collection
     {
@@ -337,7 +339,7 @@ class Player
     }
 
     /**
-     * @return Collection
+     * @return Collection|Fleet[]
      */
     public function getFleets(): Collection
     {

@@ -324,7 +324,7 @@ class WorldRegion
     }
 
     /**
-     * @return Collection
+     * @return Collection|WorldRegionUnit[]
      */
     public function getWorldRegionUnits(): Collection
     {

@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats;
 
 /**
  * GameUnit
@@ -133,6 +134,11 @@ class GameUnit
     private $fleetUnits = [];
 
     /**
+     * @var BattleStats
+     */
+    private $battleStats;
+
+    /**
      * GameUnit constructor.
      */
     public function __construct()
@@ -140,6 +146,7 @@ class GameUnit
         $this->worldRegionUnits = new ArrayCollection();
         $this->constructions = new ArrayCollection();
         $this->fleetUnits = new ArrayCollection();
+        $this->battleStats = new BattleStats();
     }
 
     /**
@@ -562,5 +569,21 @@ class GameUnit
     public function setPriceFood(int $priceFood): void
     {
         $this->priceFood = $priceFood;
+    }
+
+    /**
+     * @return BattleStats
+     */
+    public function getBattleStats(): BattleStats
+    {
+        return $this->battleStats;
+    }
+
+    /**
+     * @param BattleStats $battleStats
+     */
+    public function setBattleStats(BattleStats $battleStats): void
+    {
+        $this->battleStats = $battleStats;
     }
 }
