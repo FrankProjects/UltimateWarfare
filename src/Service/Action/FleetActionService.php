@@ -144,14 +144,10 @@ final class FleetActionService
      */
     private function getFleetByIdAndPlayer(int $fleetId, Player $player): Fleet
     {
-        $fleet = $this->fleetRepository->find($fleetId);
+        $fleet = $this->fleetRepository->findByIdAndPlayer($fleetId, $player);
 
         if ($fleet === null) {
             throw new RunTimeException('Fleet does not exist!');
-        }
-
-        if ($fleet->getPlayer()->getId() != $player->getId()) {
-            throw new RunTimeException('Fleet does not belong to you!');
         }
 
         return $fleet;
