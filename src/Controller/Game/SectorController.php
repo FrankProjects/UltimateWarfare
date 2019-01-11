@@ -115,13 +115,12 @@ final class SectorController extends BaseGameController
     }
 
     /**
-     * @param Request $request
      * @param int $sectorId
+     * @param string $playerName
      * @return Response
      */
-    public function searchPlayer(Request $request, int $sectorId): Response
+    public function searchPlayer(int $sectorId, string $playerName): Response
     {
-        $playerName = $request->request->get('playerName');
         $player = $this->getPlayer();
 
         $sector = $this->worldSectorRepository->findByIdAndWorld($sectorId, $player->getWorld());
