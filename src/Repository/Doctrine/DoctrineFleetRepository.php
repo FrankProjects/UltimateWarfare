@@ -35,11 +35,12 @@ final class DoctrineFleetRepository implements FleetRepository
 
     /**
      * @param int $id
-     * @return Fleet|null
+     * @param Player $player
+     * @return Fleet
      */
-    public function find(int $id): ?Fleet
+    public function findByIdAndPlayer(int $id, Player $player): ?Fleet
     {
-        return $this->repository->find($id);
+        return $this->repository->findOneBy(['id' => $id, 'player' => $player]);
     }
 
     /**

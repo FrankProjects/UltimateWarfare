@@ -11,5 +11,10 @@ interface FleetUnitRepository
     /**
      * @param FleetUnit $fleetUnit
      */
+    public function remove(FleetUnit $fleetUnit): void;
+
+    /**
+     * @param FleetUnit $fleetUnit
+     */
     public function save(FleetUnit $fleetUnit): void;
 }
