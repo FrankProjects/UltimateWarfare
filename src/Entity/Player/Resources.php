@@ -312,7 +312,7 @@ class Resources
      */
     public function equals(Resources $resources): bool
     {
-        if(
+        if (
             $resources->incomeCash === $this->incomeCash &&
             $resources->incomeFood === $this->incomeFood &&
             $resources->incomeSteel === $this->incomeSteel &&

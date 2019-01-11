@@ -142,7 +142,7 @@ abstract class BattlePhase implements IBattlePhase
                 unset($this->attackerGameUnits[$index]);
                 $this->addToBattleLog("All attacking {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
 
-            } else if ($deaths > 0) {
+            } elseif ($deaths > 0) {
                 $this->attackerGameUnits[$index]->setAmount($gameUnit->getAmount() - $deaths);
                 $this->addToBattleLog("{$deaths} attacking {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
             }
@@ -162,7 +162,7 @@ abstract class BattlePhase implements IBattlePhase
             if ($deaths >= $gameUnit->getAmount()) {
                 unset($this->defenderGameUnits[$index]);
                 $this->addToBattleLog("All defending {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
-            } else if ($deaths > 0) {
+            } elseif ($deaths > 0) {
                 $this->defenderGameUnits[$index]->setAmount($gameUnit->getAmount() - $deaths);
                 $this->addToBattleLog("{$deaths} defending {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
             }
