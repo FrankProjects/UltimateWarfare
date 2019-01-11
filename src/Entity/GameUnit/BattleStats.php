@@ -2,116 +2,93 @@
 
 declare(strict_types=1);
 
-namespace FrankProjects\UltimateWarfare\Entity;
+namespace FrankProjects\UltimateWarfare\Entity\GameUnit;
 
-/**
- * GameUnitsBattleStats
- */
-class GameUnitsBattleStats
+class BattleStats
 {
     /**
      * @var int
      */
-    private $unitId;
+    private $health = 1;
 
     /**
      * @var int
      */
-    private $health;
+    private $armor = 1;
 
     /**
      * @var int
      */
-    private $armor;
+    private $travelSpeed = 0;
 
     /**
      * @var int
      */
-    private $travelSpeed;
+    private $airAttack = 0;
 
     /**
      * @var int
      */
-    private $airAttack;
+    private $airAttackSpeed = 0;
 
     /**
      * @var int
      */
-    private $airAttackSpeed;
+    private $airDefence = 0;
 
     /**
      * @var int
      */
-    private $airDefence;
+    private $airDefenceSpeed = 0;
 
     /**
      * @var int
      */
-    private $airDefenceSpeed;
+    private $seaAttack = 0;
 
     /**
      * @var int
      */
-    private $seaAttack;
+    private $seaAttackSpeed = 0;
 
     /**
      * @var int
      */
-    private $seaAttackSpeed;
+    private $seaDefence = 0;
 
     /**
      * @var int
      */
-    private $seaDefence;
+    private $seaDefenceSpeed = 0;
 
     /**
      * @var int
      */
-    private $seaDefenceSpeed;
+    private $groundAttack = 0;
 
     /**
      * @var int
      */
-    private $groundAttack;
+    private $groundAttackSpeed = 0;
 
     /**
      * @var int
      */
-    private $groundAttackSpeed;
+    private $groundDefence = 0;
 
     /**
      * @var int
      */
-    private $groundDefence;
-
-    /**
-     * @var int
-     */
-    private $groundDefenceSpeed;
-
-
-    /**
-     * Get unitId
-     *
-     * @return int
-     */
-    public function getUnitId()
-    {
-        return $this->unitId;
-    }
+    private $groundDefenceSpeed = 0;
 
     /**
      * Set health
      *
      * @param int $health
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setHealth($health)
+    public function setHealth(int $health): void
     {
         $this->health = $health;
-
-        return $this;
     }
 
     /**
@@ -119,7 +96,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getHealth()
+    public function getHealth(): int
     {
         return $this->health;
     }
@@ -128,14 +105,10 @@ class GameUnitsBattleStats
      * Set armor
      *
      * @param int $armor
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setArmor($armor)
+    public function setArmor(int $armor): void
     {
         $this->armor = $armor;
-
-        return $this;
     }
 
     /**
@@ -143,7 +116,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getArmor()
+    public function getArmor(): int
     {
         return $this->armor;
     }
@@ -152,14 +125,10 @@ class GameUnitsBattleStats
      * Set travelSpeed
      *
      * @param int $travelSpeed
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setTravelSpeed($travelSpeed)
+    public function setTravelSpeed(int $travelSpeed): void
     {
         $this->travelSpeed = $travelSpeed;
-
-        return $this;
     }
 
     /**
@@ -167,7 +136,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getTravelSpeed()
+    public function getTravelSpeed(): int
     {
         return $this->travelSpeed;
     }
@@ -176,14 +145,10 @@ class GameUnitsBattleStats
      * Set airAttack
      *
      * @param int $airAttack
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setAirAttack($airAttack)
+    public function setAirAttack(int $airAttack): void
     {
         $this->airAttack = $airAttack;
-
-        return $this;
     }
 
     /**
@@ -191,7 +156,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getAirAttack()
+    public function getAirAttack(): int
     {
         return $this->airAttack;
     }
@@ -200,14 +165,10 @@ class GameUnitsBattleStats
      * Set airAttackSpeed
      *
      * @param int $airAttackSpeed
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setAirAttackSpeed($airAttackSpeed)
+    public function setAirAttackSpeed(int $airAttackSpeed): void
     {
         $this->airAttackSpeed = $airAttackSpeed;
-
-        return $this;
     }
 
     /**
@@ -215,7 +176,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getAirAttackSpeed()
+    public function getAirAttackSpeed(): int
     {
         return $this->airAttackSpeed;
     }
@@ -224,14 +185,10 @@ class GameUnitsBattleStats
      * Set airDefence
      *
      * @param int $airDefence
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setAirDefence($airDefence)
+    public function setAirDefence(int $airDefence): void
     {
         $this->airDefence = $airDefence;
-
-        return $this;
     }
 
     /**
@@ -239,7 +196,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getAirDefence()
+    public function getAirDefence(): int
     {
         return $this->airDefence;
     }
@@ -248,14 +205,10 @@ class GameUnitsBattleStats
      * Set airDefenceSpeed
      *
      * @param int $airDefenceSpeed
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setAirDefenceSpeed($airDefenceSpeed)
+    public function setAirDefenceSpeed(int $airDefenceSpeed): void
     {
         $this->airDefenceSpeed = $airDefenceSpeed;
-
-        return $this;
     }
 
     /**
@@ -263,7 +216,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getAirDefenceSpeed()
+    public function getAirDefenceSpeed(): int
     {
         return $this->airDefenceSpeed;
     }
@@ -272,14 +225,10 @@ class GameUnitsBattleStats
      * Set seaAttack
      *
      * @param int $seaAttack
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setSeaAttack($seaAttack)
+    public function setSeaAttack(int $seaAttack): void
     {
         $this->seaAttack = $seaAttack;
-
-        return $this;
     }
 
     /**
@@ -287,7 +236,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getSeaAttack()
+    public function getSeaAttack(): int
     {
         return $this->seaAttack;
     }
@@ -296,14 +245,10 @@ class GameUnitsBattleStats
      * Set seaAttackSpeed
      *
      * @param int $seaAttackSpeed
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setSeaAttackSpeed($seaAttackSpeed)
+    public function setSeaAttackSpeed(int $seaAttackSpeed): void
     {
         $this->seaAttackSpeed = $seaAttackSpeed;
-
-        return $this;
     }
 
     /**
@@ -311,7 +256,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getSeaAttackSpeed()
+    public function getSeaAttackSpeed(): int
     {
         return $this->seaAttackSpeed;
     }
@@ -320,14 +265,10 @@ class GameUnitsBattleStats
      * Set seaDefence
      *
      * @param int $seaDefence
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setSeaDefence($seaDefence)
+    public function setSeaDefence(int $seaDefence): void
     {
         $this->seaDefence = $seaDefence;
-
-        return $this;
     }
 
     /**
@@ -335,7 +276,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getSeaDefence()
+    public function getSeaDefence(): int
     {
         return $this->seaDefence;
     }
@@ -344,14 +285,10 @@ class GameUnitsBattleStats
      * Set seaDefenceSpeed
      *
      * @param int $seaDefenceSpeed
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setSeaDefenceSpeed($seaDefenceSpeed)
+    public function setSeaDefenceSpeed(int $seaDefenceSpeed): void
     {
         $this->seaDefenceSpeed = $seaDefenceSpeed;
-
-        return $this;
     }
 
     /**
@@ -359,7 +296,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getSeaDefenceSpeed()
+    public function getSeaDefenceSpeed(): int
     {
         return $this->seaDefenceSpeed;
     }
@@ -368,14 +305,10 @@ class GameUnitsBattleStats
      * Set groundAttack
      *
      * @param int $groundAttack
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setGroundAttack($groundAttack)
+    public function setGroundAttack(int $groundAttack): void
     {
         $this->groundAttack = $groundAttack;
-
-        return $this;
     }
 
     /**
@@ -383,7 +316,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getGroundAttack()
+    public function getGroundAttack(): int
     {
         return $this->groundAttack;
     }
@@ -392,14 +325,10 @@ class GameUnitsBattleStats
      * Set groundAttackSpeed
      *
      * @param int $groundAttackSpeed
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setGroundAttackSpeed($groundAttackSpeed)
+    public function setGroundAttackSpeed(int $groundAttackSpeed): void
     {
         $this->groundAttackSpeed = $groundAttackSpeed;
-
-        return $this;
     }
 
     /**
@@ -407,7 +336,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getGroundAttackSpeed()
+    public function getGroundAttackSpeed(): int
     {
         return $this->groundAttackSpeed;
     }
@@ -416,14 +345,10 @@ class GameUnitsBattleStats
      * Set groundDefence
      *
      * @param int $groundDefence
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setGroundDefence($groundDefence)
+    public function setGroundDefence(int $groundDefence): void
     {
         $this->groundDefence = $groundDefence;
-
-        return $this;
     }
 
     /**
@@ -431,7 +356,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getGroundDefence()
+    public function getGroundDefence(): int
     {
         return $this->groundDefence;
     }
@@ -440,14 +365,10 @@ class GameUnitsBattleStats
      * Set groundDefenceSpeed
      *
      * @param int $groundDefenceSpeed
-     *
-     * @return GameUnitsBattleStats
      */
-    public function setGroundDefenceSpeed($groundDefenceSpeed)
+    public function setGroundDefenceSpeed(int $groundDefenceSpeed): void
     {
         $this->groundDefenceSpeed = $groundDefenceSpeed;
-
-        return $this;
     }
 
     /**
@@ -455,7 +376,7 @@ class GameUnitsBattleStats
      *
      * @return int
      */
-    public function getGroundDefenceSpeed()
+    public function getGroundDefenceSpeed(): int
     {
         return $this->groundDefenceSpeed;
     }

@@ -151,3 +151,6 @@ FrankProjects\UltimateWarfare\Entity\GameUnit:
                 name: game_unit_type_id
                 referencedColumnName: id
     lifecycleCallbacks: {  }
+    embedded:
+        battleStats:
+            class: FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats
