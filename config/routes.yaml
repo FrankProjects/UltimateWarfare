@@ -212,7 +212,7 @@ Game/Fleets:
 
 Game/Fleet/Attack:
     path:      /game/fleet/attack/{fleetId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::attack
+    controller: FrankProjects\UltimateWarfare\Controller\Game\BattleController::battle
 
 Game/Fleet/Recall:
     path:      /game/fleet/recall/{fleetId}
@@ -437,8 +437,10 @@ Game/World/Sector/Search/Free:
         sectorId: '\d+'
 
 Game/World/Sector/Search/Player:
-    path:      /game/world/sector/{sectorId}/search/player
+    path:      /game/world/sector/{sectorId}/search/player/{playerName}
     controller: FrankProjects\UltimateWarfare\Controller\Game\SectorController::searchPlayer
+    defaults:
+        playerName: ''
     requirements:
         sectorId: '\d+'
 
