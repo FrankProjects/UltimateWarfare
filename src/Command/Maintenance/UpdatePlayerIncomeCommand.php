@@ -3,10 +3,9 @@
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
-use FrankProjects\UltimateWarfare\Util\NetworthCalculator;
+use FrankProjects\UltimateWarfare\Util\IncomeCalculator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,25 +26,25 @@ class UpdatePlayerIncomeCommand extends Command
     private $worldRepository;
 
     /**
-     * @var NetworthCalculator
+     * @var IncomeCalculator
      */
-    private $networthCalculator;
+    private $incomeCalculator;
 
     /**
      * UpdatePlayerIncomeCommand constructor.
      *
      * @param PlayerRepository $playerRepository
      * @param WorldRepository $worldRepository
-     * @param NetworthCalculator $networthCalculator
+     * @param IncomeCalculator $incomeCalculator
      */
     public function __construct(
         PlayerRepository $playerRepository,
         WorldRepository $worldRepository,
-        NetworthCalculator $networthCalculator
+        IncomeCalculator $incomeCalculator
     ) {
         $this->playerRepository = $playerRepository;
         $this->worldRepository = $worldRepository;
-        $this->networthCalculator = $networthCalculator;
+        $this->incomeCalculator = $incomeCalculator;
 
         parent::__construct();
     }
@@ -77,12 +76,13 @@ class UpdatePlayerIncomeCommand extends Command
         ]);
 
         $commit = $input->getOption('commit');
+        $commit = ($commit !== false);
 
         foreach ($this->worldRepository->findAll() as $world) {
             $output->writeln("Processing World: {$world->getName()}");
 
             foreach ($world->getPlayers() as $player) {
-                $this->syncPlayerResources($output, $player, $commit);
+                $this->processPlayer($output, $player, $commit);
             }
         }
 
@@ -94,93 +94,25 @@ class UpdatePlayerIncomeCommand extends Command
     }
 
     /**
-     * XXX TODO: Improve function & move to ResourceService
-     *
      * @param OutputInterface $output
      * @param Player $player
      * @param bool $commit
      */
-    private function syncPlayerResources(OutputInterface $output, Player $player, bool $commit): void
+    private function processPlayer(OutputInterface $output, Player $player, bool $commit): void
     {
-        $upkeepCash = 0;
-        $upkeepFood = 0;
-        $upkeepWood = 0;
-        $upkeepSteel = 0;
+        $output->writeln("Processing Player: {$player->getName()}");
 
-        $incomeCash = 0;
-        $incomeFood = 0;
-        $incomeWood = 0;
-        $incomeSteel = 0;
+        $resources = $this->incomeCalculator->calculateIncomeForPlayer($player);
+        if (!$player->getResources()->equals($resources)) {
+            $output->writeln("Mismatch found: {$player->getName()}");
+            $output->writeln(print_r($resources));
+            $output->writeln(print_r($player->getResources()));
 
-        foreach ($player->getWorldRegions() as $worldRegion) {
-            /** @var WorldRegionUnit $worldRgionUnit */
-            foreach ($worldRegion->getWorldRegionUnits() as $worldRgionUnit) {
-                $upkeepCash += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getUpkeepCash();
-                $upkeepFood += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getUpkeepFood();
-                $upkeepWood += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getUpkeepWood();
-                $upkeepSteel += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getUpkeepSteel();
-
-                $incomeCash += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getIncomeCash();
-                $incomeFood += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getIncomeFood();
-                $incomeWood += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getIncomeWood();
-                $incomeSteel += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getIncomeSteel();
-            }
-        }
-
-        $changes = false;
-        $resources = $player->getResources();
-
-        if ($resources->getUpkeepCash() !== $upkeepCash) {
-            $output->writeln("Mismatch found: {$player->getName()} UpkeepCash: {$resources->getUpkeepCash()} => {$upkeepCash}");
-            $changes = true;
-            $resources->setUpkeepCash($upkeepCash);
-        }
-
-        if ($resources->getUpkeepFood() !== $upkeepFood) {
-            $output->writeln("Mismatch found: {$player->getName()} UpkeepFood: {$resources->getUpkeepFood()} => {$upkeepFood}");
-            $changes = true;
-            $resources->setUpkeepFood($upkeepFood);
-        }
-
-        if ($resources->getUpkeepWood() !== $upkeepWood) {
-            $output->writeln("Mismatch found: {$player->getName()} UpkeepWood: {$resources->getUpkeepWood()} => {$upkeepWood}");
-            $changes = true;
-            $resources->setUpkeepWood($upkeepWood);
-        }
-
-        if ($resources->getUpkeepSteel() !== $upkeepSteel) {
-            $output->writeln("Mismatch found: {$player->getName()} UpkeepSteel: {$resources->getUpkeepSteel()} => {$upkeepSteel}");
-            $changes = true;
-            $resources->setUpkeepSteel($upkeepSteel);
-        }
-
-        if ($resources->getIncomeCash() !== $incomeCash) {
-            $output->writeln("Mismatch found: {$player->getName()} IncomeCash: {$resources->getIncomeCash()} => {$incomeCash}");
-            $changes = true;
-            $resources->setIncomeCash($incomeCash);
-        }
-
-        if ($resources->getIncomeFood() !== $incomeFood) {
-            $output->writeln("Mismatch found: {$player->getName()} IncomeFood: {$resources->getIncomeFood()} => {$incomeFood}");
-            $changes = true;
-            $resources->setIncomeFood($incomeFood);
-        }
-
-        if ($resources->getIncomeWood() !== $incomeWood) {
-            $output->writeln("Mismatch found: {$player->getName()} IncomeWood: {$resources->getIncomeWood()} => {$incomeWood}");
-            $changes = true;
-            $resources->setIncomeWood($incomeWood);
-        }
-
-        if ($resources->getIncomeSteel() !== $incomeSteel) {
-            $output->writeln("Mismatch found: {$player->getName()} IncomeSteel: {$resources->getIncomeSteel()} => {$incomeSteel}");
-            $changes = true;
-            $resources->setIncomeSteel($incomeSteel);
-        }
-
-        if ($changes && $commit) {
             $player->setResources($resources);
-            $this->playerRepository->save($player);
+
+            if ($commit) {
+                $this->playerRepository->save($player);
+            }
         }
     }
 }
