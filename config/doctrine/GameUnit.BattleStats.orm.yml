@@ -17,75 +17,13 @@ FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats:
       options:
         unsigned: true
       column: travel_speed
-    airAttack:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: air_attack
-    airAttackSpeed:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: air_attack_speed
-    airDefence:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: air_defence
-    airDefenceSpeed:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: air_defence_speed
-    seaAttack:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: sea_attack
-    seaAttackSpeed:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: sea_attack_speed
-    seaDefence:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: sea_defence
-    seaDefenceSpeed:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: sea_defence_speed
-    groundAttack:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: ground_attack
-    groundAttackSpeed:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: ground_attack_speed
-    groundDefence:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: ground_defence
-    groundDefenceSpeed:
-      type: integer
-      nullable: false
-      options:
-        unsigned: true
-      column: ground_defence_speed
+  embedded:
+    airBattleStats:
+      class: FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\AirBattleStats
+      columnPrefix: false
+    seaBattleStats:
+      class: FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\SeaBattleStats
+      columnPrefix: false
+    groundBattleStats:
+      class: FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\GroundBattleStats
+      columnPrefix: false

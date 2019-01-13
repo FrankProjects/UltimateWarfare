@@ -1,0 +1,27 @@
+FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\SeaBattleStats:
+  type: embeddable
+  fields:
+    attack:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+      column: sea_attack
+    attackSpeed:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+      column: sea_attack_speed
+    defence:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+      column: sea_defence
+    defenceSpeed:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+      column: sea_defence_speed
