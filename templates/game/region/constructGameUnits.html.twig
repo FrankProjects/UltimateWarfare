@@ -34,9 +34,9 @@
                         <a class="B" href="{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}" target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
                             <b>{{ gameUnit.name }}</b>
                         </a><br />
-                        <img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" />{{ gameUnit.priceCash }}<br />
-                        <img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood" />{{ gameUnit.priceWood }}<br />
-                        <img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" />{{ gameUnit.priceSteel }}<br />
+                        <img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" />{{ gameUnit.cost.cash }}<br />
+                        <img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood" />{{ gameUnit.cost.wood }}<br />
+                        <img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" />{{ gameUnit.cost.steel }}<br />
                         <img src="{{ asset('images/icons/time.gif') }}" width="25" height="25" alt="Construction time">{{ gameUnit.timestamp }}
                     </td>
                     <td width="100">
