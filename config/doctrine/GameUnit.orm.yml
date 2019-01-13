@@ -37,91 +37,11 @@ FrankProjects\UltimateWarfare\Entity\GameUnit:
             length: 100
             options:
                 fixed: false
-        priceCash:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
-            column: price_cash
-        priceWood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
-            column: price_wood
-        priceSteel:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
-            column: price_steel
-        priceFood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
-            column: price_food
         networth:
             type: integer
             nullable: false
             options:
                 unsigned: false
-        incomeCash:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: income_cash
-        incomeFood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: income_food
-        incomeWood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: income_wood
-        incomeSteel:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: income_steel
-        upkeepCash:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: upkeep_cash
-        upkeepFood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: upkeep_food
-        upkeepWood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: upkeep_wood
-        upkeepSteel:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
-            column: upkeep_steel
         timestamp:
             type: integer
             nullable: false
@@ -154,3 +74,9 @@ FrankProjects\UltimateWarfare\Entity\GameUnit:
     embedded:
         battleStats:
             class: FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats
+        cost:
+            class: FrankProjects\UltimateWarfare\Entity\GameUnit\Cost
+        income:
+            class: FrankProjects\UltimateWarfare\Entity\GameUnit\Income
+        upkeep:
+            class: FrankProjects\UltimateWarfare\Entity\GameUnit\Upkeep
