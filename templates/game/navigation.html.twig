@@ -3,7 +3,7 @@
         <a class="nav-link" href="{{ path('Game/Headquarter') }}">Headquarters</a>
     </li>
 
-    {% if player.regions > 0 %}
+    {% if player.worldRegions|length > 0 %}
         <li class="nav-item">
             <a class="nav-link" href="{{ path('Game/Reports') }}">Reports</a>
         </li>
@@ -34,7 +34,7 @@
         </li>
     {% endif %}
 
-    {% if player.regions > 0 %}
+    {% if player.worldRegions|length > 0 %}
         <li class="nav-item">
             <a class="nav-link" href="{{ path('Game/Message/Inbox') }}">Messages</a>
         </li>

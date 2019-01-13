@@ -17,16 +17,16 @@
             <td width="150"><b>Regions</b></td>
             <td width="150"><b>Networth</b></td>
         </tr>
-        {% for player in players %}
+        {% for playerRanking in players %}
             <tr>
                 <td width="50">{{ loop.index }}</td>
-                <td class="text-left" width="200">{{ player.name|escape }}
-                    {% if player.federation != null %}
-                        <i> ( {{ player.federation.name }} )</i>
+                <td class="text-left" width="200">{{ playerRanking.name|escape }}
+                    {% if playerRanking.federation != null %}
+                        <i> ( {{ playerRanking.federation.name }} )</i>
                     {% endif %}
                 </td>
-                <td>{{ player.regions }}</td>
-                <td>{{ player.networth }}</td>
+                <td>{{ playerRanking.worldRegions|length }}</td>
+                <td>{{ playerRanking.networth }}</td>
             </tr>
         {% endfor %}
     </table>

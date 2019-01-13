@@ -5,7 +5,7 @@
 {% block content %}
     <table class="table text text-center">
         <tr>
-            {% if player.regions > 1 and region.player.id is defined and region.player.id == player.id %}
+            {% if player.worldRegions|length > 1 and region.player.id is defined and region.player.id == player.id %}
             <td class="tabletop" colspan="3">
                 {% if previousRegion is not null %}
                     <a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegion.id}) }}"><<</a>
@@ -101,7 +101,7 @@
 
         <a name="bottom"></a>
 
-        {% if player.regions > 1 %}
+        {% if player.worldRegions|length > 1 %}
             {% if previousRegion is not null %}
                 <a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegion.id}) }}#bottom"><<</a>
             {% endif %}
