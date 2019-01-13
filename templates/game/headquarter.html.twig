@@ -7,8 +7,8 @@
     Advanced stats: <a class="B" href="{{ path('Game/Headquarter/Income') }}">Income</a> - <a class="B" href="{{ path('Game/Headquarter/Army') }}">Army</a> - <a class="B" href="{{ path('Game/Headquarter/Infrastructure') }}">Infrastructure</a>
 </p>
 
-{% if player.resources.incomeFood < 0 and (player.resources.food + player.resources.incomeFood) < 0 %}
-    {% set runout_food_seconds = 0 - (player.resources.food / player.resources.incomeFood) * 3600 %}
+{% if (player.income.food - player.upkeep.food) < 0 and (player.resources.food + (player.income.food - player.upkeep.food)) < 0 %}
+    {% set runout_food_seconds = 0 - (player.resources.food / (player.income.food - player.upkeep.food)) * 3600 %}
 <table class="table text text-center">
     <tr>
         <td>
@@ -32,8 +32,8 @@
 
 {% endif %}
 
-{% if player.resources.incomeCash < 0 and (player.resources.cash + player.resources.incomeCash) < 0 %}
-    {% set runout_cash_seconds = 0 - (player.resources.cash / player.resources.incomeCash) * 3600 %}
+{% if (player.income.cash - player.upkeep.cash) < 0 and (player.resources.cash + (player.income.cash - player.upkeep.cash)) < 0 %}
+    {% set runout_cash_seconds = 0 - (player.resources.cash / (player.income.cash - player.upkeep.cash)) * 3600 %}
 <table class="table text text-center">
     <tr>
         <td>
