@@ -6,6 +6,7 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Util\IncomeCalculator;
+use FrankProjects\UltimateWarfare\Util\UpkeepCalculator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,20 +32,28 @@ class UpdatePlayerIncomeCommand extends Command
     private $incomeCalculator;
 
     /**
+     * @var UpkeepCalculator
+     */
+    private $upkeepCalculator;
+
+    /**
      * UpdatePlayerIncomeCommand constructor.
      *
      * @param PlayerRepository $playerRepository
      * @param WorldRepository $worldRepository
      * @param IncomeCalculator $incomeCalculator
+     * @param UpkeepCalculator $upkeepCalculator
      */
     public function __construct(
         PlayerRepository $playerRepository,
         WorldRepository $worldRepository,
-        IncomeCalculator $incomeCalculator
+        IncomeCalculator $incomeCalculator,
+        UpkeepCalculator $upkeepCalculator
     ) {
         $this->playerRepository = $playerRepository;
         $this->worldRepository = $worldRepository;
         $this->incomeCalculator = $incomeCalculator;
+        $this->upkeepCalculator = $upkeepCalculator;
 
         parent::__construct();
     }
@@ -102,13 +111,18 @@ class UpdatePlayerIncomeCommand extends Command
     {
         $output->writeln("Processing Player: {$player->getName()}");
 
-        $resources = $this->incomeCalculator->calculateIncomeForPlayer($player);
-        if (!$player->getResources()->equals($resources)) {
-            $output->writeln("Mismatch found: {$player->getName()}");
-            $output->writeln(print_r($resources));
-            $output->writeln(print_r($player->getResources()));
+        $income = $this->incomeCalculator->calculateIncomeForPlayer($player);
+        $upkeep = $this->upkeepCalculator->calculateUpkeepForPlayer($player);
 
-            $player->setResources($resources);
+        if (!$player->getIncome()->equals($income) || !$player->getUpkeep()->equals($upkeep)) {
+            $output->writeln("Mismatch found: {$player->getName()}");
+            $output->writeln(print_r($income));
+            $output->writeln(print_r($player->getIncome()));
+            $output->writeln(print_r($upkeep));
+            $output->writeln(print_r($player->getUpkeep()));
+
+            $player->setIncome($income);
+            $player->setUpkeep($upkeep);
 
             if ($commit) {
                 $this->playerRepository->save($player);
