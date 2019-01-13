@@ -82,9 +82,7 @@ final class BattleEngine
     }
 
     /**
-     * XXX TODO: Add bunker/defense objects
      * XXX TODO: Add train station/airfield/harbor support
-     * XXX TODO: Add minesweeper support
      * XXX TODO: Add battle report
      * XXX TODO: Add battle "lost units" summary
      *

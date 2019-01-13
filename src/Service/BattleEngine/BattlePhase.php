@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Service\BattleEngine;
 
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnit;
+use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\AbstractBattleStats;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use RuntimeException;
 
@@ -187,5 +188,48 @@ abstract class BattlePhase implements IBattlePhase
         }
 
         return intval($power / $health);
+    }
+
+    /**
+     * @param GameUnit $gameUnit
+     * @return AbstractBattleStats
+     */
+    private function getBattlePhaseBattleStats(GameUnit $gameUnit): AbstractBattleStats
+    {
+        if ($this->name === BattlePhase::AIR_PHASE) {
+            return $gameUnit->getBattleStats()->getAirBattleStats();
+        } elseif ($this->name === BattlePhase::SEA_PHASE) {
+            return $gameUnit->getBattleStats()->getSeaBattleStats();
+        } elseif ($this->name === BattlePhase::GROUND_PHASE) {
+            return $gameUnit->getBattleStats()->getGroundBattleStats();
+        }
+
+        throw new RunTimeException("Invalid BattleStats for {$this->name}");
+    }
+
+    /**
+     * @return int
+     */
+    public function getAttackPower(): int
+    {
+        $power = 0;
+        foreach ($this->getAttackerGameUnits() as $gameUnit) {
+            $power += $this->getBattlePhaseBattleStats($gameUnit)->getAttack() * $gameUnit->getAmount();
+        }
+
+        return $power;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDefensePower(): int
+    {
+        $power = 0;
+        foreach ($this->getDefenderGameUnits() as $gameUnit) {
+            $power += $this->getBattlePhaseBattleStats($gameUnit)->getDefence() * $gameUnit->getAmount();
+        }
+
+        return $power;
     }
 }
