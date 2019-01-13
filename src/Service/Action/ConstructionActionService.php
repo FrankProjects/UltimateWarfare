@@ -96,9 +96,9 @@ final class ConstructionActionService
                 continue;
             }
 
-            $priceCash = $priceCash + ($amount * $gameUnit->getPriceCash());
-            $priceWood = $priceWood + ($amount * $gameUnit->getPriceWood());
-            $priceSteel = $priceSteel + ($amount * $gameUnit->getPriceSteel());
+            $priceCash = $priceCash + ($amount * $gameUnit->getCost()->getCash());
+            $priceWood = $priceWood + ($amount * $gameUnit->getCost()->getWood());
+            $priceSteel = $priceSteel + ($amount * $gameUnit->getCost()->getSteel());
 
             if ($gameUnitType->getId() == 1) {
                 $totalBuild = $totalBuild + $amount;

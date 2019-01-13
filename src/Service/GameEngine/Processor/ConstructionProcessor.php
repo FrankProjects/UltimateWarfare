@@ -92,15 +92,15 @@ final class ConstructionProcessor implements Processor
      */
     private function updatePlayerResources(Player $player, Construction $construction): Player
     {
-        $upkeepCash = $construction->getNumber() * $construction->getGameUnit()->getUpkeepCash();
-        $upkeepFood = $construction->getNumber() * $construction->getGameUnit()->getUpkeepFood();
-        $upkeepWood = $construction->getNumber() * $construction->getGameUnit()->getUpkeepWood();
-        $upkeepSteel = $construction->getNumber() * $construction->getGameUnit()->getUpkeepSteel();
+        $upkeepCash = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getCash();
+        $upkeepFood = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getFood();
+        $upkeepWood = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getWood();
+        $upkeepSteel = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getSteel();
 
-        $incomeCash = $construction->getNumber() * $construction->getGameUnit()->getIncomeCash();
-        $incomeFood = $construction->getNumber() * $construction->getGameUnit()->getIncomeFood();
-        $incomeWood = $construction->getNumber() * $construction->getGameUnit()->getIncomeWood();
-        $incomeSteel = $construction->getNumber() * $construction->getGameUnit()->getIncomeSteel();
+        $incomeCash = $construction->getNumber() * $construction->getGameUnit()->getIncome()->getCash();
+        $incomeFood = $construction->getNumber() * $construction->getGameUnit()->getIncome()->getFood();
+        $incomeWood = $construction->getNumber() * $construction->getGameUnit()->getIncome()->getWood();
+        $incomeSteel = $construction->getNumber() * $construction->getGameUnit()->getIncome()->getSteel();
 
         $income = $player->getIncome();
         $upkeep = $player->getUpkeep();
