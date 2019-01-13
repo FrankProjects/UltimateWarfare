@@ -137,4 +137,21 @@ abstract class AbstractGameResources
     {
         $this->steel += $steel;
     }
+
+    /**
+     * @param AbstractGameResources $abstractGameResources
+     * @return bool
+     */
+    public function equals(AbstractGameResources $abstractGameResources): bool
+    {
+        if (
+            $abstractGameResources->cash === $this->cash &&
+            $abstractGameResources->food === $this->food &&
+            $abstractGameResources->steel === $this->steel &&
+            $abstractGameResources->wood === $this->wood
+        ) {
+            return true;
+        }
+        return false;
+    }
 }
