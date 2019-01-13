@@ -7,6 +7,7 @@ namespace FrankProjects\UltimateWarfare\Service;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Util\IncomeCalculator;
+use FrankProjects\UltimateWarfare\Util\UpkeepCalculator;
 
 final class IncomeUpdaterService
 {
@@ -21,17 +22,25 @@ final class IncomeUpdaterService
     private $incomeCalculator;
 
     /**
+     * @var UpkeepCalculator
+     */
+    private $upkeepCalculator;
+
+    /**
      * IncomeUpdaterService constructor.
      *
      * @param PlayerRepository $playerRepository
      * @param IncomeCalculator $incomeCalculator
+     * @param UpkeepCalculator $upkeepCalculator
      */
     public function __construct(
         PlayerRepository $playerRepository,
-        IncomeCalculator $incomeCalculator
+        IncomeCalculator $incomeCalculator,
+        UpkeepCalculator $upkeepCalculator
     ) {
         $this->playerRepository = $playerRepository;
         $this->incomeCalculator = $incomeCalculator;
+        $this->upkeepCalculator = $upkeepCalculator;
     }
 
     /**
@@ -39,8 +48,11 @@ final class IncomeUpdaterService
      */
     public function updateIncomeForPlayer(Player $player): void
     {
-        $resources = $this->incomeCalculator->calculateIncomeForPlayer($player);
-        $player->setResources($resources);
+        $income = $this->incomeCalculator->calculateIncomeForPlayer($player);
+        $upkeep = $this->upkeepCalculator->calculateUpkeepForPlayer($player);
+
+        $player->setIncome($income);
+        $player->setUpkeep($upkeep);
 
         $this->playerRepository->save($player);
     }
