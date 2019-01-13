@@ -49,7 +49,7 @@ class Fleet
     private $fleetUnits = [];
 
     /**
-     * WorldRegion constructor.
+     * Fleet constructor.
      */
     public function __construct()
     {
