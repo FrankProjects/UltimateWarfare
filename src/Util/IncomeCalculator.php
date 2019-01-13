@@ -12,19 +12,13 @@ final class IncomeCalculator
     private $income;
 
     /**
-     * IncomeCalculator constructor.
-     */
-    public function __construct()
-    {
-        $this->income = new Player\Income();
-    }
-
-    /**
      * @param Player $player
      * @return Player\Income
      */
     public function calculateIncomeForPlayer(Player $player): Player\Income
     {
+        $this->income = new Player\Income();
+
         $this->calculateIncomeForFleets($player);
         $this->calculateIncomeForWorldRegionUnits($player);
 

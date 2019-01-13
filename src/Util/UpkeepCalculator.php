@@ -12,19 +12,13 @@ final class UpkeepCalculator
     private $upkeep;
 
     /**
-     * UpkeepCalculator constructor.
-     */
-    public function __construct()
-    {
-        $this->upkeep = new Player\Upkeep();
-    }
-
-    /**
      * @param Player $player
      * @return Player\Upkeep
      */
     public function calculateUpkeepForPlayer(Player $player): Player\Upkeep
     {
+        $this->upkeep = new Player\Upkeep();
+
         $this->calculateUpkeepForFleets($player);
         $this->calculateUpkeepForWorldRegionUnits($player);
 
