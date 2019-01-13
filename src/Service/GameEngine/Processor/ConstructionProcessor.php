@@ -102,18 +102,21 @@ final class ConstructionProcessor implements Processor
         $incomeWood = $construction->getNumber() * $construction->getGameUnit()->getIncomeWood();
         $incomeSteel = $construction->getNumber() * $construction->getGameUnit()->getIncomeSteel();
 
-        $resources = $player->getResources();
-        $resources->setUpkeepCash($resources->getUpkeepCash() + $upkeepCash);
-        $resources->setUpkeepFood($resources->getUpkeepFood() + $upkeepFood);
-        $resources->setUpkeepWood($resources->getUpkeepWood() + $upkeepWood);
-        $resources->setUpkeepSteel($resources->getUpkeepSteel() + $upkeepSteel);
+        $income = $player->getIncome();
+        $upkeep = $player->getUpkeep();
 
-        $resources->setIncomeCash($resources->getIncomeCash() + $incomeCash);
-        $resources->setIncomeFood($resources->getIncomeFood() + $incomeFood);
-        $resources->setIncomeWood($resources->getIncomeWood() + $incomeWood);
-        $resources->setIncomeSteel($resources->getIncomeSteel() + $incomeSteel);
+        $upkeep->addCash($upkeepCash);
+        $upkeep->addFood($upkeepFood);
+        $upkeep->addWood($upkeepWood);
+        $upkeep->addSteel($upkeepSteel);
 
-        $player->setResources($resources);
+        $income->addCash($incomeCash);
+        $income->addFood($incomeFood);
+        $income->addWood($incomeWood);
+        $income->addSteel($incomeSteel);
+
+        $player->setIncome($income);
+        $player->setUpkeep($upkeep);
 
         return $player;
     }

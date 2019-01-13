@@ -73,11 +73,13 @@ final class GameEngine
         }
 
         $timeDiff = $timestamp - $player->getTimestampUpdate();
+        $income = $player->getIncome();
+        $upkeep = $player->getUpkeep();
         $resources = $player->getResources();
-        $incomeCashRate = $resources->getIncomeCash() - $resources->getUpkeepCash();
-        $incomeFoodRate = $resources->getIncomeFood() - $resources->getUpkeepFood();
-        $incomeWoodRate = $resources->getIncomeWood() - $resources->getUpkeepWood();
-        $incomeSteelRate = $resources->getIncomeSteel() - $resources->getUpkeepSteel();
+        $incomeCashRate = $income->getCash() - $upkeep->getCash();
+        $incomeFoodRate = $income->getFood() - $upkeep->getFood();
+        $incomeWoodRate = $income->getWood() - $upkeep->getWood();
+        $incomeSteelRate = $income->getSteel() - $upkeep->getSteel();
         
         $incomeCash = intval(($incomeCashRate / 3600) * $timeDiff);
         $incomeFood = intval(($incomeFoodRate / 3600) * $timeDiff);
