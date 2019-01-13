@@ -110,8 +110,11 @@ FrankProjects\UltimateWarfare\Entity\Player:
                 referencedColumnName: id
     lifecycleCallbacks: {  }
     embedded:
-        resources:
-            class: FrankProjects\UltimateWarfare\Entity\Player\Resources
-            columnPrefix: false
+        income:
+            class: FrankProjects\UltimateWarfare\Entity\Player\Income
         notifications:
             class: FrankProjects\UltimateWarfare\Entity\Player\Notifications
+        resources:
+            class: FrankProjects\UltimateWarfare\Entity\Player\Resources
+        upkeep:
+            class: FrankProjects\UltimateWarfare\Entity\Player\Upkeep

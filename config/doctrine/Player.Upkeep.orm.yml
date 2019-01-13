@@ -1,4 +1,4 @@
-FrankProjects\UltimateWarfare\Entity\Player\Resources:
+FrankProjects\UltimateWarfare\Entity\Player\Upkeep:
   type: embeddable
   fields:
     cash:
