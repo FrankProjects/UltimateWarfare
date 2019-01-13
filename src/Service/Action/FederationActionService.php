@@ -199,7 +199,7 @@ final class FederationActionService
         $this->playerRepository->save($player);
 
         $federation->setNetworth($federation->getNetworth() - $player->getNetworth());
-        $federation->setRegions($federation->getRegions() - $player->getRegions());
+        $federation->setRegions($federation->getRegions() - count($player->getWorldRegions()));
         $this->federationRepository->save($federation);
     }
 

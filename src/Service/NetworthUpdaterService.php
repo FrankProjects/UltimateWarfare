@@ -50,7 +50,6 @@ final class NetworthUpdaterService
     {
         $networth = $this->networthCalculator->calculateNetworthForPlayer($player);
         $player->setNetworth($networth);
-        $player->setRegions(count($player->getWorldRegions()));
 
         if ($player->getFederation() !== null) {
             $federation = $player->getFederation();

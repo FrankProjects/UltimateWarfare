@@ -247,28 +247,6 @@ class Player
     }
 
     /**
-     * Set regions
-     *
-     * @param int $regions
-     */
-    public function setRegions(int $regions)
-    {
-        $this->regions = $regions;
-    }
-
-    /**
-     * XXX TODO: Remove from model, query regions...
-     *
-     * Get regions
-     *
-     * @return int
-     */
-    public function getRegions(): int
-    {
-        return $this->regions;
-    }
-
-    /**
      * Set networth
      *
      * @param int $networth
@@ -582,7 +560,7 @@ class Player
      */
     public function getRegionPrice(): int
     {
-        return $this->getRegions() * self::PRICE_PER_REGION;
+        return count($this->getWorldRegions()) * self::PRICE_PER_REGION;
     }
 
     /**

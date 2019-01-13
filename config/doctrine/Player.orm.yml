@@ -36,12 +36,6 @@ FrankProjects\UltimateWarfare\Entity\Player:
             options:
                 unsigned: true
             column: timestamp_update
-        regions:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-                default: '0'
         networth:
             type: integer
             nullable: false

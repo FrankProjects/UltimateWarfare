@@ -116,7 +116,6 @@ final class RegionActionService
         $resources->setCash($resources->getCash() - $player->getRegionPrice());
 
         $player->setResources($resources);
-        $player->setRegions($player->getRegions() + 1);
 
         // XXX TODO: Fix me
         //$player->setNetworth($this->calculateNetworth($player));
