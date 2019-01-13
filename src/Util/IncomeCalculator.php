@@ -7,61 +7,57 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 final class IncomeCalculator
 {
     /**
-     * @param Player $player
-     * @return Player\Resources
+     * @var Player\Income
      */
-    public function calculateIncomeForPlayer(Player $player): Player\Resources
+    private $income;
+
+    /**
+     * IncomeCalculator constructor.
+     */
+    public function __construct()
     {
-        $upkeepCash = 0;
-        $upkeepFood = 0;
-        $upkeepWood = 0;
-        $upkeepSteel = 0;
+        $this->income = new Player\Income();
+    }
 
-        $incomeCash = 0;
-        $incomeFood = 0;
-        $incomeWood = 0;
-        $incomeSteel = 0;
+    /**
+     * @param Player $player
+     * @return Player\Income
+     */
+    public function calculateIncomeForPlayer(Player $player): Player\Income
+    {
+        $this->calculateIncomeForFleets($player);
+        $this->calculateIncomeForWorldRegionUnits($player);
 
+        return $this->income;
+    }
+
+    /**
+     * @param Player $player
+     */
+    private function calculateIncomeForFleets(Player $player): void
+    {
         foreach ($player->getFleets() as $fleet) {
             foreach ($fleet->getFleetUnits() as $fleetUnit) {
-                $upkeepCash += $fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getUpkeepCash();
-                $upkeepFood += $fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getUpkeepFood();
-                $upkeepWood += $fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getUpkeepWood();
-                $upkeepSteel += $fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getUpkeepSteel();
-
-                $incomeCash += $fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getIncomeCash();
-                $incomeFood += $fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getIncomeFood();
-                $incomeWood += $fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getIncomeWood();
-                $incomeSteel += $fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getIncomeSteel();
+                $this->income->addCash($fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getIncomeCash());
+                $this->income->addFood($fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getIncomeFood());
+                $this->income->addWood($fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getIncomeWood());
+                $this->income->addSteel($fleetUnit->getAmount() * $fleetUnit->getGameUnit()->getIncomeSteel());
             }
         }
+    }
 
+    /**
+     * @param Player $player
+     */
+    private function calculateIncomeForWorldRegionUnits(Player $player): void
+    {
         foreach ($player->getWorldRegions() as $worldRegion) {
-            foreach ($worldRegion->getWorldRegionUnits() as $worldRgionUnit) {
-                $upkeepCash += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getUpkeepCash();
-                $upkeepFood += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getUpkeepFood();
-                $upkeepWood += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getUpkeepWood();
-                $upkeepSteel += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getUpkeepSteel();
-
-                $incomeCash += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getIncomeCash();
-                $incomeFood += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getIncomeFood();
-                $incomeWood += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getIncomeWood();
-                $incomeSteel += $worldRgionUnit->getAmount() * $worldRgionUnit->getGameUnit()->getIncomeSteel();
+            foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
+                $this->income->addCash($worldRegionUnit->getAmount() * $worldRegionUnit->getGameUnit()->getIncomeCash());
+                $this->income->addFood($worldRegionUnit->getAmount() * $worldRegionUnit->getGameUnit()->getIncomeFood());
+                $this->income->addWood($worldRegionUnit->getAmount() * $worldRegionUnit->getGameUnit()->getIncomeWood());
+                $this->income->addSteel($worldRegionUnit->getAmount() * $worldRegionUnit->getGameUnit()->getIncomeSteel());
             }
         }
-
-        $resources = clone $player->getResources();
-
-        $resources->setUpkeepCash($upkeepCash);
-        $resources->setUpkeepFood($upkeepFood);
-        $resources->setUpkeepWood($upkeepWood);
-        $resources->setUpkeepSteel($upkeepSteel);
-
-        $resources->setIncomeCash($incomeCash);
-        $resources->setIncomeFood($incomeFood);
-        $resources->setIncomeWood($incomeWood);
-        $resources->setIncomeSteel($incomeSteel);
-
-        return $resources;
     }
 }
