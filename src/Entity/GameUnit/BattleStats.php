@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity\GameUnit;
 
+use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\AirBattleStats;
+use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\GroundBattleStats;
+use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\SeaBattleStats;
+
 class BattleStats
 {
     /**
@@ -22,64 +26,29 @@ class BattleStats
     private $travelSpeed = 0;
 
     /**
-     * @var int
+     * @var AirBattleStats
      */
-    private $airAttack = 0;
+    private $airBattleStats;
 
     /**
-     * @var int
+     * @var SeaBattleStats
      */
-    private $airAttackSpeed = 0;
+    private $seaBattleStats;
 
     /**
-     * @var int
+     * @var GroundBattleStats
      */
-    private $airDefence = 0;
+    private $groundBattleStats;
 
     /**
-     * @var int
+     * BattleStats constructor.
      */
-    private $airDefenceSpeed = 0;
-
-    /**
-     * @var int
-     */
-    private $seaAttack = 0;
-
-    /**
-     * @var int
-     */
-    private $seaAttackSpeed = 0;
-
-    /**
-     * @var int
-     */
-    private $seaDefence = 0;
-
-    /**
-     * @var int
-     */
-    private $seaDefenceSpeed = 0;
-
-    /**
-     * @var int
-     */
-    private $groundAttack = 0;
-
-    /**
-     * @var int
-     */
-    private $groundAttackSpeed = 0;
-
-    /**
-     * @var int
-     */
-    private $groundDefence = 0;
-
-    /**
-     * @var int
-     */
-    private $groundDefenceSpeed = 0;
+    public function __construct()
+    {
+        $this->airBattleStats = new AirBattleStats();
+        $this->seaBattleStats = new SeaBattleStats();
+        $this->groundBattleStats = new GroundBattleStats();
+    }
 
     /**
      * Set health
@@ -142,242 +111,50 @@ class BattleStats
     }
 
     /**
-     * Set airAttack
-     *
-     * @param int $airAttack
+     * @return AirBattleStats
      */
-    public function setAirAttack(int $airAttack): void
+    public function getAirBattleStats(): AirBattleStats
     {
-        $this->airAttack = $airAttack;
+        return $this->airBattleStats;
     }
 
     /**
-     * Get airAttack
-     *
-     * @return int
+     * @param AirBattleStats $airBattleStats
      */
-    public function getAirAttack(): int
+    public function setAirBattleStats(AirBattleStats $airBattleStats): void
     {
-        return $this->airAttack;
+        $this->airBattleStats = $airBattleStats;
     }
 
     /**
-     * Set airAttackSpeed
-     *
-     * @param int $airAttackSpeed
+     * @return SeaBattleStats
      */
-    public function setAirAttackSpeed(int $airAttackSpeed): void
+    public function getSeaBattleStats(): SeaBattleStats
     {
-        $this->airAttackSpeed = $airAttackSpeed;
+        return $this->seaBattleStats;
     }
 
     /**
-     * Get airAttackSpeed
-     *
-     * @return int
+     * @param SeaBattleStats $seaBattleStats
      */
-    public function getAirAttackSpeed(): int
+    public function setSeaBattleStats(SeaBattleStats $seaBattleStats): void
     {
-        return $this->airAttackSpeed;
+        $this->seaBattleStats = $seaBattleStats;
     }
 
     /**
-     * Set airDefence
-     *
-     * @param int $airDefence
+     * @return GroundBattleStats
      */
-    public function setAirDefence(int $airDefence): void
+    public function getGroundBattleStats(): GroundBattleStats
     {
-        $this->airDefence = $airDefence;
+        return $this->groundBattleStats;
     }
 
     /**
-     * Get airDefence
-     *
-     * @return int
+     * @param GroundBattleStats $groundBattleStats
      */
-    public function getAirDefence(): int
+    public function setGroundBattleStats(GroundBattleStats $groundBattleStats): void
     {
-        return $this->airDefence;
-    }
-
-    /**
-     * Set airDefenceSpeed
-     *
-     * @param int $airDefenceSpeed
-     */
-    public function setAirDefenceSpeed(int $airDefenceSpeed): void
-    {
-        $this->airDefenceSpeed = $airDefenceSpeed;
-    }
-
-    /**
-     * Get airDefenceSpeed
-     *
-     * @return int
-     */
-    public function getAirDefenceSpeed(): int
-    {
-        return $this->airDefenceSpeed;
-    }
-
-    /**
-     * Set seaAttack
-     *
-     * @param int $seaAttack
-     */
-    public function setSeaAttack(int $seaAttack): void
-    {
-        $this->seaAttack = $seaAttack;
-    }
-
-    /**
-     * Get seaAttack
-     *
-     * @return int
-     */
-    public function getSeaAttack(): int
-    {
-        return $this->seaAttack;
-    }
-
-    /**
-     * Set seaAttackSpeed
-     *
-     * @param int $seaAttackSpeed
-     */
-    public function setSeaAttackSpeed(int $seaAttackSpeed): void
-    {
-        $this->seaAttackSpeed = $seaAttackSpeed;
-    }
-
-    /**
-     * Get seaAttackSpeed
-     *
-     * @return int
-     */
-    public function getSeaAttackSpeed(): int
-    {
-        return $this->seaAttackSpeed;
-    }
-
-    /**
-     * Set seaDefence
-     *
-     * @param int $seaDefence
-     */
-    public function setSeaDefence(int $seaDefence): void
-    {
-        $this->seaDefence = $seaDefence;
-    }
-
-    /**
-     * Get seaDefence
-     *
-     * @return int
-     */
-    public function getSeaDefence(): int
-    {
-        return $this->seaDefence;
-    }
-
-    /**
-     * Set seaDefenceSpeed
-     *
-     * @param int $seaDefenceSpeed
-     */
-    public function setSeaDefenceSpeed(int $seaDefenceSpeed): void
-    {
-        $this->seaDefenceSpeed = $seaDefenceSpeed;
-    }
-
-    /**
-     * Get seaDefenceSpeed
-     *
-     * @return int
-     */
-    public function getSeaDefenceSpeed(): int
-    {
-        return $this->seaDefenceSpeed;
-    }
-
-    /**
-     * Set groundAttack
-     *
-     * @param int $groundAttack
-     */
-    public function setGroundAttack(int $groundAttack): void
-    {
-        $this->groundAttack = $groundAttack;
-    }
-
-    /**
-     * Get groundAttack
-     *
-     * @return int
-     */
-    public function getGroundAttack(): int
-    {
-        return $this->groundAttack;
-    }
-
-    /**
-     * Set groundAttackSpeed
-     *
-     * @param int $groundAttackSpeed
-     */
-    public function setGroundAttackSpeed(int $groundAttackSpeed): void
-    {
-        $this->groundAttackSpeed = $groundAttackSpeed;
-    }
-
-    /**
-     * Get groundAttackSpeed
-     *
-     * @return int
-     */
-    public function getGroundAttackSpeed(): int
-    {
-        return $this->groundAttackSpeed;
-    }
-
-    /**
-     * Set groundDefence
-     *
-     * @param int $groundDefence
-     */
-    public function setGroundDefence(int $groundDefence): void
-    {
-        $this->groundDefence = $groundDefence;
-    }
-
-    /**
-     * Get groundDefence
-     *
-     * @return int
-     */
-    public function getGroundDefence(): int
-    {
-        return $this->groundDefence;
-    }
-
-    /**
-     * Set groundDefenceSpeed
-     *
-     * @param int $groundDefenceSpeed
-     */
-    public function setGroundDefenceSpeed(int $groundDefenceSpeed): void
-    {
-        $this->groundDefenceSpeed = $groundDefenceSpeed;
-    }
-
-    /**
-     * Get groundDefenceSpeed
-     *
-     * @return int
-     */
-    public function getGroundDefenceSpeed(): int
-    {
-        return $this->groundDefenceSpeed;
+        $this->groundBattleStats = $groundBattleStats;
     }
 }
