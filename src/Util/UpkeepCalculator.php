@@ -15,7 +15,7 @@ final class UpkeepCalculator extends AbstractPlayerCalculator
         $this->abstractGameResources = new Player\Upkeep();
 
         $this->calculateForFleets($player, AbstractPlayerCalculator::ABSTRACT_GAME_RESOURCES_UPKEEP);
-        $this->calculateForWorldRegionUnits($player, AbstractPlayerCalculator::ABSTRACT_GAME_RESOURCES_UPKEEP);
+        $this->calculateForWorldRegions($player, AbstractPlayerCalculator::ABSTRACT_GAME_RESOURCES_UPKEEP);
 
         return $this->abstractGameResources;
     }

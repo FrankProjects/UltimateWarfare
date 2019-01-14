@@ -15,7 +15,7 @@ final class IncomeCalculator extends AbstractPlayerCalculator
         $this->abstractGameResources = new Player\Income();
 
         $this->calculateForFleets($player, AbstractPlayerCalculator::ABSTRACT_GAME_RESOURCES_INCOME);
-        $this->calculateForWorldRegionUnits($player, AbstractPlayerCalculator::ABSTRACT_GAME_RESOURCES_INCOME);
+        $this->calculateForWorldRegions($player, AbstractPlayerCalculator::ABSTRACT_GAME_RESOURCES_INCOME);
 
         return $this->abstractGameResources;
     }

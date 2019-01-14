@@ -3,8 +3,10 @@
 namespace FrankProjects\UltimateWarfare\Util;
 
 use FrankProjects\UltimateWarfare\Entity\AbstractGameResources;
+use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\GameUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use RuntimeException;
 
 abstract class AbstractPlayerCalculator
@@ -24,14 +26,19 @@ abstract class AbstractPlayerCalculator
     protected function calculateForFleets(Player $player, string $type): void
     {
         foreach ($player->getFleets() as $fleet) {
-            foreach ($fleet->getFleetUnits() as $fleetUnit) {
-                $gameUnitResource = $this->getAbstractGameResources($fleetUnit->getGameUnit(), $type);
+            $this->calculateForFleetUnits($fleet, $type);
+        }
+    }
 
-                $this->abstractGameResources->addCash($fleetUnit->getAmount() * $gameUnitResource->getCash());
-                $this->abstractGameResources->addFood($fleetUnit->getAmount() * $gameUnitResource->getFood());
-                $this->abstractGameResources->addWood($fleetUnit->getAmount() * $gameUnitResource->getWood());
-                $this->abstractGameResources->addSteel($fleetUnit->getAmount() * $gameUnitResource->getSteel());
-            }
+    /**
+     * @param Fleet $fleet
+     * @param string $type
+     */
+    private function calculateForFleetUnits(Fleet $fleet, string $type): void
+    {
+        foreach ($fleet->getFleetUnits() as $fleetUnit) {
+            $gameUnitResource = $this->getAbstractGameResources($fleetUnit->getGameUnit(), $type);
+            $this->updateAbstractGameResource($fleetUnit->getAmount(), $gameUnitResource);
         }
     }
 
@@ -39,18 +46,35 @@ abstract class AbstractPlayerCalculator
      * @param Player $player
      * @param string $type
      */
-    protected function calculateForWorldRegionUnits(Player $player, string $type): void
+    protected function calculateForWorldRegions(Player $player, string $type): void
     {
         foreach ($player->getWorldRegions() as $worldRegion) {
-            foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
-                $gameUnitResource = $this->getAbstractGameResources($worldRegionUnit->getGameUnit(), $type);
-
-                $this->abstractGameResources->addCash($worldRegionUnit->getAmount() * $gameUnitResource->getCash());
-                $this->abstractGameResources->addFood($worldRegionUnit->getAmount() * $gameUnitResource->getFood());
-                $this->abstractGameResources->addWood($worldRegionUnit->getAmount() * $gameUnitResource->getWood());
-                $this->abstractGameResources->addSteel($worldRegionUnit->getAmount() * $gameUnitResource->getSteel());
-            }
+            $this->calculateForWorldRegionUnits($worldRegion, $type);
         }
+    }
+
+    /**
+     * @param WorldRegion $worldRegion
+     * @param string $type
+     */
+    private function calculateForWorldRegionUnits(WorldRegion $worldRegion, string $type): void
+    {
+        foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
+            $gameUnitResource = $this->getAbstractGameResources($worldRegionUnit->getGameUnit(), $type);
+            $this->updateAbstractGameResource($worldRegionUnit->getAmount(), $gameUnitResource);
+        }
+    }
+
+    /**
+     * @param int $amount
+     * @param AbstractGameResources $abstractGameResources
+     */
+    private function updateAbstractGameResource(int $amount, AbstractGameResources $abstractGameResources): void
+    {
+        $this->abstractGameResources->addCash($amount * $abstractGameResources->getCash());
+        $this->abstractGameResources->addFood($amount * $abstractGameResources->getFood());
+        $this->abstractGameResources->addWood($amount * $abstractGameResources->getWood());
+        $this->abstractGameResources->addSteel($amount * $abstractGameResources->getSteel());
     }
 
     /**
