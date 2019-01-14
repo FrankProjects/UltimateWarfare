@@ -96,14 +96,8 @@ final class BattleEngine
         $attackerGameUnits = $fleet->getFleetUnits()->toArray();
         $defenderGameUnits = $fleet->getTargetWorldRegion()->getWorldRegionUnits()->toArray();
 
-        $battlePhases = [
-            BattlePhase::AIR_PHASE,
-            BattlePhase::SEA_PHASE,
-            BattlePhase::GROUND_PHASE
-        ];
-
         $battlePhaseResults = [];
-        foreach ($battlePhases as $battlePhaseName) {
+        foreach ($this->getBattlePhases() as $battlePhaseName) {
             $battlePhase = BattlePhase::factory($battlePhaseName, $attackerGameUnits, $defenderGameUnits);
             $battlePhase->startBattlePhase();
 
@@ -115,47 +109,21 @@ final class BattleEngine
 
         $battleResults = new BattleResult($battlePhaseResults);
 
-        $attackingPlayer = $fleet->getPlayer();
-        $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
-
-        $targetWorldRegion = $fleet->getTargetWorldRegion();
-
-        if ($battleResults->hasWon()) {
-            $targetWorldRegion->setPlayer($attackingPlayer);
-            $this->worldRegionRepository->save($targetWorldRegion);
-
-            foreach ($targetWorldRegion->getWorldRegionUnits() as $regionUnit) {
-                $this->worldRegionUnitRepository->remove($regionUnit);
-            }
-
-            foreach ($attackerGameUnits as $fleetUnit) {
-                $worldRegionUnit = WorldRegionUnit::create($targetWorldRegion, $fleetUnit->getGameUnit(), $fleetUnit->getAmount());
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
-            }
-            $this->fleetRepository->remove($fleet);
-        } else {
-            // XXX TODO: Improve code
-            foreach ($targetWorldRegion->getWorldRegionUnits() as $regionUnit) {
-                $this->worldRegionUnitRepository->remove($regionUnit);
-            }
-            foreach ($defenderGameUnits as $worldRegionUnit) {
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
-            }
-            foreach ($fleet->getFleetUnits() as $fleetUnit) {
-                $this->fleetUnitRepository->remove($fleetUnit);
-            }
-            foreach ($attackerGameUnits as $fleetUnit) {
-                $this->fleetUnitRepository->save($fleetUnit);
-            }
-        }
-
-        $this->networthUpdaterService->updateNetworthForPlayer($attackingPlayer);
-        $this->networthUpdaterService->updateNetworthForPlayer($defendingPlayer);
-
-        $this->incomeUpdaterService->updateIncomeForPlayer($attackingPlayer);
-        $this->incomeUpdaterService->updateIncomeForPlayer($defendingPlayer);
+        $this->processResults($battleResults, $fleet, $attackerGameUnits, $defenderGameUnits);
 
         return $battleResults;
+    }
+
+    /**
+     * @return array
+     */
+    private function getBattlePhases(): array
+    {
+        return [
+            BattlePhase::AIR_PHASE,
+            BattlePhase::SEA_PHASE,
+            BattlePhase::GROUND_PHASE
+        ];
     }
 
     /**
@@ -182,6 +150,75 @@ final class BattleEngine
 
         if ($targetPlayer->getTimestampJoined() + 172800 > time()) {
             throw new RunTimeException("You can not attack this player in the first 48 hours");
+        }
+    }
+
+    /**
+     * @param BattleResult $battleResults
+     * @param Fleet $fleet
+     * @param array $attackerGameUnits
+     * @param array $defenderGameUnits
+     */
+    private function processResults(BattleResult $battleResults, Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
+    {
+        $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
+
+        if ($battleResults->hasWon()) {
+            $this->updateBattleWon($fleet, $attackerGameUnits);
+        } else {
+            $this->updateBattleLost($fleet, $attackerGameUnits, $defenderGameUnits);
+
+        }
+
+        $this->networthUpdaterService->updateNetworthForPlayer($fleet->getPlayer());
+        $this->networthUpdaterService->updateNetworthForPlayer($defendingPlayer);
+
+        $this->incomeUpdaterService->updateIncomeForPlayer($fleet->getPlayer());
+        $this->incomeUpdaterService->updateIncomeForPlayer($defendingPlayer);
+    }
+
+    /**
+     * @param Fleet $fleet
+     * @param array $attackerGameUnits
+     */
+    private function updateBattleWon(Fleet $fleet, array $attackerGameUnits): void
+    {
+        $targetWorldRegion = $fleet->getTargetWorldRegion();
+
+        $targetWorldRegion->setPlayer($fleet->getPlayer());
+        $this->worldRegionRepository->save($targetWorldRegion);
+
+        foreach ($targetWorldRegion->getWorldRegionUnits() as $regionUnit) {
+            $this->worldRegionUnitRepository->remove($regionUnit);
+        }
+
+        foreach ($attackerGameUnits as $fleetUnit) {
+            $worldRegionUnit = WorldRegionUnit::create($targetWorldRegion, $fleetUnit->getGameUnit(), $fleetUnit->getAmount());
+            $this->worldRegionUnitRepository->save($worldRegionUnit);
+        }
+        $this->fleetRepository->remove($fleet);
+    }
+
+    /**
+     * XXX TODO: Improve code
+     *
+     * @param Fleet $fleet
+     * @param array $attackerGameUnits
+     * @param array $defenderGameUnits
+     */
+    private function updateBattleLost(Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
+    {
+        foreach ($fleet->getTargetWorldRegion()->getWorldRegionUnits() as $regionUnit) {
+            $this->worldRegionUnitRepository->remove($regionUnit);
+        }
+        foreach ($defenderGameUnits as $worldRegionUnit) {
+            $this->worldRegionUnitRepository->save($worldRegionUnit);
+        }
+        foreach ($fleet->getFleetUnits() as $fleetUnit) {
+            $this->fleetUnitRepository->remove($fleetUnit);
+        }
+        foreach ($attackerGameUnits as $fleetUnit) {
+            $this->fleetUnitRepository->save($fleetUnit);
         }
     }
 }
