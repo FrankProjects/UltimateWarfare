@@ -5,42 +5,23 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service;
 
 use FrankProjects\UltimateWarfare\Entity\Fleet;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
-use FrankProjects\UltimateWarfare\Repository\FleetRepository;
-use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
-use FrankProjects\UltimateWarfare\Repository\ReportRepository;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattlePhase;
+use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleReportCreator;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleResult;
+use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleUpdaterService;
 use RuntimeException;
 
 final class BattleEngine
 {
     /**
-     * @var FleetRepository
+     * @var BattleUpdaterService
      */
-    private $fleetRepository;
+    private $battleUpdaterService;
 
     /**
-     * @var ReportRepository
+     * @var BattleReportCreator
      */
-    private $reportRepository;
-
-    /**
-     * @var FleetUnitRepository
-     */
-    private $fleetUnitRepository;
-
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
-
-    /**
-     * @var WorldRegionUnitRepository
-     */
-    private $worldRegionUnitRepository;
+    private $battleReportCreator;
 
     /**
      * @var NetworthUpdaterService
@@ -55,28 +36,19 @@ final class BattleEngine
     /**
      * BattleEngine constructor.
      *
-     * @param FleetRepository $fleetRepository
-     * @param ReportRepository $reportRepository
-     * @param FleetUnitRepository $fleetUnitRepository
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param WorldRegionUnitRepository $worldRegionUnitRepository
+     * @param BattleUpdaterService $battleUpdaterService
+     * @param BattleReportCreator $battleReportCreator
      * @param NetworthUpdaterService $networthUpdaterService
      * @param IncomeUpdaterService $incomeUpdaterService
      */
     public function __construct(
-        FleetRepository $fleetRepository,
-        ReportRepository $reportRepository,
-        FleetUnitRepository $fleetUnitRepository,
-        WorldRegionRepository $worldRegionRepository,
-        WorldRegionUnitRepository $worldRegionUnitRepository,
+        BattleUpdaterService $battleUpdaterService,
+        BattleReportCreator $battleReportCreator,
         NetworthUpdaterService $networthUpdaterService,
         IncomeUpdaterService $incomeUpdaterService
     ) {
-        $this->fleetRepository = $fleetRepository;
-        $this->reportRepository = $reportRepository;
-        $this->fleetUnitRepository = $fleetUnitRepository;
-        $this->worldRegionRepository = $worldRegionRepository;
-        $this->worldRegionUnitRepository = $worldRegionUnitRepository;
+        $this->battleUpdaterService = $battleUpdaterService;
+        $this->battleReportCreator = $battleReportCreator;
         $this->networthUpdaterService = $networthUpdaterService;
         $this->incomeUpdaterService = $incomeUpdaterService;
     }
@@ -164,10 +136,11 @@ final class BattleEngine
         $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
 
         if ($battleResults->hasWon()) {
-            $this->updateBattleWon($fleet, $attackerGameUnits);
+            $this->battleUpdaterService->updateBattleWon($fleet, $attackerGameUnits);
+            $this->battleReportCreator->createBattleWonReports($fleet);
         } else {
-            $this->updateBattleLost($fleet, $attackerGameUnits, $defenderGameUnits);
-
+            $this->battleUpdaterService->updateBattleLost($fleet, $attackerGameUnits, $defenderGameUnits);
+            $this->battleReportCreator->createBattleLostReports($fleet);
         }
 
         $this->networthUpdaterService->updateNetworthForPlayer($fleet->getPlayer());
@@ -175,50 +148,5 @@ final class BattleEngine
 
         $this->incomeUpdaterService->updateIncomeForPlayer($fleet->getPlayer());
         $this->incomeUpdaterService->updateIncomeForPlayer($defendingPlayer);
-    }
-
-    /**
-     * @param Fleet $fleet
-     * @param array $attackerGameUnits
-     */
-    private function updateBattleWon(Fleet $fleet, array $attackerGameUnits): void
-    {
-        $targetWorldRegion = $fleet->getTargetWorldRegion();
-
-        $targetWorldRegion->setPlayer($fleet->getPlayer());
-        $this->worldRegionRepository->save($targetWorldRegion);
-
-        foreach ($targetWorldRegion->getWorldRegionUnits() as $regionUnit) {
-            $this->worldRegionUnitRepository->remove($regionUnit);
-        }
-
-        foreach ($attackerGameUnits as $fleetUnit) {
-            $worldRegionUnit = WorldRegionUnit::create($targetWorldRegion, $fleetUnit->getGameUnit(), $fleetUnit->getAmount());
-            $this->worldRegionUnitRepository->save($worldRegionUnit);
-        }
-        $this->fleetRepository->remove($fleet);
-    }
-
-    /**
-     * XXX TODO: Improve code
-     *
-     * @param Fleet $fleet
-     * @param array $attackerGameUnits
-     * @param array $defenderGameUnits
-     */
-    private function updateBattleLost(Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
-    {
-        foreach ($fleet->getTargetWorldRegion()->getWorldRegionUnits() as $regionUnit) {
-            $this->worldRegionUnitRepository->remove($regionUnit);
-        }
-        foreach ($defenderGameUnits as $worldRegionUnit) {
-            $this->worldRegionUnitRepository->save($worldRegionUnit);
-        }
-        foreach ($fleet->getFleetUnits() as $fleetUnit) {
-            $this->fleetUnitRepository->remove($fleetUnit);
-        }
-        foreach ($attackerGameUnits as $fleetUnit) {
-            $this->fleetUnitRepository->save($fleetUnit);
-        }
     }
 }
