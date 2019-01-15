@@ -114,13 +114,17 @@ abstract class BattlePhase implements IBattlePhase
         $this->addToBattleLog("Starting {$this->getName()} Battle Phase");
 
         $defensePower = $this->getDefensePower();
+        $this->addToBattleLog("Defender starts with {$defensePower} defense power");
+
         if ($defensePower > 0) {
-            $this->defensePhase($defensePower);
+            $this->attackerGameUnits = $this->processBattlePhase($defensePower, $this->attackerGameUnits, 'attacking');
         }
 
         $attackPower = $this->getAttackPower();
+        $this->addToBattleLog("Attacker starts with {$attackPower} attack power");
+
         if ($attackPower > 0) {
-            $this->attackPhase($attackPower);
+            $this->defenderGameUnits = $this->processBattlePhase($attackPower, $this->defenderGameUnits, 'defending');
         }
 
         if ($defensePower == 0 && $attackPower == 0) {
@@ -129,43 +133,26 @@ abstract class BattlePhase implements IBattlePhase
     }
 
     /**
-     * @param int $defensePower
+     * @param int $power
+     * @param FleetUnit[]|WorldRegionUnit[] $gameUnits
+     * @param string $action
+     * @return FleetUnit[]|WorldRegionUnit[]
      */
-    private function defensePhase(int $defensePower): void
+    private function processBattlePhase(int $power, array $gameUnits, string $action): array
     {
-        $this->addToBattleLog("Defender starts with {$defensePower} defense power");
-
-        foreach ($this->attackerGameUnits as $index => $gameUnit) {
-            $deaths = $this->calculateCasualties($gameUnit->getGameUnit(), $defensePower);
+        foreach ($gameUnits as $index => $gameUnit) {
+            $deaths = $this->calculateCasualties($gameUnit->getGameUnit(), $power);
 
             if ($deaths >= $gameUnit->getAmount()) {
-                unset($this->attackerGameUnits[$index]);
-                $this->addToBattleLog("All attacking {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
+                unset($gameUnits[$index]);
+                $this->addToBattleLog("All {$action} {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
             } elseif ($deaths > 0) {
-                $this->attackerGameUnits[$index]->setAmount($gameUnit->getAmount() - $deaths);
-                $this->addToBattleLog("{$deaths} attacking {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
+                $gameUnits[$index]->setAmount($gameUnit->getAmount() - $deaths);
+                $this->addToBattleLog("{$deaths} {$action} {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
             }
         }
-    }
 
-    /**
-     * @param int $attackPower
-     */
-    private function attackPhase(int $attackPower): void
-    {
-        $this->addToBattleLog("Attacker starts with {$attackPower} attack power");
-
-        foreach ($this->defenderGameUnits as $index => $gameUnit) {
-            $deaths = $this->calculateCasualties($gameUnit->getGameUnit(), $attackPower);
-
-            if ($deaths >= $gameUnit->getAmount()) {
-                unset($this->defenderGameUnits[$index]);
-                $this->addToBattleLog("All defending {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
-            } elseif ($deaths > 0) {
-                $this->defenderGameUnits[$index]->setAmount($gameUnit->getAmount() - $deaths);
-                $this->addToBattleLog("{$deaths} defending {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
-            }
-        }
+        return $gameUnits;
     }
 
     /**
