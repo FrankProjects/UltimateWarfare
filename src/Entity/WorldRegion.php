@@ -434,4 +434,12 @@ class WorldRegion
     {
         $this->constructions = $constructions;
     }
+
+    /**
+     * @return string
+     */
+    public function getRegionName(): string
+    {
+        return "{$this->getRX()}, {$this->getRY()}: {$this->getRegion()}";
+    }
 }
