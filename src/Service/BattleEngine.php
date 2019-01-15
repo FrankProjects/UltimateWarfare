@@ -134,13 +134,14 @@ final class BattleEngine
     private function processResults(BattleResult $battleResults, Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
     {
         $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
+        $timestamp = time();
 
         if ($battleResults->hasWon()) {
             $this->battleUpdaterService->updateBattleWon($fleet, $attackerGameUnits);
-            $this->battleReportCreator->createBattleWonReports($fleet);
+            $this->battleReportCreator->createBattleWonReports($fleet, $timestamp);
         } else {
             $this->battleUpdaterService->updateBattleLost($fleet, $attackerGameUnits, $defenderGameUnits);
-            $this->battleReportCreator->createBattleLostReports($fleet);
+            $this->battleReportCreator->createBattleLostReports($fleet, $timestamp);
         }
 
         $this->networthUpdaterService->updateNetworthForPlayer($fleet->getPlayer());
