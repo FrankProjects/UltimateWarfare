@@ -31,7 +31,6 @@ final class ForumHelper
     ) {
         $this->postRepository = $postRepository;
         $this->topicRepository = $topicRepository;
-
     }
 
     /**
@@ -64,5 +63,19 @@ final class ForumHelper
         if ($user->getForumBan()) {
             throw new RunTimeException('You are forum banned!');
         }
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCurrentDateTime(): \DateTime
+    {
+        try {
+            $dateTime = new \DateTime();
+        } catch (\Exception $e) {
+            throw new RunTimeException("DateTime exception: {$e->getMessage()}");
+        }
+
+        return $dateTime;
     }
 }

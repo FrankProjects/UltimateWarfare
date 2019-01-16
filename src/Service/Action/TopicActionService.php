@@ -57,15 +57,9 @@ final class TopicActionService
         $this->forumHelper->ensureNotBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
 
-        try {
-            $dateTime = new \DateTime();
-        } catch (\Exception $e) {
-            throw new RunTimeException("DateTime exception: {$e->getMessage()}");
-        }
-
         $topic->setCategory($category);
         $topic->setPosterIp($ipAddress);
-        $topic->setCreateDateTime($dateTime);
+        $topic->setCreateDateTime($this->forumHelper->getCurrentDateTime());
         $topic->setUser($user);
 
         $this->topicRepository->save($topic);
@@ -79,10 +73,7 @@ final class TopicActionService
     {
         $this->forumHelper->ensureNotBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
-
-        if ($user->getId() != $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
-            throw new RunTimeException('Not enough permissions!');
-        }
+        $this->ensureTopicPermissions($user, $topic);
 
         $topic->setEditUser($user);
         $this->topicRepository->save($topic);
@@ -95,15 +86,23 @@ final class TopicActionService
     public function remove(Topic $topic, User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
-
-        if ($user->getId() != $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
-            throw new RunTimeException('Not enough permissions!');
-        }
+        $this->ensureTopicPermissions($user, $topic);
 
         foreach ($topic->getPosts() as $post) {
             $this->postRepository->remove($post);
         }
 
         $this->topicRepository->remove($topic);
+    }
+
+    /**
+     * @param User $user
+     * @param Topic $topic
+     */
+    private function ensureTopicPermissions(User $user, Topic $topic): void
+    {
+        if ($user->getId() != $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
+            throw new RunTimeException('Not enough permissions!');
+        }
     }
 }

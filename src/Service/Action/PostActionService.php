@@ -48,15 +48,9 @@ final class PostActionService
         $this->forumHelper->ensureNotBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
 
-        try {
-            $dateTime = new \DateTime();
-        } catch (\Exception $e) {
-            throw new RunTimeException("DateTime exception: {$e->getMessage()}");
-        }
-
         $post->setTopic($topic);
         $post->setPosterIp($ipAddress);
-        $post->setCreateDateTime($dateTime);
+        $post->setCreateDateTime($this->forumHelper->getCurrentDateTime());
         $post->setUser($user);
 
         $this->postRepository->save($post);
@@ -71,10 +65,7 @@ final class PostActionService
     {
         $this->forumHelper->ensureNotBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
-
-        if ($user->getId() != $post->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
-            throw new RunTimeException('Not enough permissions!');
-        }
+        $this->ensurePostPermissions($user, $post);
 
         $post->setEditUser($user);
         $this->postRepository->save($post);
@@ -92,10 +83,18 @@ final class PostActionService
             throw new RunTimeException('You are not logged in!');
         }
 
+        $this->ensurePostPermissions($user, $post);
+        $this->postRepository->remove($post);
+    }
+
+    /**
+     * @param User $user
+     * @param Post $post
+     */
+    private function ensurePostPermissions(User $user, Post $post): void
+    {
         if ($user->getId() != $post->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
             throw new RunTimeException('Not enough permissions!');
         }
-
-        $this->postRepository->remove($post);
     }
 }
