@@ -54,7 +54,7 @@ class PostController extends BaseForumController
         $topic = $post->getTopic();
 
         try {
-            $this->postActionService->remove($postId, $this->getGameUser());
+            $this->postActionService->remove($post, $this->getGameUser());
             $this->addFlash('success', 'Post removed');
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
@@ -67,7 +67,6 @@ class PostController extends BaseForumController
      * @param Request $request
      * @param int $postId
      * @return RedirectResponse|Response
-     * @throws \Exception
      */
     public function edit(Request $request, int $postId): Response
     {

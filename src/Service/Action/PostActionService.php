@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\Post;
+use FrankProjects\UltimateWarfare\Entity\Topic;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PostRepository;
 use RuntimeException;
@@ -29,6 +30,30 @@ final class PostActionService
 
     /**
      * @param Post $post
+     * @param Topic $topic
+     * @param User $user
+     * @param string $ipAddress
+     */
+    public function create(Post $post, Topic $topic, User $user, string $ipAddress): void
+    {
+        try {
+            $dateTime = new \DateTime();
+        } catch (\Exception $e) {
+            throw new RunTimeException("DateTime exception: {$e->getMessage()}");
+        }
+
+        $this->ensureNoMassPost($user);
+
+        $post->setTopic($topic);
+        $post->setPosterIp($ipAddress);
+        $post->setCreateDateTime($dateTime);
+        $post->setUser($user);
+
+        $this->postRepository->save($post);
+    }
+
+    /**
+     * @param Post $post
      * @param User $user
      * @throws \Exception
      */
@@ -38,40 +63,18 @@ final class PostActionService
             throw new RunTimeException('Not enough permissions!');
         }
 
-        $lastPost = $this->postRepository->getLastPostByUser($user);
-
-        if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-            throw new RunTimeException('You can not mass post within 10 seconds!(Spam protection)');
-        }
+        $this->ensureNoMassPost($user);
 
         $post->setEditUser($user);
         $this->postRepository->save($post);
     }
 
     /**
-     * @param int $postId
+     * @param Post $post
      * @param User|null $user
      */
-    public function remove(int $postId, ?User $user): void
+    public function remove(Post $post, ?User $user): void
     {
-        $post = $this->getPostByIdAndUser($postId, $user);
-        $this->postRepository->remove($post);
-    }
-
-
-    /**
-     * @param int $postId
-     * @param User|null $user
-     * @return Post
-     */
-    private function getPostByIdAndUser(int $postId, ?User $user): Post
-    {
-        $post = $this->postRepository->find($postId);
-
-        if ($post === null) {
-            throw new RunTimeException('Post does not exist!');
-        }
-
         if ($user === null) {
             throw new RunTimeException('You are not logged in!');
         }
@@ -80,6 +83,23 @@ final class PostActionService
             throw new RunTimeException('Not enough permissions!');
         }
 
-        return $post;
+        $this->postRepository->remove($post);
+    }
+
+    /**
+     * @param User $user
+     */
+    private function ensureNoMassPost(User $user): void
+    {
+        $lastPost = $this->postRepository->getLastPostByUser($user);
+        try {
+            $dateTime = new \DateTime('- 10 seconds');
+        } catch (\Exception $e) {
+            throw new RunTimeException("Spam protection exception: {$e->getMessage()}");
+        }
+
+        if ($lastPost !== null && $lastPost->getCreateDateTime() > $dateTime) {
+            throw new RunTimeException('You can not mass post within 10 seconds!(Spam protection)');
+        }
     }
 }

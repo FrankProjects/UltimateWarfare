@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Repository;
 
 use FrankProjects\UltimateWarfare\Entity\Category;
 use FrankProjects\UltimateWarfare\Entity\Topic;
+use FrankProjects\UltimateWarfare\Entity\User;
 
 interface TopicRepository
 {
@@ -14,6 +15,12 @@ interface TopicRepository
      * @return Topic|null
      */
     public function find(int $id): ?Topic;
+
+    /**
+     * @param User $user
+     * @return Topic|null
+     */
+    public function getLastTopicByUser(User $user): ?Topic;
 
     /**
      * @param int $limit

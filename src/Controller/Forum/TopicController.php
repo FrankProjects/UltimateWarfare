@@ -9,23 +9,30 @@ use FrankProjects\UltimateWarfare\Entity\Post;
 use FrankProjects\UltimateWarfare\Form\Forum\PostType;
 use FrankProjects\UltimateWarfare\Form\Forum\TopicType;
 use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
-use FrankProjects\UltimateWarfare\Repository\PostRepository;
 use FrankProjects\UltimateWarfare\Repository\TopicRepository;
+use FrankProjects\UltimateWarfare\Service\Action\PostActionService;
+use FrankProjects\UltimateWarfare\Service\Action\TopicActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class TopicController extends BaseForumController
 {
     /**
+     * @var TopicActionService
+     */
+    private $topicActionService;
+
+    /**
+     * @var PostActionService
+     */
+    private $postActionService;
+
+    /**
      * @var CategoryRepository
      */
     private $categoryRepository;
-
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
 
     /**
      * @var TopicRepository
@@ -35,17 +42,20 @@ class TopicController extends BaseForumController
     /**
      * TopicController constructor.
      *
+     * @param TopicActionService $topicActionService
+     * @param PostActionService $postActionService
      * @param CategoryRepository $categoryRepository
-     * @param PostRepository $postRepository
      * @param TopicRepository $topicRepository
      */
     public function __construct(
+        TopicActionService $topicActionService,
+        PostActionService $postActionService,
         CategoryRepository $categoryRepository,
-        PostRepository $postRepository,
         TopicRepository $topicRepository
     ) {
+        $this->topicActionService = $topicActionService;
+        $this->postActionService = $postActionService;
         $this->categoryRepository = $categoryRepository;
-        $this->postRepository = $postRepository;
         $this->topicRepository = $topicRepository;
     }
 
@@ -60,28 +70,18 @@ class TopicController extends BaseForumController
 
         if ($topic === null) {
             $this->addFlash('error', 'No such topic!');
-
-            return $this->redirect($this->generateUrl('Forum'));
+            return $this->redirectToRoute('Forum');
         }
 
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && $this->getGameUser() !== null) {
-            $lastPost = $this->postRepository->getLastPostByUser($this->getGameUser());
-
-            if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-                $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
-                return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
-            } else {
-                $post->setTopic($topic);
-                $post->setPosterIp($request->getClientIp());
-                $post->setCreateDateTime(new \DateTime());
-                $post->setUser($this->getGameUser());
-
-                $this->postRepository->save($post);
+            try {
+                $this->postActionService->create($post, $topic, $this->getGameUser(), $request->getClientIp());
                 $this->addFlash('success', 'Post added');
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
         }
 
@@ -93,9 +93,6 @@ class TopicController extends BaseForumController
     }
 
     /**
-     * XXX TODO: Fix max post limit
-     * XXX TODO: Fix forum ban
-     *
      * @param Request $request
      * @param int $categoryId
      * @return RedirectResponse|Response
@@ -106,36 +103,22 @@ class TopicController extends BaseForumController
 
         if ($category === null) {
             $this->addFlash('error', 'No such category!');
-            return $this->redirect($this->generateUrl('Forum'));
-        }
-
-        $user = $this->getGameUser();
-        if ($user == null) {
-            $this->addFlash('error', 'Not logged in!');
-            return $this->redirect($this->generateUrl('Forum'));
+            return $this->redirectToRoute('Forum');
         }
 
         $topic = new Topic();
         $topic->setCategory($category);
-
         $form = $this->createForm(TopicType::class, $topic);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $lastPost = $this->postRepository->getLastPostByUser($this->getGameUser());
-
-            if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-                $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
-                return $this->redirect($this->generateUrl('Forum'));
+        if ($form->isSubmitted() && $form->isValid() && $this->getGameUser() !== null) {
+            try {
+                $this->topicActionService->create($topic, $category, $this->getGameUser(), $request->getClientIp());
+                $this->addFlash('success', 'Successfully created topic');
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
 
-            $topic->setPosterIp($request->getClientIp());
-            $topic->setCreateDateTime(new \DateTime());
-            $topic->setUser($this->getGameUser());
-
-            $this->topicRepository->save($topic);
-            $this->addFlash('success', 'Successfully created topic');
-
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
         }
 
         return $this->render('forum/topic_create.html.twig', [
@@ -155,37 +138,27 @@ class TopicController extends BaseForumController
 
         if ($topic === null) {
             $this->addFlash('error', 'No such topic!');
-
-            return $this->redirect($this->generateUrl('Forum'));
+            return $this->redirectToRoute('Forum');
         }
 
         $category = $topic->getCategory();
         $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
-
-            return $this->redirect($this->generateUrl('Forum'));
+            return $this->redirectToRoute('Forum');
         }
 
-        if ($user->getId() != $topic->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('error', 'Not enough permissions!');
-
-            return $this->redirect($this->generateUrl('Forum'));
+        try {
+            $this->topicActionService->remove($topic, $this->getGameUser());
+            $this->addFlash('success', 'Topic removed');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
 
-        foreach ($topic->getPosts() as $post) {
-            $this->postRepository->remove($post);
-        }
-
-        $this->topicRepository->remove($topic);
-        $this->addFlash('success', 'Topic removed');
-
-        return $this->redirect($this->generateUrl('Forum/Category', ['categoryId' => $category->getId()]));
+        return $this->redirectToRoute('Forum/Category', ['categoryId' => $category->getId()], 302);
     }
 
     /**
-     * XXX TODO: Fix max post
-     *
      * @param Request $request
      * @param int $topicId
      * @return RedirectResponse|Response
@@ -196,36 +169,26 @@ class TopicController extends BaseForumController
 
         if ($topic === null) {
             $this->addFlash('error', 'No such topic!');
-            return $this->redirect($this->generateUrl('Forum'));
+            return $this->redirectToRoute('Forum');
         }
 
         $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
-        }
-
-        if ($user->getId() != $topic->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('error', 'Not enough permissions!');
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
         }
 
         $form = $this->createForm(TopicType::class, $topic);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $lastPost = $this->postRepository->getLastPostByUser($this->getGameUser());
-
-            if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-                $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
-                return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
+            try {
+                $this->topicActionService->edit($topic, $this->getGameUser());
+                $this->addFlash('success', 'Successfully edited topic');
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
 
-            $topic->setEditUser($this->getGameUser());
-
-            $this->topicRepository->save($topic);
-            $this->addFlash('success', 'Successfully edited topic');
-
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
         }
 
         return $this->render('forum/topic_edit.html.twig', [
