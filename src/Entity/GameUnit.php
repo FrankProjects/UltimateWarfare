@@ -6,6 +6,10 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats;
+use FrankProjects\UltimateWarfare\Entity\GameUnit\Cost;
+use FrankProjects\UltimateWarfare\Entity\GameUnit\Income;
+use FrankProjects\UltimateWarfare\Entity\GameUnit\Upkeep;
 
 /**
  * GameUnit
@@ -40,67 +44,7 @@ class GameUnit
     /**
      * @var int
      */
-    private $priceCash;
-
-    /**
-     * @var int
-     */
-    private $priceWood;
-
-    /**
-     * @var int
-     */
-    private $priceSteel;
-
-    /**
-     * @var int
-     */
-    private $priceFood;
-
-    /**
-     * @var int
-     */
     private $networth;
-
-    /**
-     * @var int
-     */
-    private $incomeCash = 0;
-
-    /**
-     * @var int
-     */
-    private $incomeFood = 0;
-
-    /**
-     * @var int
-     */
-    private $incomeWood = 0;
-
-    /**
-     * @var int
-     */
-    private $incomeSteel = 0;
-
-    /**
-     * @var int
-     */
-    private $upkeepCash = 0;
-
-    /**
-     * @var int
-     */
-    private $upkeepFood = 0;
-
-    /**
-     * @var int
-     */
-    private $upkeepWood = 0;
-
-    /**
-     * @var int
-     */
-    private $upkeepSteel = 0;
 
     /**
      * @var int
@@ -133,6 +77,26 @@ class GameUnit
     private $fleetUnits = [];
 
     /**
+     * @var BattleStats
+     */
+    private $battleStats;
+
+    /**
+     * @var Cost
+     */
+    private $cost;
+
+    /**
+     * @var Income
+     */
+    private $income;
+
+    /**
+     * @var Upkeep
+     */
+    private $upkeep;
+
+    /**
      * GameUnit constructor.
      */
     public function __construct()
@@ -140,6 +104,10 @@ class GameUnit
         $this->worldRegionUnits = new ArrayCollection();
         $this->constructions = new ArrayCollection();
         $this->fleetUnits = new ArrayCollection();
+        $this->battleStats = new BattleStats();
+        $this->cost = new Cost();
+        $this->income = new Income();
+        $this->upkeep = new Upkeep();
     }
 
     /**
@@ -253,166 +221,6 @@ class GameUnit
     }
 
     /**
-     * Set incomeCash
-     *
-     * @param int $incomeCash
-     */
-    public function setIncomeCash(int $incomeCash): void
-    {
-        $this->incomeCash = $incomeCash;
-    }
-
-    /**
-     * Get incomeCash
-     *
-     * @return int
-     */
-    public function getIncomeCash(): int
-    {
-        return $this->incomeCash;
-    }
-
-    /**
-     * Set incomeFood
-     *
-     * @param int $incomeFood
-     */
-    public function setIncomeFood(int $incomeFood): void
-    {
-        $this->incomeFood = $incomeFood;
-    }
-
-    /**
-     * Get incomeFood
-     *
-     * @return int
-     */
-    public function getIncomeFood(): int
-    {
-        return $this->incomeFood;
-    }
-
-    /**
-     * Set incomeWood
-     *
-     * @param int $incomeWood
-     */
-    public function setIncomeWood(int $incomeWood): void
-    {
-        $this->incomeWood = $incomeWood;
-    }
-
-    /**
-     * Get incomeWood
-     *
-     * @return int
-     */
-    public function getIncomeWood(): int
-    {
-        return $this->incomeWood;
-    }
-
-    /**
-     * Set incomeSteel
-     *
-     * @param int $incomeSteel
-     */
-    public function setIncomeSteel(int $incomeSteel): void
-    {
-        $this->incomeSteel = $incomeSteel;
-    }
-
-    /**
-     * Get incomeSteel
-     *
-     * @return int
-     */
-    public function getIncomeSteel(): int
-    {
-        return $this->incomeSteel;
-    }
-
-    /**
-     * Set upkeepCash
-     *
-     * @param int $upkeepCash
-     */
-    public function setUpkeepCash(int $upkeepCash): void
-    {
-        $this->upkeepCash = $upkeepCash;
-    }
-
-    /**
-     * Get upkeepCash
-     *
-     * @return int
-     */
-    public function getUpkeepCash(): int
-    {
-        return $this->upkeepCash;
-    }
-
-    /**
-     * Set upkeepFood
-     *
-     * @param int $upkeepFood
-     */
-    public function setUpkeepFood(int $upkeepFood): void
-    {
-        $this->upkeepFood = $upkeepFood;
-    }
-
-    /**
-     * Get upkeepFood
-     *
-     * @return int
-     */
-    public function getUpkeepFood(): int
-    {
-        return $this->upkeepFood;
-    }
-
-    /**
-     * Set upkeepWood
-     *
-     * @param int $upkeepWood
-     */
-    public function setUpkeepWood(int $upkeepWood): void
-    {
-        $this->upkeepWood = $upkeepWood;
-    }
-
-    /**
-     * Get upkeepWood
-     *
-     * @return int
-     */
-    public function getUpkeepWood(): int
-    {
-        return $this->upkeepWood;
-    }
-
-    /**
-     * Set upkeepSteel
-     *
-     * @param int $upkeepSteel
-     */
-    public function setUpkeepSteel(int $upkeepSteel): void
-    {
-        $this->upkeepSteel = $upkeepSteel;
-    }
-
-    /**
-     * Get upkeepSteel
-     *
-     * @return int
-     */
-    public function getUpkeepSteel(): int
-    {
-        return $this->upkeepSteel;
-    }
-
-    /**
      * Set timestamp
      *
      * @param int $timestamp
@@ -501,66 +309,66 @@ class GameUnit
     }
 
     /**
-     * @return int
+     * @return BattleStats
      */
-    public function getPriceCash(): int
+    public function getBattleStats(): BattleStats
     {
-        return $this->priceCash;
+        return $this->battleStats;
     }
 
     /**
-     * @param int $priceCash
+     * @param BattleStats $battleStats
      */
-    public function setPriceCash(int $priceCash): void
+    public function setBattleStats(BattleStats $battleStats): void
     {
-        $this->priceCash = $priceCash;
+        $this->battleStats = $battleStats;
     }
 
     /**
-     * @return int
+     * @return Cost
      */
-    public function getPriceWood(): int
+    public function getCost(): Cost
     {
-        return $this->priceWood;
+        return $this->cost;
     }
 
     /**
-     * @param int $priceWood
+     * @param Cost $cost
      */
-    public function setPriceWood(int $priceWood): void
+    public function setCost(Cost $cost): void
     {
-        $this->priceWood = $priceWood;
+        $this->cost = $cost;
     }
 
     /**
-     * @return int
+     * @return Income
      */
-    public function getPriceSteel(): int
+    public function getIncome(): Income
     {
-        return $this->priceSteel;
+        return $this->income;
     }
 
     /**
-     * @param int $priceSteel
+     * @param Income $income
      */
-    public function setPriceSteel(int $priceSteel): void
+    public function setIncome(Income $income): void
     {
-        $this->priceSteel = $priceSteel;
+        $this->income = $income;
     }
 
     /**
-     * @return int
+     * @return Upkeep
      */
-    public function getPriceFood(): int
+    public function getUpkeep(): Upkeep
     {
-        return $this->priceFood;
+        return $this->upkeep;
     }
 
     /**
-     * @param int $priceFood
+     * @param Upkeep $upkeep
      */
-    public function setPriceFood(int $priceFood): void
+    public function setUpkeep(Upkeep $upkeep): void
     {
-        $this->priceFood = $priceFood;
+        $this->upkeep = $upkeep;
     }
 }

@@ -1,0 +1,23 @@
+FrankProjects\UltimateWarfare\Entity\GameUnit\Cost:
+  type: embeddable
+  fields:
+    cash:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+    steel:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+    wood:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+    food:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true

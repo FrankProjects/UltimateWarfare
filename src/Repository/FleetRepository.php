@@ -11,9 +11,10 @@ interface FleetRepository
 {
     /**
      * @param int $id
-     * @return Fleet|null
+     * @param Player $player
+     * @return Fleet
      */
-    public function find(int $id): ?Fleet;
+    public function findByIdAndPlayer(int $id, Player $player): ?Fleet;
 
     /**
      * @param Player $player

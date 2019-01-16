@@ -54,12 +54,15 @@ final class NetworthUpdaterService
         if ($player->getFederation() !== null) {
             $federation = $player->getFederation();
             $federationNetworth = 0;
+            $federationRegions = 0;
 
             foreach ($federation->getPlayers() as $federationPlayer) {
                 $federationNetworth += $this->networthCalculator->calculateNetworthForPlayer($federationPlayer);
+                $federationRegions += count($federationPlayer->getWorldRegions());
             }
 
             $federation->setNetworth($federationNetworth);
+            $federation->setRegions($federationRegions);
             $this->federationRepository->save($federation);
         }
 

@@ -48,22 +48,21 @@
             <td width="130"><b>Regions</b></td>
             <td width="150"><b>Networth</b></td>
         </tr>
-        {% for player in players %}
+        {% for playerRanking in players %}
             <tr>
                 <td>
                     {{ loop.index }}
                 </td>
                 <td>
-                    {{ player.playerName }}
+                    {{ playerRanking.playerName }}
                 </td>
                 <td>
-                    {{ player.regions }}
+                    {{ playerRanking.regions }}
                 </td>
                 <td>
-                    {{ player.networth }}
+                    {{ playerRanking.networth }}
                 </td>
             </tr>
-
         {% else %}
             <tr>
                 <td colspan="4">No history available</td>

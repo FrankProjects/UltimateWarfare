@@ -77,6 +77,7 @@ class UpdateNetworthCommand extends Command
         ]);
 
         $commit = $input->getOption('commit');
+        $commit = ($commit !== false);
 
         foreach ($this->worldRepository->findAll() as $world) {
             $this->processWorld($output, $world, $commit);

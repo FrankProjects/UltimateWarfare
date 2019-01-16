@@ -10,7 +10,7 @@
         </tr>
         <tr>
             <td width="150">Income Economic Centers:</td>
-            {% set incomeEc = player.resources.incomeCash - incomePop %}
+            {% set incomeEc = player.income.cash - incomePop %}
             <td width="350">{{ incomeEc|number_format }}</td>
         </tr>
         <tr>
@@ -19,11 +19,11 @@
         </tr>
         <tr>
             <td width="150">Upkeep:</td>
-            <td width="350">-{{ player.resources.upkeepCash|number_format }}</td>
+            <td width="350">-{{ player.upkeep.cash|number_format }}</td>
         </tr>
         <tr>
             <td width="150">Net Income: </td>
-            {% set incomeNet = player.resources.incomeCash - player.resources.upkeepCash %}
+            {% set incomeNet = player.income.cash - player.upkeep.cash %}
             {% if incomeNet < 0 %}
                 <td width="350"><div class="bad">{{ incomeNet }}</div></td>
             {% else %}
@@ -41,15 +41,15 @@
         </tr>
         <tr>
             <td width="150">Production:</td>
-            <td width="250">{{ player.resources.incomeFood|number_format }}</td>
+            <td width="250">{{ player.income.food|number_format }}</td>
         </tr>
         <tr>
             <td width="150">Consumption:</td>
-            <td width="250">-{{ player.resources.upkeepFood|number_format }}</td>
+            <td width="250">-{{ player.upkeep.food|number_format }}</td>
         </tr>
         <tr>
             <td width="150">Net:</td>
-            {% set foodNet = player.resources.incomeFood - player.resources.upkeepFood %}
+            {% set foodNet = player.income.food - player.upkeep.food %}
             {% if foodNet < 0 %}
                 <td width="250"><div class="bad">{{ foodNet }}</div></td>
             {% else %}
@@ -67,11 +67,11 @@
         </tr>
         <tr>
             <td width="150">Steel:</td>
-            <td width="250">{{ player.resources.incomeSteel|number_format }}</td>
+            <td width="250">{{ player.income.steel|number_format }}</td>
         </tr>
         <tr>
             <td width="150">Wood:</td>
-            <td width="250">{{ player.resources.incomeWood|number_format }}</td>
+            <td width="250">{{ player.income.wood|number_format }}</td>
         </tr>
     </table>
 {% endblock %}

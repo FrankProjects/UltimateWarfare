@@ -6,8 +6,10 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\Player\Income;
 use FrankProjects\UltimateWarfare\Entity\Player\Notifications;
 use FrankProjects\UltimateWarfare\Entity\Player\Resources;
+use FrankProjects\UltimateWarfare\Entity\Player\Upkeep;
 
 /**
  * Player
@@ -135,14 +137,24 @@ class Player
     private $federationApplications = [];
 
     /**
-     * @var Resources
+     * @var Income
      */
-    private $resources;
+    private $income;
 
     /**
      * @var Notifications
      */
     private $notifications;
+
+    /**
+     * @var Resources
+     */
+    private $resources;
+
+    /**
+     * @var Upkeep
+     */
+    private $upkeep;
 
     /**
      * Player constructor.
@@ -158,8 +170,10 @@ class Player
         $this->toMessages = new ArrayCollection();
         $this->playerResearch = new ArrayCollection();
         $this->federationApplications = new ArrayCollection();
-        $this->resources = new Resources();
+        $this->income = new Income();
         $this->notifications = new Notifications();
+        $this->resources = new Resources();
+        $this->upkeep = new Upkeep();
     }
 
     /**
@@ -230,26 +244,6 @@ class Player
     public function getTimestampUpdate(): int
     {
         return $this->timestampUpdate;
-    }
-
-    /**
-     * Set regions
-     *
-     * @param int $regions
-     */
-    public function setRegions(int $regions)
-    {
-        $this->regions = $regions;
-    }
-
-    /**
-     * Get regions
-     *
-     * @return int
-     */
-    public function getRegions(): int
-    {
-        return $this->regions;
     }
 
     /**
@@ -329,7 +323,7 @@ class Player
     }
 
     /**
-     * @return Collection
+     * @return Collection|WorldRegion[]
      */
     public function getWorldRegions(): Collection
     {
@@ -337,7 +331,7 @@ class Player
     }
 
     /**
-     * @return Collection
+     * @return Collection|Fleet[]
      */
     public function getFleets(): Collection
     {
@@ -505,6 +499,38 @@ class Player
     }
 
     /**
+     * @return Income
+     */
+    public function getIncome(): Income
+    {
+        return $this->income;
+    }
+
+    /**
+     * @param Income $income
+     */
+    public function setIncome(Income $income): void
+    {
+        $this->income = $income;
+    }
+
+    /**
+     * @return Upkeep
+     */
+    public function getUpkeep(): Upkeep
+    {
+        return $this->upkeep;
+    }
+
+    /**
+     * @param Upkeep $upkeep
+     */
+    public function setUpkeep(Upkeep $upkeep): void
+    {
+        $this->upkeep = $upkeep;
+    }
+
+    /**
      * @param User $user
      * @param string $name
      * @param World $world
@@ -534,7 +560,7 @@ class Player
      */
     public function getRegionPrice(): int
     {
-        return $this->getRegions() * self::PRICE_PER_REGION;
+        return count($this->getWorldRegions()) * self::PRICE_PER_REGION;
     }
 
     /**

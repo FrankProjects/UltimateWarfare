@@ -8,10 +8,10 @@
         <tr>
             <td class="text-left" width="350">
                 {{ gameUnit.description }}<br /><br />
-                Cash: {{ gameUnit.priceCash }}<br />
-                Wood: {{ gameUnit.priceWood }}<br />
-                Steel: {{ gameUnit.priceSteel }}<br />
-                Food: {{ gameUnit.priceFood }}<br />
+                Cash: {{ gameUnit.cost.cash }}<br />
+                Wood: {{ gameUnit.cost.wood }}<br />
+                Steel: {{ gameUnit.cost.steel }}<br />
+                Food: {{ gameUnit.cost.food }}<br />
                 Networth: {{ gameUnit.networth }}<br />
                 Building time: {{ gameUnit.timestamp }}<br />
             </td>
@@ -22,17 +22,17 @@
         <tr>
             <td class="text-left" width="350">
                 <b>Income:</b><br />
-                Cash: {{ gameUnit.incomeCash }}<br />
-                Wood: {{ gameUnit.incomeWood }}<br />
-                Steel: {{ gameUnit.incomeSteel }}<br />
-                Food: {{ gameUnit.incomeFood }}<br />
+                Cash: {{ gameUnit.income.cash }}<br />
+                Wood: {{ gameUnit.income.wood }}<br />
+                Steel: {{ gameUnit.income.steel }}<br />
+                Food: {{ gameUnit.income.food }}<br />
             </td>
             <td class="text-left" width="350">
                 <b>Upkeep:</b><br />
-                Cash: {{ gameUnit.upkeepCash }}<br />
-                Wood: {{ gameUnit.upkeepWood }}<br />
-                Steel: {{ gameUnit.upkeepSteel }}<br />
-                Food: {{ gameUnit.upkeepFood }}<br />
+                Cash: {{ gameUnit.upkeep.cash }}<br />
+                Wood: {{ gameUnit.upkeep.wood }}<br />
+                Steel: {{ gameUnit.upkeep.steel }}<br />
+                Food: {{ gameUnit.upkeep.food }}<br />
             </td>
         </tr>
     </table>

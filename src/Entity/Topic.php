@@ -90,7 +90,7 @@ class Topic
      *
      * @param string $title
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -110,7 +110,7 @@ class Topic
      *
      * @param string $posterIp
      */
-    public function setPosterIp(string $posterIp)
+    public function setPosterIp(string $posterIp): void
     {
         $this->posterIp = $posterIp;
     }
@@ -130,7 +130,7 @@ class Topic
      *
      * @param bool $sticky
      */
-    public function setSticky(bool $sticky)
+    public function setSticky(bool $sticky): void
     {
         $this->sticky = $sticky;
     }
@@ -150,7 +150,7 @@ class Topic
      *
      * @param bool $closed
      */
-    public function setClosed(bool $closed)
+    public function setClosed(bool $closed): void
     {
         $this->closed = $closed;
     }
@@ -170,7 +170,7 @@ class Topic
      *
      * @param string $content
      */
-    public function setContent(string $content)
+    public function setContent(string $content): void
     {
         $this->content = $content;
     }
@@ -196,7 +196,7 @@ class Topic
     /**
      * @param Category $category
      */
-    public function setCategory(Category $category)
+    public function setCategory(Category $category): void
     {
         $this->category = $category;
     }
@@ -212,7 +212,7 @@ class Topic
     /**
      * @param User $user
      */
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
@@ -220,7 +220,7 @@ class Topic
     /**
      * @return User|null
      */
-    public function getEditUser()
+    public function getEditUser(): ?User
     {
         return $this->editUser;
     }
@@ -228,7 +228,7 @@ class Topic
     /**
      * @param User $editUser
      */
-    public function setEditUser(User $editUser)
+    public function setEditUser(User $editUser): void
     {
         $this->editUser = $editUser;
     }
@@ -244,7 +244,7 @@ class Topic
     /**
      * @param \DateTime $createDateTime
      */
-    public function setCreateDateTime(\DateTime $createDateTime)
+    public function setCreateDateTime(\DateTime $createDateTime): void
     {
         $this->createDateTime = $createDateTime;
     }
@@ -260,7 +260,7 @@ class Topic
     /**
      * @param Collection $posts
      */
-    public function setPosts(Collection $posts)
+    public function setPosts(Collection $posts): void
     {
         $this->posts = $posts;
     }

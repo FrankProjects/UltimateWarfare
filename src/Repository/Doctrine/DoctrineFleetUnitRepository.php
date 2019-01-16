@@ -35,6 +35,15 @@ final class DoctrineFleetUnitRepository implements FleetUnitRepository
     /**
      * @param FleetUnit $fleetUnit
      */
+    public function remove(FleetUnit $fleetUnit): void
+    {
+        $this->entityManager->remove($fleetUnit);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param FleetUnit $fleetUnit
+     */
     public function save(FleetUnit $fleetUnit): void
     {
         $this->entityManager->persist($fleetUnit);

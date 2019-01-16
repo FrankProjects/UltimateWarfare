@@ -1,0 +1,29 @@
+FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats:
+  type: embeddable
+  fields:
+    health:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+    armor:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+    travelSpeed:
+      type: integer
+      nullable: false
+      options:
+        unsigned: true
+      column: travel_speed
+  embedded:
+    airBattleStats:
+      class: FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\AirBattleStats
+      columnPrefix: false
+    seaBattleStats:
+      class: FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\SeaBattleStats
+      columnPrefix: false
+    groundBattleStats:
+      class: FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\GroundBattleStats
+      columnPrefix: false

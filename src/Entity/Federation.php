@@ -206,7 +206,7 @@ class Federation
     }
 
     /**
-     * @return Collection
+     * @return Collection|FederationApplication[]
      */
     public function getFederationApplications(): Collection
     {
@@ -222,7 +222,7 @@ class Federation
     }
 
     /**
-     * @return Collection
+     * @return Collection|Player[]
      */
     public function getPlayers(): Collection
     {
@@ -238,7 +238,7 @@ class Federation
     }
 
     /**
-     * @return Collection
+     * @return Collection|FederationNews[]
      */
     public function getFederationNews(): Collection
     {

@@ -63,8 +63,10 @@ final class DoctrinePlayerRepository implements PlayerRepository
             ->createQuery(
                 'SELECT p
               FROM Game:Player p
-              WHERE p.world = :world
-              ORDER BY p.regions DESC'
+              JOIN Game:WorldRegion wr WITH wr.player = p
+              GROUP BY p.id
+              HAVING p.world = :world
+              ORDER BY COUNT(wr.player) DESC'
             )->setParameter('world', $world
             )->setMaxResults($limit)
             ->getResult();
@@ -101,7 +103,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
         if ($federation !== null) {
             // XXX TODO: Delete Federation if you are owner
             $federation->setNetworth($federation->getNetworth() - $player->getNetworth());
-            $federation->setRegions($federation->getRegions() - $player->getRegions());
+            $federation->setRegions($federation->getRegions() - count($player->getWorldRegions()));
             $this->entityManager->persist($federation);
         }
 

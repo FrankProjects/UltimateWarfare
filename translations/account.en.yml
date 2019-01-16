@@ -2,4 +2,5 @@ label:
   old_password: Old Password
   password: Password
   password_repeat: Repeat Password
+  change_password: Change Password
 

@@ -324,7 +324,7 @@ class WorldRegion
     }
 
     /**
-     * @return Collection
+     * @return Collection|WorldRegionUnit[]
      */
     public function getWorldRegionUnits(): Collection
     {
@@ -433,5 +433,13 @@ class WorldRegion
     public function setConstructions(Collection $constructions): void
     {
         $this->constructions = $constructions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRegionName(): string
+    {
+        return "{$this->getRX()}, {$this->getRY()}: {$this->getRegion()}";
     }
 }

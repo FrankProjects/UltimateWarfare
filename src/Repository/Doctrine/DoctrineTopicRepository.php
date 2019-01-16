@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Category;
 use FrankProjects\UltimateWarfare\Entity\Topic;
+use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\TopicRepository;
 
 final class DoctrineTopicRepository implements TopicRepository
@@ -40,6 +41,21 @@ final class DoctrineTopicRepository implements TopicRepository
     public function find(int $id): ?Topic
     {
         return $this->repository->find($id);
+    }
+
+    /**
+     * @param User $user
+     * @return Topic|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getLastTopicByUser(User $user): ?Topic
+    {
+        return $this->entityManager->createQuery(
+            'SELECT t FROM Game:Topic t WHERE t.user = :user ORDER BY t.createDateTime DESC'
+        )
+            ->setParameter('user', $user->getId())
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     /**

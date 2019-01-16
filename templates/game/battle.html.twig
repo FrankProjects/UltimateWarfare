@@ -1,0 +1,27 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}Ultimate Warfare - Battle{% endblock title %}
+
+{% block content %}
+    <table class="table text text-center">
+        <tr>
+            <td class="tabletop"><b>Battle</b></td>
+        </tr>
+        <tr>
+            <td>
+                {% for battlePhase in battleResults.battlePhases %}
+
+                    {% for line in battlePhase.battleLog %}
+                        <p>{{ line }}</p>
+                    {% endfor %}
+                {% endfor %}
+
+                {% if hasWon %}
+                    You Won!
+                {% else %}
+                    You Lost!
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+{% endblock %}
