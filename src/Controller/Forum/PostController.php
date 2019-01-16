@@ -80,7 +80,7 @@ class PostController extends BaseForumController
         $topic = $post->getTopic();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $this->getGameUser() !== null) {
             try {
                 $this->postActionService->edit($post, $this->getGameUser());
                 $this->addFlash('success', 'Successfully edited post');
