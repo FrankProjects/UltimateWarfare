@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class LoginController extends BaseGameController
 {
@@ -14,7 +17,13 @@ final class LoginController extends BaseGameController
      */
     public function login(): Response
     {
-        $user = $this->getGameUser();
+        try {
+            $user = $this->getLoginUser();
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Site/Login');
+        }
+
         $players = $user->getPlayers();
 
         if (count($players) == 0) {
@@ -33,7 +42,13 @@ final class LoginController extends BaseGameController
      */
     public function loginForPlayer(int $playerId, PlayerRepository $playerRepository): Response
     {
-        $user = $this->getGameUser();
+        try {
+            $user = $this->getLoginUser();
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Site/Login');
+        }
+
         $player = $playerRepository->find($playerId);
 
         if (!$player) {
@@ -46,5 +61,26 @@ final class LoginController extends BaseGameController
 
         $this->get('session')->set('playerId', $player->getId());
         return $this->redirectToRoute('Game/Headquarter');
+    }
+
+    /**
+     * @return User
+     */
+    private function getLoginUser(): User
+    {
+        $user = $this->getUser();
+        if (!is_object($user) || !$user instanceof User) {
+            throw new RuntimeException('You are not logged in!');
+        }
+
+        if ($user->isEnabled() !== true) {
+            throw new RuntimeException('Your account is not enabled!');
+        }
+
+        if ($user->getActive() !== true) {
+            throw new RuntimeException('You are banned!');
+        }
+
+        return $user;
     }
 }
