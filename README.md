@@ -50,7 +50,6 @@ Missing features compared to old game code:
     - Chat
     - Forum
 - Moderator panel
-- Battle system
 - Special operations
 
 
