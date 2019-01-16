@@ -8,6 +8,7 @@ use FrankProjects\UltimateWarfare\Entity\Post;
 use FrankProjects\UltimateWarfare\Entity\Topic;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PostRepository;
+use FrankProjects\UltimateWarfare\Util\ForumHelper;
 use RuntimeException;
 
 final class PostActionService
@@ -18,14 +19,22 @@ final class PostActionService
     private $postRepository;
 
     /**
+     * @var ForumHelper
+     */
+    private $forumHelper;
+
+    /**
      * PostActionService service
      *
      * @param PostRepository $postRepository
+     * @param ForumHelper $forumHelper
      */
     public function __construct(
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        ForumHelper $forumHelper
     ) {
         $this->postRepository = $postRepository;
+        $this->forumHelper = $forumHelper;
     }
 
     /**
@@ -36,13 +45,14 @@ final class PostActionService
      */
     public function create(Post $post, Topic $topic, User $user, string $ipAddress): void
     {
+        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNoMassPost($user);
+
         try {
             $dateTime = new \DateTime();
         } catch (\Exception $e) {
             throw new RunTimeException("DateTime exception: {$e->getMessage()}");
         }
-
-        $this->ensureNoMassPost($user);
 
         $post->setTopic($topic);
         $post->setPosterIp($ipAddress);
@@ -59,11 +69,12 @@ final class PostActionService
      */
     public function edit(Post $post, User $user): void
     {
+        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNoMassPost($user);
+
         if ($user->getId() != $post->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
             throw new RunTimeException('Not enough permissions!');
         }
-
-        $this->ensureNoMassPost($user);
 
         $post->setEditUser($user);
         $this->postRepository->save($post);
@@ -75,6 +86,8 @@ final class PostActionService
      */
     public function remove(Post $post, ?User $user): void
     {
+        $this->forumHelper->ensureNotBanned($user);
+
         if ($user === null) {
             throw new RunTimeException('You are not logged in!');
         }
@@ -84,22 +97,5 @@ final class PostActionService
         }
 
         $this->postRepository->remove($post);
-    }
-
-    /**
-     * @param User $user
-     */
-    private function ensureNoMassPost(User $user): void
-    {
-        $lastPost = $this->postRepository->getLastPostByUser($user);
-        try {
-            $dateTime = new \DateTime('- 10 seconds');
-        } catch (\Exception $e) {
-            throw new RunTimeException("Spam protection exception: {$e->getMessage()}");
-        }
-
-        if ($lastPost !== null && $lastPost->getCreateDateTime() > $dateTime) {
-            throw new RunTimeException('You can not mass post within 10 seconds!(Spam protection)');
-        }
     }
 }

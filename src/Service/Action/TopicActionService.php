@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\Category;
-use FrankProjects\UltimateWarfare\Entity\Post;
 use FrankProjects\UltimateWarfare\Entity\Topic;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PostRepository;
 use FrankProjects\UltimateWarfare\Repository\TopicRepository;
+use FrankProjects\UltimateWarfare\Util\ForumHelper;
 use RuntimeException;
 
 final class TopicActionService
@@ -25,17 +25,25 @@ final class TopicActionService
     private $postRepository;
 
     /**
+     * @var ForumHelper
+     */
+    private $forumHelper;
+
+    /**
      * TopicActionService service
      *
      * @param TopicRepository $topicRepository
      * @param PostRepository $postRepository
+     * @param ForumHelper $forumHelper
      */
     public function __construct(
         TopicRepository $topicRepository,
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        ForumHelper $forumHelper
     ) {
         $this->topicRepository = $topicRepository;
         $this->postRepository = $postRepository;
+        $this->forumHelper = $forumHelper;
     }
 
     /**
@@ -46,15 +54,14 @@ final class TopicActionService
      */
     public function create(Topic $topic, Category $category, User $user, string $ipAddress): void
     {
-        $this->ensureNotBanned($user);
+        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNoMassPost($user);
 
         try {
             $dateTime = new \DateTime();
         } catch (\Exception $e) {
             throw new RunTimeException("DateTime exception: {$e->getMessage()}");
         }
-
-        $this->ensureNoMassPost($user);
 
         $topic->setCategory($category);
         $topic->setPosterIp($ipAddress);
@@ -70,13 +77,12 @@ final class TopicActionService
      */
     public function edit(Topic $topic, User $user): void
     {
-        $this->ensureNotBanned($user);
+        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNoMassPost($user);
 
         if ($user->getId() != $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
             throw new RunTimeException('Not enough permissions!');
         }
-
-        $this->ensureNoMassPost($user);
 
         $topic->setEditUser($user);
         $this->topicRepository->save($topic);
@@ -88,7 +94,7 @@ final class TopicActionService
      */
     public function remove(Topic $topic, User $user): void
     {
-        $this->ensureNotBanned($user);
+        $this->forumHelper->ensureNotBanned($user);
 
         if ($user->getId() != $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
             throw new RunTimeException('Not enough permissions!');
@@ -99,32 +105,5 @@ final class TopicActionService
         }
 
         $this->topicRepository->remove($topic);
-    }
-
-    /**
-     * @param User $user
-     */
-    private function ensureNoMassPost(User $user): void
-    {
-        $lastTopic = $this->topicRepository->getLastTopicByUser($user);
-        try {
-            $dateTime = new \DateTime('- 10 seconds');
-        } catch (\Exception $e) {
-            throw new RunTimeException("Spam protection exception: {$e->getMessage()}");
-        }
-
-        if ($lastTopic !== null && $lastTopic->getCreateDateTime() > $dateTime) {
-            throw new RunTimeException('You can not mass post within 10 seconds!(Spam protection)');
-        }
-    }
-
-    /**
-     * @param User $user
-     */
-    private function ensureNotBanned(User $user): void
-    {
-        if ($user->getForumBan()) {
-            throw new RunTimeException('You are forum banned!');
-        }
     }
 }
