@@ -6,9 +6,11 @@ namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
 use FrankProjects\UltimateWarfare\Form\Forum\PostType;
 use FrankProjects\UltimateWarfare\Repository\PostRepository;
+use FrankProjects\UltimateWarfare\Service\Action\PostActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class PostController extends BaseForumController
 {
@@ -18,14 +20,22 @@ class PostController extends BaseForumController
     private $postRepository;
 
     /**
+     * @var PostActionService
+     */
+    private $postActionService;
+
+    /**
      * PostController constructor.
      *
      * @param PostRepository $postRepository
+     * @param PostActionService $postActionService
      */
     public function __construct(
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        PostActionService $postActionService
     ) {
         $this->postRepository = $postRepository;
+        $this->postActionService = $postActionService;
     }
 
     /**
@@ -38,72 +48,48 @@ class PostController extends BaseForumController
 
         if ($post === null) {
             $this->addFlash('error', 'No such post!');
-
-            return $this->redirect($this->generateUrl('Forum'));
+            return $this->redirectToRoute('Forum');
         }
 
         $topic = $post->getTopic();
-        $user = $this->getGameUser();
-        if ($user == null) {
-            $this->addFlash('error', 'Not logged in!');
 
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
+        try {
+            $this->postActionService->remove($postId, $this->getGameUser());
+            $this->addFlash('success', 'Post removed');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
 
-        if ($user->getId() != $post->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('error', 'Not enough permissions!');
-
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
-        }
-
-        $this->postRepository->remove($post);
-        $this->addFlash('success', 'Post removed');
-
-        return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
+        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
     }
 
     /**
      * @param Request $request
      * @param int $postId
      * @return RedirectResponse|Response
+     * @throws \Exception
      */
-    public function edit(Request $request, int $postId)
+    public function edit(Request $request, int $postId): Response
     {
         $post = $this->postRepository->find($postId);
 
         if ($post === null) {
             $this->addFlash('error', 'No such post!');
-            return $this->redirect($this->generateUrl('Forum'));
+            return $this->redirectToRoute('Forum');
         }
 
         $topic = $post->getTopic();
-        $user = $this->getGameUser();
-        if ($user == null) {
-            $this->addFlash('error', 'Not logged in!');
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
-        }
-
-        if ($user->getId() != $post->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('error', 'Not enough permissions!');
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
-        }
-
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $lastPost = $this->postRepository->getLastPostByUser($this->getGameUser());
-
-            if ($lastPost !== null && $lastPost->getCreateDateTime() > new \DateTime('- 10 seconds')) {
-                $this->addFlash('error', 'You can\'t mass post within 10 seconds!(Spam protection)');
-                return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
+            try {
+                $this->postActionService->edit($post, $this->getGameUser());
+                $this->addFlash('success', 'Successfully edited post');
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
 
-            $post->setEditUser($this->getGameUser());
-
-            $this->postRepository->save($post);
-            $this->addFlash('success', 'Successfully edited post');
-
-            return $this->redirect($this->generateUrl('Forum/Topic', ['topicId' => $topic->getId()]));
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
         }
 
         return $this->render('forum/post_edit.html.twig', [
