@@ -5,19 +5,14 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Repository\MessageRepository;
-use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\Action\MessageActionService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 final class MessageController extends BaseGameController
 {
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
     /**
      * @var MessageRepository
      */
@@ -31,16 +26,13 @@ final class MessageController extends BaseGameController
     /**
      * MessageController constructor.
      *
-     * @param PlayerRepository $playerRepository
      * @param MessageRepository $messageRepository
      * @param MessageActionService $messageActionService
      */
     public function __construct(
-        PlayerRepository $playerRepository,
         MessageRepository $messageRepository,
         MessageActionService $messageActionService
     ) {
-        $this->playerRepository = $playerRepository;
         $this->messageRepository = $messageRepository;
         $this->messageActionService = $messageActionService;
     }
@@ -77,15 +69,10 @@ final class MessageController extends BaseGameController
      */
     public function inboxRead(int $messageId): Response
     {
-        $message = $this->messageRepository->find($messageId);
-
-        if (!$message) {
-            $this->addFlash('error', 'No such message');
-            return $this->redirectToRoute('Game/Message/Inbox');
-        }
-
-        if ($message->getToPlayer()->getId() !== $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'This is not your message!');
+        try {
+            $message = $this->messageActionService->getMessageByIdAndToPlayer($messageId, $this->getPlayer());
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/Message/Inbox');
         }
 
@@ -97,9 +84,9 @@ final class MessageController extends BaseGameController
 
     /**
      * @param int $messageId
-     * @return Response
+     * @return RedirectResponse
      */
-    public function inboxDelete(int $messageId): Response
+    public function inboxDelete(int $messageId): RedirectResponse
     {
         try {
             $this->messageActionService->deleteMessageFromInbox($this->getPlayer(), $messageId);
@@ -143,15 +130,10 @@ final class MessageController extends BaseGameController
      */
     public function outboxRead(int $messageId): Response
     {
-        $message = $this->messageRepository->find($messageId);
-
-        if (!$message) {
-            $this->addFlash('error', 'No such message');
-            return $this->redirectToRoute('Game/Message/Outbox');
-        }
-
-        if ($message->getFromPlayer()->getId() !== $this->getPlayer()->getId()) {
-            $this->addFlash('error', 'This is not your message!');
+        try {
+            $message = $this->messageActionService->getMessageByIdAndFromPlayer($messageId, $this->getPlayer());
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/Message/Outbox');
         }
 
@@ -163,9 +145,9 @@ final class MessageController extends BaseGameController
 
     /**
      * @param int $messageId
-     * @return Response
+     * @return RedirectResponse
      */
-    public function outboxDelete(int $messageId): Response
+    public function outboxDelete(int $messageId): RedirectResponse
     {
         try {
             $this->messageActionService->deleteMessageFromOutbox($this->getPlayer(), $messageId);
