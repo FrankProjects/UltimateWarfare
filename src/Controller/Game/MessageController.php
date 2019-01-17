@@ -69,15 +69,17 @@ final class MessageController extends BaseGameController
      */
     public function inboxRead(int $messageId): Response
     {
+        $player = $this->getPlayer();
+
         try {
-            $message = $this->messageActionService->getMessageByIdAndToPlayer($messageId, $this->getPlayer());
+            $message = $this->messageActionService->getMessageByIdAndToPlayer($messageId, $player);
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/Message/Inbox');
         }
 
         return $this->render('game/message/inboxRead.html.twig', [
-            'player' => $this->getPlayer(),
+            'player' => $player,
             'message' => $message
         ]);
     }
