@@ -81,7 +81,7 @@ final class MarketController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('Game/Market'));
+        return $this->redirectToRoute('Game/Market');
     }
 
     /**
@@ -118,7 +118,7 @@ final class MarketController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('Game/Market/Sell'));
+        return $this->redirectToRoute('Game/Market/Sell');
     }
 
     /**
@@ -153,7 +153,7 @@ final class MarketController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('Game/Market/Offers'));
+        return $this->redirectToRoute('Game/Market/Offers');
     }
 
     /**
