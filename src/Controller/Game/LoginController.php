@@ -7,15 +7,15 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use RuntimeException;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
 
 final class LoginController extends BaseGameController
 {
     /**
-     * @return Response
+     * @return RedirectResponse
      */
-    public function login(): Response
+    public function login(): RedirectResponse
     {
         try {
             $user = $this->getLoginUser();
@@ -38,9 +38,9 @@ final class LoginController extends BaseGameController
     /**
      * @param int $playerId
      * @param PlayerRepository $playerRepository
-     * @return Response
+     * @return RedirectResponse
      */
-    public function loginForPlayer(int $playerId, PlayerRepository $playerRepository): Response
+    public function loginForPlayer(int $playerId, PlayerRepository $playerRepository): RedirectResponse
     {
         try {
             $user = $this->getLoginUser();
