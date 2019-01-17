@@ -67,7 +67,7 @@ final class RegionController extends BaseGameController
         $worldRegion = null;
 
         try {
-            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndWorld($regionId, $player->getWorld());
 
             if ($request->isMethod('POST')) {
                 $this->regionActionService->buyWorldRegion($regionId, $this->getPlayer());
@@ -97,7 +97,7 @@ final class RegionController extends BaseGameController
         $player = $this->getPlayer();
 
         try {
-            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndWorld($regionId, $player->getWorld());
         } catch (WorldRegionNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);

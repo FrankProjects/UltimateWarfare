@@ -121,11 +121,6 @@ final class ConstructionController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 
-        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
-            $this->addFlash('error', 'This is not your region!');
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
-        }
-
         if ($request->isMethod('POST')) {
             try {
                 $this->constructionActionService->constructGameUnits($worldRegion, $player, $gameUnitType, $request->get('construct'));
@@ -178,10 +173,6 @@ final class ConstructionController extends BaseGameController
         $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
 
         if (!$gameUnitType) {
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
-        }
-
-        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 

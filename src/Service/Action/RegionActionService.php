@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
@@ -102,7 +103,7 @@ final class RegionActionService
      */
     public function buyWorldRegion(int $worldRegionId, Player $player): void
     {
-        $worldRegion = $this->getWorldRegionByIdAndPlayer($worldRegionId, $player);
+        $worldRegion = $this->getWorldRegionByIdAndWorld($worldRegionId, $player->getWorld());
         $resources = $player->getResources();
 
         if ($worldRegion->getPlayer() !== null) {
@@ -136,11 +137,11 @@ final class RegionActionService
 
     /**
      * @param int $worldRegionId
-     * @param Player $player
+     * @param World $world
      * @return WorldRegion
      * @throws WorldRegionNotFoundException
      */
-    public function getWorldRegionByIdAndPlayer(int $worldRegionId, Player $player): WorldRegion
+    public function getWorldRegionByIdAndWorld(int $worldRegionId, World $world): WorldRegion
     {
         $worldRegion = $this->worldRegionRepository->find($worldRegionId);
 
@@ -150,8 +151,30 @@ final class RegionActionService
 
         $sector = $worldRegion->getWorldSector();
 
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+        if ($sector->getWorld()->getId() != $world->getId()) {
             throw new RunTimeException('World region is not part for your game world!');
+        }
+
+
+        return $worldRegion;
+    }
+
+    /**
+     * @param int $worldRegionId
+     * @param Player $player
+     * @return WorldRegion
+     * @throws WorldRegionNotFoundException
+     */
+    public function getWorldRegionByIdAndPlayer(int $worldRegionId, Player $player): WorldRegion
+    {
+        $worldRegion = $this->getWorldRegionByIdAndWorld($worldRegionId, $player->getWorld());
+
+        if ($worldRegion->getPlayer() === null) {
+            throw new RunTimeException('World region has no owner!');
+        }
+
+        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
+            throw new RunTimeException('World region is not yours!');
         }
 
 
