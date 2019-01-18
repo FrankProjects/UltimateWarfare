@@ -172,6 +172,25 @@ final class ConstructionActionService
     }
 
     /**
+     * @param Player $player
+     * @param int $constructionId
+     */
+    public function cancelConstruction(Player $player, int $constructionId): void
+    {
+        $construction = $this->constructionRepository->find($constructionId);
+
+        if (!$construction) {
+            throw new RunTimeException('This construction queue does not exist!');
+        }
+
+        if ($construction->getPlayer()->getId() != $player->getId()) {
+            throw new RunTimeException('This is not your construction queue!');
+        }
+
+        $this->constructionRepository->remove($construction);
+    }
+
+    /**
      * @param GameUnitType $gameUnitType
      * @param WorldRegion $worldRegion
      * @return int
