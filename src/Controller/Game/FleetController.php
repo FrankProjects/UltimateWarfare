@@ -122,15 +122,11 @@ final class FleetController extends BaseGameController
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }
 
-        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
-        }
-
         $gameUnitType = $this->gameUnitTypeRepository->find(4);
 
         if ($request->getMethod() == 'POST') {
             $targetRegionId = intval($request->request->get('target', 0));
-            $targetRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($targetRegionId, $player);
+            $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld($targetRegionId, $player->getWorld());
 
             if ($targetRegion) {
                 try {

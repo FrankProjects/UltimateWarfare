@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
@@ -105,10 +106,8 @@ final class ConstructionController extends BaseGameController
      */
     public function constructGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
-        $player = $this->getPlayer();
-
         try {
-            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $this->getPlayer());
         } catch (WorldRegionNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);
@@ -121,40 +120,38 @@ final class ConstructionController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 
-        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
-            $this->addFlash('error', 'This is not your region!');
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
-        }
-
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             try {
-                $this->constructionActionService->constructGameUnits($worldRegion, $player, $gameUnitType, $request->get('construct'));
-
-                // XXX TODO: Refactor to show what!
-                if ($gameUnitType->getId() == 4) {
-                    $this->addFlash('success', 'New units are now being trained!');
-                } else {
-                    $this->addFlash('success', 'New buildings are now being built!');
-                }
+                $this->constructionActionService->constructGameUnits($worldRegion, $this->getPlayer(), $gameUnitType, $request->get('construct'));
+                $this->addConstructGameUnitsFlash($gameUnitType);
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
-        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
-
-        $gameUnitData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
-        $constructionData = $this->constructionRepository->getGameUnitConstructionSumByWorldRegion($worldRegion);
-
         return $this->render('game/region/constructGameUnits.html.twig', [
             'region' => $worldRegion,
-            'player' => $player,
+            'player' => $this->getPlayer(),
             'spaceLeft' => $this->constructionActionService->getBuildingSpaceLeft($gameUnitType, $worldRegion),
             'gameUnitType' => $gameUnitType,
-            'gameUnitTypes' => $gameUnitTypes,
-            'gameUnitData' => $gameUnitData,
-            'constructionData' => $constructionData
+            'gameUnitTypes' => $this->gameUnitTypeRepository->findAll(),
+            'gameUnitData' => $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion),
+            'constructionData' => $this->constructionRepository->getGameUnitConstructionSumByWorldRegion($worldRegion)
         ]);
+    }
+
+    /**
+     * XXX TODO: Refactor to show what game units are being built/trained
+     *
+     * @param GameUnitType $gameUnitType
+     */
+    private function addConstructGameUnitsFlash(GameUnitType $gameUnitType): void
+    {
+        if ($gameUnitType->getId() == 4) {
+            $this->addFlash('success', 'New units are now being trained!');
+        } else {
+            $this->addFlash('success', 'New buildings are now being built!');
+        }
     }
 
     /**
@@ -166,51 +163,48 @@ final class ConstructionController extends BaseGameController
      */
     public function removeGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
-        $player = $this->getPlayer();
-
         try {
-            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $this->getPlayer());
         } catch (WorldRegionNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }
 
         $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
-
         if (!$gameUnitType) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 
-        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
-        }
-
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             try {
-                $this->constructionActionService->removeGameUnits($worldRegion, $player, $gameUnitType, $request->get('destroy'));
-
-                // XXX TODO: Refactor to show what!
-                if ($gameUnitType->getId() == 4) {
-                    $this->addFlash('success', "You have disbanded units!");
-                } else {
-                    $this->addFlash('success', "You have destroyed buildings!");
-                }
+                $this->constructionActionService->removeGameUnits($worldRegion, $this->getPlayer(), $gameUnitType, $request->get('destroy'));
+                $this->addRemoveGameUnitsFlash($gameUnitType);
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
-        $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
-
-        $gameUnitData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
-
         return $this->render('game/region/removeGameUnits.html.twig', [
             'region' => $worldRegion,
-            'player' => $player,
+            'player' => $this->getPlayer(),
             'gameUnitType' => $gameUnitType,
-            'gameUnitTypes' => $gameUnitTypes,
-            'gameUnitData' => $gameUnitData,
+            'gameUnitTypes' => $this->gameUnitTypeRepository->findAll(),
+            'gameUnitData' => $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion),
         ]);
+    }
+
+    /**
+     * XXX TODO: Refactor to show what game units are being destroyed/disbanded
+     *
+     * @param GameUnitType $gameUnitType
+     */
+    private function addRemoveGameUnitsFlash(GameUnitType $gameUnitType): void
+    {
+        if ($gameUnitType->getId() == 4) {
+            $this->addFlash('success', "You have disbanded units!");
+        } else {
+            $this->addFlash('success', "You have destroyed buildings!");
+        }
     }
 
     /**
@@ -219,21 +213,8 @@ final class ConstructionController extends BaseGameController
      */
     public function cancel(int $constructionId): RedirectResponse
     {
-        $player = $this->getPlayer();
-        $construction = $this->constructionRepository->find($constructionId);
-
-        if (!$construction) {
-            $this->addFlash('error', "This construction queue doesn't exist!");
-            return $this->redirectToRoute('Game/Construction', [], 302);
-        }
-
-        if ($construction->getPlayer()->getId() != $player->getId()) {
-            $this->addFlash('error', "This is not your construction queue!");
-            return $this->redirectToRoute('Game/Construction', [], 302);
-        }
-
         try {
-            $this->constructionRepository->remove($construction);
+            $this->constructionActionService->cancelConstruction($this->getPlayer(), $constructionId);
             $this->addFlash('success', 'Successfully cancelled construction queue!');
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());

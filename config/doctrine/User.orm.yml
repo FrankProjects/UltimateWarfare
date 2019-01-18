@@ -57,11 +57,6 @@ FrankProjects\UltimateWarfare\Entity\User:
             nullable: false
             options:
                 default: '1'
-        hints:
-            type: boolean
-            nullable: false
-            options:
-                default: '1'
         adviser:
             type: boolean
             nullable: false

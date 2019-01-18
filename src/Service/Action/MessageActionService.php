@@ -116,4 +116,36 @@ final class MessageActionService
 
         return $message;
     }
+
+    /**
+     * @param int $messageId
+     * @param Player $player
+     * @return Message
+     */
+    public function getMessageByIdAndToPlayer(int $messageId, Player $player): Message
+    {
+        $message = $this->getMessage($messageId);
+
+        if ($message->getToPlayer()->getId() !== $player->getId()) {
+            throw new RunTimeException('This is not your message!');
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param int $messageId
+     * @param Player $player
+     * @return Message
+     */
+    public function getMessageByIdAndFromPlayer(int $messageId, Player $player): Message
+    {
+        $message = $this->getMessage($messageId);
+
+        if ($message->getFromPlayer()->getId() !== $player->getId()) {
+            throw new RunTimeException('This is not your message!');
+        }
+
+        return $message;
+    }
 }

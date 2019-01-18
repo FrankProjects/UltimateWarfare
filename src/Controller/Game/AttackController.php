@@ -67,7 +67,7 @@ final class AttackController extends BaseGameController
         $worldRegion = null;
 
         try {
-            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndWorld($regionId, $player->getWorld());
             $playerRegions = $this->regionActionService->getAttackFromWorldRegionList($worldRegion, $this->getPlayer());
         } catch (WorldRegionNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
@@ -96,7 +96,7 @@ final class AttackController extends BaseGameController
         $player = $this->getPlayer();
 
         try {
-            $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
+            $worldRegion = $this->regionActionService->getWorldRegionByIdAndWorld($regionId, $player->getWorld());
         } catch (WorldRegionNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);
@@ -117,11 +117,6 @@ final class AttackController extends BaseGameController
         } catch (WorldRegionNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);
-        }
-
-        if ($playerRegion->getPlayer() === null || $playerRegion->getPlayer()->getId() != $player->getId()) {
-            $this->addFlash('error', "You are not owner of this region!");
-            return $this->redirectToRoute('Game/World/Region', ['regionId' => $playerRegion->getId()], 302);
         }
 
         $gameUnitType = $this->gameUnitTypeRepository->find(4);
