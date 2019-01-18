@@ -76,11 +76,6 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @var bool
      */
-    private $hints = true;
-
-    /**
-     * @var bool
-     */
     private $adviser = false;
 
     /**
@@ -297,7 +292,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
-     * @return ?string
+     * @return string|null
      */
     public function getConfirmationToken(): ?string
     {
@@ -305,7 +300,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
-     * @param ?string $confirmationToken
+     * @param string|null $confirmationToken
      */
     public function setConfirmationToken(?string $confirmationToken): void
     {
@@ -369,7 +364,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
      *
      * @param \DateTime $signup
      */
-    public function setSignup(\DateTime $signup)
+    public function setSignup(\DateTime $signup): void
     {
         $this->signup = $signup;
     }
@@ -389,7 +384,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
      *
      * @param bool $active
      */
-    public function setActive(bool $active)
+    public function setActive(bool $active): void
     {
         $this->active = $active;
     }
@@ -405,31 +400,11 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
-     * Set hints
-     *
-     * @param bool $hints
-     */
-    public function setHints(bool $hints)
-    {
-        $this->hints = $hints;
-    }
-
-    /**
-     * Get hints
-     *
-     * @return bool
-     */
-    public function getHints(): bool
-    {
-        return $this->hints;
-    }
-
-    /**
      * Set adviser
      *
      * @param bool $adviser
      */
-    public function setAdviser(bool $adviser)
+    public function setAdviser(bool $adviser): void
     {
         $this->adviser = $adviser;
     }
@@ -449,7 +424,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
      *
      * @param bool $forumBan
      */
-    public function setForumBan(bool $forumBan)
+    public function setForumBan(bool $forumBan): void
     {
         $this->forumBan = $forumBan;
     }
@@ -475,7 +450,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @param Collection $players
      */
-    public function setPlayers(Collection $players)
+    public function setPlayers(Collection $players): void
     {
         $this->players = $players;
     }
@@ -491,7 +466,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @param MapDesign $mapDesign
      */
-    public function setMapDesign(MapDesign $mapDesign)
+    public function setMapDesign(MapDesign $mapDesign): void
     {
         $this->mapDesign = $mapDesign;
     }
@@ -507,7 +482,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @param Collection $topics
      */
-    public function setTopics(Collection $topics)
+    public function setTopics(Collection $topics): void
     {
         $this->topics = $topics;
     }
@@ -523,7 +498,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @param Collection $topicsEdited
      */
-    public function setTopicsEdited(Collection $topicsEdited)
+    public function setTopicsEdited(Collection $topicsEdited): void
     {
         $this->topicsEdited = $topicsEdited;
     }
@@ -539,7 +514,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @param Collection $topicsLastPost
      */
-    public function setTopicsLastPost(Collection $topicsLastPost)
+    public function setTopicsLastPost(Collection $topicsLastPost): void
     {
         $this->topicsLastPost = $topicsLastPost;
     }
@@ -555,7 +530,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @param Collection $posts
      */
-    public function setPosts(Collection $posts)
+    public function setPosts(Collection $posts): void
     {
         $this->posts = $posts;
     }
@@ -571,7 +546,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     /**
      * @param Collection $postsEdited
      */
-    public function setPostsEdited(Collection $postsEdited)
+    public function setPostsEdited(Collection $postsEdited): void
     {
         $this->postsEdited = $postsEdited;
     }
