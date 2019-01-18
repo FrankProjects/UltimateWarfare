@@ -99,12 +99,10 @@ final class MarketActionService
     private function createBuyReports(MarketItem $marketItem, Player $player): void
     {
         $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
-        $buyReport = Report::createForPlayer($player, time(), Report::TYPE_MARKET, $buyMessage);
-        $this->reportRepository->save($buyReport);
+        $this->createReport($player, $buyMessage);
 
         $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
-        $sellReport = Report::createForPlayer($marketItem->getPlayer(), time(), Report::TYPE_MARKET, $sellMessage);
-        $this->reportRepository->save($sellReport);
+        $this->createReport($marketItem->getPlayer(), $sellMessage);
     }
 
     /**
@@ -179,12 +177,10 @@ final class MarketActionService
     private function createSellReports(MarketItem $marketItem, Player $player): void
     {
         $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
-        $sellReport = Report::createForPlayer($player, time(), Report::TYPE_MARKET, $sellMessage);
-        $this->reportRepository->save($sellReport);
+        $this->createReport($player, $sellMessage);
 
         $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
-        $buyReport = Report::createForPlayer($marketItem->getPlayer(), time(), Report::TYPE_MARKET, $buyMessage);
-        $this->reportRepository->save($buyReport);
+        $this->createReport($marketItem->getPlayer(), $buyMessage);
     }
 
     /**
@@ -324,5 +320,15 @@ final class MarketActionService
         }
 
         return $resources;
+    }
+
+    /**
+     * @param Player $player
+     * @param string $text
+     */
+    private function createReport(Player $player, string $text): void
+    {
+        $report = Report::createForPlayer($player, time(), Report::TYPE_MARKET, $text);
+        $this->reportRepository->save($report);
     }
 }
