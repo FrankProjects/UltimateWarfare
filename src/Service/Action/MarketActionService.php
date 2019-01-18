@@ -188,12 +188,10 @@ final class MarketActionService
      */
     public function placeOffer(Player $player, string $gameResource, int $price, int $amount, string $action): void
     {
+        $this->ensureValidGameResource($gameResource);
+
         if ($price < 1 || $amount < 1) {
             throw new RunTimeException("Invalid input!");
-        }
-
-        if (!GameResource::isValid($gameResource)) {
-            throw new RunTimeException("Invalid resource!");
         }
 
         $resources = $player->getResources();
@@ -235,6 +233,16 @@ final class MarketActionService
     {
         if ($marketItem->getPlayer()->getId() === $player->getId()) {
             throw new RunTimeException('Can not buy or sell to yourself!');
+        }
+    }
+
+    /**
+     * @param string $gameResource
+     */
+    private function ensureValidGameResource(string $gameResource): void
+    {
+        if (!GameResource::isValid($gameResource)) {
+            throw new RunTimeException("Invalid resource!");
         }
     }
 
@@ -317,21 +325,15 @@ final class MarketActionService
     {
         switch ($gameResource) {
             case GameResource::GAME_RESOURCE_WOOD:
-                if ($amount > $resources->getWood()) {
-                    throw new RunTimeException("You do not have enough wood!");
-                }
+                $this->ensureEnoughResources($amount, $resources->getWood(), GameResource::GAME_RESOURCE_WOOD);
                 $resources->setWood($resources->getWood() - $amount);
                 break;
             case GameResource::GAME_RESOURCE_FOOD:
-                if ($amount > $resources->getFood()) {
-                    throw new RunTimeException("You do not have enough food!");
-                }
+                $this->ensureEnoughResources($amount, $resources->getFood(), GameResource::GAME_RESOURCE_FOOD);
                 $resources->setFood($resources->getFood() - $amount);
                 break;
             case GameResource::GAME_RESOURCE_STEEL:
-                if ($amount > $resources->getSteel()) {
-                    throw new RunTimeException("You do not have enough steel!");
-                }
+                $this->ensureEnoughResources($amount, $resources->getSteel(), GameResource::GAME_RESOURCE_STEEL);
                 $resources->setSteel($resources->getSteel() - $amount);
                 break;
             default:
@@ -339,6 +341,18 @@ final class MarketActionService
         }
 
         return $resources;
+    }
+
+    /**
+     * @param int $amount
+     * @param int $resourceAmount
+     * @param string $resourceName
+     */
+    private function ensureEnoughResources(int $amount, int $resourceAmount, string $resourceName): void
+    {
+        if ($amount > $resourceAmount) {
+            throw new RunTimeException("You do not have enough {$resourceName}!");
+        }
     }
 
     /**
