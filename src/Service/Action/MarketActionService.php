@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
+use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\Player\Resources;
 use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Repository\GameResourceRepository;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
@@ -15,11 +16,6 @@ use RuntimeException;
 
 final class MarketActionService
 {
-    /**
-     * @var GameResourceRepository
-     */
-    private $gameResourceRepository;
-
     /**
      * @var MarketItemRepository
      */
@@ -38,18 +34,15 @@ final class MarketActionService
     /**
      * MarketActionService constructor.
      *
-     * @param GameResourceRepository $gameResourceRepository
      * @param MarketItemRepository $marketItemRepository
      * @param PlayerRepository $playerRepository
      * @param ReportRepository $reportRepository
      */
     public function __construct(
-        GameResourceRepository $gameResourceRepository,
         MarketItemRepository $marketItemRepository,
         PlayerRepository $playerRepository,
         ReportRepository $reportRepository
     ) {
-        $this->gameResourceRepository = $gameResourceRepository;
         $this->marketItemRepository = $marketItemRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
@@ -83,23 +76,8 @@ final class MarketActionService
         $marketItemPlayerResources = $marketItemPlayer->getResources();
         $marketItemPlayerResources->setCash($marketItemPlayerResources->getCash() + $marketItem->getPrice());
 
-        // XXX TODO: Fix better
-        $gameResource = $marketItem->getGameResource();
-        switch ($gameResource->getName()) {
-            case 'Wood':
-                $resources->setWood($resources->getWood() + $marketItem->getAmount());
-                break;
-            case 'Food':
-                $resources->setFood($resources->getFood() + $marketItem->getAmount());
-                break;
-            case 'Steel':
-                $resources->setSteel($resources->getSteel() + $marketItem->getAmount());
-                break;
-            default:
-                throw new RunTimeException('Unknown resource type!');
-        }
+        $resources = $this->addGameResources($marketItem, $resources);
 
-        // Set update news feed
         $marketItemPlayerNotifications = $marketItemPlayer->getNotifications();
         $marketItemPlayerNotifications->setMarket(true);
 
@@ -111,12 +89,21 @@ final class MarketActionService
         $this->playerRepository->save($marketItemPlayer);
         $this->marketItemRepository->remove($marketItem);
 
-        $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
+        $this->createBuyReports($marketItem, $player);
+    }
+
+    /**
+     * @param MarketItem $marketItem
+     * @param Player $player
+     */
+    private function createBuyReports(MarketItem $marketItem, Player $player): void
+    {
+        $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
         $buyReport = Report::createForPlayer($player, time(), Report::TYPE_MARKET, $buyMessage);
         $this->reportRepository->save($buyReport);
 
-        $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
-        $sellReport = Report::createForPlayer($marketItemPlayer, time(), Report::TYPE_MARKET, $sellMessage);
+        $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
+        $sellReport = Report::createForPlayer($marketItem->getPlayer(), time(), Report::TYPE_MARKET, $sellMessage);
         $this->reportRepository->save($sellReport);
     }
 
@@ -138,21 +125,7 @@ final class MarketActionService
         if ($marketItem->getType() == MarketItem::TYPE_BUY) {
             $resources->setCash($resources->getCash() + $marketItem->getPrice());
         } else {
-            // XXX TODO: Fix better
-            $gameResource = $marketItem->getGameResource();
-            switch ($gameResource->getName()) {
-                case 'Wood':
-                    $resources->setWood($resources->getWood() + $marketItem->getAmount());
-                    break;
-                case 'Food':
-                    $resources->setFood($resources->getFood() + $marketItem->getAmount());
-                    break;
-                case 'Steel':
-                    $resources->setSteel($resources->getSteel() + $marketItem->getAmount());
-                    break;
-                default:
-                    throw new RunTimeException('Unknown resource type!');
-            }
+            $resources = $this->addGameResources($marketItem, $resources);
         }
 
         $player->setResources($resources);
@@ -184,23 +157,8 @@ final class MarketActionService
         $marketItemPlayerResources = $marketItemPlayer->getResources();
         $marketItemPlayerResources->setCash($marketItemPlayerResources->getCash() - $marketItem->getPrice());
 
-        // XXX TODO: Fix better
-        $gameResource = $marketItem->getGameResource();
-        switch ($gameResource->getName()) {
-            case 'Wood':
-                $resources->setWood($resources->getWood() - $marketItem->getAmount());
-                break;
-            case 'Food':
-                $resources->setFood($resources->getFood() - $marketItem->getAmount());
-                break;
-            case 'Steel':
-                $resources->setSteel($resources->getSteel() - $marketItem->getAmount());
-                break;
-            default:
-                throw new RunTimeException('Unknown resource type!');
-        }
+        $resources = $this->substractGameResources($marketItem, $resources);
 
-        // Set update news feed
         $marketItemPlayerNotifications = $marketItemPlayer->getNotifications();
         $marketItemPlayerNotifications->setMarket(true);
 
@@ -211,35 +169,42 @@ final class MarketActionService
         $this->playerRepository->save($marketItemPlayer);
         $this->marketItemRepository->remove($marketItem);
 
-        $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
+        $this->createSellReports($marketItem, $player);
+    }
+
+    /**
+     * @param MarketItem $marketItem
+     * @param Player $player
+     */
+    private function createSellReports(MarketItem $marketItem, Player $player): void
+    {
+        $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
         $sellReport = Report::createForPlayer($player, time(), Report::TYPE_MARKET, $sellMessage);
         $this->reportRepository->save($sellReport);
 
-        $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()->getName()}.";
-        $buyReport = Report::createForPlayer($marketItemPlayer, time(), Report::TYPE_MARKET, $buyMessage);
+        $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
+        $buyReport = Report::createForPlayer($marketItem->getPlayer(), time(), Report::TYPE_MARKET, $buyMessage);
         $this->reportRepository->save($buyReport);
     }
 
     /**
      * @param Player $player
-     * @param int $gameResourceId
+     * @param string $gameResource
      * @param int $price
      * @param int $amount
      * @param string $action
      */
-    public function placeOffer(Player $player, int $gameResourceId, int $price, int $amount, string $action): void
+    public function placeOffer(Player $player, string $gameResource, int $price, int $amount, string $action): void
     {
         if ($price < 1 || $amount < 1) {
             throw new RunTimeException("Invalid input!");
         }
 
-        $gameResource = $this->gameResourceRepository->find($gameResourceId);
-        if (!$gameResource) {
+        if (!GameResource::isValid($gameResource)) {
             throw new RunTimeException("Invalid resource!");
         }
 
         $resources = $player->getResources();
-
 
         if ($action == MarketItem::TYPE_BUY) {
             if ($price > $resources->getCash()) {
@@ -248,21 +213,21 @@ final class MarketActionService
 
             $resources->setCash($resources->getCash() - $price);
         } elseif ($action == MarketItem::TYPE_SELL) {
-            switch ($gameResource->getName()) {
-                case 'Wood':
+            switch ($gameResource) {
+                case GameResource::GAME_RESOURCE_WOOD:
                     if ($amount > $resources->getWood()) {
                         throw new RunTimeException("You do not have enough wood!");
                     }
 
                     $resources->setWood($resources->getWood() - $amount);
                     break;
-                case 'Food':
+                case GameResource::GAME_RESOURCE_FOOD:
                     if ($amount > $resources->getFood()) {
                         throw new RunTimeException("You do not have enough food!");
                     }
                     $resources->setFood($resources->getFood() - $amount);
                     break;
-                case 'Steel':
+                case GameResource::GAME_RESOURCE_STEEL:
                     if ($amount > $resources->getSteel()) {
                         throw new RunTimeException("You do not have enough steel!");
                     }
@@ -310,5 +275,54 @@ final class MarketActionService
         }
 
         return $marketItem;
+    }
+
+    /**
+     * @param MarketItem $marketItem
+     * @param Resources $resources
+     * @return Resources
+     */
+    private function addGameResources(MarketItem $marketItem, Resources $resources): Resources
+    {
+        switch ($marketItem->getGameResource()) {
+            case GameResource::GAME_RESOURCE_WOOD:
+                $resources->setWood($resources->getWood() + $marketItem->getAmount());
+                break;
+            case GameResource::GAME_RESOURCE_FOOD:
+                $resources->setFood($resources->getFood() + $marketItem->getAmount());
+                break;
+            case GameResource::GAME_RESOURCE_STEEL:
+                $resources->setSteel($resources->getSteel() + $marketItem->getAmount());
+                break;
+            default:
+                throw new RunTimeException('Unknown resource type!');
+        }
+
+        return $resources;
+    }
+
+
+    /**
+     * @param MarketItem $marketItem
+     * @param Resources $resources
+     * @return Resources
+     */
+    private function substractGameResources(MarketItem $marketItem, Resources $resources): Resources
+    {
+        switch ($marketItem->getGameResource()) {
+            case GameResource::GAME_RESOURCE_WOOD:
+                $resources->setWood($resources->getWood() - $marketItem->getAmount());
+                break;
+            case GameResource::GAME_RESOURCE_FOOD:
+                $resources->setFood($resources->getFood() - $marketItem->getAmount());
+                break;
+            case GameResource::GAME_RESOURCE_STEEL:
+                $resources->setSteel($resources->getSteel() - $marketItem->getAmount());
+                break;
+            default:
+                throw new RunTimeException('Unknown resource type!');
+        }
+
+        return $resources;
     }
 }

@@ -24,6 +24,10 @@ FrankProjects\UltimateWarfare\Entity\MarketItem:
         type:
             type: string
             nullable: false
+        gameResource:
+            type: string
+            nullable: false
+            column: game_resource
     manyToOne:
         player:
             targetEntity: Player
@@ -36,11 +40,5 @@ FrankProjects\UltimateWarfare\Entity\MarketItem:
             inversedBy: marketItems
             joinColumn:
                 name: world_id
-                referencedColumnName: id
-        gameResource:
-            targetEntity: GameResource
-            inversedBy: marketItems
-            joinColumn:
-                name: game_resource_id
                 referencedColumnName: id
     lifecycleCallbacks: {  }
