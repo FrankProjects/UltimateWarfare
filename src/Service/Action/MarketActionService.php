@@ -62,9 +62,7 @@ final class MarketActionService
             throw new RunTimeException('Market order is not a buy order!');
         }
 
-        if ($marketItem->getPlayer()->getId() == $player->getId()) {
-            throw new RunTimeException('Can not buy your own!');
-        }
+        $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
 
         $resources = $player->getResources();
         if ($marketItem->getPrice() > $resources->getCash()) {
@@ -145,9 +143,7 @@ final class MarketActionService
             throw new RunTimeException('Market order is not a sell order!');
         }
 
-        if ($marketItem->getPlayer()->getId() == $player->getId()) {
-            throw new RunTimeException('Can not sell to yourself!');
-        }
+        $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
 
         $resources = $player->getResources();
         $resources->setCash($resources->getCash() + $marketItem->getPrice());
@@ -209,29 +205,7 @@ final class MarketActionService
 
             $resources->setCash($resources->getCash() - $price);
         } elseif ($action == MarketItem::TYPE_SELL) {
-            switch ($gameResource) {
-                case GameResource::GAME_RESOURCE_WOOD:
-                    if ($amount > $resources->getWood()) {
-                        throw new RunTimeException("You do not have enough wood!");
-                    }
-
-                    $resources->setWood($resources->getWood() - $amount);
-                    break;
-                case GameResource::GAME_RESOURCE_FOOD:
-                    if ($amount > $resources->getFood()) {
-                        throw new RunTimeException("You do not have enough food!");
-                    }
-                    $resources->setFood($resources->getFood() - $amount);
-                    break;
-                case GameResource::GAME_RESOURCE_STEEL:
-                    if ($amount > $resources->getSteel()) {
-                        throw new RunTimeException("You do not have enough steel!");
-                    }
-                    $resources->setSteel($resources->getSteel() - $amount);
-                    break;
-                default:
-                    throw new RunTimeException("Unknown resource type!");
-            }
+            $resources = $this->substractAndValidateGameResources($gameResource, $resources, $amount);
         } else {
             throw new RunTimeException("Invalid option!");
         }
@@ -250,6 +224,17 @@ final class MarketActionService
         $world = $player->getWorld();
         if (!$world->getMarket()) {
             throw new RunTimeException("Market not enabled!");
+        }
+    }
+
+    /**
+     * @param MarketItem $marketItem
+     * @param Player $player
+     */
+    private function ensureMarketItemNotOwnedByPlayer(MarketItem $marketItem, Player $player): void
+    {
+        if ($marketItem->getPlayer()->getId() === $player->getId()) {
+            throw new RunTimeException('Can not buy or sell to yourself!');
         }
     }
 
@@ -317,6 +302,40 @@ final class MarketActionService
                 break;
             default:
                 throw new RunTimeException('Unknown resource type!');
+        }
+
+        return $resources;
+    }
+
+    /**
+     * @param string $gameResource
+     * @param Resources $resources
+     * @param int $amount
+     * @return Resources
+     */
+    private function substractAndValidateGameResources(string $gameResource, Resources $resources, int $amount): Resources
+    {
+        switch ($gameResource) {
+            case GameResource::GAME_RESOURCE_WOOD:
+                if ($amount > $resources->getWood()) {
+                    throw new RunTimeException("You do not have enough wood!");
+                }
+                $resources->setWood($resources->getWood() - $amount);
+                break;
+            case GameResource::GAME_RESOURCE_FOOD:
+                if ($amount > $resources->getFood()) {
+                    throw new RunTimeException("You do not have enough food!");
+                }
+                $resources->setFood($resources->getFood() - $amount);
+                break;
+            case GameResource::GAME_RESOURCE_STEEL:
+                if ($amount > $resources->getSteel()) {
+                    throw new RunTimeException("You do not have enough steel!");
+                }
+                $resources->setSteel($resources->getSteel() - $amount);
+                break;
+            default:
+                throw new RunTimeException("Unknown resource type!");
         }
 
         return $resources;
