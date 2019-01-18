@@ -35,7 +35,7 @@ final class FederationBankController extends BaseGameController
     {
         try {
             $resources = $request->get('resources');
-            if ($request->isMethod('POST') && $resources !== null) {
+            if ($request->isMethod(Request::METHOD_POST) && $resources !== null) {
                 $this->federationBankActionService->deposit($this->getPlayer(), $resources);
                 $this->addFlash('success', 'You successfully made a deposit!');
             }
@@ -56,7 +56,7 @@ final class FederationBankController extends BaseGameController
     {
         try {
             $resources = $request->get('resources');
-            if ($request->isMethod('POST') && $resources !== null) {
+            if ($request->isMethod(Request::METHOD_POST) && $resources !== null) {
                 $this->federationBankActionService->withdraw($this->getPlayer(), $resources);
                 $this->addFlash('success', 'You successfully made a withdrawal!');
             }

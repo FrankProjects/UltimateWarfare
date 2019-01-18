@@ -162,7 +162,7 @@ final class MarketController extends BaseGameController
             ]);
         }
 
-        if ($request->getMethod() == 'POST') {
+        if ($request->isMethod(Request::METHOD_POST)) {
             $price = intval($request->get('price'));
             $amount = intval($request->get('amount'));
             $resource = $request->get('resource');
