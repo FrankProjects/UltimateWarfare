@@ -3,7 +3,7 @@
 {% block title %}Ultimate Warfare - Select World{% endblock title %}
 
 {% block content %}
-    <table class="table text text-center">
+    <table class="table text-center">
         <tr>
             <td class="tabletop"><b>Select your World</b></td>
         </tr>
@@ -23,7 +23,7 @@
     <br /><br />
 
     {% for world in worlds %}
-        <table class="table text">
+        <table class="table">
             <tr>
                 <td width="400">
                     <b>{{ world.name|escape }}</b><br />

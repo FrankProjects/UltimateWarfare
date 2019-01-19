@@ -9,13 +9,13 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         {% if topic.sticky %}
-            - <a class="B" href="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}">{{ 'action.topic.sticky'|trans }}</a>
+            - <a class="btn btn-primary" href="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}">{{ 'action.topic.sticky'|trans }}</a>
         {% else %}
-            - <a class="B" href="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}">{{ 'action.topic.unsticky'|trans }}</a>
+            - <a class="btn btn-primary" href="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}">{{ 'action.topic.unsticky'|trans }}</a>
         {% endif %}
     {% endif %}
 
-    <table class="table text text-center">
+    <table class="table text-center">
         <tr class="tabletop">
             <td colspan="2"><b>{{ topic.title|escape }}</b></td>
         </tr>
@@ -33,8 +33,8 @@
                 {% if user != null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}
                     <br />
                     <br />
-                    <a class="B" href="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}">{{ 'action.topic.delete'|trans }}</a> -
-                    <a class="B" href="{{ path('Forum/Topic/Edit', {'topicId': topic.id}) }}">{{ 'action.topic.edit'|trans }}</a>
+                    <a class="btn btn-primary" href="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}">{{ 'action.topic.delete'|trans }}</a> -
+                    <a class="btn btn-primary" href="{{ path('Forum/Topic/Edit', {'topicId': topic.id}) }}">{{ 'action.topic.edit'|trans }}</a>
                 {% endif %}
             </td>
         </tr>
@@ -54,7 +54,7 @@
 
     {% if user != null %}
         {{ form_start(form) }}
-        <table class="table text text-center">
+        <table class="table text-center">
             <tr class="tabletop">
                 <td><b>{{ 'label.add_reaction'|trans }}</b></td>
             </tr>
