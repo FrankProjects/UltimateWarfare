@@ -87,7 +87,7 @@ final class ChatController extends BaseController
 
         $chatUserArray = [];
         foreach ($chatUsers as $chatUser) {
-            $chatUserArray[] = ['name' => $chatUser->getName()];
+            $chatUserArray[] = ['name' => htmlentities($chatUser->getName())];
         }
 
         return $this->json([
@@ -119,9 +119,8 @@ final class ChatController extends BaseController
         foreach ($chatLines as $chatLine) {
             $chat = [];
             $chat['id'] = $chatLine->getId();
-            $chat['name'] = $chatLine->getName();
-            $chat['text'] = $chatLine->getText();
-            //$chat['text'] = filter_html($chatLine->getText());
+            $chat['name'] = htmlentities($chatLine->getName());
+            $chat['text'] = htmlentities($chatLine->getText());
             $chat['time'] = [
                 'hours'   => date('H', $chatLine->getTimestamp()),
                 'minutes' => date('i', $chatLine->getTimestamp())
