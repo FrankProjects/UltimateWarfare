@@ -28,9 +28,9 @@
                 The Earth was the playground, the war was the game.<br /><br />
 
                 {% if players is empty %}
-                    <a class="B" href="{{ path('Game/SelectWorld') }}"><strong>Play</strong></a>
+                    <a class="btn btn-primary" href="{{ path('Game/SelectWorld') }}"><strong>Play</strong></a>
                 {% else %}
-                    <a class="B" href="{{ path('Game/Login') }}"><strong>Play</strong></a>
+                    <a class="btn btn-primary" href="{{ path('Game/Login') }}"><strong>Play</strong></a>
                 {% endif %}
             </td>
         </tr>
