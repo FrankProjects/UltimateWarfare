@@ -38,7 +38,7 @@
                     Wood: {{ world.wood|escape }}<br />
                     Steel: {{ world.steel|escape }}<br />
                     Food: {{ world.food|escape }}<br /><br />
-                    <a class="B" href="{{ path('Game/SelectName', {'worldId': world.id}) }}"><b>Play this World</b></a>
+                    <a class="btn btn-primary" href="{{ path('Game/SelectName', {'worldId': world.id}) }}"><b>Play this World</b></a>
                 </td>
             </tr>
         </table>
