@@ -9,7 +9,7 @@
 
 {% if (player.income.food - player.upkeep.food) < 0 and (player.resources.food + (player.income.food - player.upkeep.food)) < 0 %}
     {% set runout_food_seconds = 0 - (player.resources.food / (player.income.food - player.upkeep.food)) * 3600 %}
-<table class="table text text-center">
+<table class="table text-center">
     <tr>
         <td>
             <br />
@@ -34,7 +34,7 @@
 
 {% if (player.income.cash - player.upkeep.cash) < 0 and (player.resources.cash + (player.income.cash - player.upkeep.cash)) < 0 %}
     {% set runout_cash_seconds = 0 - (player.resources.cash / (player.income.cash - player.upkeep.cash)) * 3600 %}
-<table class="table text text-center">
+<table class="table text-center">
     <tr>
         <td>
             <br />
@@ -53,7 +53,7 @@
 <br />
 
 {% endif %}
-    <table class="table text text-center">
+    <table class="table text-center">
         <tr>
             <td class="tabletop"><b>Headquarter</b></td>
         </tr>
@@ -72,7 +72,7 @@
 
     <br />
 
-    <table class="table text text-center">
+    <table class="table text-center">
         <tr>
             <td class="tabletop" colspan="3"><b>Status</b></td>
         </tr>
@@ -118,7 +118,7 @@
     <br />
     <br />
 
-    <table width="700" class="table text text-center">
+    <table class="table text-center">
         <tr>
             <td class="tabletop" colspan="2"><b>Recent Reports (Last 10) </b></td>
         </tr>

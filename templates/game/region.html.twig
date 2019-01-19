@@ -3,7 +3,7 @@
 {% block title %}Ultimate Warfare - Region{% endblock title %}
 
 {% block content %}
-    <table class="table text text-center">
+    <table class="table text-center">
         <tr>
             {% if player.worldRegions|length > 1 and region.player.id is defined and region.player.id == player.id %}
             <td class="tabletop" colspan="3">
@@ -59,7 +59,7 @@
     {% elseif region.player.id == player.id %}
 
     {% for gameUnitType in gameUnitTypes %}
-        <table class="table text text-center">
+        <table class="table text-center">
             <tr>
                 <td class="tabletop" colspan="2"><b>{{ gameUnitType.name }}</b></td>
             </tr>
@@ -88,7 +88,7 @@
     {% endfor %}
 
         <br />
-    <table width="350" class="table text text-center">
+    <table width="350" class="table text-center">
         <tr>
             <td width="350" class="tabletop" colspan="2"><b>Other Actions</b></td>
         </tr>

@@ -10,7 +10,7 @@
     </p>
 
     {% if not mapSettings.searchFound %}
-        <table class="table text text-center">
+        <table class="table text-center">
             <tr>
                 <td>
                     <p>
@@ -23,7 +23,7 @@
     {% endif %}
 
     {% if mapSettings.searchFree %}
-        <table class="table text text-center">
+        <table class="table text-center">
             <tr>
                 <td>
                     <p>
@@ -36,7 +36,7 @@
     {% endif %}
 
     {% if mapSettings.searchPlayerName %}
-        <table class="table text text-center">
+        <table class="table text-center">
             <tr>
                 <td>
                     <p>
@@ -48,7 +48,7 @@
         <br />
     {% endif %}
 
-    <table width="595" class="worldtable text text-center">
+    <table width="595" class="worldtable text-center">
         <tr>
             <td width="15">x</td>
             {% for x in 1..5 %}
@@ -69,7 +69,7 @@
     <br />
 
     <form method="post" action="{{ path('Game/World/Sector/Search/Player', {'sectorId': sector.id}) }}">
-        <table class="table text text-center">
+        <table class="table text-center">
             <tr>
                 <td class="tabletop" width="250"><b>UW Player Finder</b></td>
             </tr>
