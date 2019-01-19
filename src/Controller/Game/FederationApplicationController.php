@@ -91,7 +91,7 @@ final class FederationApplicationController extends BaseGameController
             $application = $request->get('application');
 
             if ($federation !== null &&
-                $request->isMethod('POST') &&
+                $request->isMethod(Request::METHOD_POST) &&
                 $application !== null
             ) {
                 $this->federationApplicationActionService->sendFederationApplication($this->getPlayer(), $federation, $application);

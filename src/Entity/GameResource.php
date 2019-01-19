@@ -4,80 +4,35 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 /**
  * GameResource
  */
 class GameResource
 {
-    /**
-     * @var int
-     */
-    private $id;
+    const GAME_RESOURCE_CASH = 'cash';
+    const GAME_RESOURCE_FOOD = 'food';
+    const GAME_RESOURCE_WOOD = 'wood';
+    const GAME_RESOURCE_STEEL = 'steel';
 
     /**
-     * @var string
+     * @param string $gameResource
+     * @return bool
      */
-    private $name;
-
-    /**
-     * @var Collection|MarketItem[]
-     */
-    private $marketItems = [];
-
-    /**
-     * GameResource constructor.
-     */
-    public function __construct()
+    public static function isValid(string $gameResource): bool
     {
-        $this->marketItems = new ArrayCollection();
+        return in_array($gameResource, self::getAll());
     }
 
     /**
-     * Get id
-     *
-     * @return int
+     * @return array
      */
-    public function getId(): int
+    public static function getAll(): array
     {
-        return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getMarketItems(): Collection
-    {
-        return $this->marketItems;
-    }
-
-    /**
-     * @param Collection $marketItems
-     */
-    public function setMarketItems(Collection $marketItems): void
-    {
-        $this->marketItems = $marketItems;
+        return [
+            self::GAME_RESOURCE_CASH,
+            self::GAME_RESOURCE_FOOD,
+            self::GAME_RESOURCE_WOOD,
+            self::GAME_RESOURCE_STEEL
+        ];
     }
 }

@@ -45,7 +45,7 @@ class MarketItem
     private $player;
 
     /**
-     * @var GameResource
+     * @var string
      */
     private $gameResource;
 
@@ -137,17 +137,17 @@ class MarketItem
     }
 
     /**
-     * @return GameResource
+     * @return string
      */
-    public function getGameResource(): GameResource
+    public function getGameResource(): string
     {
         return $this->gameResource;
     }
 
     /**
-     * @param GameResource $gameResource
+     * @param string $gameResource
      */
-    public function setGameResource(GameResource $gameResource): void
+    public function setGameResource(string $gameResource): void
     {
         $this->gameResource = $gameResource;
     }
@@ -174,13 +174,13 @@ class MarketItem
 
     /**
      * @param Player $player
-     * @param GameResource $gameResource
+     * @param string $gameResource
      * @param int $amount
      * @param int $price
      * @param string $type
      * @return MarketItem
      */
-    public static function createForPlayer(Player $player, GameResource $gameResource, int $amount, int $price, string $type): MarketItem
+    public static function createForPlayer(Player $player, string $gameResource, int $amount, int $price, string $type): MarketItem
     {
         $marketItem = new MarketItem();
         $marketItem->setWorld($player->getWorld());

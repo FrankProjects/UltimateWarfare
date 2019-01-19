@@ -25,7 +25,7 @@
         {% for item in marketItems %}
             <tr>
                 <td>{{ item.type }}</td>
-                <td>{{ item.gameResource.name }}</td>
+                <td>{{ item.gameResource }}</td>
                 <td>{{ item.amount }}</td>
                 <td>{{ item.price }}</td>
                 <td><a class="B" href="{{ path('Game/Market/Cancel/Order', {'marketItemId': item.id}) }}"><b>Cancel</b></a></td>

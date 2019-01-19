@@ -124,7 +124,7 @@ final class FleetController extends BaseGameController
 
         $gameUnitType = $this->gameUnitTypeRepository->find(4);
 
-        if ($request->getMethod() == 'POST') {
+        if ($request->isMethod(Request::METHOD_POST)) {
             $targetRegionId = intval($request->request->get('target', 0));
             $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld($targetRegionId, $player->getWorld());
 

@@ -34,8 +34,8 @@
                 <td>Resource:</td>
                 <td>
                     <select name="resource">
-                        {% for item in gameResources %}
-                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% for gameResource in gameResources %}
+                            <option value="{{ gameResource }}">{{ gameResource }}</option>
                         {% endfor %}
                     </select>
                 </td>

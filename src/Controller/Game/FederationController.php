@@ -108,7 +108,7 @@ final class FederationController extends BaseGameController
         }
 
         try {
-            if ($request->isMethod('POST')) {
+            if ($request->isMethod(Request::METHOD_POST)) {
                 $this->federationActionService->createFederation($this->getPlayer(), $federationName);
                 $this->addFlash('success', "You successfully created a new Federation");
 
@@ -157,7 +157,7 @@ final class FederationController extends BaseGameController
     public function sendAid(Request $request): Response
     {
         try {
-            if ($request->isMethod('POST') && $request->get('player') !== null) {
+            if ($request->isMethod(Request::METHOD_POST) && $request->get('player') !== null) {
                 $this->federationActionService->sendAid($this->getPlayer(), $request->get('player'), []);
                 $this->addFlash('success', "You have send aid!");
 
@@ -179,7 +179,7 @@ final class FederationController extends BaseGameController
     public function removeFederation(Request $request): Response
     {
         try {
-            if ($request->isMethod('POST')) {
+            if ($request->isMethod(Request::METHOD_POST)) {
                 $this->federationActionService->removeFederation($this->getPlayer());
                 $this->addFlash('success', "You successfully removed a Federation");
 
@@ -201,7 +201,7 @@ final class FederationController extends BaseGameController
     public function changeFederationName(Request $request): Response
     {
         try {
-            if ($request->isMethod('POST')) {
+            if ($request->isMethod(Request::METHOD_POST)) {
                 $this->federationActionService->changeFederationName($this->getPlayer(), $request->get('name'));
                 $this->addFlash('success', "You successfully changed the Federation name!");
 
@@ -223,7 +223,7 @@ final class FederationController extends BaseGameController
     public function leaveFederation(Request $request): Response
     {
         try {
-            if ($request->isMethod('POST')) {
+            if ($request->isMethod(Request::METHOD_POST)) {
                 $this->federationActionService->leaveFederation($this->getPlayer());
                 $this->addFlash('success', "You successfully left your Federation");
 
@@ -261,7 +261,7 @@ final class FederationController extends BaseGameController
     public function updateLeadershipMessage(Request $request): Response
     {
         try {
-            if ($request->isMethod('POST') && $request->get('message') !== null) {
+            if ($request->isMethod(Request::METHOD_POST) && $request->get('message') !== null) {
                 $this->federationActionService->updateLeadershipMessage($this->getPlayer(), $request->get('message'));
                 $this->addFlash('success', "You successfully updated the leadership message");
 
@@ -283,7 +283,7 @@ final class FederationController extends BaseGameController
     public function changePlayerHierarchy(Request $request): Response
     {
         try {
-            if ($request->isMethod('POST') &&
+            if ($request->isMethod(Request::METHOD_POST) &&
                 $request->get('playerId') !== null &&
                 $request->get('role') !== null
             ) {

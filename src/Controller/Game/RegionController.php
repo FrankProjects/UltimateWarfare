@@ -69,7 +69,7 @@ final class RegionController extends BaseGameController
         try {
             $worldRegion = $this->regionActionService->getWorldRegionByIdAndWorld($regionId, $player->getWorld());
 
-            if ($request->isMethod('POST')) {
+            if ($request->isMethod(Request::METHOD_POST)) {
                 $this->regionActionService->buyWorldRegion($regionId, $this->getPlayer());
                 $this->addFlash('success', 'You have bought a Region!');
             }

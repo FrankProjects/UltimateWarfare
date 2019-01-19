@@ -141,7 +141,7 @@ final class ChatController extends BaseController
     public function addChat(Request $request): JsonResponse
     {
         $text = '';
-        if ($request->getMethod() == 'POST') {
+        if ($request->isMethod(Request::METHOD_POST)) {
             $text = trim($request->request->get('chatText'));
         }
 

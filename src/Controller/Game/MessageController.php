@@ -174,7 +174,7 @@ final class MessageController extends BaseGameController
             $playerName = $request->request->get('toPlayerName');
         }
 
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             try {
                 $this->messageActionService->sendMessage($player, $request->get('subject'), $request->get('message'), $playerName);
 
@@ -200,7 +200,7 @@ final class MessageController extends BaseGameController
     {
         $selectedMessages = [];
 
-        if ($request->isMethod('POST') &&
+        if ($request->isMethod(Request::METHOD_POST) &&
             $request->get('del') !== null &&
             $request->get('selected_messages') !== null
         ) {

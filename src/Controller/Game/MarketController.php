@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
-use FrankProjects\UltimateWarfare\Repository\GameResourceRepository;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Service\Action\MarketActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -15,11 +15,6 @@ use Throwable;
 
 final class MarketController extends BaseGameController
 {
-    /**
-     * @var GameResourceRepository
-     */
-    private $gameResourceRepository;
-
     /**
      * @var MarketItemRepository
      */
@@ -33,16 +28,13 @@ final class MarketController extends BaseGameController
     /**
      * MarketController constructor.
      *
-     * @param GameResourceRepository $gameResourceRepository
      * @param MarketItemRepository $marketItemRepository
      * @param MarketActionService $marketActionService
      */
     public function __construct(
-        GameResourceRepository $gameResourceRepository,
         MarketItemRepository $marketItemRepository,
         MarketActionService $marketActionService
     ) {
-        $this->gameResourceRepository = $gameResourceRepository;
         $this->marketItemRepository = $marketItemRepository;
         $this->marketActionService = $marketActionService;
     }
@@ -170,12 +162,10 @@ final class MarketController extends BaseGameController
             ]);
         }
 
-        $gameResources = $this->gameResourceRepository->findAll();
-
-        if ($request->getMethod() == 'POST') {
+        if ($request->isMethod(Request::METHOD_POST)) {
             $price = intval($request->get('price'));
             $amount = intval($request->get('amount'));
-            $resource = intval($request->get('resource'));
+            $resource = $request->get('resource');
             $option = $request->get('option');
 
             try {
@@ -188,7 +178,7 @@ final class MarketController extends BaseGameController
 
         return $this->render('game/market/placeOffer.html.twig', [
             'player' => $player,
-            'gameResources' => $gameResources
+            'gameResources' => GameResource::getAll()
         ]);
     }
 }
