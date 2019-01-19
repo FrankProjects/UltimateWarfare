@@ -1,5 +1,7 @@
 label:
   email: Email
   name: Name
+  subject: Subject
   message: Message
+  send: Send
 

@@ -1,5 +1,7 @@
 label:
   email: Email
   name: Naam
+  subject: Onderwerp
   message: Bericht
+  send: Verzenden
 
