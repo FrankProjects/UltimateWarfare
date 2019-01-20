@@ -1,0 +1,40 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - Contact{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="5"><b>Contact</b></td>
+        </tr>
+        <tr>
+            <td width="150">Name</td>
+            <td width="150">Email</td>
+            <td width="300">Subject</td>
+            <td width="50">Date</td>
+            <td width="50">Action</td>
+        </tr>
+        <tr>
+            <td>
+                {{ contact.name }}
+            </td>
+            <td>
+                {{ contact.email }}
+            </td>
+            <td>
+                {{ contact.subject }}
+            </td>
+            <td>
+                {{ contact.createDateTime|date("Y-m-d H:i:s") }}
+            </td>
+            <td>
+                <a class="btn btn-danger" href="{{ path('Admin/Contact/Remove', {'contactId': contact.id}) }}"><b>Remove</b></a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                {{ contact.message }}
+            </td>
+        </tr>
+    </table>
+{% endblock %}

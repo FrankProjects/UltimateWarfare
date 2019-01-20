@@ -33,6 +33,23 @@ final class DoctrineContactRepository implements ContactRepository
     }
 
     /**
+     * @param int $id
+     * @return Contact|null
+     */
+    public function find(int $id): ?Contact
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * @return Contact[]
+     */
+    public function findAll(): array
+    {
+        return $this->repository->findAll();
+    }
+
+    /**
      * @param Contact $contact
      */
     public function remove(Contact $contact): void
