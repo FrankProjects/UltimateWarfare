@@ -10,6 +10,12 @@ use FrankProjects\UltimateWarfare\Entity\User;
 interface UnbanRequestRepository
 {
     /**
+     * @param int $id
+     * @return UnbanRequest|null
+     */
+    public function find(int $id): ?UnbanRequest;
+
+    /**
      * @return UnbanRequest[]
      */
     public function findAll(): array;
