@@ -9,6 +9,18 @@ use FrankProjects\UltimateWarfare\Entity\User;
 interface UserRepository
 {
     /**
+     * @param int $id
+     * @return User|null
+     */
+    public function find(int $id): ?User;
+
+
+    /**
+     * @return User[]
+     */
+    public function findAll(): array;
+
+    /**
      * @param string $confirmationToken
      * @return User|null
      */

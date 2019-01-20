@@ -1,0 +1,49 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - User list{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="8"><b>User list</b></td>
+        </tr>
+        <tr>
+            <td width="150">Username</td>
+            <td width="450">Email</td>
+            <td width="450">Players</td>
+            <td width="450">Signup</td>
+            <td width="450">LastLogin</td>
+            <td width="100">Action</td>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td>
+                    {{ user.username }}
+                </td>
+                <td>
+                    {{ user.email }}
+                </td>
+                <td>
+                    {% for player in user.players %}
+                        <p>
+                            {{ player.name }} ({{ player.world.name }})
+                        </p>
+                    {% endfor %}
+                </td>
+                <td>
+                    {{ user.signup|date("Y-m-d H:i:s") }}
+                </td>
+                <td>
+                    {{ user.lastLogin|date("Y-m-d H:i:s") }}
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('Admin/User/Read', {'userId': user.id}) }}">View</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">No users....</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

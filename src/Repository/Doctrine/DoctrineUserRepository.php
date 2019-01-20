@@ -33,6 +33,23 @@ final class DoctrineUserRepository implements UserRepository
     }
 
     /**
+     * @param int $id
+     * @return User|null
+     */
+    public function find(int $id): ?User
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAll(): array
+    {
+        return $this->repository->findAll();
+    }
+
+    /**
      * @param string $confirmationToken
      * @return User|null
      */
