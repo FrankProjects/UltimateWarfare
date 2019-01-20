@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav class="navbar col-sm-3 col-md-2 align-items-start">
+        {% include 'admin/navigation.html.twig' %}
+    </nav>
+
+    <main class="col-sm-9 col-md-10 justify-content-center">
+        {% include 'flashes.html.twig' %}
+
+        {% block content %}{% endblock %}
+    </main>
+{% endblock %}

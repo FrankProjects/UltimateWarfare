@@ -1,0 +1,18 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - Dashboard{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="7"><b>Dashboard</b></td>
+        </tr>
+        <tr>
+            <td>
+                <p>
+                    Users: {{ userCount }}
+                </p>
+            </td>
+        </tr>
+    </table>
+{% endblock %}
