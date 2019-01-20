@@ -1,0 +1,18 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - Game news{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="5"><b>Create game news</b></td>
+        </tr>
+        <tr>
+            <td>
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+            </td>
+        </tr>
+    </table>
+{% endblock %}
