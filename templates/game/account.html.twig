@@ -37,4 +37,10 @@
             </td>
         </tr>
     </table>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <p>
+            <a class="btn btn-primary" href="{{ path('Admin') }}">Admin panel</a>
+        </p>
+    {% endif %}
 {% endblock %}
