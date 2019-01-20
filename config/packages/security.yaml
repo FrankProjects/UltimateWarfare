@@ -34,4 +34,4 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/password, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/game, roles: ROLE_USER }
-        - { path: ^/mod/, role: ROLE_ADMIN }
+        - { path: ^/admin, role: ROLE_ADMIN }
