@@ -17,12 +17,12 @@ class GameNews
     /**
      * @var string
      */
-    private $title;
+    private $title = '';
 
     /**
      * @var string
      */
-    private $message;
+    private $message = '';
 
     /**
      * @var \DateTime
@@ -32,13 +32,23 @@ class GameNews
     /**
      * @var bool
      */
-    private $enabled;
+    private $enabled = false;
 
     /**
      * @var bool
      */
-    private $mainpage;
+    private $mainpage = false;
 
+    /**
+     * GameNews constructor.
+     */
+    public function __construct()
+    {
+        try {
+            $this->createDateTime = new \DateTime();
+        } catch (\Exception $e) {
+        }
+    }
 
     /**
      * Get id

@@ -46,7 +46,8 @@ class Contact
     {
         try {
             $this->createDateTime = new \DateTime();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
