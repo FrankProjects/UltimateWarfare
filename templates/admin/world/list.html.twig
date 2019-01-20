@@ -1,0 +1,48 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - World list{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="2"><b>World list</b></td>
+        </tr>
+        {% for world in worlds %}
+            <tr>
+                <td width="400">
+                    <b>{{ world.name }}</b> ({{ world.status }})<br />
+                    <img src="{{ asset(world.image) }}" width="400" height="255">
+                </td>
+                <td class="text-left" width="300">
+                    <p>
+                        <b>Players:</b> {{ world.players|length }}/{{ world.maxplayers|escape }}<br />
+                    </p>
+                    <p>
+                        <b>Info:</b><br />
+                        {{ world.info|escape }}
+                    </p>
+                    <p>
+                        <b>At start:</b><br />
+                        Cash: {{ world.cash|escape }}<br />
+                        Wood: {{ world.wood|escape }}<br />
+                        Steel: {{ world.steel|escape }}<br />
+                        Food: {{ world.food|escape }}
+                    </p>
+                    <p>
+                        <b>Settings:</b><br />
+                        Public: {{ world.public }}<br />
+                        Start: {{ world.startTimestamp }}<br />
+                        End: {{ world.endTimestamp }}<br />
+                        Market: {{ world.market }}<br />
+                        Federation: {{ world.federation }}<br />
+                        Federation limit: {{ world.fedLimit }}
+                    </p>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">No worlds....</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
