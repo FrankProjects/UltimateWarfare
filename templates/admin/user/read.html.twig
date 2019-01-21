@@ -21,7 +21,11 @@
         </tr>
         <tr>
             <td>Last login</td>
-            <td>{{ user.lastLogin|date("Y-m-d H:i:s") }}</td>
+            <td>
+                {% if user.lastLogin is not empty %}
+                    {{ user.lastLogin|date("Y-m-d H:i:s") }}
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <td>Enabled</td>
