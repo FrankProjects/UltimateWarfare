@@ -1,0 +1,34 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - Unban requests{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="3"><b>Unban requests</b></td>
+        </tr>
+        <tr>
+            <td width="150">Username</td>
+            <td width="450">Message</td>
+            <td width="100">Action</td>
+        </tr>
+        {% for unbanRequest in unbanRequests %}
+            <tr>
+                <td>
+                    {{ unbanRequest.user.username }}
+                </td>
+                <td>
+                    {{ unbanRequest.post }}
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('Admin/UnbanRequest/Unban', {'unbanRequestId': unbanRequest.id}) }}"><b>Unban</b></a><br />
+                    <a class="btn btn-danger" href="{{ path('Admin/UnbanRequest/Remove', {'unbanRequestId': unbanRequest.id}) }}"><b>Remove</b></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No unban requests....</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

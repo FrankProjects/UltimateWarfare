@@ -145,6 +145,14 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
+     * @param array $roles
+     */
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    /**
      * @param string $role
      * @return bool
      */
@@ -276,9 +284,9 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getLastLogin(): \DateTime
+    public function getLastLogin(): ?\DateTime
     {
         return $this->lastLogin;
     }

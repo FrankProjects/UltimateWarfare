@@ -33,6 +33,23 @@ final class DoctrineUserRepository implements UserRepository
     }
 
     /**
+     * @param int $id
+     * @return User|null
+     */
+    public function find(int $id): ?User
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAll(): array
+    {
+        return $this->repository->findAll();
+    }
+
+    /**
      * @param string $confirmationToken
      * @return User|null
      */
@@ -57,6 +74,21 @@ final class DoctrineUserRepository implements UserRepository
     public function findByUsername(string $username): ?User
     {
         return $this->repository->findOneBy(['username' => $username]);
+    }
+
+    /**
+     * @param \DateTime $firstDateTime
+     * @param \DateTime $lastDateTime
+     * @return User[]
+     */
+    public function findByLastLogin(\DateTime $firstDateTime, \DateTime $lastDateTime): array
+    {
+        return $this->repository->createQueryBuilder('u')
+            ->where('u.lastLogin BETWEEN :firstDateTime AND :lastDateTime')
+            ->setParameter('firstDateTime', $firstDateTime)
+            ->setParameter('lastDateTime', $lastDateTime)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

@@ -2,12 +2,14 @@
 
 namespace FrankProjects\UltimateWarfare\Form;
 
+use FrankProjects\UltimateWarfare\Entity\Contact;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContactType extends AbstractType
 {
@@ -15,19 +17,27 @@ class ContactType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'label.name',
-                'translation_domain' => 'contact'
+                'label' => 'label.name'
             ])
             ->add('email', EmailType::class, [
-                'label' => 'label.email',
-                'translation_domain' => 'contact'
+                'label' => 'label.email'
+            ])
+            ->add('subject', TextType::class, [
+                'label' => 'label.subject'
             ])
             ->add('message', TextareaType::class, [
-                'label' => 'label.message',
-                'translation_domain' => 'contact'
+                'label' => 'label.message'
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Send'
+                'label' => 'label.send'
             ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Contact::class,
+            'translation_domain' => 'contact'
+        ]);
     }
 }

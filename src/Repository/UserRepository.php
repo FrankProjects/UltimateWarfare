@@ -9,6 +9,18 @@ use FrankProjects\UltimateWarfare\Entity\User;
 interface UserRepository
 {
     /**
+     * @param int $id
+     * @return User|null
+     */
+    public function find(int $id): ?User;
+
+
+    /**
+     * @return User[]
+     */
+    public function findAll(): array;
+
+    /**
      * @param string $confirmationToken
      * @return User|null
      */
@@ -25,6 +37,13 @@ interface UserRepository
      * @return User|null
      */
     public function findByUsername(string $username): ?User;
+
+    /**
+     * @param \DateTime $firstDateTime
+     * @param \DateTime $lastDateTime
+     * @return User[]
+     */
+    public function findByLastLogin(\DateTime $firstDateTime, \DateTime $lastDateTime): array;
 
     /**
      * @param string $username

@@ -101,7 +101,11 @@
         {% for federationPlayer in player.federation.players %}
             <tr>
                 <td>
-                    <div class="bad">Offline</div>
+                    {% if date(federationPlayer.user.lastLogin) < date('-10 minutes') %}
+                        <div class="bad">Offline</div>
+                    {% else %}
+                        <div class="good">Online</div>
+                    {% endif %}
                 </td>
                 <td>
                     <a class="B" href="{{ path('Game/Profile', {'playerName': federationPlayer.name}) }}">{{ federationPlayer.name }}</a>
@@ -110,7 +114,7 @@
                     {{ federationPlayer.federationHierarchy }}
                 </td>
                 <td>
-                    {{ federationPlayer.regions }}
+                    {{ federationPlayer.worldRegions|length }}
                 </td>
                 <td>
                     {{ federationPlayer.networth }}

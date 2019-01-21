@@ -1,0 +1,118 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - User{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="2"><b>User information</b></td>
+        </tr>
+        <tr>
+            <td>Username</td>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td>Sign-up date</td>
+            <td>{{ user.signup|date("Y-m-d H:i:s") }}</td>
+        </tr>
+        <tr>
+            <td>Last login</td>
+            <td>
+                {% if user.lastLogin is not empty %}
+                    {{ user.lastLogin|date("Y-m-d H:i:s") }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Enabled</td>
+            <td>
+                {% if user.enabled == 1 %}
+                    <span class="good">Yes</span>
+                {% else %}
+                    <span class="bad">No</span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>
+                {% if user.active == 1 %}
+                    <span class="good">Active</span>
+                {% else %}
+                    <span class="bad">Banned/De-activated</span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Forum</td>
+            <td>
+                {% if user.forumBan == 1 %}
+                    <span class="bad">Banned/De-activated</span>
+                {% else %}
+                    <span class="good">Active</span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Roles</td>
+            <td>
+                {% for role in user.roles %}
+                    <p>{{ role }}</p>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <p>
+                    {% if user.active == 1 %}
+                        <a class="btn btn-danger" href="{{ path('Admin/User/Ban', {'userId': user.id}) }}">Ban</a>
+                    {% else %}
+                        <a class="btn btn-danger" href="{{ path('Admin/User/Unban', {'userId': user.id}) }}">Unban</a>
+                    {% endif %}
+                </p>
+                <p>
+                    {% if user.forumBan == 1 %}
+                        <a class="btn btn-danger" href="{{ path('Admin/User/ForumUnban', {'userId': user.id}) }}">Forum unban</a>
+                    {% else %}
+                        <a class="btn btn-danger" href="{{ path('Admin/User/ForumBan', {'userId': user.id}) }}">Forum ban</a>
+                    {% endif %}
+                </p>
+                {% if user.enabled == 0 %}
+                    <p>
+                        <a class="btn btn-danger" href="{{ path('Admin/User/Enable', {'userId': user.id}) }}">Enable account</a>
+                    </p>
+                {% endif %}
+                <p>
+                    <a class="btn btn-danger" href="{{ path('Admin/User/MakeAdmin', {'userId': user.id}) }}">Make Admin</a>
+                </p>
+                <p>
+                    <a class="btn btn-danger" href="{{ path('Admin/User/RemoveAdmin', {'userId': user.id}) }}">Remove Admin</a>
+                </p>
+                <p>
+                    XXX TODO: Check IP against other users
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="2"><b>Players</b></td>
+        </tr>
+        <tr>
+            <td>Player name</td>
+            <td>World</td>
+        </tr>
+        {% for player in user.players %}
+            <tr>
+                <td>{{ player.name }}</td>
+                <td>{{ player.world.name }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

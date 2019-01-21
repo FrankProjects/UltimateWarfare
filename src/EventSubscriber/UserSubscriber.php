@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\EventSubscriber;
 
-use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-final class PlayerSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
+final class UserSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
     /**
      * @var RouterInterface
@@ -21,25 +21,25 @@ final class PlayerSubscriber extends AbstractUserSubscriber implements EventSubs
     private $router;
 
     /**
-     * @var PlayerRepository
+     * @var UserRepository
      */
-    private $playerRepository;
+    private $userRepository;
 
     /**
      * PlayerSubscriber constructor.
      *
      * @param TokenStorageInterface $tokenStorage
      * @param RouterInterface $router
-     * @param PlayerRepository $playerRepository
+     * @param UserRepository $userRepository
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
-        PlayerRepository $playerRepository
+        UserRepository $userRepository
     ) {
         parent::__construct($tokenStorage);
         $this->router = $router;
-        $this->playerRepository = $playerRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -54,6 +54,12 @@ final class PlayerSubscriber extends AbstractUserSubscriber implements EventSubs
         $user = $this->getUser();
         if ($user === null) {
             return;
+        }
+
+        try {
+            $user->setLastLogin(new \DateTime());
+            $this->userRepository->save($user);
+        } catch (\Exception $e) {
         }
 
         if ($user->getActive() === false) {

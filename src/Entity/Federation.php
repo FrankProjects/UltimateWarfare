@@ -280,7 +280,7 @@ class Federation
         $federation->setName($name);
         $federation->setFounder($player);
         $federation->setWorld($player->getWorld());
-        $federation->setRegions($player->getRegions());
+        $federation->setRegions(count($player->getWorldRegions()));
         $federation->setNetworth($player->getNetworth());
 
         return $federation;

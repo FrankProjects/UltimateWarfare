@@ -34,6 +34,15 @@ final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
     }
 
     /**
+     * @param int $id
+     * @return UnbanRequest|null
+     */
+    public function find(int $id): ?UnbanRequest
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
      * @return UnbanRequest[]
      */
     public function findAll(): array

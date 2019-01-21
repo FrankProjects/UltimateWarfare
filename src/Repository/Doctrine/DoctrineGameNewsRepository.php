@@ -33,6 +33,23 @@ final class DoctrineGameNewsRepository implements GameNewsRepository
     }
 
     /**
+     * @param int $id
+     * @return GameNews|null
+     */
+    public function find(int $id): ?GameNews
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * @return GameNews[]
+     */
+    public function findAll(): array
+    {
+        return $this->repository->findAll();
+    }
+
+    /**
      * @return GameNews[]
      */
     public function findActiveMainPageNews(): array

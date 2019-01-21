@@ -1,3 +1,121 @@
+Admin:
+    path:      /admin
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\DashboardController::dashboard
+
+Admin/Contact/List:
+    path:      /admin/contact/list
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\ContactController::list
+
+Admin/Contact/Read:
+    path:      /admin/contact/read/{contactId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\ContactController::read
+    requirements:
+        contactId: '\d+'
+
+Admin/Contact/Remove:
+    path:      /admin/contact/remove/{contactId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\ContactController::remove
+    requirements:
+        contactId: '\d+'
+
+Admin/GameNews/Create:
+    path:      /admin/game-news/create
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameNewsController::create
+
+Admin/GameNews/List:
+    path:      /admin/game-news/list
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameNewsController::list
+
+Admin/GameNews/Edit:
+    path:      /admin/game-news/edit/{gameNewsId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameNewsController::edit
+    requirements:
+        gameNewsId: '\d+'
+
+Admin/GameNews/Remove:
+    path:      /admin/game-news/remove/{gameNewsId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameNewsController::remove
+    requirements:
+        gameNewsId: '\d+'
+
+Admin/UnbanRequest/List:
+    path:      /admin/unban-request/list
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::list
+
+Admin/UnbanRequest/Read:
+    path:      /admin/unban-request/read/{unbanRequestId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::read
+    requirements:
+        unbanRequestId: '\d+'
+
+Admin/UnbanRequest/Remove:
+    path:      /admin/unban-request/remove/{unbanRequestId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::remove
+    requirements:
+        unbanRequestId: '\d+'
+
+Admin/UnbanRequest/Unban:
+    path:      /admin/unban-request/unban/{unbanRequestId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::unban
+    requirements:
+        unbanRequestId: '\d+'
+
+Admin/User/Ban:
+    path:      /admin/user/ban/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::ban
+    requirements:
+        userId: '\d+'
+
+Admin/User/Unban:
+    path:      /admin/user/unban/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::unban
+    requirements:
+        userId: '\d+'
+
+Admin/User/Enable:
+    path:      /admin/user/enable/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::enable
+    requirements:
+        userId: '\d+'
+
+Admin/User/ForumBan:
+    path:      /admin/user/forum-ban/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::forumBan
+    requirements:
+        userId: '\d+'
+
+Admin/User/ForumUnban:
+    path:      /admin/user/forum-unban/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::forumUnban
+    requirements:
+        userId: '\d+'
+
+Admin/User/List:
+    path:      /admin/user/list
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::list
+
+Admin/User/MakeAdmin:
+    path:      /admin/user/make-admin/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::makeAdmin
+    requirements:
+        userId: '\d+'
+
+Admin/User/RemoveAdmin:
+    path:      /admin/user/remove-admin/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::removeAdmin
+    requirements:
+        userId: '\d+'
+
+Admin/User/Read:
+    path:      /admin/user/read/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::read
+    requirements:
+        userId: '\d+'
+
+Admin/World/List:
+    path:      /admin/world/list
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::list
+
 Forum:
     path:      /forum
     controller: FrankProjects\UltimateWarfare\Controller\Forum\ForumController::index
@@ -622,10 +740,6 @@ Site/ResetPassword:
 Site/Register:
     path:      /register
     controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::register
-
-Site/Statistics:
-    path:      /statistics
-    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::statistics
 
 User/Activation:
     path:      /user/activate/{token}

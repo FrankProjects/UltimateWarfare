@@ -1,0 +1,41 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - Game news{% endblock title %}
+
+{% block content %}
+    <a class="btn btn-primary" href="{{ path('Admin/GameNews/Create') }}"><b>Create game news</b></a><br />
+
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="5"><b>Game news</b></td>
+        </tr>
+        {% for news in gameNews %}
+            <tr>
+                <td>
+                    {{ news.title }}
+                </td>
+                <td>
+                    {{ news.enabled }}
+                </td>
+                <td>
+                    {{ news.mainpage }}
+                </td>
+                <td>
+                    {{ news.createDateTime|date("Y-m-d H:i:s") }}
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('Admin/GameNews/Edit', {'gameNewsId': news.id}) }}">Edit</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    {{ news.message|nl2br }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No game news....</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
