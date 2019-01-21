@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SiteController extends BaseController
@@ -40,19 +39,5 @@ final class SiteController extends BaseController
     public function donate(): Response
     {
         return $this->render('site/donate.html.twig');
-    }
-
-    /**
-     * XXX TODO: Fix me
-     *
-     * @return Response
-     */
-    public function statistics(): Response
-    {
-        return $this->render('site/statistics.html.twig', [
-            'lastLogin' => '',
-            'lastRegistered' => '',
-            'totalUsers' => ''
-        ]);
     }
 }

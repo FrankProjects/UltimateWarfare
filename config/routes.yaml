@@ -741,10 +741,6 @@ Site/Register:
     path:      /register
     controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::register
 
-Site/Statistics:
-    path:      /statistics
-    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::statistics
-
 User/Activation:
     path:      /user/activate/{token}
     controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::activateUser
