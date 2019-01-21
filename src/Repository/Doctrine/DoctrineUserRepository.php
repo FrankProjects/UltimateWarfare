@@ -77,6 +77,21 @@ final class DoctrineUserRepository implements UserRepository
     }
 
     /**
+     * @param \DateTime $firstDateTime
+     * @param \DateTime $lastDateTime
+     * @return User[]
+     */
+    public function findByLastLogin(\DateTime $firstDateTime, \DateTime $lastDateTime): array
+    {
+        return $this->repository->createQueryBuilder('u')
+            ->where('u.lastLogin BETWEEN :firstDateTime AND :lastDateTime')
+            ->setParameter('firstDateTime', $firstDateTime)
+            ->setParameter('lastDateTime', $lastDateTime)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param string $username
      * @return User|null
      * @throws \Doctrine\ORM\NonUniqueResultException

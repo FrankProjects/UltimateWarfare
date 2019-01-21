@@ -39,6 +39,13 @@ interface UserRepository
     public function findByUsername(string $username): ?User;
 
     /**
+     * @param \DateTime $firstDateTime
+     * @param \DateTime $lastDateTime
+     * @return User[]
+     */
+    public function findByLastLogin(\DateTime $firstDateTime, \DateTime $lastDateTime): array;
+
+    /**
      * @param string $username
      * @return User|null
      */

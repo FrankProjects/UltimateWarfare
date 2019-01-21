@@ -28,11 +28,16 @@ final class DashboardController extends AbstractController
 
     /**
      * @return Response
+     * @throws \Exception
      */
     public function dashboard(): Response
     {
+        $firstDateTime = new \DateTime('-24 hours');
+        $lastDateTime = new \DateTime();
+
         return $this->render('admin/dashboard.html.twig', [
-            'userCount' => count($this->userRepository->findAll())
+            'userCount' => count($this->userRepository->findAll()),
+            'loggedInCount' => count($this->userRepository->findByLastLogin($firstDateTime, $lastDateTime))
         ]);
     }
 }
