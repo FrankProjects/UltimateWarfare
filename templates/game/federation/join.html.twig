@@ -5,26 +5,6 @@
 {% block content %}
     <table class="table text-center">
         <tr>
-            <td class="tabletop"><b>Federations</b></td>
-        </tr>
-        <tr>
-            <td>
-                <p>
-                    <b>Adviser:</b>
-                </p>
-                <p>
-                    Welcome <strong>{{ player.name }}</strong>,<br />
-                    You will see a list of all Federations here. Send an application to join a Federation
-                </p>
-            </td>
-        </tr>
-    </table>
-
-    <br />
-    <br />
-
-    <table class="table text-center">
-        <tr>
             <td class="tabletop" colspan="7"><b>Federations</b></td>
         </tr>
         <tr>
@@ -60,6 +40,10 @@
                 <td>
                     <a class="B" href="{{ path('Game/Federation/Application/Send', {'federationId': federation.id}) }}"><b>Send Application</b></a>
                 </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No Federations in this world yet!</td>
             </tr>
         {% endfor %}
     </table>
