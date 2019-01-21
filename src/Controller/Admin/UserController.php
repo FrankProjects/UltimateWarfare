@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Admin;
 
+use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -33,20 +34,15 @@ final class UserController extends AbstractController
      */
     public function ban(int $userId): RedirectResponse
     {
-        $user = $this->userRepository->find($userId);
-        if ($user === null) {
-            $this->addFlash('error', 'User does not exist');
-            return $this->redirectToRoute('Admin/User/List', [], 302);
-        }
-
+        $user = $this->getUserObject($userId);
         if (!$user->getActive()) {
             $this->addFlash('error', 'User is already banned');
-            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        } else {
+            $user->setActive(false);
+            $this->userRepository->save($user);
+            $this->addFlash('success', 'User banned!');
         }
 
-        $user->setActive(false);
-        $this->userRepository->save($user);
-        $this->addFlash('success', 'User banned!');
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
@@ -56,20 +52,15 @@ final class UserController extends AbstractController
      */
     public function unban(int $userId): RedirectResponse
     {
-        $user = $this->userRepository->find($userId);
-        if ($user === null) {
-            $this->addFlash('error', 'User does not exist');
-            return $this->redirectToRoute('Admin/User/List', [], 302);
-        }
-
+        $user = $this->getUserObject($userId);
         if ($user->getActive()) {
             $this->addFlash('error', 'User is not banned');
-            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        } else {
+            $user->setActive(true);
+            $this->userRepository->save($user);
+            $this->addFlash('success', 'User unbanned!');
         }
 
-        $user->setActive(true);
-        $this->userRepository->save($user);
-        $this->addFlash('success', 'User unbanned!');
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
@@ -79,21 +70,16 @@ final class UserController extends AbstractController
      */
     public function enable(int $userId): RedirectResponse
     {
-        $user = $this->userRepository->find($userId);
-        if ($user === null) {
-            $this->addFlash('error', 'User does not exist');
-            return $this->redirectToRoute('Admin/User/List', [], 302);
-        }
-
+        $user = $this->getUserObject($userId);
         if ($user->isEnabled()) {
             $this->addFlash('error', 'User is already enabled');
-            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        } else {
+            $user->setEnabled(true);
+            $user->setConfirmationToken(null);
+            $this->userRepository->save($user);
+            $this->addFlash('success', 'User enabled!');
         }
 
-        $user->setEnabled(true);
-        $user->setConfirmationToken(null);
-        $this->userRepository->save($user);
-        $this->addFlash('success', 'User enabled!');
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
@@ -103,20 +89,15 @@ final class UserController extends AbstractController
      */
     public function forumBan(int $userId): RedirectResponse
     {
-        $user = $this->userRepository->find($userId);
-        if ($user === null) {
-            $this->addFlash('error', 'User does not exist');
-            return $this->redirectToRoute('Admin/User/List', [], 302);
-        }
-
+        $user = $this->getUserObject($userId);
         if ($user->getForumBan()) {
             $this->addFlash('error', 'User is already forum banned');
-            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        } else {
+            $user->setForumBan(true);
+            $this->userRepository->save($user);
+            $this->addFlash('success', 'User forum banned!');
         }
 
-        $user->setForumBan(true);
-        $this->userRepository->save($user);
-        $this->addFlash('success', 'User forum banned!');
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
@@ -126,20 +107,15 @@ final class UserController extends AbstractController
      */
     public function forumUnban(int $userId): RedirectResponse
     {
-        $user = $this->userRepository->find($userId);
-        if ($user === null) {
-            $this->addFlash('error', 'User does not exist');
-            return $this->redirectToRoute('Admin/User/List', [], 302);
-        }
-
+        $user = $this->getUserObject($userId);
         if (!$user->getForumBan()) {
             $this->addFlash('error', 'User is not forum banned');
-            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        } else {
+            $user->setForumBan(false);
+            $this->userRepository->save($user);
+            $this->addFlash('success', 'User forum unbanned!');
         }
 
-        $user->setForumBan(false);
-        $this->userRepository->save($user);
-        $this->addFlash('success', 'User forum unbanned!');
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
@@ -159,12 +135,7 @@ final class UserController extends AbstractController
      */
     public function makeAdmin(int $userId): RedirectResponse
     {
-        $user = $this->userRepository->find($userId);
-        if ($user === null) {
-            $this->addFlash('error', 'User does not exist');
-            return $this->redirectToRoute('Admin/User/List', [], 302);
-        }
-
+        $user = $this->getUserObject($userId);
         if ($user->hasRole('ROLE_ADMIN')) {
             $this->addFlash('error', 'User already has ROLE_ADMIN');
             return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
@@ -185,12 +156,7 @@ final class UserController extends AbstractController
      */
     public function removeAdmin(int $userId): RedirectResponse
     {
-        $user = $this->userRepository->find($userId);
-        if ($user === null) {
-            $this->addFlash('error', 'User does not exist');
-            return $this->redirectToRoute('Admin/User/List', [], 302);
-        }
-
+        $user = $this->getUserObject($userId);
         if (!$user->hasRole('ROLE_ADMIN')) {
             $this->addFlash('error', 'User has no ROLE_ADMIN');
             return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
@@ -218,5 +184,19 @@ final class UserController extends AbstractController
         return $this->render('admin/user/read.html.twig', [
             'user' => $this->userRepository->find($userId)
         ]);
+    }
+
+    /**
+     * @param int $userId
+     * @return User
+     */
+    private function getUserObject(int $userId): User
+    {
+        $user = $this->userRepository->find($userId);
+        if ($user === null) {
+            throw new \RuntimeException('User does not exist');
+        }
+
+        return $user;
     }
 }
