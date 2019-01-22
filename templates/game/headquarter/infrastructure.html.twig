@@ -8,59 +8,29 @@
         <tr>
             <td class="tabletop" colspan="4"><b>Infrastructure</b></td>
         </tr>
-        <tr>
-            <td width="350" colspan="2" class="tabletop"><b>Buildings</b></td>
-            <td width="350" colspan="2" class="tabletop"><b>Defences</b></td>
-        </tr>
-        <tr>
-            <td width="200"> Economic Centers:</td>
-            <td width="150">
-            </td>
-            <td width="200"> Land Mines:</td><td width="150">
-            </td>
-        </tr>
-        <tr>
-            <td width="200"> Farms:</td><td width="150">
-            </td>
-            <td width="200"> Sea Mines:</td><td width="150">
-            </td>
-        </tr>
-        <tr>
-            <td width="200"> Mines:</td><td width="150">
-            </td>
-            <td width="200"> Bunkers:</td><td width="150">
-            </td>
-        </tr>
-        <tr>
-            <td width="200"> Woodcutters:</td><td width="150">
-            </td>
-            <td width="200"> Anti Air Missiles:</td><td width="150">
-            </td>
-        </tr>
-        <tr>
-            <td width="200"> Houses:</td><td width="150">
-            </td>
-            <td width="350" colspan="2"></td>
-            </td>
-        </tr>
+        {% for gameUnitType in gameUnitTypes %}
+            <tr>
+                <td colspan="2" class="tabletop"><b>{{ gameUnitType.name }}</b></td>
+            </tr>
 
-        <tr>
-            <td width="350" colspan="2" class="tabletop"><b>Special Buildings</b></td>
-            <td width="350" colspan="2" class="tabletop"></td>
-        </tr>
-        <tr>
-            <td width="200"> Airports:</td>
-            <td width="150">
-            </td>
-            <td width="350" colspan="2" rowspan="3"></td>
-        </tr>
-        <tr>
-            <td width="200"> Harbors:</td><td width="150">
-            </td>
-        </tr>
-        <tr>
-            <td width="200"> Train Stations:</td><td width="150">
-            </td>
-        </tr>
+            {% set gameUnitTypeExist = 0 %}
+            {% for gameUnit in gameUnitType.gameUnits %}
+                {% if gameUnitData[gameUnit.id] is defined and gameUnitData[gameUnit.id] > 0 %}
+                    {% set gameUnitTypeExist = 1 %}
+                    <tr>
+                        <td width="350">{{ gameUnit.nameMulti }}:</td>
+                        <td width="350">
+                            {{ gameUnitData[gameUnit.id] }}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
+            {% if gameUnitTypeExist == 0 %}
+                <tr>
+                    <td colspan="2">You don't have any {{ gameUnitType.name }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
     </table>
 {% endblock %}

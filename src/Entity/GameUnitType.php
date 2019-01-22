@@ -12,6 +12,12 @@ use Doctrine\Common\Collections\Collection;
  */
 class GameUnitType
 {
+    const GAME_UNIT_TYPE_BUILDINGS = 1;
+    const GAME_UNIT_TYPE_DEFENCE_BUILDINGS = 2;
+    const GAME_UNIT_TYPE_SPECIAL_BUILDINGS = 3;
+    const GAME_UNIT_TYPE_UNITS = 4;
+    const GAME_UNIT_TYPE_SPECIAL_UNITS = 5;
+
     /**
      * @var int
      */
