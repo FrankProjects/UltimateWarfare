@@ -8,6 +8,8 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 
 final class NetworthCalculator
 {
+    const NETWORTH_CALCULATOR_REGION = 1000;
+
     /**
      * @var WorldRegionUnitRepository
      */
@@ -31,7 +33,7 @@ final class NetworthCalculator
     public function calculateNetworthForPlayer(Player $player): int
     {
         $networth = 0;
-        $networth += count($player->getWorldRegions()) * 1000;
+        $networth += count($player->getWorldRegions()) * NetworthCalculator::NETWORTH_CALCULATOR_REGION;
         $networth += $this->getNetworthFromWorldRegionUnits($player);
         $networth += $this->getNetworthFromResearch($player);
 
