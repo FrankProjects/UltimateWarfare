@@ -15,7 +15,7 @@ class MakeAdminCommand extends AbstractUserCommand
     protected function configure(): void
     {
         $this->setDescription('Upgrade user to admin')
-            ->setHelp('Add the admin role to an user...')
+            ->setHelp('Add admin role to user')
             ->addArgument('username', InputArgument::REQUIRED, 'The username');
     }
 
@@ -34,7 +34,6 @@ class MakeAdminCommand extends AbstractUserCommand
             $output->writeln("Added admin role to {$username}");
         } catch (Throwable $e) {
             $output->writeln($e->getMessage());
-
         }
     }
 }

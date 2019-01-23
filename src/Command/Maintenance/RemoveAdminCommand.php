@@ -5,7 +5,6 @@ namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 use FrankProjects\UltimateWarfare\Entity\User;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
@@ -16,7 +15,7 @@ class RemoveAdminCommand extends AbstractUserCommand
     protected function configure(): void
     {
         $this->setDescription('Downgrade user from admin')
-            ->setHelp('Remove the admin role from user...')
+            ->setHelp('Remove the admin role from user')
             ->addArgument('username', InputArgument::REQUIRED, 'The username');
     }
 
@@ -35,7 +34,6 @@ class RemoveAdminCommand extends AbstractUserCommand
             $output->writeln("Removed admin role from {$username}");
         } catch (Throwable $e) {
             $output->writeln($e->getMessage());
-
         }
     }
 }
