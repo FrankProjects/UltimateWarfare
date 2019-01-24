@@ -174,9 +174,17 @@ final class MessageController extends BaseGameController
             $playerName = $request->request->get('toPlayerName');
         }
 
+        $adminMessage = (bool)$request->get('admin', false);
+
         if ($request->isMethod(Request::METHOD_POST)) {
             try {
-                $this->messageActionService->sendMessage($player, $request->get('subject'), $request->get('message'), $playerName);
+                $this->messageActionService->sendMessage(
+                    $player,
+                    $request->get('subject'),
+                    $request->get('message'),
+                    $playerName,
+                    $adminMessage
+                );
 
                 $this->addFlash('success', 'Message send!');
             } catch (Throwable $e) {
