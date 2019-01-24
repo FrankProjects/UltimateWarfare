@@ -51,7 +51,7 @@
                 {% if timestampLeft == 0 %}
                     <td><b>Arrived!</b></td>
                 {% else %}
-                    <td><span class="timer">{{ timestampLeft }}</span></td>
+                    <td><span class="timer">{{ timestampLeft|date('H:i:s', '+00:00 GMT') }}</span></td>
                 {% endif %}
 
                 <td>
