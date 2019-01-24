@@ -25,12 +25,10 @@
             <tr>
                 <td class="text-left">
                     <input type="checkbox" name="selected_messages[]" value="{{ message.id }}">
-                    {% if message.toStatus == 0 %}
+                    {% if message.status == 0 %}
                         <img src="{{ asset('images/icons/pm_new.png') }}" width="17" height="15" alt="New message">
-                    {% elseif message.toStatus == 1 %}
+                    {% elseif message.status == 1 %}
                         <img src="{{ asset('images/icons/pm_read.png') }}" width="17" height="15" alt="Read message">
-                    {% elseif message.toStatus == 2 %}
-                        <img src="{{ asset('images/icons/pm_reply.png') }}" width="17" height="15" alt="Message replied">
                     {% endif %}
                     <a class="B" href="{{ path('Game/Message/Inbox/Read', {'messageId': message.id}) }}">
                         {% if message.adminMessage == 1 %}

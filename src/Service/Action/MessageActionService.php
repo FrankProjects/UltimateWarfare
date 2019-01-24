@@ -151,4 +151,13 @@ final class MessageActionService
 
         return $message;
     }
+
+    /**
+     * @param Player $player
+     */
+    public function disableMessageNotification(Player $player): void
+    {
+        $player->getNotifications()->setMessage(false);
+        $this->playerRepository->save($player);
+    }
 }

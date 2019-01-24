@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Message;
 use FrankProjects\UltimateWarfare\Repository\MessageRepository;
+use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\Action\MessageActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,6 +49,9 @@ final class MessageController extends BaseGameController
     public function inbox(Request $request): Response
     {
         $player = $this->getPlayer();
+        if ($player->getNotifications()->getMessage()) {
+            $this->messageActionService->disableMessageNotification($player);
+        }
 
         foreach ($this->getSelectedMessagesFromRequest($request) as $messageId) {
             $this->messageActionService->deleteMessageFromInbox($player, $messageId);
@@ -73,6 +78,10 @@ final class MessageController extends BaseGameController
 
         try {
             $message = $this->messageActionService->getMessageByIdAndToPlayer($messageId, $player);
+            if ($message->getStatus() === Message::MESSAGE_STATUS_NEW) {
+                $message->setStatus(Message::MESSAGE_STATUS_READ);
+                $this->messageRepository->save($message);
+            };
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/Message/Inbox');
