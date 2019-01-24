@@ -20,13 +20,17 @@
             <td width="150">Subject:</td>
             <td width="550"><input name="subject" type="text" size="12" value="{{ subject|escape }}"></td>
         </tr>
-        <tr>
-            <td width="150">Mod message:</td>
-            <td width="550">
-                <select name="admin"><option value="0">No</option><option value="1">Yes</option></select>
-            </td>
-        </tr>
-
+        {% if is_granted('ROLE_ADMIN') %}
+            <tr>
+                <td width="150">Admin message:</td>
+                <td width="550">
+                    <select name="admin">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </td>
+            </tr>
+        {% endif %}
         <tr>
             <td colspan="2">
                 <textarea name="message" cols="60" rows="10" >{{ message|escape }}</textarea>

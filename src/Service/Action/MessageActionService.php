@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\Message;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\MessageRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use RuntimeException;
@@ -73,8 +74,9 @@ final class MessageActionService
      * @param string $subject
      * @param string $message
      * @param string $toPlayerName
+     * @param bool $adminMessage
      */
-    public function sendMessage(Player $player, string $subject, string $message, string $toPlayerName)
+    public function sendMessage(Player $player, string $subject, string $message, string $toPlayerName, bool $adminMessage)
     {
         if ($subject == '') {
             throw new RunTimeException('Please type a subject');
@@ -90,10 +92,11 @@ final class MessageActionService
             throw new RunTimeException('No such player');
         }
 
-        // XXX TODO: Fix permissions checking for admin, always disable for now...
-        $adminMessage = false;
-        $message = Message::create($player, $toPlayer, $subject, $message, $adminMessage);
+        if (!$player->getUser()->hasRole(User::ROLE_ADMIN)) {
+            $adminMessage = false;
+        }
 
+        $message = Message::create($player, $toPlayer, $subject, $message, $adminMessage);
         $toPlayerNotifications = $toPlayer->getNotifications();
         $toPlayerNotifications->setMessage(true);
         $toPlayer->setNotifications($toPlayerNotifications);
@@ -147,5 +150,14 @@ final class MessageActionService
         }
 
         return $message;
+    }
+
+    /**
+     * @param Player $player
+     */
+    public function disableMessageNotification(Player $player): void
+    {
+        $player->getNotifications()->setMessage(false);
+        $this->playerRepository->save($player);
     }
 }

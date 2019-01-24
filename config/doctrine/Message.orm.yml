@@ -23,12 +23,12 @@ FrankProjects\UltimateWarfare\Entity\Message:
             options:
                 default: '0'
             column: to_delete
-        toStatus:
-            type: boolean
+        status:
+            type: smallint
             nullable: false
             options:
                 default: '0'
-            column: to_status
+            column: status
         adminMessage:
             type: boolean
             nullable: false

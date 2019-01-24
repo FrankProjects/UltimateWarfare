@@ -9,6 +9,9 @@ namespace FrankProjects\UltimateWarfare\Entity;
  */
 class Message
 {
+    const MESSAGE_STATUS_NEW = 0;
+    const MESSAGE_STATUS_READ = 1;
+
     /**
      * @var int
      */
@@ -35,9 +38,9 @@ class Message
     private $toDelete = false;
 
     /**
-     * @var bool
+     * @var int
      */
-    private $toStatus = false;
+    private $status = 0;
 
     /**
      * @var bool
@@ -115,23 +118,23 @@ class Message
     }
 
     /**
-     * Set toStatus
+     * Set status
      *
-     * @param bool $toStatus
+     * @param int $status
      */
-    public function setToStatus(bool $toStatus): void
+    public function setStatus(int $status): void
     {
-        $this->toStatus = $toStatus;
+        $this->status = $status;
     }
 
     /**
-     * Get toStatus
+     * Get status
      *
-     * @return bool
+     * @return int
      */
-    public function getToStatus(): bool
+    public function getStatus(): int
     {
-        return $this->toStatus;
+        return $this->status;
     }
 
     /**

@@ -6,9 +6,11 @@ namespace FrankProjects\UltimateWarfare\Controller\Admin;
 
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
+use FrankProjects\UltimateWarfare\Service\Action\UserActionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class UserController extends AbstractController
 {
@@ -18,14 +20,22 @@ final class UserController extends AbstractController
     private $userRepository;
 
     /**
+     * @var UserActionService
+     */
+    private $userActionService;
+
+    /**
      * UserController constructor
      *
      * @param UserRepository $userRepository
+     * @param UserActionService $userActionService
      */
     public function __construct(
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UserActionService $userActionService
     ) {
         $this->userRepository = $userRepository;
+        $this->userActionService = $userActionService;
     }
 
     /**
@@ -135,18 +145,14 @@ final class UserController extends AbstractController
      */
     public function makeAdmin(int $userId): RedirectResponse
     {
-        $user = $this->getUserObject($userId);
-        if ($user->hasRole('ROLE_ADMIN')) {
-            $this->addFlash('error', 'User already has ROLE_ADMIN');
-            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        try {
+            $user = $this->getUserObject($userId);
+            $this->userActionService->addRoleToUser($user, User::ROLE_ADMIN);
+            $this->addFlash('success', 'Add admin role to user!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
 
-        $roles = $user->getRoles();
-        $roles[] = 'ROLE_ADMIN';
-        $user->setRoles($roles);
-
-        $this->userRepository->save($user);
-        $this->addFlash('success', 'Add ROLE_ADMIN to user!');
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
@@ -156,22 +162,14 @@ final class UserController extends AbstractController
      */
     public function removeAdmin(int $userId): RedirectResponse
     {
-        $user = $this->getUserObject($userId);
-        if (!$user->hasRole('ROLE_ADMIN')) {
-            $this->addFlash('error', 'User has no ROLE_ADMIN');
-            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        try {
+            $user = $this->getUserObject($userId);
+            $this->userActionService->removeRoleFromUser($user, User::ROLE_ADMIN);
+            $this->addFlash('success', 'Removed admin role from user!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
 
-        $roles = $user->getRoles();
-        foreach ($roles as $key => $role) {
-            if ($role === 'ROLE_ADMIN') {
-                unset($roles[$key]);
-            }
-        }
-
-        $user->setRoles($roles);
-        $this->userRepository->save($user);
-        $this->addFlash('success', 'Removed ROLE_ADMIN from user!');
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 

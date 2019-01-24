@@ -11,6 +11,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class User implements UserInterface, EquatableInterface, \Serializable
 {
+    const ROLE_DEFAULT = 'ROLE_USER';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+
     /**
      * @var int
      */
@@ -139,7 +142,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
+        $roles[] = User::ROLE_DEFAULT;
 
         return array_unique($roles);
     }
@@ -159,6 +162,34 @@ class User implements UserInterface, EquatableInterface, \Serializable
     public function hasRole(string $role): bool
     {
         return in_array(strtoupper($role), $this->getRoles(), true);
+    }
+
+    /**
+     * @param string $role
+     */
+    public function addRole(string $role): void
+    {
+        $role = strtoupper($role);
+        if ($role === User::ROLE_DEFAULT) {
+            return;
+        }
+
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return;
+    }
+
+    /**
+     * @param string $role
+     */
+    public function removeRole(string $role): void
+    {
+        $key = array_search(strtoupper($role), $this->roles, true);
+        if ($key !== false) {
+            unset($this->roles[$key]);
+        }
     }
 
     /**
