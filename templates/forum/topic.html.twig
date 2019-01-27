@@ -17,17 +17,17 @@
 
     <table class="table text-center">
         <tr class="tabletop">
-            <td colspan="2"><b>{{ topic.title|escape }}</b></td>
+            <td colspan="2"><b>{{ topic.title }}</b></td>
         </tr>
         <tr>
-            <td width="200">{{ 'label.name'|trans }}: {{ topic.user.username|escape }}
+            <td width="200">{{ 'label.name'|trans }}: {{ topic.user.username }}
                 <b>Forum Moderator</b>
             </td>
             <td rowspan="3" width="700">
-                {{ topic.content|escape|nl2br }}
+                {{ topic.content|nl2br }}
 
                 {% if topic.editUser != null %}
-                    <br/><br/><i> Last edited by: {{ topic.editUser.username|escape }}</i>
+                    <br/><br/><i> Last edited by: {{ topic.editUser.username }}</i>
                 {% endif %}
 
                 {% if user != null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}

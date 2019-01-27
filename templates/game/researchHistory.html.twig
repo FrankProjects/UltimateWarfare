@@ -14,12 +14,12 @@
         {% for research in finishedResearch %}
             <tr>
                 <td width="150">
-                    <img src="{{ asset('images/research/' ~ research.pic ) }}" width="150" height="130">
+                    <img src="{{ asset('images/research/' ~ research.pic ) }}" alt="{{ research.name }}" width="150" height="130">
                 </td>
                 <td class="text-left" width="550">
-                    <div><b>Name:</b> {{ research.name|escape }}</div>
+                    <div><b>Name:</b> {{ research.nam }}</div>
                     <div><b>Finished at:</b> {{ research.timestamp|date }}</div>
-                    <div>{{ research.description|escape }}</div>
+                    <div>{{ research.description }}</div>
                 </td>
             </tr>
         {% else %}

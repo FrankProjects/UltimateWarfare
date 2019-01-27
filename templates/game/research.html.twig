@@ -21,7 +21,7 @@
             {% set finish = researchPlayer.timestamp + researchPlayer.research.timestamp %}
 
             <tr>
-                <td>{{ researchPlayer.research.name|escape }}</td>
+                <td>{{ researchPlayer.research.name }}</td>
                 <td><span class="timer">timestamp_left</span></td>
                 <td>{{ finish|date }}</td>
                 <td><a class="B" href="{{ path('Game/Research/Cancel', {'researchId': researchPlayer.research.id}) }}">Cancel</a></td>
@@ -43,25 +43,33 @@
         {% for research in unresearched %}
             <tr>
                 <td width="150" rowspan="2">
-                    <img src="{{ asset('images/research/' ~ research.pic ) }}" width="150" height="130">
+                    <img src="{{ asset('images/research/' ~ research.pic ) }}" alt="{{ research.name }}" width="150" height="130">
                 </td>
-                <td class="text-left" width="550" colspan="2">{{ research.description|escape }}</td>
+                <td class="text-left" width="550" colspan="2">{{ research.description }}</td>
             </tr>
             <tr>
                 <td class="text-left" valign="top">
-                    <div><b>Name:</b> {{ research.name|escape }}</div>
+                    <div><b>Name:</b> {{ research.name }}</div>
                     <div><b>Costs:</b> ${{ research.cost }}</div>
-                    <div><b>Duration:</b> {{ research.timestamp }}</div>
+                    <div><b>Duration:</b>
+                        {% set days = (research.timestamp / (24 * 60 * 60))|round(0, 'floor') %}
+                        {% set hours = ((research.timestamp - (days * 24 * 60 * 60)) / (60 * 60))|round(0, 'floor') %}
+                        {% set minutes = ((research.timestamp - (days * 24 * 60 * 60) - (hours * 60 * 60)) / 60)| round(0, 'floor') %}
+
+                        {% if days > 0 %}{{ days }} days {% endif %}
+                        {% if hours > 0 %}{{ hours }} hours {% endif %}
+                        {% if minutes > 0 %}{{ minutes }} minutes{% endif %}
+                    </div>
                     <a class="btn btn-primary" href="{{ path('Game/Research/Perform', {'researchId': research.id}) }}"><b>Research</b></a>
                 </td>
                 <td valign="top">
                     <b>Requirements:</b><br />
                     {% for researchNeed in research.needs['notDone'] %}
-                        <div class="bad">{{ researchNeed.research.name|escape }}</div>
+                        <div class="bad">{{ researchNeed.requiredResearch.name }}</div>
                     {% endfor %}
 
                     {% for researchNeed in research.needs['done'] %}
-                        <div class="good">{{ researchNeed.research.name|escape }}</div>
+                        <div class="good">{{ researchNeed.requiredResearch.name }}</div>
                     {% endfor %}
                 </td>
             </tr>

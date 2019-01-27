@@ -9,11 +9,11 @@
         </tr>
         <tr>
             <td width="150">Username: </td>
-            <td width="450"><b>{{ user.username|escape }}</b></td>
+            <td width="450"><b>{{ user.username }}</b></td>
         </tr>
         <tr>
             <td width="150">Email: </td>
-            <td width="450"><b>{{ user.email|escape }}</b></td>
+            <td width="450"><b>{{ user.email }}</b></td>
         </tr>
         <tr>
             <td width="150">Signup date: </td>
@@ -67,7 +67,7 @@
                         <tr>
                             <td>{{ mapDesign.name }}</td>
                             <td>
-                                <img src="{{ asset('images/map/map7' ~ mapDesign.url) }}" width="120" height="100">
+                                <img src="{{ asset('images/map/map7' ~ mapDesign.url) }}" alt="{{ mapDesign.name }}" width="120" height="100">
                             </td>
                             <td>
                                 {% if mapDesign.id == user.mapDesign.id %}

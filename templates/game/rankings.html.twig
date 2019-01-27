@@ -20,7 +20,7 @@
         {% for playerRanking in players %}
             <tr>
                 <td width="50">{{ loop.index }}</td>
-                <td class="text-left" width="200">{{ playerRanking.name|escape }}
+                <td class="text-left" width="200">{{ playerRanking.name }}
                     {% if playerRanking.federation != null %}
                         <i> ( {{ playerRanking.federation.name }} )</i>
                     {% endif %}

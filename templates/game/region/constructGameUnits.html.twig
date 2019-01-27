@@ -28,7 +28,7 @@
             {% for gameUnit in gameUnitType.gameUnits %}
                 <tr>
                     <td width="150">
-                        <img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130">
+                        <img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" alt="{{ gameUnit.name }}" width="150" height="130">
                     </td>
                     <td width="150">
                         <a class="B" href="{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}" target="_blank" title="Information about {{ gameUnit.name }}" tabIndex="-1">
@@ -37,7 +37,7 @@
                         <img src="{{ asset('images/icons/resource_cash.jpg') }}" width="25" height="25" alt="Cash" />{{ gameUnit.cost.cash }}<br />
                         <img src="{{ asset('images/icons/resource_wood.jpg') }}" width="25" height="25" alt="Wood" />{{ gameUnit.cost.wood }}<br />
                         <img src="{{ asset('images/icons/resource_steel.jpg') }}" width="25" height="25" alt="Steel" />{{ gameUnit.cost.steel }}<br />
-                        <img src="{{ asset('images/icons/time.gif') }}" width="25" height="25" alt="Construction time">{{ gameUnit.timestamp }}
+                        <img src="{{ asset('images/icons/time.gif') }}" width="25" height="25" alt="Construction time">{{ gameUnit.timestamp|date('H:i:s', '+00:00 GMT') }}
                     </td>
                     <td width="100">
                         {% if gameUnitData[gameUnit.id] is defined and gameUnitData[gameUnit.id] > 0 %}

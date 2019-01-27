@@ -29,9 +29,9 @@
                 </td>
                 <td>
                     {% if player.federation != null and player.federation.id == fleet.targetWorldRegion.player.federation.id %}
-                        <span class="good">{{ fleet.targetWorldRegion.player.name|escape }}</span>
+                        <span class="good">{{ fleet.targetWorldRegion.player.name }}</span>
                     {% elseif fleet.targetWorldRegion.player != null %}
-                        {{ fleet.targetWorldRegion.player.name|escape }}
+                        {{ fleet.targetWorldRegion.player.name }}
                     {% else %}
                         Nobody!
                     {% endif %}
@@ -51,7 +51,7 @@
                 {% if timestampLeft == 0 %}
                     <td><b>Arrived!</b></td>
                 {% else %}
-                    <td><span class="timer">{{ timestampLeft }}</span></td>
+                    <td><span class="timer">{{ timestampLeft|date('H:i:s', '+00:00 GMT') }}</span></td>
                 {% endif %}
 
                 <td>

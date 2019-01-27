@@ -65,12 +65,12 @@
         {% elseif tileData.player.id is defined and tileData.player.id == player.id %}
             <span style="color:white">{{ tileData.region }},</span><br />
             <a href="{{ path('Game/World/Region', {'regionId': tileData.id}) }}">
-                <span style="color:gold"><b>Building<br />{{ player.name|escape }}</b></span>
+                <span style="color:gold"><b>Building<br />{{ player.name }}</b></span>
             </a>
         {% else %}
             <span style="color:white">{{ tileData.region }},</span><br />
             <a class="A" href="{{ path('Game/World/Region', {'regionId': tileData.id}) }}">
-                <b>Attack<br />{{ tileData.player.name|escape }}</b>
+                <b>Attack<br />{{ tileData.player.name }}</b>
             </a>
         {% endif %}
     </td>

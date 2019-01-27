@@ -14,11 +14,11 @@
     <table class="table text-center">
         <tr>
             <td width=150>To:</td>
-            <td width=550><input type='text' value='{{ toPlayerName|escape }}' name='toPlayerName' size='12' /></td>
+            <td width=550><input type='text' value='{{ toPlayerName }}' name='toPlayerName' size='12' /></td>
         </tr>
         <tr>
             <td width="150">Subject:</td>
-            <td width="550"><input name="subject" type="text" size="12" value="{{ subject|escape }}"></td>
+            <td width="550"><input name="subject" type="text" size="12" value="{{ subject }}"></td>
         </tr>
         {% if is_granted('ROLE_ADMIN') %}
             <tr>
@@ -33,7 +33,7 @@
         {% endif %}
         <tr>
             <td colspan="2">
-                <textarea name="message" cols="60" rows="10" >{{ message|escape }}</textarea>
+                <textarea name="message" cols="60" rows="10" >{{ message }}</textarea>
                 <br>
                 <input class="btn btn-primary" type="submit" name="submit" value="Send">
             </td>

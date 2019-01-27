@@ -1,12 +1,12 @@
 <table class="table text-center">
     <tr>
-        <td width="200">Name: {{ post.user.username|escape }}<br/>
+        <td width="200">Name: {{ post.user.username }}<br/>
             <b>Forum Moderator</b>
         </td>
-        <td rowspan="3" width="700">{{ post.content|escape|nl2br }}
+        <td rowspan="3" width="700">{{ post.content|nl2br }}
             <br/>
             {% if post.edited == true %}
-                <br/><br/><i> Last edited by: {{ post.editedBy|escape }}</i>
+                <br/><br/><i> Last edited by: {{ post.editedBy }}</i>
             {% endif %}
 
             {% if user != null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}

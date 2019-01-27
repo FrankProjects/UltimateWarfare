@@ -9,7 +9,7 @@
         </tr>
         <tr>
             <td width="150">Name:</td>
-            <td width="350">{{ profilePlayer.name|escape }}</td>
+            <td width="350">{{ profilePlayer.name }}</td>
         </tr>
         <tr>
             <td width="150">Join date:</td>
@@ -29,7 +29,7 @@
         {% if profilePlayer.federation is not null %}
             <tr>
                 <td width="150">Federation:</td>
-                <td width="350">{{ profilePlayer.federation.name|escape }}</td>
+                <td width="350">{{ profilePlayer.federation.name }}</td>
             </tr>
         {% endif %}
     </table>
