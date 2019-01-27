@@ -24,18 +24,18 @@
         <table class="table">
             <tr>
                 <td width="400">
-                    <b>{{ world.name|escape }}</b><br />
-                    <img src="{{ asset(world.image) }}" width="400" height="255">
+                    <b>{{ world.name }}</b><br />
+                    <img src="{{ asset(world.image) }}" alt="{{ world.name }}" width="400" height="255">
                 </td>
                 <td width="300">
-                    <b>Max players:</b> {{ world.maxplayers|escape }}<br /><br />
+                    <b>Max players:</b> {{ world.maxplayers }}<br /><br />
                     <b>Info:</b><br />
-                    {{ world.info|escape }}<br /><br />
+                    {{ world.info }}<br /><br />
                     <b>At start:</b><br />
-                    Cash: {{ world.cash|escape }}<br />
-                    Wood: {{ world.wood|escape }}<br />
-                    Steel: {{ world.steel|escape }}<br />
-                    Food: {{ world.food|escape }}<br /><br />
+                    Cash: {{ world.cash }}<br />
+                    Wood: {{ world.wood }}<br />
+                    Steel: {{ world.steel }}<br />
+                    Food: {{ world.food }}<br /><br />
                 </td>
             </tr>
         </table>

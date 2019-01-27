@@ -7,7 +7,7 @@
         </tr>
         {% for research in researches %}
             <tr>
-                <td width="150"><img src="{{ asset('images/research/' ~ research.pic) }}" width="150" height="130"></td>
+                <td width="150"><img src="{{ asset('images/research/' ~ research.pic) }}" alt="{{ research.name }}" width="150" height="130"></td>
 
                 <td class="text-left" width="450">
                     {{ research.description }}<br /><br />

@@ -9,7 +9,7 @@
         </tr>
         <tr>
             <td rowspan="3" width="120">
-                <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" width="120" height="100"><br />
+                <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" alt="Region {{ region.id }}" width="120" height="100"><br />
             </td>
             <td width="300">Location:</td>
             <td width="280">
@@ -43,7 +43,7 @@
         {% for playerRegion in playerRegions %}
             <tr>
                 <td width="120">
-                    <img src="{{ asset('images/map/' ~ playerRegion.image ~ mapUrl) }}" width="120" height="100">
+                    <img src="{{ asset('images/map/' ~ playerRegion.image ~ mapUrl) }}" alt="Region {{ playerRegion.id }}" width="120" height="100">
                 </td>
                 <td class="text-left" width="370">
                     <ul>

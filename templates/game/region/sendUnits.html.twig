@@ -18,7 +18,7 @@
             {% for gameUnit in gameUnitType.gameUnits %}
                 <tr>
                     <td width="150">
-                        <img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" width="150" height="130">
+                        <img src="{{ asset('images/' ~ gameUnitType.imageDir ~ gameUnit.image) }}" alt="{{ gameUnit.name }}" width="150" height="130">
                     </td>
                     <td width="150">
                         <a class="B" href="{{ path('Guide/GameUnit', {'gameUnitId': gameUnit.id}) }}"
