@@ -15,12 +15,12 @@
             {% set lastTopic = category.topics|last %}
             <tr>
                 <td>{{ category.id }}</td>
-                <td class="text-left"><a class="B" href="{{ path('Forum/Category', {'categoryId': category.id}) }}">{{ category.title|escape }}</a></td>
+                <td class="text-left"><a class="B" href="{{ path('Forum/Category', {'categoryId': category.id}) }}">{{ category.title }}</a></td>
                 <td>{{ category.topics|length }}</td>
                 {% if lastTopic == null %}
                     <td class="text-left">No topics yet</td>
                 {% else %}
-                    <td class="text-left">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.user.username|escape }}</td>
+                    <td class="text-left">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.user.username }}</td>
                 {% endif %}
             </tr>
         {% endfor %}

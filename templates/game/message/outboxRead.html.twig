@@ -16,16 +16,16 @@
                     {% if message.adminMessage == 1 %}
                         <span style="color:#CC0000"><b>ADMIN:</b></span>
                     {% endif %}
-                    {{ message.subject|escape }}
+                    {{ message.subject }}
                 </b>
             </td>
         </tr>
         <tr>
             <td>
                 <div class="pm_date">
-                    To {{ message.toPlayer.name|escape }} on {{ message.timestamp|date }}
+                    To {{ message.toPlayer.name }} on {{ message.timestamp|date }}
                 </div>
-                {{ message.message|escape }}
+                {{ message.message }}
                 <br />
                 <br />
             </td>

@@ -61,7 +61,7 @@
             <td>
                 <b>Adviser:</b>
                 <br />
-                Welcome  <strong>{{ player.name|escape }}</strong>,
+                Welcome  <strong>{{ player.name }}</strong>,
                 <br />
                 You are currently in your headquarters, this is where all the money in your empire is stored! <br />
                 From this headquarters you can control your land, your countries and your world! <br />
@@ -132,7 +132,7 @@
                     {{ report.timestamp|date }}
                 </td>
                 <td class="text-left">
-                    {{ report.report|escape }}
+                    {{ report.report }}
                 </td>
             </tr>
 

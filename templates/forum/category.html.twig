@@ -15,17 +15,17 @@
         {% for topic in topics %}
             <tr>
                 {% if topic.sticky == 1 %}
-                    <td class="text-left"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}"><b><span style="color:#CC0000">Sticky </span></b>{{ topic.title|escape }}</a></td>
+                    <td class="text-left"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}"><b><span style="color:#CC0000">Sticky </span></b>{{ topic.title }}</a></td>
                 {% else %}
-                    <td class="text-left"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}">{{ topic.title|escape }}</a></td>
+                    <td class="text-left"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}">{{ topic.title }}</a></td>
                 {% endif %}
-                <td>{{ topic.user.username|escape }}</td>
+                <td>{{ topic.user.username }}</td>
                 <td>{{ topic.posts|length }}</td>
                 {% set lastPost = topic.posts|last %}
                 {% if lastPost == null %}
-                    <td class="text-left">{{ topic.createDateTime|date("Y-m-d H:i:s") }} by {{ topic.user.username|escape }}</td>
+                    <td class="text-left">{{ topic.createDateTime|date("Y-m-d H:i:s") }} by {{ topic.user.username }}</td>
                 {% else %}
-                    <td class="text-left">{{ lastPost.createDateTime|date("Y-m-d H:i:s") }} by {{ lastPost.user.username|escape }}</td>
+                    <td class="text-left">{{ lastPost.createDateTime|date("Y-m-d H:i:s") }} by {{ lastPost.user.username }}</td>
                 {% endif %}
             </tr>
         {% endfor %}
