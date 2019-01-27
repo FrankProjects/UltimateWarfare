@@ -13,6 +13,12 @@ use FrankProjects\UltimateWarfare\Entity\World\Resources;
  */
 class World
 {
+    const STATUS_CREATED = 0;
+    const STATUS_RUNNING = 1;
+    const STATUS_FINISHED = 2;
+
+    const DEFAULT_IMAGE = 'images/world/game_type_1.jpg';
+
     /**
      * @var int
      */
@@ -21,12 +27,12 @@ class World
     /**
      * @var int
      */
-    private $round;
+    private $round = 1;
 
     /**
      * @var string
      */
-    private $name;
+    private $name = '';
 
     /**
      * @var string
@@ -36,12 +42,12 @@ class World
     /**
      * @var string
      */
-    private $info;
+    private $description = '';
 
     /**
-     * @var string
+     * @var int
      */
-    private $status;
+    private $status = 0;
 
     /**
      * @var bool
@@ -51,32 +57,32 @@ class World
     /**
      * @var int
      */
-    private $maxPlayers;
+    private $maxPlayers = 0;
 
     /**
      * @var int
      */
-    private $startTimestamp;
+    private $startTimestamp = 0;
 
     /**
      * @var int
      */
-    private $endTimestamp;
+    private $endTimestamp = 0;
 
     /**
      * @var bool
      */
-    private $market;
+    private $market = true;
 
     /**
      * @var bool
      */
-    private $federation;
+    private $federation = true;
 
     /**
      * @var int
      */
-    private $fedLimit = 0;
+    private $federationLimit = 0;
 
     /**
      * @var Collection|WorldSector[]
@@ -119,6 +125,7 @@ class World
         $this->messages = new ArrayCollection();
         $this->federations = new ArrayCollection();
         $this->resources = new Resources();
+        $this->image = self::DEFAULT_IMAGE;
     }
 
     /**
@@ -192,31 +199,27 @@ class World
     }
 
     /**
-     * Set info
-     *
-     * @param string $info
+     * @return string
      */
-    public function setInfo(string $info): void
+    public function getDescription(): string
     {
-        $this->info = $info;
+        return $this->description;
     }
 
     /**
-     * Get info
-     *
-     * @return string
+     * @param string $description
      */
-    public function getInfo(): string
+    public function setDescription(string $description): void
     {
-        return $this->info;
+        $this->description = $description;
     }
 
     /**
      * Set status
      *
-     * @param string $status
+     * @param int $status
      */
-    public function setStatus(string $status): void
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }
@@ -224,9 +227,9 @@ class World
     /**
      * Get status
      *
-     * @return string
+     * @return int
      */
-    public function getStatus(): string
+    public function getStatus(): int
     {
         return $this->status;
     }
@@ -352,27 +355,23 @@ class World
     }
 
     /**
-     * Set fedLimit
-     *
-     * @param int $fedLimit
-     */
-    public function setFedLimit(int $fedLimit): void
-    {
-        $this->fedLimit = $fedLimit;
-    }
-
-    /**
-     * Get fedLimit
-     *
      * @return int
      */
-    public function getFedLimit(): int
+    public function getFederationLimit(): int
     {
-        return $this->fedLimit;
+        return $this->federationLimit;
     }
 
     /**
-     * @return Collection
+     * @param int $federationLimit
+     */
+    public function setFederationLimit(int $federationLimit): void
+    {
+        $this->federationLimit = $federationLimit;
+    }
+
+    /**
+     * @return Collection|WorldSector[]
      */
     public function getWorldSectors(): Collection
     {
