@@ -1,0 +1,13 @@
+label:
+  description: Description
+  federation: Federation
+  federationLimit: Federation limit
+  market: Market
+  maxPlayers: Maximum players
+  name: Name
+  public: Public
+  save: Save
+  status: Status
+  created: Created
+  finished: Finished
+  running: Running

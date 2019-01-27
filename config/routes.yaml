@@ -112,9 +112,31 @@ Admin/User/Read:
     requirements:
         userId: '\d+'
 
+Admin/World/Create:
+    path:      /admin/world/create
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::create
+
 Admin/World/List:
     path:      /admin/world/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::list
+
+Admin/World/Edit:
+    path:      /admin/world/edit/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::edit
+    requirements:
+        worldId: '\d+'
+
+Admin/World/Remove:
+    path:      /admin/world/remove/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::remove
+    requirements:
+        worldId: '\d+'
+
+Admin/World/Reset:
+    path:      /admin/world/reset/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::reset
+    requirements:
+        worldId: '\d+'
 
 Forum:
     path:      /forum
