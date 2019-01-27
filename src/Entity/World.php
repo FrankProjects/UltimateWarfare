@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\World\Resources;
 
 /**
  * Worlds
@@ -63,26 +64,6 @@ class World
     private $endTimestamp;
 
     /**
-     * @var int
-     */
-    private $cash;
-
-    /**
-     * @var int
-     */
-    private $wood;
-
-    /**
-     * @var int
-     */
-    private $steel;
-
-    /**
-     * @var int
-     */
-    private $food;
-
-    /**
      * @var bool
      */
     private $market;
@@ -123,6 +104,11 @@ class World
     private $federations = [];
 
     /**
+     * @var Resources
+     */
+    private $resources;
+
+    /**
      * World constructor.
      */
     public function __construct()
@@ -132,6 +118,7 @@ class World
         $this->marketItems = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->federations = new ArrayCollection();
+        $this->resources = new Resources();
     }
 
     /**
@@ -149,7 +136,7 @@ class World
      *
      * @param int $round
      */
-    public function setRound(int $round)
+    public function setRound(int $round): void
     {
         $this->round = $round;
     }
@@ -169,7 +156,7 @@ class World
      *
      * @param string $name
      */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -189,7 +176,7 @@ class World
      *
      * @param string $image
      */
-    public function setImage(string $image)
+    public function setImage(string $image): void
     {
         $this->image = $image;
     }
@@ -209,7 +196,7 @@ class World
      *
      * @param string $info
      */
-    public function setInfo(string $info)
+    public function setInfo(string $info): void
     {
         $this->info = $info;
     }
@@ -229,7 +216,7 @@ class World
      *
      * @param string $status
      */
-    public function setStatus(string $status)
+    public function setStatus(string $status): void
     {
         $this->status = $status;
     }
@@ -249,7 +236,7 @@ class World
      *
      * @param bool $public
      */
-    public function setPublic(bool $public)
+    public function setPublic(bool $public): void
     {
         $this->public = $public;
     }
@@ -269,7 +256,7 @@ class World
      *
      * @param int $maxPlayers
      */
-    public function setMaxPlayers(int $maxPlayers)
+    public function setMaxPlayers(int $maxPlayers): void
     {
         $this->maxPlayers = $maxPlayers;
     }
@@ -289,7 +276,7 @@ class World
      *
      * @param int $startTimestamp
      */
-    public function setStarttime(int $startTimestamp)
+    public function setStarttime(int $startTimestamp): void
     {
         $this->startTimestamp = $startTimestamp;
     }
@@ -309,7 +296,7 @@ class World
      *
      * @param int $endTimestamp
      */
-    public function setEndTimestamp(int $endTimestamp)
+    public function setEndTimestamp(int $endTimestamp): void
     {
         $this->endTimestamp = $endTimestamp;
     }
@@ -325,91 +312,11 @@ class World
     }
 
     /**
-     * Set cash
-     *
-     * @param int $cash
-     */
-    public function setCash(int $cash)
-    {
-        $this->cash = $cash;
-    }
-
-    /**
-     * Get cash
-     *
-     * @return int
-     */
-    public function getCash(): int
-    {
-        return $this->cash;
-    }
-
-    /**
-     * Set wood
-     *
-     * @param int $wood
-     */
-    public function setWood(int $wood)
-    {
-        $this->wood = $wood;
-    }
-
-    /**
-     * Get wood
-     *
-     * @return int
-     */
-    public function getWood(): int
-    {
-        return $this->wood;
-    }
-
-    /**
-     * Set steel
-     *
-     * @param int $steel
-     */
-    public function setSteel(int $steel)
-    {
-        $this->steel = $steel;
-    }
-
-    /**
-     * Get steel
-     *
-     * @return int
-     */
-    public function getSteel(): int
-    {
-        return $this->steel;
-    }
-
-    /**
-     * Set food
-     *
-     * @param int $food
-     */
-    public function setFood(int $food)
-    {
-        $this->food = $food;
-    }
-
-    /**
-     * Get food
-     *
-     * @return int
-     */
-    public function getFood(): int
-    {
-        return $this->food;
-    }
-
-    /**
      * Set market
      *
      * @param bool $market
      */
-    public function setMarket(bool $market)
+    public function setMarket(bool $market): void
     {
         $this->market = $market;
     }
@@ -429,7 +336,7 @@ class World
      *
      * @param bool $federation
      */
-    public function setFederation(bool $federation)
+    public function setFederation(bool $federation): void
     {
         $this->federation = $federation;
     }
@@ -449,7 +356,7 @@ class World
      *
      * @param int $fedLimit
      */
-    public function setFedLimit(int $fedLimit)
+    public function setFedLimit(int $fedLimit): void
     {
         $this->fedLimit = $fedLimit;
     }
@@ -475,7 +382,7 @@ class World
     /**
      * @param Collection $worldSectors
      */
-    public function setWorldSectors(Collection $worldSectors)
+    public function setWorldSectors(Collection $worldSectors): void
     {
         $this->worldSectors = $worldSectors;
     }
@@ -491,7 +398,7 @@ class World
     /**
      * @param Collection $players
      */
-    public function setPlayers(Collection $players)
+    public function setPlayers(Collection $players): void
     {
         $this->players = $players;
     }
@@ -507,7 +414,7 @@ class World
     /**
      * @param Collection $marketItems
      */
-    public function setMarketItems(Collection $marketItems)
+    public function setMarketItems(Collection $marketItems): void
     {
         $this->marketItems = $marketItems;
     }
@@ -523,7 +430,7 @@ class World
     /**
      * @param Collection $messages
      */
-    public function setMessages(Collection $messages)
+    public function setMessages(Collection $messages): void
     {
         $this->messages = $messages;
     }
@@ -539,8 +446,24 @@ class World
     /**
      * @param Collection $federations
      */
-    public function setFederations(Collection $federations)
+    public function setFederations(Collection $federations): void
     {
         $this->federations = $federations;
+    }
+
+    /**
+     * @return Resources
+     */
+    public function getResources(): Resources
+    {
+        return $this->resources;
+    }
+
+    /**
+     * @param Resources $resources
+     */
+    public function setResources(Resources $resources): void
+    {
+        $this->resources = $resources;
     }
 }

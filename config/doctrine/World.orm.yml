@@ -63,26 +63,6 @@ FrankProjects\UltimateWarfare\Entity\World:
             options:
                 unsigned: true
             column: end_timestamp
-        cash:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-        wood:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-        steel:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-        food:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
         market:
             type: boolean
             nullable: false
@@ -112,3 +92,6 @@ FrankProjects\UltimateWarfare\Entity\World:
             targetEntity: Federation
             mappedBy: world
     lifecycleCallbacks: {  }
+    embedded:
+        resources:
+            class: FrankProjects\UltimateWarfare\Entity\World\Resources

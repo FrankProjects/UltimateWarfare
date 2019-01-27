@@ -59,11 +59,6 @@ class Player
     /**
      * @var int
      */
-    private $regions = 0;
-
-    /**
-     * @var int
-     */
     private $networth = 0;
 
     /**
@@ -539,10 +534,10 @@ class Player
     public static function create(User $user, string $name, World $world)
     {
         $resources = new Resources();
-        $resources->setCash($world->getCash());
-        $resources->setWood($world->getWood());
-        $resources->setSteel($world->getSteel());
-        $resources->setFood($world->getFood());
+        $resources->setCash($world->getResources()->getCash());
+        $resources->setWood($world->getResources()->getWood());
+        $resources->setSteel($world->getResources()->getSteel());
+        $resources->setFood($world->getResources()->getFood());
 
         $player = new Player();
         $player->setUser($user);
