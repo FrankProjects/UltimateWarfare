@@ -50,7 +50,7 @@ FrankProjects\UltimateWarfare\Entity\GameUnit:
         description:
             type: text
             nullable: false
-            length: 255
+            length: 65535
             options:
                 fixed: false
     oneToMany:

@@ -1,0 +1,18 @@
+label:
+  name: Name
+  nameMulti: Plural name
+  networth: Networth
+  timestamp: Building time
+  description: Description
+  battleStats: Battle Stats
+  health: Health
+  armor: Armor
+  travelSpeed: Travel Speed
+  airBattleStats: Air Battle Stats
+  attack: Attack Power
+  attackSpeed: Attack Speed
+  defence: Defence Power
+  defenceSpeed: Defence Speed
+  seaBattleStats: Sea Battle Stats
+  groundBattleStats: Ground Battle Stats
+  save: Save

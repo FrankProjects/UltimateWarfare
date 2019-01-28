@@ -59,10 +59,22 @@ final class DoctrineWorldRepository implements WorldRepository
     }
 
     /**
+     * XXX TODO: Improve with custom repository queries
+     *
      * @param World $world
      */
     public function remove(World $world): void
     {
+        foreach ($world->getWorldSectors() as $worldSector) {
+            foreach ($worldSector->getWorldCountries() as $worldCountry) {
+                foreach ($worldCountry->getWorldRegions() as $worldRegion) {
+                    $this->entityManager->remove($worldRegion);
+                }
+                $this->entityManager->remove($worldCountry);
+            }
+            $this->entityManager->remove($worldSector);
+        }
+
         $this->entityManager->remove($world);
         $this->entityManager->flush();
     }

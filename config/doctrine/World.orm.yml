@@ -28,18 +28,18 @@ FrankProjects\UltimateWarfare\Entity\World:
             length: 100
             options:
                 fixed: false
-        info:
+        description:
             type: text
             nullable: false
             length: 65535
             options:
                 fixed: false
         status:
-            type: string
+            type: smallint
             nullable: false
-            length: 255
             options:
-                fixed: false
+                default: '0'
+            column: status
         public:
             type: boolean
             nullable: false
@@ -69,12 +69,12 @@ FrankProjects\UltimateWarfare\Entity\World:
         federation:
             type: boolean
             nullable: false
-        fedLimit:
+        federationLimit:
             type: integer
             nullable: false
             options:
                 default: '0'
-            column: fed_limit
+            column: federation_limit
     oneToMany:
         players:
             targetEntity: Player

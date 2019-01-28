@@ -159,7 +159,7 @@ class WorldSector
     }
 
     /**
-     * @return Collection
+     * @return Collection|WorldCountry[]
      */
     public function getWorldCountries(): Collection
     {
