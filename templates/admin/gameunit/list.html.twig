@@ -1,0 +1,37 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - GameUnit{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="4"><b>GameUnits</b></td>
+        </tr>
+        <tr>
+            <td width="150">Name</td>
+            <td width="400">Description</td>
+            <td width="100">Type</td>
+            <td width="50">Action</td>
+        </tr>
+        {% for gameUnit in gameUnits %}
+            <tr>
+                <td>
+                    {{ gameUnit.name }}
+                </td>
+                <td>
+                    {{ gameUnit.description }}
+                </td>
+                <td>
+                    {{ gameUnit.gameUnitType.name }}
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('Admin/GameUnit/Edit', {'gameUnitId': gameUnit.id}) }}">Edit</a><br />
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No GameUnits!</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

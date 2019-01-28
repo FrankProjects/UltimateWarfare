@@ -3,6 +3,7 @@
 namespace FrankProjects\UltimateWarfare\Form\Admin;
 
 use FrankProjects\UltimateWarfare\Entity\World;
+use FrankProjects\UltimateWarfare\Form\Admin\World\ResourcesType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -50,7 +51,7 @@ class WorldType extends AbstractType
             ->add('federationLimit', TextType::class, [
                 'label' => 'label.federationLimit'
             ])
-            ->add('resources', GameResourcesType::class, [
+            ->add('resources', ResourcesType::class, [
                 'label' => 'label.startResources',
             ])
             ->add('submit', SubmitType::class, [
