@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Repository;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Entity\WorldCountry;
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
-use FrankProjects\UltimateWarfare\Entity\WorldSector;
 
 interface WorldRegionRepository
 {
@@ -18,18 +17,19 @@ interface WorldRegionRepository
     public function find(int $id): ?WorldRegion;
 
     /**
-     * @param WorldCountry $worldCountry
+     * @param World $world
      * @param Player|null $player
      * @return WorldRegion[]
      */
-    public function findByWorldCountryAndPlayer(WorldCountry $worldCountry, ?Player $player): array;
+    public function findByWorldAndPlayer(World $world, ?Player $player): array;
 
     /**
-     * @param WorldSector $worldSector
-     * @param Player|null $player
-     * @return WorldRegion[]
+     * @param World $world
+     * @param int $x
+     * @param int $y
+     * @return WorldRegion|null
      */
-    public function findByWorldSectorAndPlayer(WorldSector $worldSector, ?Player $player): array;
+    public function findByWorldXY(World $world, int $x, int $y): ?WorldRegion;
 
     /**
      * @param WorldRegion $worldRegion
