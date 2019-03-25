@@ -7,9 +7,8 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Entity\WorldCountry;
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
-use FrankProjects\UltimateWarfare\Entity\WorldSector;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 
 final class DoctrineWorldRegionRepository implements WorldRegionRepository
@@ -45,23 +44,24 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     }
 
     /**
-     * @param WorldCountry $worldCountry
+     * @param World $world
      * @param Player|null $player
      * @return WorldRegion[]
      */
-    public function findByWorldCountryAndPlayer(WorldCountry $worldCountry, ?Player $player): array
+    public function findByWorldAndPlayer(World $world, ?Player $player): array
     {
-        return $this->repository->findBy(['worldCountry' => $worldCountry, 'player' => $player]);
+        return $this->repository->findBy(['world' => $world, 'player' => $player]);
     }
 
     /**
-     * @param WorldSector $worldSector
-     * @param Player|null $player
-     * @return WorldRegion[]
+     * @param World $world
+     * @param int $x
+     * @param int $y
+     * @return WorldRegion|null
      */
-    public function findByWorldSectorAndPlayer(WorldSector $worldSector, ?Player $player): array
+    public function findByWorldXY(World $world, int $x, int $y): ?WorldRegion
     {
-        return $this->repository->findBy(['worldSector' => $worldSector, 'player' => $player]);
+        return $this->repository->findOneBy(['world' => $world, 'x' => $x, 'y' => $y]);
     }
 
     /**
