@@ -148,12 +148,9 @@ final class RegionActionService
             throw new WorldRegionNotFoundException();
         }
 
-        $sector = $worldRegion->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $world->getId()) {
+        if ($worldRegion->getWorld()->getId() != $world->getId()) {
             throw new RunTimeException('World region is not part for your game world!');
         }
-
 
         return $worldRegion;
     }
