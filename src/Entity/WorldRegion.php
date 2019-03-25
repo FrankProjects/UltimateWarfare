@@ -12,15 +12,15 @@ use Doctrine\Common\Collections\Collection;
  */
 class WorldRegion
 {
-    /**
-     * @var int
-     */
-    private $id;
+    const TYPE_WATER = 'water';
+    const TYPE_BEACH = 'beach';
+    const TYPE_FORREST = 'forrest';
+    const TYPE_MOUNTAIN = 'mountain';
 
     /**
      * @var int
      */
-    private $region;
+    private $id;
 
     /**
      * @var int
@@ -35,17 +35,12 @@ class WorldRegion
     /**
      * @var int
      */
-    private $rX;
-
-    /**
-     * @var int
-     */
-    private $rY;
+    private $z;
 
     /**
      * @var string
      */
-    private $image;
+    private $type;
 
     /**
      * @var int
@@ -68,14 +63,9 @@ class WorldRegion
     private $population = 0;
 
     /**
-     * @var WorldCountry
+     * @var World
      */
-    private $worldCountry;
-
-    /**
-     * @var WorldSector
-     */
-    private $worldSector;
+    private $world;
 
     /**
      * @var Player|null
@@ -124,26 +114,6 @@ class WorldRegion
     }
 
     /**
-     * Set region
-     *
-     * @param int $region
-     */
-    public function setRegion(int $region): void
-    {
-        $this->region = $region;
-    }
-
-    /**
-     * Get region
-     *
-     * @return int
-     */
-    public function getRegion(): int
-    {
-        return $this->region;
-    }
-
-    /**
      * Set x
      *
      * @param int $x
@@ -184,63 +154,69 @@ class WorldRegion
     }
 
     /**
-     * Set rX
+     * Set z
      *
-     * @param int $rX
+     * @param int $z
      */
-    public function setRX(int $rX): void
+    public function setZ(int $z): void
     {
-        $this->rX = $rX;
+        $this->z = $z;
     }
 
     /**
-     * Get rX
-     *
-     * @return int
-     */
-    public function getRX(): int
-    {
-        return $this->rX;
-    }
-
-    /**
-     * Set rY
-     *
-     * @param int $rY
-     */
-    public function setRY(int $rY): void
-    {
-        $this->rY = $rY;
-    }
-
-    /**
-     * Get rY
+     * Get z
      *
      * @return int
      */
-    public function getRY(): int
+    public function getZ(): int
     {
-        return $this->rY;
+        return $this->z;
     }
 
     /**
-     * Set image
-     *
-     * @param string $image
+     * @param string $type
+     * @return bool
      */
-    public function setImage(string $image): void
+    public function isValidType(string $type): bool
     {
-        $this->image = $image;
+        return in_array($type, self::getAllTypes());
     }
 
     /**
-     * Get image
+     * @return array
+     */
+    public static function getAllTypes(): array
+    {
+        return [
+            self::TYPE_WATER,
+            self::TYPE_BEACH,
+            self::TYPE_FORREST,
+            self::TYPE_MOUNTAIN
+        ];
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        if (!$this->isValidType($type)) {
+            throw new \RuntimeException("Invalid type {$type}");
+        }
+
+        $this->type = $type;
+    }
+
+    /**
+     * Get type
      *
      * @return string
      */
-    public function getImage(): string
+    public function getType(): string
     {
-        return $this->image;
+        return $this->type;
     }
 
     /**
@@ -340,19 +316,19 @@ class WorldRegion
     }
 
     /**
-     * @return WorldCountry
+     * @return World
      */
-    public function getWorldCountry(): WorldCountry
+    public function getWorld(): World
     {
-        return $this->worldCountry;
+        return $this->world;
     }
 
     /**
-     * @param WorldCountry $worldCountry
+     * @param World $world
      */
-    public function setWorldCountry(WorldCountry $worldCountry): void
+    public function setWorld(World $world): void
     {
-        $this->worldCountry = $worldCountry;
+        $this->world = $world;
     }
 
     /**
@@ -385,22 +361,6 @@ class WorldRegion
     public function setFleets(Collection $fleets): void
     {
         $this->fleets = $fleets;
-    }
-
-    /**
-     * @return WorldSector
-     */
-    public function getWorldSector(): WorldSector
-    {
-        return $this->worldSector;
-    }
-
-    /**
-     * @param WorldSector $worldSector
-     */
-    public function setWorldSector(WorldSector $worldSector): void
-    {
-        $this->worldSector = $worldSector;
     }
 
     /**
@@ -440,6 +400,85 @@ class WorldRegion
      */
     public function getRegionName(): string
     {
-        return "{$this->getRX()}, {$this->getRY()}: {$this->getRegion()}";
+        return "{$this->getX()}, {$this->getY()}";
+    }
+
+    /**
+     * @param World $world
+     * @param int $x
+     * @param int $y
+     * @param int $z
+     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
+     * @return WorldRegion
+     */
+    public static function createForWorld(World $world, int $x, int $y, int $z, WorldGeneratorConfiguration $worldGeneratorConfiguration): WorldRegion
+    {
+        $worldRegion = new WorldRegion();
+        $worldRegion->setWorld($world);
+        $worldRegion->setX($x);
+        $worldRegion->setY($y);
+        $worldRegion->setZ($z);
+        $worldRegion->setType(self::getTypeFromConfiguration($worldGeneratorConfiguration, $z));
+        $worldRegion->setSpace(self::getRandomSpaceFromType($worldRegion->getType()));
+        $worldRegion->setPopulation($worldRegion->getSpace() * 10);
+
+        return $worldRegion;
+    }
+
+    /**
+     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
+     * @param int $z
+     * @return string
+     */
+    private static function getTypeFromConfiguration(WorldGeneratorConfiguration $worldGeneratorConfiguration, int $z): string
+    {
+        if ($z < $worldGeneratorConfiguration->getWaterLevel()) {
+            return self::TYPE_WATER;
+        } elseif ($z < $worldGeneratorConfiguration->getBeachLevel()) {
+            return self::TYPE_BEACH;
+        } elseif ($z < $worldGeneratorConfiguration->getForrestLevel()) {
+            return self::TYPE_FORREST;
+        }
+
+        return self::TYPE_MOUNTAIN;
+    }
+
+    /**
+     * @param string $type
+     * @return int
+     */
+    private static function getRandomSpaceFromType(string $type): int
+    {
+        if ($type === self::TYPE_MOUNTAIN) {
+            return rand(800, 1500);
+        } elseif ($type === self::TYPE_FORREST) {
+            return rand(1500, 2500);
+        }
+
+        return 0;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $playerName = '';
+        $player = $this->getPlayer();
+        if ($player !== null) {
+            $playerName = $player->getName();
+        }
+        $array = [
+            'id' => $this->getId(),
+            'x' => $this->getX(),
+            'y' => $this->getY(),
+            'z' => $this->getZ(),
+            'type' => $this->getType(),
+            'owner' => $playerName,
+            'units' => $this->getWorldRegionUnits()->toArray(),
+            'structures' => []
+        ];
+
+        return $array;
     }
 }

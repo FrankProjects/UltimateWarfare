@@ -85,9 +85,9 @@ class World
     private $federationLimit = 0;
 
     /**
-     * @var Collection|WorldSector[]
+     * @var Collection|WorldRegion[]
      */
-    private $worldSectors = [];
+    private $worldRegions = [];
 
     /**
      * @var Collection|Player[]
@@ -119,7 +119,7 @@ class World
      */
     public function __construct()
     {
-        $this->worldSectors = new ArrayCollection();
+        $this->worldRegions = new ArrayCollection();
         $this->players = new ArrayCollection();
         $this->marketItems = new ArrayCollection();
         $this->messages = new ArrayCollection();
@@ -371,19 +371,11 @@ class World
     }
 
     /**
-     * @return Collection|WorldSector[]
+     * @return Collection|WorldRegion[]
      */
-    public function getWorldSectors(): Collection
+    public function getWorldRegions(): Collection
     {
-        return $this->worldSectors;
-    }
-
-    /**
-     * @param Collection $worldSectors
-     */
-    public function setWorldSectors(Collection $worldSectors): void
-    {
-        $this->worldSectors = $worldSectors;
+        return $this->worldRegions;
     }
 
     /**

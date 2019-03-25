@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Entity\WorldSector;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -108,98 +108,31 @@ final class WorldController extends BaseGameController
     public function world(): Response
     {
         $player = $this->getPlayer();
-        $world = $player->getWorld();
-
-        $sectors = [];
-        foreach ($world->getWorldSectors() as $sector) {
-            $sector->regionCount = $this->getRegionCount($sector, $player);
-            $sectors[$sector->getX()][$sector->getY()] = $sector;
-        }
 
         return $this->render('game/world.html.twig', [
-            'sectors' => $sectors,
-            'player' => $player,
-            'mapSettings' => [
-                'searchFound' => true,
-                'searchFree' => false,
-                'searchPlayerName' => false
-            ]
-        ]);
-    }
-
-    /**
-     * @return Response
-     */
-    public function searchFree(): Response
-    {
-        $player = $this->getPlayer();
-        $world = $player->getWorld();
-
-        $sectors = [];
-        foreach ($world->getWorldSectors() as $sector) {
-            $sector->regionCount = $this->getRegionCount($sector);
-            $sectors[$sector->getX()][$sector->getY()] = $sector;
-        }
-
-        return $this->render('game/world.html.twig', [
-            'sectors' => $sectors,
-            'player' => $player,
-            'mapSettings' => [
-                'searchFound' => true,
-                'searchFree' => true,
-                'searchPlayerName' => false
-            ]
+            'player' => $player
         ]);
     }
 
     /**
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
-    public function searchPlayer(Request $request): Response
+    public function getTiles(Request $request): JsonResponse
     {
-        $playerName = $request->request->get('playerName');
         $player = $this->getPlayer();
-        $world = $player->getWorld();
 
-        $playerSearch = $this->playerRepository->findByNameAndWorld($playerName, $world);
-
-        if ($playerSearch) {
-            $searchFound = true;
-        } else {
-            $searchFound = false;
-        }
-
-        $sectors = [];
-        foreach ($world->getWorldSectors() as $sector) {
-            if ($searchFound) {
-                $sector->regionCount = $this->getRegionCount($sector, $playerSearch);
-            } else {
-                $sector->regionCount = 0;
+        $json = $request->get('json_request');
+        $params = json_decode($json, true);
+        $tiles = [];
+        foreach ($params['coords'] as $coord) {
+            $worldRegion = $this->worldRegionRepository->findByWorldXY($player->getWorld(), intval($coord['x']), intval($coord['y']));
+            if ($worldRegion !== null) {
+                $tiles[] = $worldRegion->toArray();
             }
-            $sectors[$sector->getX()][$sector->getY()] = $sector;
         }
-
-        return $this->render('game/world.html.twig', [
-            'sectors' => $sectors,
-            'player' => $player,
-            'mapSettings' => [
-                'searchFound' => $searchFound,
-                'searchFree' => false,
-                'searchPlayerName' => true,
-                'playerName' => $playerName
-            ]
-        ]);
-    }
-
-    /**
-     * @param WorldSector $sector
-     * @param Player $player
-     * @return int
-     */
-    private function getRegionCount(WorldSector $sector, $player = null): int
-    {
-        $worldRegions = $this->worldRegionRepository->findByWorldSectorAndPlayer($sector, $player);
-        return count($worldRegions);
+        //dump($tiles);
+        //exit();
+        return $this->json($tiles);
     }
 }
