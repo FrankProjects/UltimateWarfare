@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Ultimate Warfare is a free browser based multiplayer strategy game with over 2000 registered accounts. Join the battle and compete with thousands of others for world domination!" />
+    <meta name="keywords" content="Ultimate Warfare, online, game, war, multiplayer, strategy, wargames, role-playing, rpg, browser game, battles, domination, world map" />
+    <meta name="author" content="Frank Schreuder" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Ultimate Warfare - Online multiplayer strategy game{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/bootstrap2.min.css') }}" >
+    <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/main2.css') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}{% endblock %}
+</head>
+<body>
+    <div id="game">
+        {% block body %}{% endblock %}
+    </div>
+</body>
+</html>

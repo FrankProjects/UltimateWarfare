@@ -9,12 +9,10 @@
         </tr>
         <tr>
             <td rowspan="3" width="120">
-                <img src="{{ asset('images/map/' ~ region.image ~ mapUrl) }}" alt="Region {{ region.id }}" width="120" height="100"><br />
+                <img src="{{ asset('images/map/' ~ region.type ~ '.png') }}" alt="Region {{ region.id }}" width="120" height="100"><br />
             </td>
             <td width="300">Location:</td>
-            <td width="280">
-                <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}
-            </td>
+            <td width="280">{{ region.x }}, {{ region.y }}</td>
         </tr>
         <tr>
             <td width="300">Owner:</td>
@@ -43,11 +41,11 @@
         {% for playerRegion in playerRegions %}
             <tr>
                 <td width="120">
-                    <img src="{{ asset('images/map/' ~ playerRegion.image ~ mapUrl) }}" alt="Region {{ playerRegion.id }}" width="120" height="100">
+                    <img src="{{ asset('images/map/' ~ playerRegion.type ~ '.png') }}" alt="Region {{ playerRegion.id }}" width="120" height="100">
                 </td>
                 <td class="text-left" width="370">
                     <ul>
-                        <li>Position: {{ playerRegion.x }}, {{ playerRegion.y }}: {{ playerRegion.region }}</li>
+                        <li>Position: {{ playerRegion.x }}, {{ playerRegion.y }}</li>
                         <li>Travel time to target: {{ playerRegion.distance }}</li>
                         <li>
                             <a class="B" href="{{ path('Game/World/Region/AttackSelectGameUnits', {'regionId': region.id, 'playerRegionId': playerRegion.id}) }}">Attack</a> with this region.

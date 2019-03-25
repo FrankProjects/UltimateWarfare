@@ -1,92 +1,162 @@
 {% import "game/macros/map.html.twig" as mapMacros %}
-{% extends 'game.html.twig' %}
+{% extends 'v2/game.html.twig' %}
 
 {% block title %}Ultimate Warfare - World Map{% endblock title %}
 
 {% block content %}
-    {% if not mapSettings.searchFound %}
-        <table class="table text-center">
-            <tr>
-                <td>
-                    <p>
-                        No such Player found!
-                    </p>
-                </td>
-            </tr>
-        </table>
-    {% endif %}
+    <style>
+        body,
+        html {
+            height:100%;
+            -webkit-box-sizing:border-box;
+            box-sizing:border-box;
+            margin:0;
+            padding:0;
+        }
+        @media only screen and (min-device-width:768px) and (max-device-width:1024px) {
+            body,
+            html {
+                overflow:auto;
+                -webkit-overflow-scrolling:touch
+            }
+        }
 
-    {% if mapSettings.searchFree %}
-        <table class="table text-center">
-            <tr>
-                <td>
-                    <p>
-                        You are searching for free regions <a class="B" href="{{ path('Game/World') }}">[Cancel Search]</a>
-                    </p>
-                </td>
-            </tr>
-        </table>
-        <br />
-    {% endif %}
+        html {
+            overflow-x:hidden!important;
+            overflow-y:hidden!important
+        }
 
-    {% if mapSettings.searchPlayerName %}
-        <table class="table text-center">
-            <tr>
-                <td>
-                    <p>
-                        You are searching for player {{ mapSettings.playerName }} <a class="B" href="{{ path('Game/World') }}">[Cancel Search]</a>
-                    </p>
-                </td>
-            </tr>
-        </table>
-        <br />
-    {% endif %}
+        #game {
+            position:relative;
+            height:100%;
+            width:100%
+        }
+        #game #game_content {
+            position:absolute;
+            width:100%;
+            height:100%;
+            top:0;
+            left:0;
+            overflow:hidden
+        }
 
-    <table width="595" class="worldtable text-center">
-        <tr>
-            <td width="15">x</td>
-            <td width="119">1 - 5</td>
-            <td width="119">6 - 10</td>
-            <td width="119">11 - 15</td>
-            <td width="119">16 - 20</td>
-            <td width="119">21 - 25</td>
-        </tr>
-        {% for y in 1..5 %}
-            <tr>
-                <td>
-                    {{ loop.index * 5 - 4 }}<br />
-                    |<br />
-                    {{ loop.index * 5 }}
-                </td>
-                {% for x in 1..5 %}
-                    {{ mapMacros.tileSector(sectors[x][y], mapSettings) }}
-                {% endfor %}
-            </tr>
-        {% endfor %}
-    </table>
+        #gameContainer #mapContainer,
+        #game_content {
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%
+        }
+        #gameContainer,
+        #gameContainer #mapContainer {
+            overflow:hidden
+        }
 
-    <br />
-    <br />
+        #screen {
+            position: relative;
 
-    <form method="post" action="{{ path('Game/World/Search/Player') }}">
-        <table class="table text-center">
-            <tr>
-                <td class="tabletop" width="250"><b>UW Player Finder</b></td>
-            </tr>
-            <tr>
-                <td width="100">
-                    <div>
-                        <label for="playerName">Player name</label>
-                        <input type="text" id="playerName" name="playerName" size="20" />
-                    </div>
-                    <input class="btn btn-primary" type="submit" name="submit" value="Search" />
-                </td>
-            </tr>
-            <tr>
-                <td>OR <br />
-                    <a class="B" href="{{ path('Game/World/Search/Free') }}">Show free regions</a>
-                </td>
-            </tr>
-        </table>
-    </form>
+            width: 100%;
+            height: 100%;
+        }
+
+        #map {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        #mapPadContainer {
+            position: absolute;
+            width: 100%;
+            left: 0px;
+        }
+
+        #mapPadContainer > #mapPad {
+            margin: 0 auto;
+            height: inherit;
+        }
+
+        .tile {
+            position: absolute;
+            background-repeat: no-repeat;
+        }
+
+        .tile > div {
+            position: absolute;
+            left: 0px;
+            background-position: bottom left;
+            background-repeat: no-repeat;
+        }
+
+        .tile > div > div {
+            position: absolute;
+            cursor: pointer;
+        }
+
+        div.tileMenu {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 140px;
+            border: 1px solid #aaa;
+            z-index: 2;
+        }
+
+        div.tileMenu > a {
+            display: block;
+
+            border: 1px solid #fff;
+            border-bottom-color: #aaa;
+            padding: 1px 0px 1px 22px;
+
+            background: #eee no-repeat 2px 50%;
+        }
+
+        div.tileMenu > a[hover=true] {
+            cursor: pointer;
+        }
+
+        div.tileMenu > a[last] {
+            border-bottom-color: #fff;
+        }
+
+        div.tileMenu > a > div {
+            color: #333;
+
+            background: transparent no-repeat 100% 50%;
+        }
+
+        div.tileMenu > a[hover=true]:hover {
+            border-color: #eee;
+            border-bottom-color: #aaa;
+
+            background-color: #ddd;
+        }
+
+        div.tileMenu > a[hover=true]:hover > div {
+            color: #111;
+        }
+
+        div.tileMenu > a[last]:hover {
+            border-bottom-color: #eee;
+        }
+    </style>
+
+<div id="screen"></div>
+<script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ asset('js/game-engine.js') }}"></script>
+<script language="javascript" type="text/javascript">
+    $(document).ready(function(){
+        FrankProjects.UltimateWarfare.Map.prototype.init(document.getElementById('screen')).fill().draw();
+        mapPad.init();
+
+        $(window).resize(function() {
+            console.log('resize');
+            var bodyheight = $(this).height();
+            $("#screen").height(bodyheight);
+            $("#game").height(bodyheight);
+
+        }).resize();
+    });
+</script>
 {% endblock %}
