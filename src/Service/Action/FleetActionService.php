@@ -105,9 +105,7 @@ final class FleetActionService
      */
     public function sendGameUnits(WorldRegion $region, WorldRegion $targetRegion, Player $player, GameUnitType $gameUnitType, array $unitData): void
     {
-        $sector = $targetRegion->getWorldSector();
-
-        if ($sector->getWorld()->getId() != $player->getWorld()->getId()) {
+        if ($targetRegion->getWorld()->getId() != $player->getWorld()->getId()) {
             throw new RunTimeException('Target region does not exist!');
         }
 
