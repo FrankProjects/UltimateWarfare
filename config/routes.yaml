@@ -126,6 +126,12 @@ Admin/World/Create:
     path:      /admin/world/create
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::create
 
+Admin/World/Generate:
+    path:      /admin/world/generate/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::generate
+    requirements:
+        worldId: '\d+'
+
 Admin/World/List:
     path:      /admin/world/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::list
@@ -245,12 +251,6 @@ Game/Account:
 Game/Account/Edit:
     path:      /game/account/edit
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::edit
-
-Game/Account/Edit/MapDesign:
-    path:      /game/account/edit/map-design/{mapDesignId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::editMapDesign
-    requirements:
-        mapDesignId: '\d+'
 
 Game/Banned:
     path:      /game/banned
@@ -515,11 +515,9 @@ Game/World:
     path:      /game/world
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::world
 
-Game/World/Country:
-    path:      /game/world/country/{countryId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\CountryController::country
-    requirements:
-        countryId: '\d+'
+Game/World/GetTiles:
+    path:      /game/world/get-tiles
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::getTiles
 
 Game/World/Region:
     path:      /game/world/region/{regionId}
@@ -565,34 +563,6 @@ Game/World/Region/SendUnits:
     controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::sendGameUnits
     requirements:
         regionId: '\d+'
-
-Game/World/Search/Free:
-    path:      /game/world/search/free
-    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::searchFree
-
-Game/World/Search/Player:
-    path:      /game/world/search/player
-    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::searchPlayer
-
-Game/World/Sector:
-    path:      /game/world/sector/{sectorId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\SectorController::sector
-    requirements:
-        sectorId: '\d+'
-
-Game/World/Sector/Search/Free:
-    path:      /game/world/sector/{sectorId}/search/free
-    controller: FrankProjects\UltimateWarfare\Controller\Game\SectorController::searchFree
-    requirements:
-        sectorId: '\d+'
-
-Game/World/Sector/Search/Player:
-    path:      /game/world/sector/{sectorId}/search/player/{playerName}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\SectorController::searchPlayer
-    defaults:
-        playerName: ''
-    requirements:
-        sectorId: '\d+'
 
 Game/SelectName:
     path:      /game/select-name/{worldId}
