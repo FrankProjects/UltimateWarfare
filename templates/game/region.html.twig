@@ -21,11 +21,10 @@
         </tr>
         <tr>
             <td rowspan="3" width="120">
-                <img src="{{ asset('images/map/' ~ region.image ~ '.jpg') }}" alt="Region {{ region.id }}" width="120" height="100"><br />
+                <img src="{{ asset('images/map/' ~ region.type ~ '.png') }}" alt="Region {{ region.id }}" width="120" height="100"><br />
             </td>
             <td width="300">Location:</td>
-            <td width="280">
-                <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}
+            <td width="280">{{ region.x }}, {{ region.y }}
             </td>
         </tr>
         <tr>

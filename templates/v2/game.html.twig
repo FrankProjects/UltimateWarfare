@@ -1,0 +1,11 @@
+{% extends 'v2/base.html.twig' %}
+
+{% block body %}
+    <div id="game_content">
+        <div id="gameContainer" class="visible">
+            <div id="mapContainer">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
