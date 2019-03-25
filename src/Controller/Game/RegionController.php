@@ -84,7 +84,6 @@ final class RegionController extends BaseGameController
         return $this->render('game/region/buy.html.twig', [
             'region' => $worldRegion,
             'player' => $player,
-            'mapUrl' => $this->getMapUrl(),
             'price'  => $player->getRegionPrice()
         ]);
     }
@@ -110,7 +109,6 @@ final class RegionController extends BaseGameController
         return $this->render('game/region.html.twig', [
             'region' => $worldRegion,
             'player' => $player,
-            'mapUrl' => $this->getMapUrl(),
             'previousRegion' => $this->worldRegionRepository->getPreviousWorldRegionForPlayer($regionId, $player),
             'nextRegion' => $this->worldRegionRepository->getNextWorldRegionForPlayer($regionId, $player),
             'gameUnitTypes' => $gameUnitTypes,
@@ -139,16 +137,6 @@ final class RegionController extends BaseGameController
         return $this->render('game/regionList.html.twig', [
             'regions' => $regions,
             'player' => $player,
-            'mapUrl' => $this->getMapUrl(),
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    private function getMapUrl(): string
-    {
-        $user = $this->getGameUser();
-        return $user->getMapDesign()->getUrl();
     }
 }
