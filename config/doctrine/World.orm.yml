@@ -79,8 +79,8 @@ FrankProjects\UltimateWarfare\Entity\World:
         players:
             targetEntity: Player
             mappedBy: world
-        worldSectors:
-            targetEntity: WorldSector
+        worldRegions:
+            targetEntity: WorldRegion
             mappedBy: world
         marketItems:
             targetEntity: MarketItem

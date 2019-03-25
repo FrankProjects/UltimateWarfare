@@ -2,13 +2,11 @@ FrankProjects\UltimateWarfare\Entity\WorldRegion:
     type: entity
     table: world_region
     indexes:
-        countryId:
+        worldxy:
             columns:
-                - country_id
-        regionInSector:
-            columns:
-                - sector_id
-                - player_id
+                - world_id
+                - x
+                - y
     id:
         id:
             type: integer
@@ -19,37 +17,25 @@ FrankProjects\UltimateWarfare\Entity\WorldRegion:
             generator:
                 strategy: IDENTITY
     fields:
-        region:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
         x:
             type: integer
             nullable: false
             options:
                 unsigned: true
-        'y':
+        y:
             type: integer
             nullable: false
             options:
                 unsigned: true
-        rX:
+        z:
             type: integer
             nullable: false
             options:
                 unsigned: true
-            column: r_x
-        rY:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-            column: r_y
-        image:
+        type:
             type: string
             nullable: false
-            length: 100
+            length: 255
             options:
                 fixed: false
         state:
@@ -61,7 +47,7 @@ FrankProjects\UltimateWarfare\Entity\WorldRegion:
         name:
             type: string
             nullable: true
-            length: 10
+            length: 32
             options:
                 fixed: false
         space:
@@ -90,17 +76,11 @@ FrankProjects\UltimateWarfare\Entity\WorldRegion:
             targetEntity: Fleet
             mappedBy: targetWorldRegion
     manyToOne:
-       worldCountry:
-           targetEntity: WorldCountry
+       world:
+           targetEntity: World
            inversedBy: worldRegions
            joinColumn:
-               name: country_id
-               referencedColumnName: id
-       worldSector:
-           targetEntity: WorldSector
-           inversedBy: worldRegions
-           joinColumn:
-               name: sector_id
+               name: world_id
                referencedColumnName: id
        player:
            targetEntity: Player
