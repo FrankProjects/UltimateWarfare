@@ -11,3 +11,9 @@ label:
   created: Created
   finished: Finished
   running: Running
+  seaLevel: Sea level
+  beachLevel: Beach level
+  forrestLevel: Forrest level
+  generate: Generate
+  size: Size
+  seed: Seed
