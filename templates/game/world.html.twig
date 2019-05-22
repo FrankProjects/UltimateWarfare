@@ -142,21 +142,9 @@
         }
     </style>
 
-<div id="screen"></div>
-<script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
-<script src="{{ asset('js/game-engine.js') }}"></script>
-<script language="javascript" type="text/javascript">
-    $(document).ready(function(){
-        FrankProjects.UltimateWarfare.Map.prototype.init(document.getElementById('screen')).fill().draw();
-        mapPad.init();
+    <div id="screen"></div>
+    {{ encore_entry_script_tags('app') }}
+    <script>
 
-        $(window).resize(function() {
-            console.log('resize');
-            var bodyheight = $(this).height();
-            $("#screen").height(bodyheight);
-            $("#game").height(bodyheight);
-
-        }).resize();
-    });
-</script>
+    </script>
 {% endblock %}
