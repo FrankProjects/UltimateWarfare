@@ -18,12 +18,7 @@ class Tile {
         this.tileData = data;
     };
 
-    /*
-     *	Projection - node\element with tile.
-     *	Each projection is saved in projections array, so they all can be accessed
-     *	at once if needed.
-     */
-    createProjection() {
+    createTileBlock() {
         let tileBlock = document.createElement('div');
         tileBlock.className = 'tile';
         tileBlock.setAttribute('x', this.x);
@@ -37,28 +32,44 @@ class Tile {
         tileBlock.style.backgroundRepeat = 'no-repeat';
         tileBlock.style.backgroundPosition = '0px '+this.airHeight+'px';
 
-        let structBlock = document.createElement('div');
+        return tileBlock;
+    }
 
-        structBlock.style.bottom = this.undergroundHeight+'px';
-        structBlock.style.width = this.landWidth+'px';
-        structBlock.style.height = this.landHeight+'px';
-        structBlock.style.position = 'absolute';
-        structBlock.style.left = '0px';
-        structBlock.style.paddingTop = this.airHeight+'px';
-        structBlock.style.backgroundPosition = 'bottom left';
-        structBlock.style.backgroundRepeat = 'no-repeat';
+    createStructureBlock() {
+        let structureBlock = document.createElement('div');
+        structureBlock.style.bottom = this.undergroundHeight+'px';
+        structureBlock.style.width = this.landWidth+'px';
+        structureBlock.style.height = this.landHeight+'px';
+        structureBlock.style.position = 'absolute';
+        structureBlock.style.left = '0px';
+        structureBlock.style.paddingTop = this.airHeight+'px';
+        structureBlock.style.backgroundPosition = 'bottom left';
+        structureBlock.style.backgroundRepeat = 'no-repeat';
+
+        return structureBlock;
+    }
+
+    createProjection() {
+        let tileBlock = this.createTileBlock();
+        let structureBlock = this.createStructureBlock();
 
         if(this.tileData['structures'].length){
-            structBlock.style.backgroundImage = 'url('+this.tileData['structures'][0]['name']+'/'+this.tileData['structures'][0]['imageName']+')';
+            structureBlock.style.backgroundImage = 'url('+this.tileData['structures'][0]['name']+'/'+this.tileData['structures'][0]['imageName']+')';
         }
 
-        tileBlock.appendChild(structBlock);
+        tileBlock.appendChild(structureBlock);
 
         if (this.tileData['owner'] !== undefined && this.tileData['owner'] !== '') {
-
             let gameUnitBlock = document.createElement('div');
-
+            gameUnitBlock.style.bottom = this.undergroundHeight+'px';
+            gameUnitBlock.style.width = this.landWidth+'px';
+            gameUnitBlock.style.height = this.landHeight+'px';
             gameUnitBlock.style.position = 'absolute';
+            gameUnitBlock.style.textAlign = 'center';
+            gameUnitBlock.style.padding = '25px 0';
+            gameUnitBlock.style.color= 'red';
+            gameUnitBlock.style.fontWeight = 'bold';
+
             gameUnitBlock.innerText = this.tileData['owner'];
             tileBlock.appendChild(gameUnitBlock);
         }
@@ -79,19 +90,14 @@ class Tile {
         let tileBlock = this.projections[oldIndex];
         tileBlock.style.backgroundImage = 'url(../images/map/'+this.tileData['type']+'.png)';
 
-        let structBlock = tileBlock.childNodes[0];
+        let structureBlock = tileBlock.childNodes[0];
         if(this.tileData['structures'].length){
-            structBlock.style.backgroundImage = 'url('+this.tileData['structures'][0]['name']+'/'+this.tileData['structures'][0]['imageName']+')';
+            structureBlock.style.backgroundImage = 'url('+this.tileData['structures'][0]['name']+'/'+this.tileData['structures'][0]['imageName']+')';
         }
     };
 
-    /*
-     *	deletes projection from array
-     */
     deleteProjection(index) {
         this.projections.splice(index, 1);
-
-        return(this);
     }
 }
 

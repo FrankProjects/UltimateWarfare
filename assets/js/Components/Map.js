@@ -61,6 +61,14 @@ class Map {
             }
         }
 
+        let rootNode = this.createRootNode();
+        this.rootNode = rootNode;
+        this.parentNode.appendChild(rootNode);
+
+        return(this);
+    };
+
+    createRootNode() {
         let rootNode = document.createElement('div');
         rootNode.id = 'map';
         rootNode.style.width = this.width * (this.tileWidth + 2) - 2+'px'; //2 is "horizontal gap" between tiles
@@ -69,12 +77,8 @@ class Map {
         rootNode.style.overflow = 'hidden';
         rootNode.style.backgroundColor = '#41390f';
 
-        this.rootNode = rootNode;
-        this.parentNode.appendChild(rootNode);
-
-        return(this);
-    };
-
+        return rootNode;
+    }
     move(x, y) {
         this.x = x;
         this.y = y;
