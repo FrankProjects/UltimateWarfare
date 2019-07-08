@@ -1,8 +1,7 @@
 security:
     encoders:
         FrankProjects\UltimateWarfare\Entity\User:
-            algorithm: bcrypt
-            cost: 16
+            algorithm: auto
 
     role_hierarchy:
         ROLE_PLAYER:      ROLE_USER
