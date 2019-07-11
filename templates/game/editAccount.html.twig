@@ -58,30 +58,6 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="tabletop"><b>Map Design</b></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <table class="table">
-                    {% for mapDesign in mapDesigns %}
-                        <tr>
-                            <td>{{ mapDesign.name }}</td>
-                            <td>
-                                <img src="{{ asset('images/map/map7' ~ mapDesign.url) }}" alt="{{ mapDesign.name }}" width="120" height="100">
-                            </td>
-                            <td>
-                                {% if mapDesign.id == user.mapDesign.id %}
-                                    <a class="btn btn-primary disabled" href="{{ path('Game/Account/Edit/MapDesign', {'mapDesignId': mapDesign.id}) }}" role="button">Currently in use</a>
-                                {% else %}
-                                    <a class="btn btn-primary" href="{{ path('Game/Account/Edit/MapDesign', {'mapDesignId': mapDesign.id}) }}" role="button">Use map design</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </td>
-        </tr>
-        <tr>
             <td class="tabletop" colspan="2"><b>Other Settings</b></td>
         </tr>
         <tr>
