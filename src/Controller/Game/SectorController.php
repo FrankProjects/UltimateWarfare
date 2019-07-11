@@ -9,7 +9,6 @@ use FrankProjects\UltimateWarfare\Entity\WorldCountry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldSectorRepository;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SectorController extends BaseGameController
@@ -74,8 +73,7 @@ final class SectorController extends BaseGameController
             'mapSettings' => [
                 'searchFound' => true,
                 'searchFree' => false,
-                'searchPlayerName' => false,
-                'mapUrl' => $this->getMapUrl()
+                'searchPlayerName' => false
             ]
         ]);
     }
@@ -108,8 +106,7 @@ final class SectorController extends BaseGameController
             'mapSettings' => [
                 'searchFound' => true,
                 'searchFree' => true,
-                'searchPlayerName' => false,
-                'mapUrl' => $this->getMapUrl()
+                'searchPlayerName' => false
             ]
         ]);
     }
@@ -158,8 +155,7 @@ final class SectorController extends BaseGameController
                 'searchFound' => $searchFound,
                 'searchFree' => false,
                 'searchPlayerName' => true,
-                'playerName' => $playerName,
-                'mapUrl' => $this->getMapUrl()
+                'playerName' => $playerName
             ]
         ]);
     }
@@ -173,14 +169,5 @@ final class SectorController extends BaseGameController
     {
         $worldRegions = $this->worldRegionRepository->findByWorldCountryAndPlayer($country, $player);
         return count($worldRegions);
-    }
-
-    /**
-     * @return string
-     */
-    private function getMapUrl(): string
-    {
-        $user = $this->getGameUser();
-        return $user->getMapDesign()->getUrl();
     }
 }

@@ -46,18 +46,8 @@ final class CountryController extends BaseGameController
             'mapSettings' => [
                 'searchFound' => true,
                 'searchFree' => false,
-                'searchPlayerName' => false,
-                'mapUrl' => $this->getMapUrl()
+                'searchPlayerName' => false
             ]
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    private function getMapUrl(): string
-    {
-        $user = $this->getGameUser();
-        return $user->getMapDesign()->getUrl();
     }
 }

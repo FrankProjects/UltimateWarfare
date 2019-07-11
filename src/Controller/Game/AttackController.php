@@ -79,7 +79,6 @@ final class AttackController extends BaseGameController
         return $this->render('game/region/attackFrom.html.twig', [
             'region' => $worldRegion,
             'player' => $player,
-            'mapUrl' => $this->getGameUser()->getMapDesign()->getUrl(),
             'playerRegions' => $playerRegions
         ]);
     }
