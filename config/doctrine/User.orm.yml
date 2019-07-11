@@ -68,13 +68,6 @@ FrankProjects\UltimateWarfare\Entity\User:
             options:
                 default: '0'
             column: forum_ban
-    manyToOne:
-        mapDesign:
-            targetEntity: MapDesign
-            inversedBy: users
-            joinColumn:
-                name: map_design_id
-                referencedColumnName: id
     oneToMany:
         players:
             targetEntity: Player
