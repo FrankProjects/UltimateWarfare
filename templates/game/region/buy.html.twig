@@ -9,7 +9,7 @@
         </tr>
         <tr>
             <td width="120" rowspan="2">
-                <img src="{{ asset('images/map/' ~ region.image ~ '-3.jpg') }}" alt="Region {{ region.id }}" width="120" height="100"><br />
+                <img src="{{ asset('images/map/' ~ region.image ~ '.jpg') }}" alt="Region {{ region.id }}" width="120" height="100"><br />
             </td>
             <td width="580">Location: <a class="B" href="{{ path('Game/World/Country', {'countryId': region.worldCountry.id}) }}">{{ region.x }}, {{ region.y }}</a>: {{ region.region }}</td>
         </tr>
