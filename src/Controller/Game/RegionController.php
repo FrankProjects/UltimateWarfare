@@ -136,7 +136,7 @@ final class RegionController extends BaseGameController
 
         return $this->render('game/regionList.html.twig', [
             'regions' => $regions,
-            'player' => $player,
+            'player' => $player
         ]);
     }
 }
