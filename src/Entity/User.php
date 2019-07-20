@@ -87,11 +87,6 @@ class User implements UserInterface, EquatableInterface, \Serializable
     private $forumBan = false;
 
     /**
-     * @var MapDesign
-     */
-    private $mapDesign;
-
-    /**
      * @var Collection|Player[]
      */
     private $players = [];
@@ -492,22 +487,6 @@ class User implements UserInterface, EquatableInterface, \Serializable
     public function setPlayers(Collection $players): void
     {
         $this->players = $players;
-    }
-
-    /**
-     * @return MapDesign
-     */
-    public function getMapDesign(): MapDesign
-    {
-        return $this->mapDesign;
-    }
-
-    /**
-     * @param MapDesign $mapDesign
-     */
-    public function setMapDesign(MapDesign $mapDesign): void
-    {
-        $this->mapDesign = $mapDesign;
     }
 
     /**

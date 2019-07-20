@@ -6,7 +6,6 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
 use FrankProjects\UltimateWarfare\Form\ChangePasswordType;
-use FrankProjects\UltimateWarfare\Repository\MapDesignRepository;
 use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,25 +25,17 @@ final class UserController extends BaseGameController
     private $unbanRequestRepository;
 
     /**
-     * @var MapDesignRepository
-     */
-    private $mapDesignRepository;
-
-    /**
      * UserController constructor.
      *
      * @param UserRepository $userRepository
      * @param UnbanRequestRepository $unbanRequestRepository
-     * @param MapDesignRepository $mapDesignRepository
      */
     public function __construct(
         UserRepository $userRepository,
-        UnbanRequestRepository $unbanRequestRepository,
-        MapDesignRepository $mapDesignRepository
+        UnbanRequestRepository $unbanRequestRepository
     ) {
         $this->userRepository = $userRepository;
         $this->unbanRequestRepository = $unbanRequestRepository;
-        $this->mapDesignRepository = $mapDesignRepository;
     }
 
     /**
@@ -129,31 +120,9 @@ final class UserController extends BaseGameController
 
         return $this->render('game/editAccount.html.twig', [
             'user' => $this->getGameUser(),
-            'mapDesigns' => $this->mapDesignRepository->findAll(),
             'userType' => $this->getAccountType(),
             'changePasswordForm' => $changePasswordForm->createView()
         ]);
-    }
-
-    /**
-     * @param int $mapDesignId
-     * @return Response
-     */
-    public function editMapDesign(int $mapDesignId): Response
-    {
-        $user = $this->getGameUser();
-        $mapDesign = $this->mapDesignRepository->find($mapDesignId);
-
-        if (!$mapDesign) {
-            $this->addFlash('error', 'No such map design');
-        } elseif ($mapDesign->getId() != $user->getMapDesign()->getId()) {
-            $user->setMapDesign($mapDesign);
-            $this->userRepository->save($user);
-
-            $this->addFlash('success', 'Map design successfully changed!');
-        }
-
-        return $this->redirectToRoute('Game/Account/Edit');
     }
 
     /**

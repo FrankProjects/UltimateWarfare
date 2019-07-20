@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\User;
-use FrankProjects\UltimateWarfare\Repository\MapDesignRepository;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Service\MailService;
 use FrankProjects\UltimateWarfare\Util\TokenGenerator;
@@ -14,11 +13,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class RegisterActionService
 {
-    /**
-     * @var MapDesignRepository
-     */
-    private $mapDesignRepository;
-
     /**
      * @var MailService
      */
@@ -37,18 +31,15 @@ final class RegisterActionService
     /**
      * RegisterActionService constructor
      *
-     * @param MapDesignRepository $mapDesignRepository
      * @param MailService $mailService
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param UserRepository $userRepository
      */
     public function __construct(
-        MapDesignRepository $mapDesignRepository,
         MailService $mailService,
         UserPasswordEncoderInterface $passwordEncoder,
         UserRepository $userRepository
     ) {
-        $this->mapDesignRepository = $mapDesignRepository;
         $this->mailService = $mailService;
         $this->passwordEncoder = $passwordEncoder;
         $this->userRepository = $userRepository;
@@ -74,15 +65,12 @@ final class RegisterActionService
      * XXX TODO: Add captcha
      *
      * @param User $user
+     * @throws \Exception
      */
     public function register(User $user): void
     {
         $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
         $user->setPassword($password);
-
-        // Get default MapDesign
-        // XXX TODO: make setting?
-        $mapDesign = $this->mapDesignRepository->find(3);
 
         try {
             $generator = new TokenGenerator();
@@ -91,7 +79,6 @@ final class RegisterActionService
             throw new RunTimeException('TokenGenerator failed!');
         }
 
-        $user->setMapDesign($mapDesign);
         $user->setSignup(new \DateTime());
         $user->setConfirmationToken($token);
 
