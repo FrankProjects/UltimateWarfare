@@ -40,4 +40,13 @@ final class DoctrineWorldCountryRepository implements WorldCountryRepository
     {
         return $this->repository->find($id);
     }
+
+    /**
+     * @param WorldCountry $worldCountry
+     */
+    public function save(WorldCountry $worldCountry): void
+    {
+        $this->entityManager->persist($worldCountry);
+        $this->entityManager->flush();
+    }
 }
