@@ -94,3 +94,9 @@ div.worldmaptext{
 .bad {
     color:#FF2200;
 }
+
+.table-world-generator td{
+    padding: 0;
+    border: 0;
+    line-height: 0.25;
+}
