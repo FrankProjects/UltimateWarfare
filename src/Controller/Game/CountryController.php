@@ -35,7 +35,7 @@ final class CountryController extends BaseGameController
 
         $regions = [];
         foreach ($country->getWorldRegions() as $region) {
-            $regions[$region->getRX()][$region->getRY()] = $region;
+            $regions[$region->getY()][$region->getX()] = $region;
         }
 
         return $this->render('game/country.html.twig', [
