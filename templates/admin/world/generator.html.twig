@@ -1,0 +1,36 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - World{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr>
+            <td class="tabletop" colspan="5"><b>World Generator</b></td>
+        </tr>
+        <tr>
+            <td>
+                {{ form(form) }}
+
+                <table class="table-world-generator text-center">
+                {% for mapRow in map %}
+                    <tr>
+                    {% for mapItem in mapRow %}
+                        <td>
+                            {% if mapItem < form.waterLevel.vars.value / 100 %}
+                                <span style="background-color:lightblue">&nbsp;</span>
+                            {% elseif mapItem < form.beachLevel.vars.value / 100 %}
+                                <span style="background-color:yellow">&nbsp;</span>
+                            {% elseif mapItem < form.forrestLevel.vars.value / 100 %}
+                                <span style="background-color:green">&nbsp;</span>
+                            {% else %}
+                                <span style="background-color:gray">&nbsp;</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+                </table>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

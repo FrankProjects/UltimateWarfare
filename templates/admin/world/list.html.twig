@@ -24,7 +24,7 @@
                     {% endif %}
 
                     <div>
-                        <img src="{{ asset(world.image) }}" alt="{{ world.name }}" width="400" height="255">
+                        <img src="data:image/jpg;base64,{{ world.image }}" alt="{{ world.name }}">
                     </div>
                 </td>
                 <td class="text-left" width="300">
@@ -55,6 +55,12 @@
                 <td class="text-left" width="50">
                     <p>
                         <a class="btn btn-primary" href="{{ path('Admin/World/Edit', {'worldId': world.id}) }}">Edit</a>
+                    </p>
+                    <p>
+                        <a class="btn btn-primary" href="{{ path('Admin/World/Generate', {'worldId': world.id}) }}">Generate Map</a>
+                    </p>
+                    <p>
+                        <a class="btn btn-primary" href="{{ path('Admin/World/GenerateImages', {'worldId': world.id}) }}">Generate Images</a>
                     </p>
                     <p>
                         <a class="btn btn-danger" href="{{ path('Admin/World/Reset', {'worldId': world.id}) }}">Reset</a>
