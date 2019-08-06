@@ -48,16 +48,16 @@
         <br />
     {% endif %}
 
-    <table width="595" class="worldtable text-center">
+    <table class="worldtable text-center">
         <tr>
             <td width="15">x</td>
             {% for x in 1..5 %}
-                <td width="119">{{ (sector.x * 5) - 5 + x}}</td>
+                <td width="125">{{ ((sector.x - 1) * 5 * 5) + ( 5 * x) - 4 }} - {{ ((sector.x - 1) * 5 * 5) + ( 5 * x) }}</td>
             {% endfor %}
         </tr>
         {% for y in 1..5 %}
             <tr>
-                <td>{{ (sector.y * 5) - 5 + y }}</td>
+                <td>{{ ((sector.y - 1) * 5 * 5) + ( 5 * y) - 4 }} - {{ ((sector.y - 1) * 5 * 5) + ( 5 * y) }}</td>
                 {% for x in 1..5 %}
                     {{ mapMacros.tileCounty(countries[x][y], mapSettings) }}
                 {% endfor %}
