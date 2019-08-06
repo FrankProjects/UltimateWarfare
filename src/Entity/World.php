@@ -7,17 +7,13 @@ namespace FrankProjects\UltimateWarfare\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FrankProjects\UltimateWarfare\Entity\World\Resources;
+use RuntimeException;
 
-/**
- * Worlds
- */
 class World
 {
     const STATUS_CREATED = 0;
     const STATUS_RUNNING = 1;
     const STATUS_FINISHED = 2;
-
-    const DEFAULT_IMAGE = 'images/world/game_type_1.jpg';
 
     /**
      * @var int
@@ -85,6 +81,11 @@ class World
     private $federationLimit = 0;
 
     /**
+     * @var Collection|WorldRegion[]
+     */
+    private $worldRegions = [];
+
+    /**
      * @var Collection|WorldSector[]
      */
     private $worldSectors = [];
@@ -119,13 +120,13 @@ class World
      */
     public function __construct()
     {
+        $this->worldRegions = new ArrayCollection();
         $this->worldSectors = new ArrayCollection();
         $this->players = new ArrayCollection();
         $this->marketItems = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->federations = new ArrayCollection();
         $this->resources = new Resources();
-        $this->image = self::DEFAULT_IMAGE;
     }
 
     /**
@@ -215,12 +216,36 @@ class World
     }
 
     /**
+     * @param int $status
+     * @return bool
+     */
+    public function isValidStatus(int $status): bool
+    {
+        return in_array($status, self::getAllStatusOptions());
+    }
+    /**
+     * @return array
+     */
+    public static function getAllStatusOptions(): array
+    {
+        return [
+            self::STATUS_CREATED,
+            self::STATUS_RUNNING,
+            self::STATUS_FINISHED
+        ];
+    }
+
+    /**
      * Set status
      *
      * @param int $status
      */
     public function setStatus(int $status): void
     {
+        if (!$this->isValidStatus($status)) {
+            throw new RuntimeException("Invalid status {$status}");
+        }
+
         $this->status = $status;
     }
 
@@ -368,6 +393,22 @@ class World
     public function setFederationLimit(int $federationLimit): void
     {
         $this->federationLimit = $federationLimit;
+    }
+
+    /**
+     * @return Collection|WorldRegion[]
+     */
+    public function getWorldRegions(): Collection
+    {
+        return $this->worldRegions;
+    }
+
+    /**
+     * @param Collection|WorldRegion[] $worldRegions
+     */
+    public function setWorldRegions($worldRegions): void
+    {
+        $this->worldRegions = $worldRegions;
     }
 
     /**
