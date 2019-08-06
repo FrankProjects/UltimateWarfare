@@ -1,6 +1,9 @@
 FrankProjects\UltimateWarfare\Entity\WorldSector:
     type: entity
     table: world_sector
+    uniqueConstraints:
+        unique_world_sector:
+            columns: [ x, y, world_id ]
     id:
         id:
             type: integer
@@ -16,15 +19,15 @@ FrankProjects\UltimateWarfare\Entity\WorldSector:
             nullable: false
             options:
                 unsigned: true
-        'y':
+        y:
             type: integer
             nullable: false
             options:
                 unsigned: true
         image:
-            type: string
+            type: text
             nullable: false
-            length: 200
+            length: 65535
             options:
                 fixed: false
     oneToMany:
