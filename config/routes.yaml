@@ -126,6 +126,18 @@ Admin/World/Create:
     path:      /admin/world/create
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::create
 
+Admin/World/Generate:
+    path:      /admin/world/generate/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::generate
+    requirements:
+        worldId: '\d+'
+
+Admin/World/GenerateImages:
+    path:      /admin/world/generate-images/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::generateImages
+    requirements:
+        worldId: '\d+'
+
 Admin/World/List:
     path:      /admin/world/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::list
