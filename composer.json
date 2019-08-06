@@ -20,7 +20,8 @@
         "symfony/web-profiler-bundle": "^4.3",
         "symfony/webpack-encore-bundle": "^1.4",
         "symfony/yaml": "^4.3",
-        "twig/twig": "^2.10"
+        "twig/twig": "^2.10",
+        "ext-gd": "*"
     },
     "require-dev": {
         "symfony/dotenv": "^4.3"
