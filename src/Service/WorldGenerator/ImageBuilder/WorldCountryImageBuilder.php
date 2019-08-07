@@ -24,8 +24,8 @@ class WorldCountryImageBuilder extends AbstractImageBuilder
 
             $startX = ($worldRegion->getX() - $x) * 25;
             $startY = ($worldRegion->getY() - $y) * 25;
-            for($i = 0; $i < 25; $i++) {
-                for($j = 0; $j < 25; $j++) {
+            for ($i = 0; $i < 25; $i++) {
+                for ($j = 0; $j < 25; $j++) {
                     imagesetpixel($this->image, $startX + $i, $startY + $j, $this->getWorldRegionColor($worldRegion));
                 }
             }

@@ -187,7 +187,7 @@ final class WorldController extends AbstractController
 
         try {
             $testGD = get_extension_funcs("gd"); // Grab function list
-            if (!$testGD){
+            if (!$testGD) {
                 echo "GD not even installed.";
                 exit;
             }
@@ -202,7 +202,7 @@ final class WorldController extends AbstractController
             $worldSectorImageBuilder = new WorldSectorImageBuilder();
             $worldCountryImageBuilder = new WorldCountryImageBuilder();
 
-            foreach($world->getWorldSectors() as $worldSector) {
+            foreach ($world->getWorldSectors() as $worldSector) {
                 $worldSectorImageBuilder->generateForWorldSector($worldSector);
                 $image = $worldSectorImageBuilder->getImage();
 

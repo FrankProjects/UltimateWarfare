@@ -23,9 +23,8 @@ class WorldSectorImageBuilder extends AbstractImageBuilder
 
             $startX = ($worldRegion->getX() - $x) * 5;
             $startY = ($worldRegion->getY() - $y) * 5;
-            //echo $worldRegion->getX() . ', ' . $worldRegion->getY() . ' - ' . $startX . ',' . $startY . '<br />';
-            for($i = 0; $i < 5; $i++) {
-                for($j = 0; $j < 5; $j++) {
+            for ($i = 0; $i < 5; $i++) {
+                for ($j = 0; $j < 5; $j++) {
                     imagesetpixel($this->image, $startX + $i, $startY + $j, $this->getWorldRegionColor($worldRegion));
                 }
             }

@@ -55,7 +55,7 @@ abstract class AbstractImageBuilder
         }
 
         ob_start();
-        imagejpeg ($this->image);
+        imagejpeg($this->image);
         $image_data = ob_get_contents();
         ob_end_clean();
 
