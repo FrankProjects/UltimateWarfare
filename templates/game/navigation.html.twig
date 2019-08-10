@@ -2,62 +2,51 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ path('Game/Headquarter') }}">Headquarters</a>
     </li>
-
-    {% if player.worldRegions|length > 0 %}
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Reports') }}">Reports</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Construction') }}">Construction</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Fleets') }}">Fleets</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/RegionList') }}">Regions</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Market') }}">Market</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Federation') }}">Federation</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Research') }}">Research</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/World') }}">World</a>
-        </li>
-    {% else %}
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/World/Search/Free') }}">World</a>
-        </li>
-    {% endif %}
-
-    {% if player.worldRegions|length > 0 %}
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Message/Inbox') }}">Messages</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Notepad') }}">Notepad</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Forum') }}">Forum</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Site/Chat') }}" target="main">Chat</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Rankings') }}">Rankings</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Guide') }}" target="_blank">Help/FAQ</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('Game/Surrender') }}">Surrender</a>
-        </li>
-    {% endif %}
-
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Reports') }}">Reports</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Construction') }}">Construction</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Fleets') }}">Fleets</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/RegionList') }}">Regions</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Market') }}">Market</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Federation') }}">Federation</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Research') }}">Research</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/World') }}">World</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Message/Inbox') }}">Messages</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Notepad') }}">Notepad</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Forum') }}">Forum</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Site/Chat') }}" target="main">Chat</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Rankings') }}">Rankings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Guide') }}" target="_blank">Help/FAQ</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('Game/Surrender') }}">Surrender</a>
+    </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ path('Game/Account') }}">Account Management</a>
     </li>

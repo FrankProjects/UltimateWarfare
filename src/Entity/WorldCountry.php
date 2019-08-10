@@ -28,16 +28,6 @@ class WorldCountry
     private $y;
 
     /**
-     * @var int
-     */
-    private $cX;
-
-    /**
-     * @var int
-     */
-    private $cY;
-
-    /**
      * @var string
      */
     private $image;
@@ -75,7 +65,7 @@ class WorldCountry
      *
      * @param int $x
      */
-    public function setX(int $x)
+    public function setX(int $x): void
     {
         $this->x = $x;
     }
@@ -95,7 +85,7 @@ class WorldCountry
      *
      * @param int $y
      */
-    public function setY(int $y)
+    public function setY(int $y): void
     {
         $this->y = $y;
     }
@@ -111,51 +101,11 @@ class WorldCountry
     }
 
     /**
-     * Set cX
-     *
-     * @param int $cX
-     */
-    public function setCX(int $cX)
-    {
-        $this->cX = $cX;
-    }
-
-    /**
-     * Get cX
-     *
-     * @return int
-     */
-    public function getCX(): int
-    {
-        return $this->cX;
-    }
-
-    /**
-     * Set cY
-     *
-     * @param int $cY
-     */
-    public function setCY(int $cY)
-    {
-        $this->cY = $cY;
-    }
-
-    /**
-     * Get cY
-     *
-     * @return int
-     */
-    public function getCY(): int
-    {
-        return $this->cY;
-    }
-
-    /**
      * Set image
      *
      * @param string $image
      */
-    public function setImage(string $image)
+    public function setImage(string $image): void
     {
         $this->image = $image;
     }
@@ -181,7 +131,7 @@ class WorldCountry
     /**
      * @param WorldSector $worldSector
      */
-    public function setWorldSector(WorldSector $worldSector)
+    public function setWorldSector(WorldSector $worldSector): void
     {
         $this->worldSector = $worldSector;
     }
@@ -197,8 +147,25 @@ class WorldCountry
     /**
      * @param Collection $worldRegions
      */
-    public function setWorldRegions(Collection $worldRegions)
+    public function setWorldRegions(Collection $worldRegions): void
     {
         $this->worldRegions = $worldRegions;
+    }
+
+    /**
+     * @param WorldSector $worldSector
+     * @param int $x
+     * @param int $y
+     * @return WorldCountry
+     */
+    public static function createForWorldSector(WorldSector $worldSector, int $x, int $y): WorldCountry
+    {
+        $worldCountry = new WorldCountry();
+        $worldCountry->setWorldSector($worldSector);
+        $worldCountry->setX($x);
+        $worldCountry->setY($y);
+        $worldCountry->setImage('');
+
+        return $worldCountry;
     }
 }

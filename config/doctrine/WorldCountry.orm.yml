@@ -1,6 +1,9 @@
 FrankProjects\UltimateWarfare\Entity\WorldCountry:
     type: entity
     table: world_country
+    uniqueConstraints:
+        unique_world_country:
+            columns: [ x, y, sector_id ]
     id:
         id:
             type: integer
@@ -16,27 +19,15 @@ FrankProjects\UltimateWarfare\Entity\WorldCountry:
             nullable: false
             options:
                 unsigned: true
-        'y':
+        y:
             type: integer
             nullable: false
             options:
                 unsigned: true
-        cX:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-            column: c_x
-        cY:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
-            column: c_y
         image:
-            type: string
+            type: text
             nullable: false
-            length: 200
+            length: 65535
             options:
                 fixed: false
     oneToMany:

@@ -71,7 +71,7 @@ class WorldSector
      *
      * @param int $x
      */
-    public function setX(int $x)
+    public function setX(int $x): void
     {
         $this->x = $x;
     }
@@ -91,7 +91,7 @@ class WorldSector
      *
      * @param int $y
      */
-    public function setY(int $y)
+    public function setY(int $y): void
     {
         $this->y = $y;
     }
@@ -111,7 +111,7 @@ class WorldSector
      *
      * @param string $image
      */
-    public function setImage(string $image)
+    public function setImage(string $image): void
     {
         $this->image = $image;
     }
@@ -137,7 +137,7 @@ class WorldSector
     /**
      * @param World $world
      */
-    public function setWorld(World $world)
+    public function setWorld(World $world): void
     {
         $this->world = $world;
     }
@@ -153,7 +153,7 @@ class WorldSector
     /**
      * @param Collection $worldRegions
      */
-    public function setWorldRegions(Collection $worldRegions)
+    public function setWorldRegions(Collection $worldRegions): void
     {
         $this->worldRegions = $worldRegions;
     }
@@ -169,8 +169,25 @@ class WorldSector
     /**
      * @param Collection $worldCountries
      */
-    public function setWorldCountries(Collection $worldCountries)
+    public function setWorldCountries(Collection $worldCountries): void
     {
         $this->worldCountries = $worldCountries;
+    }
+
+    /**
+     * @param World $world
+     * @param int $x
+     * @param int $y
+     * @return WorldSector
+     */
+    public static function createForWorld(World $world, int $x, int $y): WorldSector
+    {
+        $worldSector = new WorldSector();
+        $worldSector->setWorld($world);
+        $worldSector->setX($x);
+        $worldSector->setY($y);
+        $worldSector->setImage('');
+
+        return $worldSector;
     }
 }

@@ -63,7 +63,7 @@ final class SectorController extends BaseGameController
         $countries = [];
         foreach ($sector->getWorldCountries() as $country) {
             $country->regionCount = $this->getRegionCount($country, $player);
-            $countries[$country->getCX()][$country->getCY()] = $country;
+            $countries[$country->getX()][$country->getY()] = $country;
         }
 
         return $this->render('game/sector.html.twig', [
@@ -96,7 +96,7 @@ final class SectorController extends BaseGameController
         $countries = [];
         foreach ($sector->getWorldCountries() as $country) {
             $country->regionCount = $this->getRegionCount($country);
-            $countries[$country->getCX()][$country->getCY()] = $country;
+            $countries[$country->getX()][$country->getY()] = $country;
         }
 
         return $this->render('game/sector.html.twig', [
@@ -144,7 +144,7 @@ final class SectorController extends BaseGameController
                 $country->regionCount = 0;
             }
 
-            $countries[$country->getCX()][$country->getCY()] = $country;
+            $countries[$country->getX()][$country->getY()] = $country;
         }
 
         return $this->render('game/sector.html.twig', [

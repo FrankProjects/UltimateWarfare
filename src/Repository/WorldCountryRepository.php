@@ -13,4 +13,9 @@ interface WorldCountryRepository
      * @return WorldCountry|null
      */
     public function find(int $id): ?WorldCountry;
+
+    /**
+     * @param WorldCountry $worldCountry
+     */
+    public function save(WorldCountry $worldCountry): void;
 }

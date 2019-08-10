@@ -7,16 +7,16 @@
     <p class="text-center">
         <a class="B" href="{{ path('Game/World') }}">World</a> -
         <a class="B" href="{{ path('Game/World/Sector', {'sectorId': sector.id}) }}">Sector {{ sector.id }}</a> -
-        <b>Country: {{ country.x }}, {{ country.y }}</b>
+        <b>Country: {{ country.id }}</b>
     </p>
 
-    <table width="595" class="worldtable text">
-        {% for y in 1..5 %}
-            <tr>
-                {% for x in 1..5 %}
-                    {{ mapMacros.tileRegion(regions[x][y], mapSettings, player) }}
-                {% endfor %}
-            </tr>
+    <table class="worldtable text">
+        {% for xRegions in regions %}
+        <tr>
+            {% for region in xRegions %}
+                {{ mapMacros.tileRegion(region, mapSettings, player) }}
+            {% endfor %}
+        </tr>
         {% endfor %}
     </table>
 {% endblock %}

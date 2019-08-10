@@ -42,4 +42,13 @@ final class DoctrineWorldSectorRepository implements WorldSectorRepository
     {
         return $this->repository->findOneBy(['id' => $id, 'world' => $world]);
     }
+
+    /**
+     * @param WorldSector $worldSector
+     */
+    public function save(WorldSector $worldSector): void
+    {
+        $this->entityManager->persist($worldSector);
+        $this->entityManager->flush();
+    }
 }

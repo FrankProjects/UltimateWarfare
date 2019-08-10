@@ -12,15 +12,15 @@ use Doctrine\Common\Collections\Collection;
  */
 class WorldRegion
 {
-    /**
-     * @var int
-     */
-    private $id;
+    const TYPE_WATER = 'water';
+    const TYPE_BEACH = 'beach';
+    const TYPE_FORREST = 'forrest';
+    const TYPE_MOUNTAIN = 'mountain';
 
     /**
      * @var int
      */
-    private $region;
+    private $id;
 
     /**
      * @var int
@@ -35,17 +35,12 @@ class WorldRegion
     /**
      * @var int
      */
-    private $rX;
-
-    /**
-     * @var int
-     */
-    private $rY;
+    private $z;
 
     /**
      * @var string
      */
-    private $image;
+    private $type;
 
     /**
      * @var int
@@ -66,6 +61,11 @@ class WorldRegion
      * @var int
      */
     private $population = 0;
+
+    /**
+     * @var World
+     */
+    private $world;
 
     /**
      * @var WorldCountry
@@ -124,26 +124,6 @@ class WorldRegion
     }
 
     /**
-     * Set region
-     *
-     * @param int $region
-     */
-    public function setRegion(int $region): void
-    {
-        $this->region = $region;
-    }
-
-    /**
-     * Get region
-     *
-     * @return int
-     */
-    public function getRegion(): int
-    {
-        return $this->region;
-    }
-
-    /**
      * Set x
      *
      * @param int $x
@@ -184,63 +164,60 @@ class WorldRegion
     }
 
     /**
-     * Set rX
-     *
-     * @param int $rX
-     */
-    public function setRX(int $rX): void
-    {
-        $this->rX = $rX;
-    }
-
-    /**
-     * Get rX
-     *
      * @return int
      */
-    public function getRX(): int
+    public function getZ(): int
     {
-        return $this->rX;
+        return $this->z;
     }
 
     /**
-     * Set rY
-     *
-     * @param int $rY
+     * @param int $z
      */
-    public function setRY(int $rY): void
+    public function setZ(int $z): void
     {
-        $this->rY = $rY;
+        $this->z = $z;
     }
 
     /**
-     * Get rY
-     *
-     * @return int
+     * @param string $type
+     * @return bool
      */
-    public function getRY(): int
+    public function isValidType(string $type): bool
     {
-        return $this->rY;
+        return in_array($type, self::getAllTypes());
     }
-
     /**
-     * Set image
-     *
-     * @param string $image
+     * @return array
      */
-    public function setImage(string $image): void
+    public static function getAllTypes(): array
     {
-        $this->image = $image;
+        return [
+            self::TYPE_WATER,
+            self::TYPE_BEACH,
+            self::TYPE_FORREST,
+            self::TYPE_MOUNTAIN
+        ];
     }
 
     /**
-     * Get image
-     *
      * @return string
      */
-    public function getImage(): string
+    public function getType(): string
     {
-        return $this->image;
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        if (!$this->isValidType($type)) {
+            throw new \RuntimeException("Invalid type {$type}");
+        }
+
+        $this->type = $type;
     }
 
     /**
@@ -337,6 +314,22 @@ class WorldRegion
     public function setWorldRegionUnits(Collection $worldRegionUnits): void
     {
         $this->worldRegionUnits = $worldRegionUnits;
+    }
+
+    /**
+     * @return World
+     */
+    public function getWorld(): World
+    {
+        return $this->world;
+    }
+
+    /**
+     * @param World $world
+     */
+    public function setWorld(World $world): void
+    {
+        $this->world = $world;
     }
 
     /**
@@ -440,6 +433,31 @@ class WorldRegion
      */
     public function getRegionName(): string
     {
-        return "{$this->getRX()}, {$this->getRY()}: {$this->getRegion()}";
+        return "{$this->getX()}, {$this->getY()}";
+    }
+
+    /**
+     * @param WorldCountry $worldCountry
+     * @param int $x
+     * @param int $y
+     * @param int $z
+     * @param string $type
+     * @param int $space
+     * @return WorldRegion
+     */
+    public static function createForWorldCountry(WorldCountry $worldCountry, int $x, int $y, int $z, string $type, int $space): WorldRegion
+    {
+        $worldRegion = new WorldRegion();
+        $worldRegion->setWorld($worldCountry->getWorldSector()->getWorld());
+        $worldRegion->setWorldCountry($worldCountry);
+        $worldRegion->setWorldSector($worldCountry->getWorldSector());
+        $worldRegion->setX($x);
+        $worldRegion->setY($y);
+        $worldRegion->setZ($z);
+        $worldRegion->setType($type);
+        $worldRegion->setSpace($space);
+        $worldRegion->setPopulation($space * 10);
+
+        return $worldRegion;
     }
 }
