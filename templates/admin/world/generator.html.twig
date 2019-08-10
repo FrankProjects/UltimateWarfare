@@ -16,7 +16,7 @@
                     <tr>
                     {% for mapItem in mapRow %}
                         <td>
-                            {% if mapItem < form.seaLevel.vars.value / 100 %}
+                            {% if mapItem < form.waterLevel.vars.value / 100 %}
                                 <span style="background-color:lightblue">&nbsp;</span>
                             {% elseif mapItem < form.beachLevel.vars.value / 100 %}
                                 <span style="background-color:yellow">&nbsp;</span>

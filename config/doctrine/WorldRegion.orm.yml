@@ -7,6 +7,9 @@ FrankProjects\UltimateWarfare\Entity\WorldRegion:
                 - world_id
                 - x
                 - y
+    uniqueConstraints:
+        unique_world_region:
+            columns: [ x, y, world_id ]
     id:
         id:
             type: integer

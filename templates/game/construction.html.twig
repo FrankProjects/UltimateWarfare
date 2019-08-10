@@ -33,7 +33,7 @@
                 {% else %}
                     <td>{{ construction.number }} {{ construction.gameUnit.nameMulti }}</td>
                 {% endif %}
-                <td><a class="B" href="{{ path('Game/World/Region', {'regionId': construction.worldRegion.id}) }}">{{ construction.worldRegion.x }}, {{ construction.worldRegion.y }}: {{ construction.worldRegion.region }}</a></td>
+                <td><a class="B" href="{{ path('Game/World/Region', {'regionId': construction.worldRegion.id}) }}">{{ construction.worldRegion.x }}, {{ construction.worldRegion.y }}</a></td>
                 <td><span class="timer">{{ timestampLeft }}</span></td>
                 <td>{{ construction.timestamp|date("Y-m-d H:i:s") }}</td>
                 <td><a class="B" href="{{ path('Game/Construction/Cancel', {'constructionId': construction.id}) }}">Cancel</a></td>

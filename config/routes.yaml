@@ -132,6 +132,12 @@ Admin/World/Generate:
     requirements:
         worldId: '\d+'
 
+Admin/World/GenerateImages:
+    path:      /admin/world/generate-images/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::generateImages
+    requirements:
+        worldId: '\d+'
+
 Admin/World/List:
     path:      /admin/world/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::list

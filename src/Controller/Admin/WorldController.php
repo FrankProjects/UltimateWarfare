@@ -6,13 +6,13 @@ namespace FrankProjects\UltimateWarfare\Controller\Admin;
 
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldGeneratorConfiguration;
-use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Form\Admin\WorldGeneratorType;
 use FrankProjects\UltimateWarfare\Form\Admin\WorldType;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Service\Action\WorldActionService;
-use FrankProjects\UltimateWarfare\Service\WorldGenerator\PerlinNoiseGenerator;
+use FrankProjects\UltimateWarfare\Service\WorldGenerator\ImageBuilder\WorldImageBuilder;
+use FrankProjects\UltimateWarfare\Service\WorldGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,9 +37,9 @@ final class WorldController extends AbstractController
     private $worldActionService;
 
     /**
-     * @var PerlinNoiseGenerator
+     * @var WorldGeneratorService
      */
-    private $worldGenerator;
+    private $worldGeneratorService;
 
     /**
      * WorldController constructor
@@ -47,18 +47,18 @@ final class WorldController extends AbstractController
      * @param WorldRepository $worldRepository
      * @param WorldRegionRepository $worldRegionRepository
      * @param WorldActionService $worldActionService
-     * @param PerlinNoiseGenerator $worldGenerator
+     * @param WorldGeneratorService $worldGeneratorService
      */
     public function __construct(
         WorldRepository $worldRepository,
         WorldRegionRepository $worldRegionRepository,
         WorldActionService $worldActionService,
-        PerlinNoiseGenerator $worldGenerator
+        WorldGeneratorService $worldGeneratorService
     ) {
         $this->worldRepository = $worldRepository;
         $this->worldRegionRepository = $worldRegionRepository;
         $this->worldActionService = $worldActionService;
-        $this->worldGenerator = $worldGenerator;
+        $this->worldGeneratorService = $worldGeneratorService;
     }
 
     /**
@@ -154,6 +154,40 @@ final class WorldController extends AbstractController
     }
 
     /**
+     * @param int $worldId
+     * @return RedirectResponse
+     */
+    public function generateImages(int $worldId): RedirectResponse
+    {
+        $world = $this->worldRepository->find($worldId);
+        if ($world === null) {
+            $this->addFlash('error', 'World does not exist');
+            return $this->redirectToRoute('Admin/World/List', [], 302);
+        }
+
+        try {
+            $testGD = get_extension_funcs("gd"); // Grab function list
+            if (!$testGD) {
+                echo "GD not even installed.";
+                exit;
+            }
+
+            $worldImageBuilder = new WorldImageBuilder();
+            $worldImageBuilder->generateForWorld($world);
+            $image = $worldImageBuilder->getImage();
+
+            $world->setImage($image);
+            $this->worldRepository->save($world);
+
+            $this->addFlash('success', 'World images generated!');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('Admin/World/List', [], 302);
+    }
+
+    /**
      * @param Request $request
      * @param int $worldId
      * @return Response
@@ -172,41 +206,14 @@ final class WorldController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($worldGeneratorConfiguration->getSeed() === 0) {
-                $worldGeneratorConfiguration->setSeed(intval(microtime(true)));
-            }
-            $map = $this->worldGenerator->generate($worldGeneratorConfiguration);
-
-            if ($form->get('save')->getData() === true) {
-                $this->generateWorldRegions($world, $map, $worldGeneratorConfiguration);
-                $this->addFlash('success', 'New map saved!');
-                return $this->redirectToRoute('Admin/World/List', [], 302);
-            } else {
-                $this->addFlash('success', 'Generated new map!');
-            }
+            $save = (bool)$form->get('save')->getData();
+            $map = $this->worldGeneratorService->generate($world, $worldGeneratorConfiguration, $save);
+            $this->addFlash('success', 'Generated new map!');
         }
 
         return $this->render('admin/world/generator.html.twig', [
             'map' => $map,
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * @param World $world
-     * @param array $map
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
-     */
-    private function generateWorldRegions(World $world, array $map, WorldGeneratorConfiguration $worldGeneratorConfiguration): void
-    {
-        //$gd = imagecreatetruecolor($worldGeneratorConfiguration->getSize(), $worldGeneratorConfiguration->getSize());
-
-        foreach ($map as $x => $yData) {
-            foreach ($yData as $y => $z) {
-                $z = intval($z * 100);
-                $worldRegion = WorldRegion::createForWorld($world, $x, $y, $z, $worldGeneratorConfiguration);
-                $this->worldRegionRepository->save($worldRegion);
-            }
-        }
     }
 }

@@ -81,6 +81,10 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
         }
 
         $player = $this->playerRepository->find($playerId);
+        if ($player === null) {
+            return;
+        }
+
         if ($player->getUser()->getId() !== $user->getId()) {
             return;
         }

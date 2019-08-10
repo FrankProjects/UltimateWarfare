@@ -154,23 +154,19 @@ class WorldRegion
     }
 
     /**
-     * Set z
-     *
-     * @param int $z
-     */
-    public function setZ(int $z): void
-    {
-        $this->z = $z;
-    }
-
-    /**
-     * Get z
-     *
      * @return int
      */
     public function getZ(): int
     {
         return $this->z;
+    }
+
+    /**
+     * @param int $z
+     */
+    public function setZ(int $z): void
+    {
+        $this->z = $z;
     }
 
     /**
@@ -181,7 +177,6 @@ class WorldRegion
     {
         return in_array($type, self::getAllTypes());
     }
-
     /**
      * @return array
      */
@@ -196,8 +191,14 @@ class WorldRegion
     }
 
     /**
-     * Set type
-     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
      * @param string $type
      */
     public function setType(string $type): void
@@ -207,16 +208,6 @@ class WorldRegion
         }
 
         $this->type = $type;
-    }
-
-    /**
-     * Get type
-     *
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
     }
 
     /**
@@ -408,54 +399,22 @@ class WorldRegion
      * @param int $x
      * @param int $y
      * @param int $z
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
+     * @param string $type
+     * @param int $space
      * @return WorldRegion
      */
-    public static function createForWorld(World $world, int $x, int $y, int $z, WorldGeneratorConfiguration $worldGeneratorConfiguration): WorldRegion
+    public static function createForWorld(World $world, int $x, int $y, int $z, string $type, int $space): WorldRegion
     {
         $worldRegion = new WorldRegion();
         $worldRegion->setWorld($world);
         $worldRegion->setX($x);
         $worldRegion->setY($y);
         $worldRegion->setZ($z);
-        $worldRegion->setType(self::getTypeFromConfiguration($worldGeneratorConfiguration, $z));
-        $worldRegion->setSpace(self::getRandomSpaceFromType($worldRegion->getType()));
-        $worldRegion->setPopulation($worldRegion->getSpace() * 10);
+        $worldRegion->setType($type);
+        $worldRegion->setSpace($space);
+        $worldRegion->setPopulation($space * 10);
 
         return $worldRegion;
-    }
-
-    /**
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
-     * @param int $z
-     * @return string
-     */
-    private static function getTypeFromConfiguration(WorldGeneratorConfiguration $worldGeneratorConfiguration, int $z): string
-    {
-        if ($z < $worldGeneratorConfiguration->getWaterLevel()) {
-            return self::TYPE_WATER;
-        } elseif ($z < $worldGeneratorConfiguration->getBeachLevel()) {
-            return self::TYPE_BEACH;
-        } elseif ($z < $worldGeneratorConfiguration->getForrestLevel()) {
-            return self::TYPE_FORREST;
-        }
-
-        return self::TYPE_MOUNTAIN;
-    }
-
-    /**
-     * @param string $type
-     * @return int
-     */
-    private static function getRandomSpaceFromType(string $type): int
-    {
-        if ($type === self::TYPE_MOUNTAIN) {
-            return rand(800, 1500);
-        } elseif ($type === self::TYPE_FORREST) {
-            return rand(1500, 2500);
-        }
-
-        return 0;
     }
 
     /**

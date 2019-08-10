@@ -11,7 +11,7 @@ label:
   created: Created
   finished: Finished
   running: Running
-  seaLevel: Sea level
+  waterLevel: Water level
   beachLevel: Beach level
   forrestLevel: Forrest level
   generate: Generate

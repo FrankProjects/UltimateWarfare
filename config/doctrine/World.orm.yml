@@ -23,9 +23,9 @@ FrankProjects\UltimateWarfare\Entity\World:
             options:
                 fixed: false
         image:
-            type: string
+            type: text
             nullable: false
-            length: 100
+            length: 65535
             options:
                 fixed: false
         description:
