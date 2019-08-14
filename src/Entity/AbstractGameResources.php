@@ -9,22 +9,22 @@ abstract class AbstractGameResources
     /**
      * @var int
      */
-    protected $cash = 0;
+    public $cash = 0;
 
     /**
      * @var int
      */
-    protected $food = 0;
+    public $food = 0;
 
     /**
      * @var int
      */
-    protected $wood = 0;
+    public $wood = 0;
 
     /**
      * @var int
      */
-    protected $steel = 0;
+    public $steel = 0;
 
     /**
      * Set Cash

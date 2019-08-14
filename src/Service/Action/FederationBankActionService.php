@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\FederationNews;
+use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
@@ -52,18 +53,28 @@ final class FederationBankActionService
     public function deposit(Player $player, array $resources): void
     {
         $this->ensureFederationEnabled($player);
+        $federation = $player->getFederation();
+        if ($federation === null) {
+            throw new RunTimeException("You are not in a Federation!");
+        }
 
         $resourceString = '';
         foreach ($resources as $resourceName => $amount) {
-            $this->ensureValidResourcename($resourceName);
+            if (!GameResource::isValid($resourceName)) {
+                continue;
+            }
 
-            if ($amount < 0) {
-                throw new RunTimeException("You can't deposit negative {$resourceName}!");
+            $amount = intval($amount);
+            if ($amount <= 0) {
+                continue;
             }
 
             if ($amount > $player->getResources()->$resourceName) {
                 throw new RunTimeException("You don't have enough {$resourceName}!");
             }
+
+            $player->getResources()->$resourceName -= $amount;
+            $federation->getResources()->$resourceName += $amount;
 
             if ($resourceString !== '') {
                 $resourceString .= ', ';
@@ -71,16 +82,14 @@ final class FederationBankActionService
             $resourceString .= $amount . ' ' . $resourceName;
         }
 
-        $news = "{$player->getName()} deposited {$resourceString} to the Federation Bank";
-        $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
-        $this->federationNewsRepository->save($federationNews);
+        if ($resourceString !== '') {
+            $news = "{$player->getName()} deposited {$resourceString} to the Federation Bank";
+            $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+            $this->federationNewsRepository->save($federationNews);
 
-        /**
-         * XXX TODO!
-         *
-         * $db->query("UPDATE player set cash = cash - $b_cash, wood = wood - $b_wood, steel = steel - $b_steel, food = food - $b_food WHERE id = $player_id");
-         * $db->query("UPDATE federation set cashbank = cashbank + $b_cash, woodbank = woodbank + $b_wood, steelbank = steelbank + $b_steel, foodbank = foodbank + $b_food WHERE id = $fed_id");
-         */
+            $this->playerRepository->save($player);
+            $this->federationRepository->save($federation);
+        }
     }
 
     /**
@@ -91,21 +100,32 @@ final class FederationBankActionService
     {
         $this->ensureFederationEnabled($player);
 
+        $federation = $player->getFederation();
+        if ($federation === null) {
+            throw new RunTimeException("You are not in a Federation!");
+        }
+
         if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_CAPTAIN) {
             throw new RunTimeException("You don't have permission to use the Federation Bank!");
         }
 
         $resourceString = '';
         foreach ($resources as $resourceName => $amount) {
-            $this->ensureValidResourcename($resourceName);
+            if (!GameResource::isValid($resourceName)) {
+                continue;
+            }
 
-            if ($amount < 0) {
-                throw new RunTimeException("You can't withdraw negative {$resourceName}!");
+            $amount = intval($amount);
+            if ($amount <= 0) {
+                continue;
             }
 
             if ($amount > $player->getFederation()->getResources()->$resourceName) {
                 throw new RunTimeException("Federation Bank doesn't have enough {$resourceName}!");
             }
+
+            $player->getResources()->$resourceName += $amount;
+            $federation->getResources()->$resourceName -= $amount;
 
             if ($resourceString !== '') {
                 $resourceString .= ', ';
@@ -113,16 +133,14 @@ final class FederationBankActionService
             $resourceString .= $amount . ' ' . $resourceName;
         }
 
-        $news = "{$player->getName()} withdrew {$resourceString} from the Federation Bank";
-        $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
-        $this->federationNewsRepository->save($federationNews);
+        if ($resourceString !== '') {
+            $news = "{$player->getName()} withdrew {$resourceString} from the Federation Bank";
+            $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+            $this->federationNewsRepository->save($federationNews);
 
-        /**
-         * XXX TODO!
-         *
-         * $db->query("UPDATE player set cash = cash + $b_cash, wood = wood + $b_wood, steel = steel + $b_steel, food = food + $b_food WHERE id = $player_id");
-         * $db->query("UPDATE federation set cashbank = cashbank - $b_cash, woodbank = woodbank - $b_wood, steelbank = steelbank - $b_steel, foodbank = foodbank - $b_food WHERE id = $fed_id");
-         */
+            $this->playerRepository->save($player);
+            $this->federationRepository->save($federation);
+        }
     }
 
     /**
@@ -133,19 +151,6 @@ final class FederationBankActionService
         $world = $player->getWorld();
         if (!$world->getFederation()) {
             throw new RunTimeException("Federations not enabled!");
-        }
-    }
-
-    /**
-     * XXX TODO: Fix me
-     *
-     * @param string $resourceName
-     */
-    private function ensureValidResourceName(string $resourceName): void
-    {
-        $validResourceNames = ['cash', 'wood', 'steel', 'food'];
-        if (!in_array($resourceName, $validResourceNames)) {
-            throw new RunTimeException("Invalid resource type {$resourceName}!");
         }
     }
 }
