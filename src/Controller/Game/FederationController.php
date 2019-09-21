@@ -158,7 +158,8 @@ final class FederationController extends BaseGameController
     {
         try {
             if ($request->isMethod(Request::METHOD_POST) && $request->get('player') !== null) {
-                $this->federationActionService->sendAid($this->getPlayer(), $request->get('player'), []);
+                $aidPlayerId = intval($request->get('player'));
+                $this->federationActionService->sendAid($this->getPlayer(), $aidPlayerId, $request->get('resources'));
                 $this->addFlash('success', "You have send aid!");
 
                 return $this->redirectToRoute('Game/Federation');

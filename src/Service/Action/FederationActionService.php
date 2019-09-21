@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\Federation;
 use FrankProjects\UltimateWarfare\Entity\FederationNews;
+use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
@@ -101,15 +102,21 @@ final class FederationActionService
 
         $resourceString = '';
         foreach ($resources as $resourceName => $amount) {
-            $this->ensureValidResourcename($resourceName);
+            if (!GameResource::isValid($resourceName)) {
+                continue;
+            }
 
-            if ($amount < 0) {
-                throw new RunTimeException("You can't send negative {$resourceName}!");
+            $amount = intval($amount);
+            if ($amount <= 0) {
+                continue;
             }
 
             if ($amount > $player->getResources()->$resourceName) {
                 throw new RunTimeException("You don't have enough {$resourceName}!");
             }
+
+            $player->getResources()->$resourceName -= $amount;
+            $aidPlayer->getResources()->$resourceName += $amount;
 
             if ($resourceString !== '') {
                 $resourceString .= ', ';
@@ -117,30 +124,25 @@ final class FederationActionService
             $resourceString .= $amount . ' ' . $resourceName;
         }
 
+        if ($resourceString !== '') {
+            $news = "{$player->getName()} has sent {$resourceString} to {$aidPlayer->getName()}";
+            $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+            $this->federationNewsRepository->save($federationNews);
 
-        /**
-         * XXX TODO!
-         *
-         * $db->query("UPDATE player set cash = cash - $cash, wood = wood - $wood, steel = steel - $steel, food = food - $food WHERE id = $player_id");
-         * $db->query("UPDATE player set cash = cash + $cash, wood = wood + $wood, steel = steel + $steel, food = food + $food WHERE id = $to_id");
-         */
+            $aidPlayerNotifications = $aidPlayer->getNotifications();
+            $aidPlayerNotifications->setAid(true);
+            $aidPlayer->setNotifications($aidPlayerNotifications);
+            $this->playerRepository->save($aidPlayer);
+            $this->playerRepository->save($player);
 
-        $news = "{$player->getName()} has sent {$resourceString} to {$aidPlayer->getName()}";
-        $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
-        $this->federationNewsRepository->save($federationNews);
+            $reportString = "{$player->getName()} has sent {$resourceString} to you";
+            $report = Report::createForPlayer($aidPlayer, time(), Report::TYPE_AID, $reportString);
+            $this->reportRepository->save($report);
 
-        $aidPlayerNotifications = $aidPlayer->getNotifications();
-        $aidPlayerNotifications->setAid(true);
-        $aidPlayer->setNotifications($aidPlayerNotifications);
-        $this->playerRepository->save($aidPlayer);
-
-        $reportString = "{$player->getName()} has sent {$resourceString} to you";
-        $report = Report::createForPlayer($aidPlayer, time(), Report::TYPE_AID, $reportString);
-        $this->reportRepository->save($report);
-
-        $reportString = "You have send {$resourceString} to {$aidPlayer->getName()}";
-        $report = Report::createForPlayer($player, time(), Report::TYPE_AID, $reportString);
-        $this->reportRepository->save($report);
+            $reportString = "You have send {$resourceString} to {$aidPlayer->getName()}";
+            $report = Report::createForPlayer($player, time(), Report::TYPE_AID, $reportString);
+            $this->reportRepository->save($report);
+        }
     }
 
     /**
@@ -316,19 +318,6 @@ final class FederationActionService
         $world = $player->getWorld();
         if (!$world->getFederation()) {
             throw new RunTimeException("Federations not enabled!");
-        }
-    }
-
-    /**
-     * XXX TODO: Fix me
-     *
-     * @param string $resourceName
-     */
-    private function ensureValidResourceName(string $resourceName): void
-    {
-        $validResourceNames = ['cash', 'wood', 'steel', 'food'];
-        if (!in_array($resourceName, $validResourceNames)) {
-            throw new RunTimeException("Invalid resource type {$resourceName}!");
         }
     }
 }
