@@ -76,10 +76,7 @@ final class FederationBankActionService
             $player->getResources()->$resourceName -= $amount;
             $federation->getResources()->$resourceName += $amount;
 
-            if ($resourceString !== '') {
-                $resourceString .= ', ';
-            }
-            $resourceString .= $amount . ' ' . $resourceName;
+            $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);
         }
 
         if ($resourceString !== '') {
@@ -127,10 +124,7 @@ final class FederationBankActionService
             $player->getResources()->$resourceName += $amount;
             $federation->getResources()->$resourceName -= $amount;
 
-            if ($resourceString !== '') {
-                $resourceString .= ', ';
-            }
-            $resourceString .= $amount . ' ' . $resourceName;
+            $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);
         }
 
         if ($resourceString !== '') {
@@ -152,5 +146,21 @@ final class FederationBankActionService
         if (!$world->getFederation()) {
             throw new RunTimeException("Federations not enabled!");
         }
+    }
+
+    /**
+     * @param string $resourceString
+     * @param int $amount
+     * @param string $resourceName
+     * @return string
+     */
+    private function addToResourceString(string $resourceString, int $amount, string $resourceName): string
+    {
+        if ($resourceString !== '') {
+            $resourceString .= ', ';
+        }
+        $resourceString .= $amount . ' ' . $resourceName;
+
+        return $resourceString;
     }
 }
