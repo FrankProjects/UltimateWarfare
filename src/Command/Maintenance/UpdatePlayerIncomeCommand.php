@@ -74,9 +74,10 @@ class UpdatePlayerIncomeCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln([
             'Updating income resources of all players',
@@ -100,6 +101,8 @@ class UpdatePlayerIncomeCommand extends Command
         }
 
         $output->writeln('Done!');
+
+        return 0;
     }
 
     /**

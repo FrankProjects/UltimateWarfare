@@ -7,7 +7,7 @@ namespace FrankProjects\UltimateWarfare\EventSubscriber;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -43,9 +43,9 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
     }
 
     /**
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -68,9 +68,9 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
     }
 
     /**
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
      */
-    private function checkBannedAndRedirect(GetResponseEvent $event): void
+    private function checkBannedAndRedirect(RequestEvent $event): void
     {
         if (
             strpos($event->getRequest()->getRequestUri(), '/game') === false &&

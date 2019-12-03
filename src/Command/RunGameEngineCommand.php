@@ -37,9 +37,10 @@ class RunGameEngineCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // outputs multiple lines to the console (adding "\n" at the end of each line)
         $output->writeln([
@@ -49,7 +50,8 @@ class RunGameEngineCommand extends Command
         ]);
 
         $this->gameEngine->run(null);
-
         $output->writeln('Done!');
+
+        return 0;
     }
 }

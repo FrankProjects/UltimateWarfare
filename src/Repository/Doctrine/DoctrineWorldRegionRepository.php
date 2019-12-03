@@ -159,6 +159,6 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     {
         $this->entityManager->persist($worldRegion);
         $this->entityManager->flush();
-        $this->entityManager->detach($worldRegion);
+        $this->entityManager->clear($worldRegion);
     }
 }

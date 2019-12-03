@@ -22,9 +22,10 @@ class MakeAdminCommand extends AbstractUserCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
 
@@ -34,6 +35,9 @@ class MakeAdminCommand extends AbstractUserCommand
             $output->writeln("Added admin role to {$username}");
         } catch (Throwable $e) {
             $output->writeln($e->getMessage());
+            return 1;
         }
+
+        return 0;
     }
 }
