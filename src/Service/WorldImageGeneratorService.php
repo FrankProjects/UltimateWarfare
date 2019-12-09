@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace FrankProjects\UltimateWarfare\Service;
+
+use FrankProjects\UltimateWarfare\Entity\World;
+use FrankProjects\UltimateWarfare\Entity\WorldSector;
+use FrankProjects\UltimateWarfare\Repository\WorldRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldSectorRepository;
+use FrankProjects\UltimateWarfare\Service\WorldGenerator\ImageBuilder\WorldImageBuilder;
+use FrankProjects\UltimateWarfare\Service\WorldGenerator\ImageBuilder\WorldSectorImageBuilder;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+
+final class WorldImageGeneratorService
+{
+    /**
+     * @var ParameterBagInterface
+     */
+    private $params;
+
+    /**
+     * @var WorldRepository
+     */
+    private $worldRepository;
+
+    /**
+     * @var WorldSectorRepository
+     */
+    private $worldSectorRepository;
+
+    /**
+     * WorldImageGeneratorService constructor
+     *
+     * @param ParameterBagInterface $params
+     * @param WorldRepository $worldRepository
+     * @param WorldSectorRepository $worldSectorRepository
+     */
+    public function __construct(
+        ParameterBagInterface $params,
+        WorldRepository $worldRepository,
+        WorldSectorRepository $worldSectorRepository
+    ) {
+        $this->params = $params;
+        $this->worldRepository = $worldRepository;
+        $this->worldSectorRepository = $worldSectorRepository;
+    }
+
+    /**
+     * @param World $world
+     */
+    public function generateWorldImage(World $world): void
+    {
+        $worldImageName = $world->getId() . '.jpg';
+        $worldImagePath = $this->params->get('kernel.project_dir') . '/public/images/world/' . $worldImageName;
+
+        $worldImageBuilder = new WorldImageBuilder();
+        $worldImageBuilder->generateForWorld($world, $worldImagePath);
+
+        $world->setImage($worldImageName);
+        $this->worldRepository->save($world);
+    }
+
+    /**
+     * @param WorldSector $worldSector
+     */
+    public function generateWorldSectorImage(WorldSector $worldSector): void
+    {
+        $worldSectorImageName = $worldSector->getId() . '.jpg';
+        $worldSectorImageDirectory = $this->params->get('kernel.project_dir') . '/public/images/world/sector/' . $worldSectorImageName;
+
+        $worldSectorImageBuilder = new WorldSectorImageBuilder();
+        $worldSectorImageBuilder->generateForWorldSector($worldSector, $worldSectorImageDirectory);
+
+        $worldSector->setImage($worldSectorImageName);
+        $this->worldSectorRepository->save($worldSector);
+    }
+}

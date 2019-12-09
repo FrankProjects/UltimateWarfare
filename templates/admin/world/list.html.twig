@@ -24,7 +24,7 @@
                     {% endif %}
 
                     <div>
-                        <img src="data:image/jpg;base64,{{ world.image }}" alt="{{ world.name }}">
+                        <img src="{{ asset('images/world/' ~ world.image) }}" alt="{{ world.name }}">
                     </div>
                 </td>
                 <td class="text-left" width="300">
@@ -51,6 +51,10 @@
                         Federation: {{ world.federation }}<br />
                         Federation limit: {{ world.federationLimit }}
                     </p>
+                    <p>
+                        WorldSectors: {{ world.worldSectors|length }}<br />
+                        WorldRegions: {{ world.worldRegions|length }}
+                    </p>
                 </td>
                 <td class="text-left" width="50">
                     <p>
@@ -58,9 +62,6 @@
                     </p>
                     <p>
                         <a class="btn btn-primary" href="{{ path('Admin/World/Generate', {'worldId': world.id}) }}">Generate Map</a>
-                    </p>
-                    <p>
-                        <a class="btn btn-primary" href="{{ path('Admin/World/GenerateImages', {'worldId': world.id}) }}">Generate Images</a>
                     </p>
                     <p>
                         <a class="btn btn-danger" href="{{ path('Admin/World/Reset', {'worldId': world.id}) }}">Reset</a>

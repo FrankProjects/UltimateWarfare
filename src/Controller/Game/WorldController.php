@@ -51,10 +51,34 @@ final class WorldController extends BaseGameController
      */
     public function selectWorld(): Response
     {
+        $validWorlds = [];
         $worlds = $this->worldRepository->findByPublic(true);
+        foreach ($worlds as $world) {
+            if (count($world->getPlayers()) >= $world->getMaxPlayers()) {
+                continue;
+            }
+
+            foreach ($world->getPlayers() as $worldPlayer) {
+                foreach ($this->getGameUser()->getPlayers() as $player) {
+                    if ($player->getId() === $worldPlayer->getId()) {
+                        continue 2;
+                    }
+                }
+            }
+
+            if (count($world->getWorldSectors()) != 25) {
+                continue;
+            }
+
+            if (count($world->getWorldRegions()) != 625) {
+                continue;
+            }
+
+            $validWorlds[] = $world;
+        }
 
         return $this->render('game/selectWorld.html.twig', [
-            'worlds' => $worlds,
+            'worlds' => $validWorlds,
             'user' => $this->getGameUser()
         ]);
     }

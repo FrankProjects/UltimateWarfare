@@ -11,11 +11,6 @@ FrankProjects\UltimateWarfare\Entity\World:
             generator:
                 strategy: IDENTITY
     fields:
-        round:
-            type: integer
-            nullable: false
-            options:
-                unsigned: true
         name:
             type: string
             nullable: false
@@ -23,9 +18,9 @@ FrankProjects\UltimateWarfare\Entity\World:
             options:
                 fixed: false
         image:
-            type: text
+            type: string
             nullable: false
-            length: 65535
+            length: 255
             options:
                 fixed: false
         description:
@@ -98,3 +93,5 @@ FrankProjects\UltimateWarfare\Entity\World:
     embedded:
         resources:
             class: FrankProjects\UltimateWarfare\Entity\World\Resources
+        mapConfiguration:
+            class: FrankProjects\UltimateWarfare\Entity\World\MapConfiguration
