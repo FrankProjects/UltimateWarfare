@@ -25,15 +25,12 @@ FrankProjects\UltimateWarfare\Entity\WorldSector:
             options:
                 unsigned: true
         image:
-            type: text
+            type: string
             nullable: false
-            length: 65535
+            length: 255
             options:
                 fixed: false
     oneToMany:
-        worldCountries:
-            targetEntity: WorldCountry
-            mappedBy: worldSector
         worldRegions:
             targetEntity: WorldRegion
             mappedBy: worldSector

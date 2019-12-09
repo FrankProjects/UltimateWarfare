@@ -68,11 +68,6 @@ class WorldRegion
     private $world;
 
     /**
-     * @var WorldCountry
-     */
-    private $worldCountry;
-
-    /**
      * @var WorldSector
      */
     private $worldSector;
@@ -333,22 +328,6 @@ class WorldRegion
     }
 
     /**
-     * @return WorldCountry
-     */
-    public function getWorldCountry(): WorldCountry
-    {
-        return $this->worldCountry;
-    }
-
-    /**
-     * @param WorldCountry $worldCountry
-     */
-    public function setWorldCountry(WorldCountry $worldCountry): void
-    {
-        $this->worldCountry = $worldCountry;
-    }
-
-    /**
      * @return Player|null
      */
     public function getPlayer(): ?Player
@@ -437,7 +416,7 @@ class WorldRegion
     }
 
     /**
-     * @param WorldCountry $worldCountry
+     * @param WorldSector $worldSector
      * @param int $x
      * @param int $y
      * @param int $z
@@ -445,12 +424,11 @@ class WorldRegion
      * @param int $space
      * @return WorldRegion
      */
-    public static function createForWorldCountry(WorldCountry $worldCountry, int $x, int $y, int $z, string $type, int $space): WorldRegion
+    public static function createForWorldSector(WorldSector $worldSector, int $x, int $y, int $z, string $type, int $space): WorldRegion
     {
         $worldRegion = new WorldRegion();
-        $worldRegion->setWorld($worldCountry->getWorldSector()->getWorld());
-        $worldRegion->setWorldCountry($worldCountry);
-        $worldRegion->setWorldSector($worldCountry->getWorldSector());
+        $worldRegion->setWorld($worldSector->getWorld());
+        $worldRegion->setWorldSector($worldSector);
         $worldRegion->setX($x);
         $worldRegion->setY($y);
         $worldRegion->setZ($z);
