@@ -18,4 +18,14 @@ interface CategoryRepository
      * @return Category[]
      */
     public function findAll(): array;
+
+    /**
+     * @param Category $category
+     */
+    public function remove(Category $category): void;
+
+    /**
+     * @param Category $category
+     */
+    public function save(Category $category): void;
 }

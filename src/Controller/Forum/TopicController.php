@@ -197,4 +197,28 @@ class TopicController extends BaseForumController
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * XXX TODO: Implement sticky topic
+     *
+     * @param Request $request
+     * @param int $topicId
+     * @return RedirectResponse
+     */
+    public function sticky(Request $request, int $topicId): RedirectResponse
+    {
+        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId], 302);
+    }
+
+    /**
+     * XXX TODO: Implement unsticky topic
+     *
+     * @param Request $request
+     * @param int $topicId
+     * @return RedirectResponse
+     */
+    public function unsticky(Request $request, int $topicId): RedirectResponse
+    {
+        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId], 302);
+    }
 }
