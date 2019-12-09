@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\WorldGenerator;
 
-use FrankProjects\UltimateWarfare\Entity\WorldGeneratorConfiguration;
+use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 
 class PerlinNoiseGenerator implements Generator
 {
@@ -14,15 +14,15 @@ class PerlinNoiseGenerator implements Generator
     private $world;
 
     /**
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
+     * @param MapConfiguration $mapConfiguration
      * @return array
      */
-    public function generate(WorldGeneratorConfiguration $worldGeneratorConfiguration): array
+    public function generate(MapConfiguration $mapConfiguration): array
     {
-        $this->initWorld($worldGeneratorConfiguration);
+        $this->initWorld($mapConfiguration);
 
-        for ($k = 0; $k < $this->getOctaves($worldGeneratorConfiguration->getSize()); $k++) {
-            $this->octave($worldGeneratorConfiguration->getSize(), $worldGeneratorConfiguration->getPersistence(), $k);
+        for ($k = 0; $k < $this->getOctaves($mapConfiguration->getSize()); $k++) {
+            $this->octave($mapConfiguration->getSize(), $mapConfiguration->getPersistence(), $k);
         }
 
         return $this->world;
@@ -72,16 +72,16 @@ class PerlinNoiseGenerator implements Generator
     }
 
     /**
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
+     * @param MapConfiguration $mapConfiguration
      */
-    private function initWorld(WorldGeneratorConfiguration $worldGeneratorConfiguration): void
+    private function initWorld(MapConfiguration $mapConfiguration): void
     {
-        mt_srand(intval($worldGeneratorConfiguration->getSeed() * $worldGeneratorConfiguration->getPersistence() * $worldGeneratorConfiguration->getSize()));
+        mt_srand(intval($mapConfiguration->getSeed() * $mapConfiguration->getPersistence() * $mapConfiguration->getSize()));
 
         $this->world = [];
-        for ($y = 0; $y < $worldGeneratorConfiguration->getSize(); $y++) {
+        for ($y = 0; $y < $mapConfiguration->getSize(); $y++) {
             $this->world[$y] = [];
-            for ($x = 0; $x < $worldGeneratorConfiguration->getSize(); $x++) {
+            for ($x = 0; $x < $mapConfiguration->getSize(); $x++) {
                 $this->world[$y][$x] = 0;
             }
         }

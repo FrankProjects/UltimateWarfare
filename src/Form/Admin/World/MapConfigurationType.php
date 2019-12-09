@@ -1,8 +1,8 @@
 <?php
 
-namespace FrankProjects\UltimateWarfare\Form\Admin;
+namespace FrankProjects\UltimateWarfare\Form\Admin\World;
 
-use FrankProjects\UltimateWarfare\Entity\WorldGeneratorConfiguration;
+use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class WorldGeneratorType extends AbstractType
+class MapConfigurationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -48,7 +48,7 @@ class WorldGeneratorType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WorldGeneratorConfiguration::class,
+            'data_class' => MapConfiguration::class,
             'translation_domain' => 'world'
         ]);
     }

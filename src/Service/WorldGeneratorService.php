@@ -5,22 +5,16 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service;
 
 use FrankProjects\UltimateWarfare\Entity\World;
-use FrankProjects\UltimateWarfare\Entity\WorldCountry;
-use FrankProjects\UltimateWarfare\Entity\WorldGeneratorConfiguration;
+use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldSector;
-use FrankProjects\UltimateWarfare\Repository\WorldCountryRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldSectorRepository;
 use FrankProjects\UltimateWarfare\Service\WorldGenerator\PerlinNoiseGenerator;
+use RuntimeException;
 
 final class WorldGeneratorService
 {
-    /**
-     * @var WorldCountryRepository
-     */
-    private $worldCountryRepository;
-
     /**
      * @var WorldRegionRepository
      */
@@ -37,79 +31,91 @@ final class WorldGeneratorService
     private $worldGenerator;
 
     /**
+     * @var WorldImageGeneratorService
+     */
+    private $worldImageGeneratorService;
+
+    /**
      * WorldGeneratorService constructor
      *
-     * @param WorldCountryRepository $worldCountryRepository
      * @param WorldRegionRepository $worldRegionRepository
      * @param WorldSectorRepository $worldSectorRepository
      * @param PerlinNoiseGenerator $worldGenerator
+     * @param WorldImageGeneratorService $worldImageGeneratorService
      */
     public function __construct(
-        WorldCountryRepository $worldCountryRepository,
         WorldRegionRepository $worldRegionRepository,
         WorldSectorRepository $worldSectorRepository,
-        PerlinNoiseGenerator $worldGenerator
+        PerlinNoiseGenerator $worldGenerator,
+        WorldImageGeneratorService $worldImageGeneratorService
     ) {
-        $this->worldCountryRepository = $worldCountryRepository;
         $this->worldRegionRepository = $worldRegionRepository;
         $this->worldSectorRepository = $worldSectorRepository;
         $this->worldGenerator = $worldGenerator;
+        $this->worldImageGeneratorService = $worldImageGeneratorService;
     }
 
     /**
      * @param World $world
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
      * @param bool $save
+     * @param int $sector
      * @return array
      */
-    public function generate(World $world, WorldGeneratorConfiguration $worldGeneratorConfiguration, bool $save): array
+    public function generate(World $world, bool $save, int $sector): array
     {
-        if ($worldGeneratorConfiguration->getSeed() === 0) {
-            $worldGeneratorConfiguration->setSeed(intval(microtime(true)));
+        $mapConfiguration = $world->getMapConfiguration();
+        if ($mapConfiguration->getSeed() === 0) {
+            $mapConfiguration->setSeed(intval(microtime(true)));
         }
-        $map = $this->worldGenerator->generate($worldGeneratorConfiguration);
+        $map = $this->worldGenerator->generate($mapConfiguration);
 
         if ($save) {
-            $this->generateWorldSectors($world, $map, $worldGeneratorConfiguration);
+            $this->generateWorldSectors($world, $map, $mapConfiguration, $sector);
+            $this->worldImageGeneratorService->generateWorldImage($world);
         }
 
         return $map;
     }
 
-    private function generateWorldSectors(World $world, array $map, WorldGeneratorConfiguration $worldGeneratorConfiguration): void
+    /**
+     * @param World $world
+     * @param array $map
+     * @param MapConfiguration $mapConfiguration
+     * @param int $sector
+     */
+    private function generateWorldSectors(World $world, array $map, MapConfiguration $mapConfiguration, int $sector): void
     {
-        for ($y = 1; $y <= 5; $y++) {
-            for ($x = 1; $x <= 5; $x++) {
-                $worldSector = WorldSector::createForWorld($world, $x, $y);
-                $this->worldSectorRepository->save($worldSector);
-
-                $this->generateWorldCountries($worldSector, $map, $worldGeneratorConfiguration);
-            }
+        if ($mapConfiguration->getSize() != 25) {
+            throw new RuntimeException("MapGenerator only supports size 25!");
         }
-    }
 
-    private function generateWorldCountries(WorldSector $worldSector, array $map, WorldGeneratorConfiguration $worldGeneratorConfiguration): void
-    {
+        if ($sector !== 0) {
+            // XXX TODO: Improve world generator speed by generating per sector! Allows us to build bigger maps
+            return;
+        }
+
         for ($y = 1; $y <= 5; $y++) {
             for ($x = 1; $x <= 5; $x++) {
-                $worldCountry = WorldCountry::createForWorldSector($worldSector, $x, $y);
-                $this->worldCountryRepository->save($worldCountry);
-
-                $this->generateWorldRegions($worldCountry, $map, $worldGeneratorConfiguration);
+                $worldSector = $this->worldSectorRepository->findByWorldXY($world, $x, $y);
+                if ($worldSector === null) {
+                    $worldSector = WorldSector::createForWorld($world, $x, $y);
+                    $this->worldSectorRepository->save($worldSector);
+                }
+                $this->generateWorldRegions($worldSector, $map, $mapConfiguration);
+                $this->worldImageGeneratorService->generateWorldSectorImage($worldSector);
             }
         }
     }
 
     /**
-     * @param WorldCountry $worldCountry
+     * @param WorldSector $worldSector
      * @param array $map
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
+     * @param MapConfiguration $mapConfiguration
      */
-    private function generateWorldRegions(WorldCountry $worldCountry, array $map, WorldGeneratorConfiguration $worldGeneratorConfiguration): void
+    private function generateWorldRegions(WorldSector $worldSector, array $map, MapConfiguration $mapConfiguration): void
     {
-        $worldSector = $worldCountry->getWorldSector();
-        $startX = (($worldSector->getX() - 1) * 5 * 5) + (($worldCountry->getX() - 1) * 5) + 1;
-        $startY = (($worldSector->getY() - 1) * 5 * 5) + (($worldCountry->getY() - 1) * 5) + 1;
+        $startX = (($worldSector->getX() - 1) * 5) + 1;
+        $startY = (($worldSector->getY() - 1) * 5) + 1;
 
         foreach ($map as $x => $yData) {
             $x++;
@@ -119,26 +125,36 @@ final class WorldGeneratorService
                     continue;
                 }
                 $z = intval($z * 100);
-                $type = $this->getTypeFromConfiguration($worldGeneratorConfiguration, $z);
+                $type = $this->getTypeFromConfiguration($mapConfiguration, $z);
                 $space = $this->getRandomSpaceFromType($type);
-                $worldRegion = WorldRegion::createForWorldCountry($worldCountry, $x, $y, $z, $type, $space);
+
+                $worldRegion = $this->worldRegionRepository->findByWorldXY($worldSector->getWorld(), $x, $y);
+                if ($worldRegion === null) {
+                    $worldRegion = WorldRegion::createForWorldSector($worldSector, $x, $y, $z, $type, $space);
+                } else {
+                    $worldRegion->setZ($z);
+                    $worldRegion->setType($type);
+                    $worldRegion->setSpace($space);
+                    $worldRegion->setPopulation($space * 10);
+                    $worldRegion->setWorldSector($worldSector);
+                }
                 $this->worldRegionRepository->save($worldRegion);
             }
         }
     }
 
     /**
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
+     * @param MapConfiguration $mapConfiguration
      * @param int $z
      * @return string
      */
-    private static function getTypeFromConfiguration(WorldGeneratorConfiguration $worldGeneratorConfiguration, int $z): string
+    private static function getTypeFromConfiguration(MapConfiguration $mapConfiguration, int $z): string
     {
-        if ($z < $worldGeneratorConfiguration->getWaterLevel()) {
+        if ($z < $mapConfiguration->getWaterLevel()) {
             return WorldRegion::TYPE_WATER;
-        } elseif ($z < $worldGeneratorConfiguration->getBeachLevel()) {
+        } elseif ($z < $mapConfiguration->getBeachLevel()) {
             return WorldRegion::TYPE_BEACH;
-        } elseif ($z < $worldGeneratorConfiguration->getForrestLevel()) {
+        } elseif ($z < $mapConfiguration->getForrestLevel()) {
             return WorldRegion::TYPE_FORREST;
         }
         return WorldRegion::TYPE_MOUNTAIN;

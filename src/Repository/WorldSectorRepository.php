@@ -17,6 +17,14 @@ interface WorldSectorRepository
     public function findByIdAndWorld(int $id, World $world): ?WorldSector;
 
     /**
+     * @param World $world
+     * @param int $x
+     * @param int $y
+     * @return WorldSector|null
+     */
+    public function findByWorldXY(World $world, int $x, int $y): ?WorldSector;
+
+    /**
      * @param WorldSector $worldSector
      */
     public function save(WorldSector $worldSector): void;

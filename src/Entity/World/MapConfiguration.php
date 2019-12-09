@@ -2,59 +2,39 @@
 
 declare(strict_types=1);
 
-namespace FrankProjects\UltimateWarfare\Entity;
+namespace FrankProjects\UltimateWarfare\Entity\World;
 
-class WorldGeneratorConfiguration
+class MapConfiguration
 {
-    const DEFAULT_SIZE = 125;
-    const DEFAULT_PERSISTENCE = 0.9;
-    const DEFAULT_SEED = 1550441399;
-    const DEFAULT_WATER_LEVEL = 160;
-    const DEFAULT_BEACH_LEVEL = 165;
-    const DEFAULT_FORREST_LEVEL = 230;
-
     /**
      * @var int
      */
-    private $size;
+    private $size = 25;
 
     /**
      * @var float
      */
-    private $persistence;
+    private $persistence = 0.9;
 
     /**
      * @var int
      */
-    private $seed;
+    private $seed = 1550441399;
 
     /**
      * @var int
      */
-    private $waterLevel;
+    private $waterLevel = 160;
 
     /**
      * @var int
      */
-    private $beachLevel;
+    private $beachLevel = 165;
 
     /**
      * @var int
      */
-    private $forrestLevel;
-
-    /**
-     * WorldGeneratorConfiguration constructor.
-     */
-    public function __construct()
-    {
-        $this->setSize(self::DEFAULT_SIZE);
-        $this->setPersistence(self::DEFAULT_PERSISTENCE);
-        $this->setSeed(self::DEFAULT_SEED);
-        $this->setWaterLevel(self::DEFAULT_WATER_LEVEL);
-        $this->setBeachLevel(self::DEFAULT_BEACH_LEVEL);
-        $this->setForrestLevel(self::DEFAULT_FORREST_LEVEL);
-    }
+    private $forrestLevel = 230;
 
     /**
      * @return int

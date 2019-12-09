@@ -48,4 +48,22 @@ final class DoctrineCategoryRepository implements CategoryRepository
     {
         return $this->repository->findAll();
     }
+
+    /**
+     * @param Category $category
+     */
+    public function remove(Category $category): void
+    {
+        $this->entityManager->remove($category);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param Category $category
+     */
+    public function save(Category $category): void
+    {
+        $this->entityManager->persist($category);
+        $this->entityManager->flush();
+    }
 }

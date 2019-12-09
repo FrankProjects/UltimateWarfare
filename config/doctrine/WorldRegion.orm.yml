@@ -89,12 +89,6 @@ FrankProjects\UltimateWarfare\Entity\WorldRegion:
             joinColumn:
                 name: world_id
                 referencedColumnName: id
-        worldCountry:
-            targetEntity: WorldCountry
-            inversedBy: worldRegions
-            joinColumn:
-                name: country_id
-                referencedColumnName: id
         worldSector:
             targetEntity: WorldSector
             inversedBy: worldRegions

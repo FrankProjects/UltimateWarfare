@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 use FrankProjects\UltimateWarfare\Entity\World\Resources;
 use RuntimeException;
 
@@ -33,7 +34,7 @@ class World
     /**
      * @var string
      */
-    private $image;
+    private $image = '';
 
     /**
      * @var string
@@ -116,6 +117,11 @@ class World
     private $resources;
 
     /**
+     * @var MapConfiguration
+     */
+    private $mapConfiguration;
+
+    /**
      * World constructor.
      */
     public function __construct()
@@ -127,6 +133,7 @@ class World
         $this->messages = new ArrayCollection();
         $this->federations = new ArrayCollection();
         $this->resources = new Resources();
+        $this->mapConfiguration = new MapConfiguration();
     }
 
     /**
@@ -505,5 +512,21 @@ class World
     public function setResources(Resources $resources): void
     {
         $this->resources = $resources;
+    }
+
+    /**
+     * @return MapConfiguration
+     */
+    public function getMapConfiguration(): MapConfiguration
+    {
+        return $this->mapConfiguration;
+    }
+
+    /**
+     * @param MapConfiguration $mapConfiguration
+     */
+    public function setMapConfiguration(MapConfiguration $mapConfiguration): void
+    {
+        $this->mapConfiguration = $mapConfiguration;
     }
 }

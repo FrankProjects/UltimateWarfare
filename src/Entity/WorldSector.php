@@ -38,11 +38,6 @@ class WorldSector
     private $world;
 
     /**
-     * @var Collection|WorldCountry[]
-     */
-    private $worldCountries = [];
-
-    /**
      * @var Collection|WorldRegion[]
      */
     private $worldRegions = [];
@@ -52,7 +47,6 @@ class WorldSector
      */
     public function __construct()
     {
-        $this->worldCountries = new ArrayCollection();
         $this->worldRegions = new ArrayCollection();
     }
 
@@ -156,22 +150,6 @@ class WorldSector
     public function setWorldRegions(Collection $worldRegions): void
     {
         $this->worldRegions = $worldRegions;
-    }
-
-    /**
-     * @return Collection|WorldCountry[]
-     */
-    public function getWorldCountries(): Collection
-    {
-        return $this->worldCountries;
-    }
-
-    /**
-     * @param Collection $worldCountries
-     */
-    public function setWorldCountries(Collection $worldCountries): void
-    {
-        $this->worldCountries = $worldCountries;
     }
 
     /**
