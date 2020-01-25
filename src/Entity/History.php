@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * XXX TODO: Remove round and set world name
- */
 class History
 {
     private ?int $id;
     private int $worldId;
-    private int $round;
     private string $name;
     private int $endDate;
 
@@ -28,16 +24,6 @@ class History
     public function getWorldId(): int
     {
         return $this->worldId;
-    }
-
-    public function setRound(int $round): void
-    {
-        $this->round = $round;
-    }
-
-    public function getRound(): int
-    {
-        return $this->round;
     }
 
     public function setName(string $name): void

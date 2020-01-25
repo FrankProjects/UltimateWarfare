@@ -10,10 +10,9 @@ interface HistoryPlayerRepository
 {
     /**
      * @param int $worldId
-     * @param int $round
      * @return HistoryPlayer[]
      */
-    public function findByWorldAndRound(int $worldId, int $round): array;
+    public function findByWorld(int $worldId): array;
 
     public function save(HistoryPlayer $historyPlayer): void;
 }

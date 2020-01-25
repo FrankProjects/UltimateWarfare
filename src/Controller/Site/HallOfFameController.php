@@ -35,15 +35,15 @@ final class HallOfFameController extends BaseController
         ]);
     }
 
-    public function round(int $worldId, int $round): Response
+    public function world(int $worldId): Response
     {
         /**
          * XXX TODO: order by
          */
-        $federations = $this->historyFederationRepository->findByWorldAndRound($worldId, $round);
-        $players = $this->historyPlayerRepository->findByWorldAndRound($worldId, $round);
+        $federations = $this->historyFederationRepository->findByWorld($worldId);
+        $players = $this->historyPlayerRepository->findByWorld($worldId);
 
-        return $this->render('site/hallOfFameRound.html.twig', [
+        return $this->render('site/hallOfFameWorld.html.twig', [
             'federations' => $federations,
             'players' => $players
         ]);

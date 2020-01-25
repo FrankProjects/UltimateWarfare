@@ -24,11 +24,6 @@ FrankProjects\UltimateWarfare\Entity\HistoryPlayer:
             options:
                 unsigned: true
             column: world_id
-        round:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
         playerName:
             type: string
             nullable: false
@@ -42,12 +37,12 @@ FrankProjects\UltimateWarfare\Entity\HistoryPlayer:
             options:
                 unsigned: false
             column: user_id
-        fedId:
+        federationId:
             type: integer
             nullable: false
             options:
                 unsigned: false
-            column: fed_id
+            column: federation_id
         regions:
             type: integer
             nullable: false

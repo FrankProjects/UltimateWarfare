@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * XXX TODO: Remove round from model
- */
 class HistoryPlayer
 {
     private ?int $id;
     private int $worldId;
-    private int $round;
     private string $playerName;
     private int $userId;
-    private int $fedId;
+    private int $federationId;
     private int $regions;
     private int $networth;
 
@@ -31,16 +27,6 @@ class HistoryPlayer
     public function getWorldId(): int
     {
         return $this->worldId;
-    }
-
-    public function setRound(int $round): void
-    {
-        $this->round = $round;
-    }
-
-    public function getRound(): int
-    {
-        return $this->round;
     }
 
     public function setPlayerName(string $playerName): void
@@ -63,14 +49,14 @@ class HistoryPlayer
         return $this->userId;
     }
 
-    public function setFedId(int $fedId): void
+    public function getFederationId(): int
     {
-        $this->fedId = $fedId;
+        return $this->federationId;
     }
 
-    public function getFedId(): int
+    public function setFederationId(int $federationId): void
     {
-        return $this->fedId;
+        $this->federationId = $federationId;
     }
 
     public function setRegions(int $regions): void

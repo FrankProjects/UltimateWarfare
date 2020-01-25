@@ -710,9 +710,9 @@ Site/HallOfFame:
     path:      /hall-of-fame
     controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::hallOfFame
 
-Site/HallOfFameRound:
-    path:      /hall-of-fame/{worldId}/{round}
-    controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::round
+Site/HallOfFameWorld:
+    path:      /hall-of-fame/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::world
     requirements:
         worldId: '\d+'
         round: '\d+'

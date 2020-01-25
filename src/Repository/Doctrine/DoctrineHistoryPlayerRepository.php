@@ -22,12 +22,11 @@ final class DoctrineHistoryPlayerRepository implements HistoryPlayerRepository
 
     /**
      * @param int $worldId
-     * @param int $round
      * @return HistoryPlayer[]
      */
-    public function findByWorldAndRound(int $worldId, int $round): array
+    public function findByWorld(int $worldId): array
     {
-        return $this->repository->findBy(['worldId' => $worldId, 'round' => $round], ['regions' => 'DESC']);
+        return $this->repository->findBy(['worldId' => $worldId], ['regions' => 'DESC']);
     }
 
     public function save(HistoryPlayer $historyPlayer): void

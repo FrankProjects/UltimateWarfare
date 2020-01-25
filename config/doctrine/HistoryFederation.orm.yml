@@ -21,23 +21,18 @@ FrankProjects\UltimateWarfare\Entity\HistoryFederation:
             options:
                 unsigned: true
             column: world_id
-        round:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
         federation:
             type: string
             nullable: false
             length: 64
             options:
                 fixed: false
-        fedId:
+        federationId:
             type: integer
             nullable: false
             options:
                 unsigned: false
-            column: fed_id
+            column: federation_id
         regions:
             type: integer
             nullable: false
