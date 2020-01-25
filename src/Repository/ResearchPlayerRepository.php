@@ -14,13 +14,7 @@ interface ResearchPlayerRepository
      */
     public function getNonActiveCompletedResearch(int $timestamp): array;
 
-    /**
-     * @param ResearchPlayer $researchPlayer
-     */
     public function remove(ResearchPlayer $researchPlayer): void;
 
-    /**
-     * @param ResearchPlayer $researchPlayer
-     */
     public function save(ResearchPlayer $researchPlayer): void;
 }

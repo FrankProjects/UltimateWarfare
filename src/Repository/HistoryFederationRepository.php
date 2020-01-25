@@ -15,8 +15,5 @@ interface HistoryFederationRepository
      */
     public function findByWorldAndRound(int $worldId, int $round): array;
 
-    /**
-     * @param HistoryFederation $historyFederation
-     */
     public function save(HistoryFederation $historyFederation): void;
 }

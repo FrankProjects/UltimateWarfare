@@ -10,16 +10,8 @@ use FrankProjects\UltimateWarfare\Entity\User;
 
 interface TopicRepository
 {
-    /**
-     * @param int $id
-     * @return Topic|null
-     */
     public function find(int $id): ?Topic;
 
-    /**
-     * @param User $user
-     * @return Topic|null
-     */
     public function getLastTopicByUser(User $user): ?Topic;
 
     /**
@@ -34,13 +26,7 @@ interface TopicRepository
      */
     public function getByCategorySortedByStickyAndDate(Category $category): array;
 
-    /**
-     * @param Topic $topic
-     */
     public function remove(Topic $topic): void;
 
-    /**
-     * @param Topic $topic
-     */
     public function save(Topic $topic): void;
 }

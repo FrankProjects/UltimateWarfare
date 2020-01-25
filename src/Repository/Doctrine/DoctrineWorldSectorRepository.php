@@ -13,51 +13,25 @@ use FrankProjects\UltimateWarfare\Repository\WorldSectorRepository;
 
 final class DoctrineWorldSectorRepository implements WorldSectorRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineWorldSectorRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(WorldSector::class);
     }
 
-    /**
-     * @param int $id
-     * @param World $world
-     * @return WorldSector|null
-     */
     public function findByIdAndWorld(int $id, World $world): ?WorldSector
     {
         return $this->repository->findOneBy(['id' => $id, 'world' => $world]);
     }
 
-    /**
-     * @param World $world
-     * @param int $x
-     * @param int $y
-     * @return WorldSector|null
-     */
     public function findByWorldXY(World $world, int $x, int $y): ?WorldSector
     {
         return $this->repository->findOneBy(['world' => $world, 'x' => $x, 'y' => $y]);
     }
 
-    /**
-     * @param WorldSector $worldSector
-     */
     public function save(WorldSector $worldSector): void
     {
         $this->entityManager->persist($worldSector);

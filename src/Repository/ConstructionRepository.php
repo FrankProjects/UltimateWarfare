@@ -11,10 +11,6 @@ use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 
 interface ConstructionRepository
 {
-    /**
-     * @param int $id
-     * @return Construction|null
-     */
     public function find(int $id): ?Construction;
 
     /**
@@ -23,16 +19,8 @@ interface ConstructionRepository
      */
     public function findByPlayer(Player $player): array;
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @return array
-     */
     public function getGameUnitConstructionSumByWorldRegion(WorldRegion $worldRegion): array;
 
-    /**
-     * @param Player $player
-     * @return array
-     */
     public function getGameUnitConstructionSumByPlayer(Player $player): array;
 
     /**
@@ -48,13 +36,7 @@ interface ConstructionRepository
      */
     public function getCompletedConstructions(int $timestamp): array;
 
-    /**
-     * @param Construction $construction
-     */
     public function remove(Construction $construction): void;
 
-    /**
-     * @param Construction $construction
-     */
     public function save(Construction $construction): void;
 }

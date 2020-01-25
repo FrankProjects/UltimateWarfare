@@ -13,41 +13,20 @@ use FrankProjects\UltimateWarfare\Repository\TopicRepository;
 
 final class DoctrineTopicRepository implements TopicRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineTopicRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Topic::class);
     }
 
-    /**
-     * @param int $id
-     * @return Topic|null
-     */
     public function find(int $id): ?Topic
     {
         return $this->repository->find($id);
     }
 
-    /**
-     * @param User $user
-     * @return Topic|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
     public function getLastTopicByUser(User $user): ?Topic
     {
         return $this->entityManager->createQuery(
@@ -88,18 +67,12 @@ final class DoctrineTopicRepository implements TopicRepository
             ->getResult();
     }
 
-    /**
-     * @param Topic $topic
-     */
     public function remove(Topic $topic): void
     {
         $this->entityManager->remove($topic);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Topic $topic
-     */
     public function save(Topic $topic): void
     {
         $this->entityManager->persist($topic);

@@ -11,21 +11,9 @@ use FrankProjects\UltimateWarfare\Repository\OperationRepository;
 
 final class DoctrineOperationRepository implements OperationRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineOperationRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;

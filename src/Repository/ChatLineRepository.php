@@ -20,13 +20,7 @@ interface ChatLineRepository
      */
     public function findChatLinesOlderThanSeconds(int $seconds): array;
 
-    /**
-     * @param ChatLine $chatLine
-     */
     public function remove(ChatLine $chatLine): void;
 
-    /**
-     * @param ChatLine $chatLine
-     */
     public function save(ChatLine $chatLine): void;
 }

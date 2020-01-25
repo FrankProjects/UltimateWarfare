@@ -12,31 +12,15 @@ use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
 
 final class DoctrineResearchRepository implements ResearchRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineResearchRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Research::class);
     }
 
-    /**
-     * @param int $id
-     * @return Research|null
-     */
     public function find(int $id): ?Research
     {
         return $this->repository->find($id);
@@ -95,18 +79,12 @@ final class DoctrineResearchRepository implements ResearchRepository
             )->getResult();
     }
 
-    /**
-     * @param Research $research
-     */
     public function remove(Research $research): void
     {
         $this->entityManager->remove($research);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Research $research
-     */
     public function save(Research $research): void
     {
         $this->entityManager->persist($research);

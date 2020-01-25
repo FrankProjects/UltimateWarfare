@@ -12,31 +12,15 @@ use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 
 final class DoctrineReportRepository implements ReportRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineReportRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Report::class);
     }
 
-    /**
-     * @param int $id
-     * @return Report|null
-     */
     public function find(int $id): ?Report
     {
         return $this->repository->find($id);
@@ -88,18 +72,12 @@ final class DoctrineReportRepository implements ReportRepository
             ->getResult();
     }
 
-    /**
-     * @param Report $report
-     */
     public function remove(Report $report): void
     {
         $this->entityManager->remove($report);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Report $report
-     */
     public function save(Report $report): void
     {
         $this->entityManager->persist($report);

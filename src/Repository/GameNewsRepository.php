@@ -8,10 +8,6 @@ use FrankProjects\UltimateWarfare\Entity\GameNews;
 
 interface GameNewsRepository
 {
-    /**
-     * @param int $id
-     * @return GameNews|null
-     */
     public function find(int $id): ?GameNews;
 
     /**
@@ -24,13 +20,7 @@ interface GameNewsRepository
      */
     public function findActiveMainPageNews(): array;
 
-    /**
-     * @param GameNews $gameNews
-     */
     public function remove(GameNews $gameNews): void;
 
-    /**
-     * @param GameNews $gameNews
-     */
     public function save(GameNews $gameNews): void;
 }

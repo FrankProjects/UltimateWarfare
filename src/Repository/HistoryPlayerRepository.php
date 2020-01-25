@@ -15,8 +15,5 @@ interface HistoryPlayerRepository
      */
     public function findByWorldAndRound(int $worldId, int $round): array;
 
-    /**
-     * @param HistoryPlayer $historyPlayer
-     */
     public function save(HistoryPlayer $historyPlayer): void;
 }

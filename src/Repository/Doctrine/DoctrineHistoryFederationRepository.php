@@ -12,21 +12,9 @@ use FrankProjects\UltimateWarfare\Repository\HistoryFederationRepository;
 
 final class DoctrineHistoryFederationRepository implements HistoryFederationRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineHistoryFederationRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -43,9 +31,6 @@ final class DoctrineHistoryFederationRepository implements HistoryFederationRepo
         return $this->repository->findBy(['worldId' => $worldId, 'round' => $round], ['regions' => 'DESC']);
     }
 
-    /**
-     * @param HistoryFederation $historyFederation
-     */
     public function save(HistoryFederation $historyFederation): void
     {
         $this->entityManager->persist($historyFederation);

@@ -11,21 +11,9 @@ use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 
 final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineResearchPlayerRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -47,18 +35,12 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
             )->getResult();
     }
 
-    /**
-     * @param ResearchPlayer $researchPlayer
-     */
     public function remove(ResearchPlayer $researchPlayer): void
     {
         $this->entityManager->remove($researchPlayer);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param ResearchPlayer $researchPlayer
-     */
     public function save(ResearchPlayer $researchPlayer): void
     {
         $this->entityManager->persist($researchPlayer);

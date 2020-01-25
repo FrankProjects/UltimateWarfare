@@ -11,31 +11,15 @@ use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 
 final class DoctrineWorldRepository implements WorldRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineWorldRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(World::class);
     }
 
-    /**
-     * @param int $id
-     * @return World|null
-     */
     public function find(int $id): ?World
     {
         return $this->repository->find($id);
@@ -77,9 +61,6 @@ final class DoctrineWorldRepository implements WorldRepository
         $this->entityManager->flush();
     }
 
-    /**
-     * @param World $world
-     */
     public function save(World $world): void
     {
         $this->entityManager->persist($world);
