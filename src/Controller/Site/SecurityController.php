@@ -10,10 +10,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class SecurityController extends AbstractController
 {
-    /**
-     * @param AuthenticationUtils $authUtils
-     * @return Response
-     */
     public function login(AuthenticationUtils $authUtils): Response
     {
         $error = $authUtils->getLastAuthenticationError();

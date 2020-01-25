@@ -12,28 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class HeadquarterController extends BaseGameController
 {
-    /**
-     * @var GameUnitTypeRepository
-     */
-    private $gameUnitTypeRepository;
+    private GameUnitTypeRepository $gameUnitTypeRepository;
+    private ReportRepository $reportRepository;
+    private WorldRegionUnitRepository $worldRegionUnitRepository;
 
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
-
-    /**
-     * @var WorldRegionUnitRepository
-     */
-    private $worldRegionUnitRepository;
-
-    /**
-     * HeadquarterController constructor.
-     *
-     * @param GameUnitTypeRepository $gameUnitTypeRepository
-     * @param ReportRepository $reportRepository
-     * @param WorldRegionUnitRepository $worldRegionUnitRepository
-     */
     public function __construct(
         GameUnitTypeRepository $gameUnitTypeRepository,
         ReportRepository $reportRepository,
@@ -44,9 +26,6 @@ final class HeadquarterController extends BaseGameController
         $this->worldRegionUnitRepository = $worldRegionUnitRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function army(): Response
     {
         $gameUnitTypes = [
@@ -61,9 +40,6 @@ final class HeadquarterController extends BaseGameController
         ]);
     }
 
-    /**
-     * @return Response
-     */
     public function headquarter(): Response
     {
         $reports = $this->reportRepository->findReports($this->getPlayer(), 10);
@@ -74,9 +50,6 @@ final class HeadquarterController extends BaseGameController
         ]);
     }
 
-    /**
-     * @return Response
-     */
     public function income(): Response
     {
         return $this->render('game/headquarter/income.html.twig', [
@@ -85,9 +58,6 @@ final class HeadquarterController extends BaseGameController
         ]);
     }
 
-    /**
-     * @return Response
-     */
     public function infrastructure(): Response
     {
         $gameUnitTypes = [

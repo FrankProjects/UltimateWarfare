@@ -18,28 +18,10 @@ use Throwable;
 
 final class WorldController extends AbstractController
 {
-    /**
-     * @var WorldRepository
-     */
-    private $worldRepository;
+    private WorldRepository $worldRepository;
+    private WorldActionService $worldActionService;
+    private WorldGeneratorService $worldGeneratorService;
 
-    /**
-     * @var WorldActionService
-     */
-    private $worldActionService;
-
-    /**
-     * @var WorldGeneratorService
-     */
-    private $worldGeneratorService;
-
-    /**
-     * WorldController constructor
-     *
-     * @param WorldRepository $worldRepository
-     * @param WorldActionService $worldActionService
-     * @param WorldGeneratorService $worldGeneratorService
-     */
     public function __construct(
         WorldRepository $worldRepository,
         WorldActionService $worldActionService,
@@ -50,14 +32,11 @@ final class WorldController extends AbstractController
         $this->worldGeneratorService = $worldGeneratorService;
     }
 
-    /**
-     * XXX TODO: Fix creating world sectors / regions
-     *
-     * @param Request $request
-     * @return Response
-     */
     public function create(Request $request): Response
     {
+        /**
+         * XXX TODO: Fix creating world sectors / regions
+         */
         $world = new World();
         $form = $this->createForm(WorldType::class, $world);
 
@@ -73,9 +52,6 @@ final class WorldController extends AbstractController
         ]);
     }
 
-    /**
-     * @return Response
-     */
     public function list(): Response
     {
         return $this->render('admin/world/list.html.twig', [
@@ -83,11 +59,6 @@ final class WorldController extends AbstractController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param int $worldId
-     * @return Response
-     */
     public function edit(Request $request, int $worldId): Response
     {
         $world = $this->worldRepository->find($worldId);
@@ -109,10 +80,6 @@ final class WorldController extends AbstractController
         ]);
     }
 
-    /**
-     * @param int $worldId
-     * @return RedirectResponse
-     */
     public function remove(int $worldId): RedirectResponse
     {
         try {
@@ -125,10 +92,6 @@ final class WorldController extends AbstractController
         return $this->redirectToRoute('Admin/World/List', [], 302);
     }
 
-    /**
-     * @param int $worldId
-     * @return RedirectResponse
-     */
     public function reset(int $worldId): RedirectResponse
     {
         try {
@@ -141,12 +104,6 @@ final class WorldController extends AbstractController
         return $this->redirectToRoute('Admin/World/List', [], 302);
     }
 
-    /**
-     * @param Request $request
-     * @param int $worldId
-     * @param int $sector
-     * @return Response
-     */
     public function generate(Request $request, int $worldId, int $sector = 0): Response
     {
         $world = $this->worldRepository->find($worldId);

@@ -11,26 +11,14 @@ use Throwable;
 
 final class FederationBankController extends BaseGameController
 {
-    /**
-     * @var FederationBankActionService
-     */
-    private $federationBankActionService;
+    private FederationBankActionService $federationBankActionService;
 
-    /**
-     * FederationBankController constructor.
-     *
-     * @param FederationBankActionService $federationBankActionService
-     */
     public function __construct(
         FederationBankActionService $federationBankActionService
     ) {
         $this->federationBankActionService = $federationBankActionService;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function deposit(Request $request): Response
     {
         try {
@@ -48,10 +36,6 @@ final class FederationBankController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function withdraw(Request $request): Response
     {
         try {

@@ -11,22 +11,9 @@ use Throwable;
 
 final class ResearchController extends BaseGameController
 {
-    /**
-     * @var ResearchRepository
-     */
-    private $researchRepository;
+    private ResearchRepository $researchRepository;
+    private ResearchActionService $researchActionService;
 
-    /**
-     * @var ResearchActionService
-     */
-    private $researchActionService;
-
-    /**
-     * ResearchController
-     *
-     * @param ResearchRepository $researchRepository
-     * @param ResearchActionService $researchActionService
-     */
     public function __construct(
         ResearchRepository $researchRepository,
         ResearchActionService $researchActionService
@@ -35,9 +22,6 @@ final class ResearchController extends BaseGameController
         $this->researchActionService = $researchActionService;
     }
 
-    /**
-     * @return Response
-     */
     public function research(): Response
     {
         $player = $this->getPlayer();
@@ -70,9 +54,6 @@ final class ResearchController extends BaseGameController
         ]);
     }
 
-    /**
-     * @return Response
-     */
     public function history(): Response
     {
         $player = $this->getPlayer();
@@ -84,10 +65,6 @@ final class ResearchController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $researchId
-     * @return Response
-     */
     public function performResearch(int $researchId): Response
     {
         try {
@@ -100,10 +77,6 @@ final class ResearchController extends BaseGameController
         return $this->redirectToRoute('Game/Research');
     }
 
-    /**
-     * @param int $researchId
-     * @return Response
-     */
     public function performCancel(int $researchId): Response
     {
         try {

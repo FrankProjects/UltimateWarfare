@@ -11,28 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class SectorController extends BaseGameController
 {
-    /**
-     * @var WorldSectorRepository
-     */
-    private $worldSectorRepository;
+    private WorldSectorRepository $worldSectorRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private PlayerRepository $playerRepository;
 
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * SectorController
-     *
-     * @param WorldSectorRepository $worldSectorRepository
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param PlayerRepository $playerRepository
-     */
     public function __construct(
         WorldSectorRepository $worldSectorRepository,
         WorldRegionRepository $worldRegionRepository,
@@ -43,10 +25,6 @@ final class SectorController extends BaseGameController
         $this->playerRepository = $playerRepository;
     }
 
-    /**
-     * @param int $sectorId
-     * @return Response
-     */
     public function sector(int $sectorId): Response
     {
         $player = $this->getPlayer();

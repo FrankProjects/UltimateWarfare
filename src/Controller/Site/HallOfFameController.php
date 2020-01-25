@@ -12,28 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class HallOfFameController extends BaseController
 {
-    /**
-     * @var HistoryRepository
-     */
-    private $historyRepository;
+    private HistoryRepository $historyRepository;
+    private HistoryPlayerRepository $historyPlayerRepository;
+    private HistoryFederationRepository $historyFederationRepository;
 
-    /**
-     * @var HistoryPlayerRepository
-     */
-    private $historyPlayerRepository;
-
-    /**
-     * @var HistoryFederationRepository
-     */
-    private $historyFederationRepository;
-
-    /**
-     * HallOfFameController constructor.
-     *
-     * @param HistoryRepository $historyRepository
-     * @param HistoryPlayerRepository $historyPlayerRepository
-     * @param HistoryFederationRepository $historyFederationRepository
-     */
     public function __construct(
         HistoryRepository $historyRepository,
         HistoryPlayerRepository $historyPlayerRepository,
@@ -44,9 +26,6 @@ final class HallOfFameController extends BaseController
         $this->historyFederationRepository = $historyFederationRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function hallOfFame(): Response
     {
         $history = $this->historyRepository->findAll();
@@ -56,14 +35,11 @@ final class HallOfFameController extends BaseController
         ]);
     }
 
-    /**
-     * XXX TODO: order by
-     * @param int $worldId
-     * @param int $round
-     * @return Response
-     */
     public function round(int $worldId, int $round): Response
     {
+        /**
+         * XXX TODO: order by
+         */
         $federations = $this->historyFederationRepository->findByWorldAndRound($worldId, $round);
         $players = $this->historyPlayerRepository->findByWorldAndRound($worldId, $round);
 

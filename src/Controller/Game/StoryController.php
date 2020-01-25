@@ -9,10 +9,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class StoryController extends BaseGameController
 {
-    /**
-     * @param int $page
-     * @return Response
-     */
     public function page(int $page): Response
     {
         switch ($page) {

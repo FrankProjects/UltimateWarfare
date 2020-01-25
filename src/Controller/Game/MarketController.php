@@ -15,22 +15,9 @@ use Throwable;
 
 final class MarketController extends BaseGameController
 {
-    /**
-     * @var MarketItemRepository
-     */
-    private $marketItemRepository;
+    private MarketItemRepository $marketItemRepository;
+    private MarketActionService $marketActionService;
 
-    /**
-     * @var MarketActionService
-     */
-    private $marketActionService;
-
-    /**
-     * MarketController constructor.
-     *
-     * @param MarketItemRepository $marketItemRepository
-     * @param MarketActionService $marketActionService
-     */
     public function __construct(
         MarketItemRepository $marketItemRepository,
         MarketActionService $marketActionService
@@ -39,9 +26,6 @@ final class MarketController extends BaseGameController
         $this->marketActionService = $marketActionService;
     }
 
-    /**
-     * @return Response
-     */
     public function buy(): Response
     {
         $player = $this->getPlayer();
@@ -60,10 +44,6 @@ final class MarketController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $marketItemId
-     * @return RedirectResponse
-     */
     public function buyOrder(int $marketItemId): RedirectResponse
     {
         try {
@@ -76,9 +56,6 @@ final class MarketController extends BaseGameController
         return $this->redirectToRoute('Game/Market');
     }
 
-    /**
-     * @return Response
-     */
     public function sell(): Response
     {
         $player = $this->getPlayer();
@@ -97,10 +74,6 @@ final class MarketController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $marketItemId
-     * @return RedirectResponse
-     */
     public function sellOrder(int $marketItemId): RedirectResponse
     {
         try {
@@ -113,9 +86,6 @@ final class MarketController extends BaseGameController
         return $this->redirectToRoute('Game/Market/Sell');
     }
 
-    /**
-     * @return Response
-     */
     public function offers(): Response
     {
         $player = $this->getPlayer();
@@ -132,10 +102,6 @@ final class MarketController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $marketItemId
-     * @return RedirectResponse
-     */
     public function cancelOrder(int $marketItemId): RedirectResponse
     {
         try {
@@ -148,10 +114,6 @@ final class MarketController extends BaseGameController
         return $this->redirectToRoute('Game/Market/Offers');
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function placeOffer(Request $request): Response
     {
         $player = $this->getPlayer();

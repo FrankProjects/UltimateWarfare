@@ -13,28 +13,10 @@ use Throwable;
 
 final class FederationController extends BaseGameController
 {
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
+    private FederationRepository $federationRepository;
+    private FederationNewsRepository $federationNewsRepository;
+    private FederationActionService $federationActionService;
 
-    /**
-     * @var FederationNewsRepository
-     */
-    private $federationNewsRepository;
-
-    /**
-     * @var FederationActionService
-     */
-    private $federationActionService;
-
-    /**
-     * FederationController constructor.
-     *
-     * @param FederationRepository $federationRepository
-     * @param FederationNewsRepository $federationNewsRepository
-     * @param FederationActionService $federationActionService
-     */
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
@@ -45,9 +27,6 @@ final class FederationController extends BaseGameController
         $this->federationActionService = $federationActionService;
     }
 
-    /**
-     * @return Response
-     */
     public function federation(): Response
     {
         $player = $this->getPlayer();
@@ -62,10 +41,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $federationId
-     * @return Response
-     */
     public function showFederation(int $federationId): Response
     {
         $federation = $this->federationRepository->findByIdAndWorld($federationId, $this->getPlayer()->getWorld());
@@ -81,9 +56,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @return Response
-     */
     public function federationNews(): Response
     {
         $player = $this->getPlayer();
@@ -95,10 +67,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function createFederation(Request $request): Response
     {
         $federationName = $request->get('name');
@@ -124,9 +92,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @return Response
-     */
     public function joinFederation(): Response
     {
         $federations = $this->federationRepository->findByWorldSortedByRegion($this->getPlayer()->getWorld());
@@ -137,9 +102,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @return Response
-     */
     public function listFederations(): Response
     {
         $federations = $this->federationRepository->findByWorldSortedByRegion($this->getPlayer()->getWorld());
@@ -150,10 +112,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function sendAid(Request $request): Response
     {
         try {
@@ -173,10 +131,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function removeFederation(Request $request): Response
     {
         try {
@@ -195,10 +149,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function changeFederationName(Request $request): Response
     {
         try {
@@ -217,10 +167,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function leaveFederation(Request $request): Response
     {
         try {
@@ -239,10 +185,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $playerId
-     * @return Response
-     */
     public function kickPlayer(int $playerId): Response
     {
         try {
@@ -255,10 +197,6 @@ final class FederationController extends BaseGameController
         return $this->redirectToRoute('Game/Federation');
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function updateLeadershipMessage(Request $request): Response
     {
         try {
@@ -277,10 +215,6 @@ final class FederationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function changePlayerHierarchy(Request $request): Response
     {
         try {

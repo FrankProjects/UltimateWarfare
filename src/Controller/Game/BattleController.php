@@ -11,22 +11,9 @@ use Throwable;
 
 final class BattleController extends BaseGameController
 {
-    /**
-     * @var BattleEngine
-     */
-    private $battleEngine;
+    private BattleEngine $battleEngine;
+    private FleetRepository $fleetRepository;
 
-    /**
-     * @var FleetRepository
-     */
-    private $fleetRepository;
-
-    /**
-     * BattleController constructor
-     *
-     * @param BattleEngine $battleEngine
-     * @param FleetRepository $fleetRepository
-     */
     public function __construct(
         BattleEngine $battleEngine,
         FleetRepository $fleetRepository
@@ -35,10 +22,6 @@ final class BattleController extends BaseGameController
         $this->fleetRepository = $fleetRepository;
     }
 
-    /**
-     * @param int $fleetId
-     * @return Response
-     */
     public function battle(int $fleetId): Response
     {
         $player = $this->getPlayer();

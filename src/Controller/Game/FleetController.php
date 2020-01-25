@@ -18,34 +18,11 @@ use Throwable;
 
 final class FleetController extends BaseGameController
 {
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private GameUnitTypeRepository $gameUnitTypeRepository;
+    private FleetActionService $fleetActionService;
+    private RegionActionService $regionActionService;
 
-    /**
-     * @var GameUnitTypeRepository
-     */
-    private $gameUnitTypeRepository;
-
-    /**
-     * @var FleetActionService
-     */
-    private $fleetActionService;
-
-    /**
-     * @var RegionActionService
-     */
-    private $regionActionService;
-
-    /**
-     * FleetController constructor.
-     *
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param GameUnitTypeRepository $gameUnitTypeRepository
-     * @param FleetActionService $fleetActionService
-     * @param RegionActionService $regionActionService
-     */
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
@@ -58,9 +35,6 @@ final class FleetController extends BaseGameController
         $this->regionActionService = $regionActionService;
     }
 
-    /**
-     * @return Response
-     */
     public function fleetList(): Response
     {
         return $this->render('game/fleetList.html.twig', [
@@ -68,10 +42,6 @@ final class FleetController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $fleetId
-     * @return Response
-     */
     public function recall(int $fleetId): Response
     {
         try {
@@ -86,10 +56,6 @@ final class FleetController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $fleetId
-     * @return Response
-     */
     public function reinforce(int $fleetId): Response
     {
         try {
@@ -104,13 +70,6 @@ final class FleetController extends BaseGameController
         ]);
     }
 
-
-    /**
-     * @param Request $request
-     * @param int $regionId
-     * @return Response
-     * @throws \Exception
-     */
     public function sendGameUnits(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
@@ -126,7 +85,12 @@ final class FleetController extends BaseGameController
 
         if ($request->isMethod(Request::METHOD_POST)) {
             $targetRegionId = intval($request->request->get('target', 0));
-            $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld($targetRegionId, $player->getWorld());
+            try {
+                $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld($targetRegionId, $player->getWorld());
+            } catch (WorldRegionNotFoundException $e) {
+                $this->addFlash('error', $e->getMessage());
+                return $this->redirectToRoute('Game/RegionList', [], 302);
+            }
 
             if ($targetRegion) {
                 try {

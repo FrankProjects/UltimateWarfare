@@ -11,12 +11,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class BaseGameController extends BaseController
 {
-    /**
-     * Get User
-     *
-     * @param bool $checkActive
-     * @return User
-     */
     public function getGameUser(bool $checkActive = true): User
     {
         $user = $this->getUser();
@@ -35,11 +29,6 @@ class BaseGameController extends BaseController
         return $user;
     }
 
-    /**
-     * Get Player
-     *
-     * @return Player
-     */
     public function getPlayer(): Player
     {
         /**
