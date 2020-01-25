@@ -6,9 +6,6 @@ final class TimeCalculator
 {
     /**
      * XXX TODO: Rewrite this function
-     *
-     * @param int $seconds
-     * @return string
      */
     public function calculateTimeLeft(int $seconds): string
     {
