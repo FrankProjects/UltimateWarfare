@@ -73,7 +73,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 ##### Assumptions:
 
-- You have [PHP](http://www.php.net/) 7.3 or higher installed and in your path.
+- You have [PHP](http://www.php.net/) 7.4 or higher installed and in your path.
 - You have [Composer](https://getcomposer.org/) installed and in your path.
 - You have a basic understanding of the [Symfony framework](https://symfony.com/).
 
