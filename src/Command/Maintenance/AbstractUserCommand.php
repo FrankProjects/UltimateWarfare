@@ -10,22 +10,9 @@ use Symfony\Component\Console\Command\Command;
 
 abstract class AbstractUserCommand extends Command
 {
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
+    protected UserRepository $userRepository;
+    protected UserActionService $userActionService;
 
-    /**
-     * @var UserActionService
-     */
-    protected $userActionService;
-
-    /**
-     * AbstractUserCommand constructor.
-     *
-     * @param UserRepository $userRepository
-     * @param UserActionService $userActionService
-     */
     public function __construct(
         UserRepository $userRepository,
         UserActionService $userActionService
@@ -35,10 +22,6 @@ abstract class AbstractUserCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @param string $username
-     * @return User
-     */
     protected function getUserByUsername(string $username): User
     {
         $user = $this->userRepository->findByUsername($username);

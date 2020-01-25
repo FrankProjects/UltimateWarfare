@@ -15,29 +15,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UpdateNetworthCommand extends Command
 {
     protected static $defaultName = 'game:maintenance:update:networth';
+    private PlayerRepository $playerRepository;
+    private WorldRepository $worldRepository;
+    private NetworthCalculator $networthCalculator;
 
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var WorldRepository
-     */
-    private $worldRepository;
-
-    /**
-     * @var NetworthCalculator
-     */
-    private $networthCalculator;
-
-    /**
-     * UpdateNetworthCommand constructor.
-     *
-     * @param PlayerRepository $playerRepository
-     * @param WorldRepository $worldRepository
-     * @param NetworthCalculator $networthCalculator
-     */
     public function __construct(
         PlayerRepository $playerRepository,
         WorldRepository $worldRepository,
@@ -63,12 +44,6 @@ class UpdateNetworthCommand extends Command
             );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     * @throws \Exception
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln([
@@ -93,11 +68,6 @@ class UpdateNetworthCommand extends Command
         return 0;
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param World $world
-     * @param bool $commit
-     */
     private function processWorld(OutputInterface $output, World $world, bool $commit): void
     {
         $output->writeln("Processing World: {$world->getName()}");
@@ -107,11 +77,6 @@ class UpdateNetworthCommand extends Command
         }
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param Player $player
-     * @param bool $commit
-     */
     private function processPlayer(OutputInterface $output, Player $player, bool $commit): void
     {
         $output->writeln("Processing Player: {$player->getName()}");

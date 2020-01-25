@@ -19,12 +19,6 @@ class RemoveAdminCommand extends AbstractUserCommand
             ->addArgument('username', InputArgument::REQUIRED, 'The username');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     * @throws \Exception
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');

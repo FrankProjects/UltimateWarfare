@@ -13,23 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RegenerateWordMapImagesCommand extends Command
 {
     protected static $defaultName = 'game:maintenance:update:world-map-images';
+    private WorldRepository $worldRepository;
+    private WorldImageGeneratorService $worldImageGeneratorService;
 
-    /**
-     * @var WorldRepository
-     */
-    private $worldRepository;
-
-    /**
-     * @var WorldImageGeneratorService
-     */
-    private $worldImageGeneratorService;
-
-    /**
-     * RegenerateWordMapImagesCommand constructor.
-     *
-     * @param WorldRepository $worldRepository
-     * @param WorldImageGeneratorService $worldImageGeneratorService
-     */
     public function __construct(
         WorldRepository $worldRepository,
         WorldImageGeneratorService $worldImageGeneratorService
@@ -46,11 +32,6 @@ class RegenerateWordMapImagesCommand extends Command
             ->setHelp('Make sure all images are generated based on latest map generator');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln([
@@ -68,10 +49,6 @@ class RegenerateWordMapImagesCommand extends Command
         return 0;
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param World $world
-     */
     private function processWorld(OutputInterface $output, World $world): void
     {
         $output->writeln("Processing World: {$world->getName()}");
@@ -83,10 +60,6 @@ class RegenerateWordMapImagesCommand extends Command
         }
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param WorldSector $worldSector
-     */
     private function processWorldSector(OutputInterface $output, WorldSector $worldSector): void
     {
         $output->write("\t\tGenerating WorldSector image: {$worldSector->getId()}");

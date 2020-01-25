@@ -15,35 +15,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UpdatePlayerIncomeCommand extends Command
 {
     protected static $defaultName = 'game:maintenance:update:income';
+    private PlayerRepository $playerRepository;
+    private WorldRepository $worldRepository;
+    private IncomeCalculator $incomeCalculator;
+    private UpkeepCalculator $upkeepCalculator;
 
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var WorldRepository
-     */
-    private $worldRepository;
-
-    /**
-     * @var IncomeCalculator
-     */
-    private $incomeCalculator;
-
-    /**
-     * @var UpkeepCalculator
-     */
-    private $upkeepCalculator;
-
-    /**
-     * UpdatePlayerIncomeCommand constructor.
-     *
-     * @param PlayerRepository $playerRepository
-     * @param WorldRepository $worldRepository
-     * @param IncomeCalculator $incomeCalculator
-     * @param UpkeepCalculator $upkeepCalculator
-     */
     public function __construct(
         PlayerRepository $playerRepository,
         WorldRepository $worldRepository,
@@ -71,12 +47,6 @@ class UpdatePlayerIncomeCommand extends Command
             );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     * @throws \Exception
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln([
@@ -105,11 +75,6 @@ class UpdatePlayerIncomeCommand extends Command
         return 0;
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param Player $player
-     * @param bool $commit
-     */
     private function processPlayer(OutputInterface $output, Player $player, bool $commit): void
     {
         $output->writeln("Processing Player: {$player->getName()}");
