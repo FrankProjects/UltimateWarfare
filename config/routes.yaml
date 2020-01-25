@@ -626,7 +626,7 @@ Guide/ListUnits:
 
 Guide/LogOff:
     path:      /guide/log-off
-    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::logoff
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::logOff
 
 Guide/Market:
     path:      /guide/market

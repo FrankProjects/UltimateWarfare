@@ -6,13 +6,9 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use Symfony\Component\Finder\Finder;
 
-/**
- * Class Version20180412202011
- * @package DoctrineMigrations
- */
-class Version20180412202011 extends AbstractMigration
+final class Version20180412202011 extends AbstractMigration
 {
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
@@ -29,7 +25,7 @@ class Version20180412202011 extends AbstractMigration
         $this->addSql('SELECT MAX(version) from migration_versions');
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
     }
