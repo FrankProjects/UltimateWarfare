@@ -15,29 +15,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 final class GameEngineSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var GameEngine
-     */
-    private $gameEngine;
+    private GameEngine $gameEngine;
+    private SessionInterface $session;
+    private PlayerRepository $playerRepository;
 
-    /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * PlayerSubscriber constructor.
-     *
-     * @param GameEngine $gameEngine
-     * @param SessionInterface $session
-     * @param TokenStorageInterface $tokenStorage
-     * @param PlayerRepository $playerRepository
-     */
     public function __construct(
         GameEngine $gameEngine,
         SessionInterface $session,
@@ -50,9 +31,6 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
         $this->playerRepository = $playerRepository;
     }
 
-    /**
-     * @param RequestEvent $event
-     */
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMasterRequest()) {
@@ -69,9 +47,6 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
         }
     }
 
-    /**
-     * @param User $user
-     */
     private function runGameEngine(User $user): void
     {
         $playerId = $this->session->get('playerId');
@@ -95,9 +70,7 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
             // Do nothing...
         }
     }
-    /**
-     * @return array
-     */
+
     public static function getSubscribedEvents(): array
     {
         return [

@@ -10,32 +10,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class LocaleSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var string
-     */
-    private $defaultLocale;
-
-    /**
-     * @var array
-     */
-    private $validLocales = [
+    private string $defaultLocale;
+    private array $validLocales = [
         'en',
         'nl'
     ];
 
-    /**
-     * LocaleSubscriber constructor.
-     *
-     * @param string $defaultLocale
-     */
-    public function __construct($defaultLocale = 'en')
+    public function __construct(string $defaultLocale = 'en')
     {
         $this->defaultLocale = $defaultLocale;
     }
 
-    /**
-     * @param RequestEvent $event
-     */
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
@@ -52,9 +37,6 @@ class LocaleSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @return array
-     */
     public static function getSubscribedEvents(): array
     {
         return [
