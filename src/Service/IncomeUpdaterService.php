@@ -11,28 +11,10 @@ use FrankProjects\UltimateWarfare\Util\UpkeepCalculator;
 
 final class IncomeUpdaterService
 {
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
+    private PlayerRepository $playerRepository;
+    private IncomeCalculator $incomeCalculator;
+    private UpkeepCalculator $upkeepCalculator;
 
-    /**
-     * @var IncomeCalculator
-     */
-    private $incomeCalculator;
-
-    /**
-     * @var UpkeepCalculator
-     */
-    private $upkeepCalculator;
-
-    /**
-     * IncomeUpdaterService constructor.
-     *
-     * @param PlayerRepository $playerRepository
-     * @param IncomeCalculator $incomeCalculator
-     * @param UpkeepCalculator $upkeepCalculator
-     */
     public function __construct(
         PlayerRepository $playerRepository,
         IncomeCalculator $incomeCalculator,
@@ -43,9 +25,6 @@ final class IncomeUpdaterService
         $this->upkeepCalculator = $upkeepCalculator;
     }
 
-    /**
-     * @param Player $player
-     */
     public function updateIncomeForPlayer(Player $player): void
     {
         $income = $this->incomeCalculator->calculateIncomeForPlayer($player);

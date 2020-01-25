@@ -17,34 +17,11 @@ use RuntimeException;
 
 final class FederationActionService
 {
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
+    private FederationRepository $federationRepository;
+    private FederationNewsRepository $federationNewsRepository;
+    private PlayerRepository $playerRepository;
+    private ReportRepository $reportRepository;
 
-    /**
-     * @var FederationNewsRepository
-     */
-    private $federationNewsRepository;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
-
-    /**
-     * FederationActionService constructor.
-     *
-     * @param FederationRepository $federationRepository
-     * @param FederationNewsRepository $federationNewsRepository
-     * @param PlayerRepository $playerRepository
-     * @param ReportRepository $reportRepository
-     */
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
@@ -57,10 +34,6 @@ final class FederationActionService
         $this->reportRepository = $reportRepository;
     }
 
-    /**
-     * @param Player $player
-     * @param string $federationName
-     */
     public function createFederation(Player $player, string $federationName): void
     {
         $this->ensureFederationEnabled($player);
@@ -82,11 +55,6 @@ final class FederationActionService
         $this->playerRepository->save($player);
     }
 
-    /**
-     * @param Player $player
-     * @param int $playerId
-     * @param array $resources
-     */
     public function sendAid(Player $player, int $playerId, array $resources): void
     {
         $this->ensureFederationEnabled($player);
@@ -145,9 +113,6 @@ final class FederationActionService
         }
     }
 
-    /**
-     * @param Player $player
-     */
     public function removeFederation(Player $player): void
     {
         $this->ensureFederationEnabled($player);
@@ -159,10 +124,6 @@ final class FederationActionService
         $this->federationRepository->remove($player->getFederation());
     }
 
-    /**
-     * @param Player $player
-     * @param string $federationName
-     */
     public function changeFederationName(Player $player, string $federationName): void
     {
         $this->ensureFederationEnabled($player);
@@ -180,9 +141,6 @@ final class FederationActionService
         $this->federationRepository->save($federation);
     }
 
-    /**
-     * @param Player $player
-     */
     public function leaveFederation(Player $player): void
     {
         $this->ensureFederationEnabled($player);
@@ -205,10 +163,6 @@ final class FederationActionService
         $this->federationRepository->save($federation);
     }
 
-    /**
-     * @param Player $player
-     * @param int $playerId
-     */
     public function kickPlayer(Player $player, int $playerId): void
     {
         $this->ensureFederationEnabled($player);
@@ -244,10 +198,6 @@ final class FederationActionService
         $this->reportRepository->save($report);
     }
 
-    /**
-     * @param Player $player
-     * @param string $message
-     */
     public function updateLeadershipMessage(Player $player, string $message): void
     {
         $this->ensureFederationEnabled($player);
@@ -261,11 +211,6 @@ final class FederationActionService
         $this->federationRepository->save($federation);
     }
 
-    /**
-     * @param Player $player
-     * @param int $playerId
-     * @param int $role
-     */
     public function changePlayerHierarchy(Player $player, int $playerId, int $role): void
     {
         $this->ensureFederationEnabled($player);
@@ -310,9 +255,6 @@ final class FederationActionService
          */
     }
 
-    /**
-     * @param Player $player
-     */
     private function ensureFederationEnabled(Player $player): void
     {
         $world = $player->getWorld();

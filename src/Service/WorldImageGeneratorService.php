@@ -14,28 +14,10 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 final class WorldImageGeneratorService
 {
-    /**
-     * @var ParameterBagInterface
-     */
-    private $params;
+    private ParameterBagInterface $params;
+    private WorldRepository $worldRepository;
+    private WorldSectorRepository $worldSectorRepository;
 
-    /**
-     * @var WorldRepository
-     */
-    private $worldRepository;
-
-    /**
-     * @var WorldSectorRepository
-     */
-    private $worldSectorRepository;
-
-    /**
-     * WorldImageGeneratorService constructor
-     *
-     * @param ParameterBagInterface $params
-     * @param WorldRepository $worldRepository
-     * @param WorldSectorRepository $worldSectorRepository
-     */
     public function __construct(
         ParameterBagInterface $params,
         WorldRepository $worldRepository,
@@ -46,9 +28,6 @@ final class WorldImageGeneratorService
         $this->worldSectorRepository = $worldSectorRepository;
     }
 
-    /**
-     * @param World $world
-     */
     public function generateWorldImage(World $world): void
     {
         $worldImageName = $world->getId() . '.jpg';
@@ -61,9 +40,6 @@ final class WorldImageGeneratorService
         $this->worldRepository->save($world);
     }
 
-    /**
-     * @param WorldSector $worldSector
-     */
     public function generateWorldSectorImage(WorldSector $worldSector): void
     {
         $worldSectorImageName = $worldSector->getId() . '.jpg';

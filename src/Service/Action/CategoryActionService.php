@@ -12,22 +12,9 @@ use RuntimeException;
 
 final class CategoryActionService
 {
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
+    private CategoryRepository $categoryRepository;
+    private ForumHelper $forumHelper;
 
-    /**
-     * @var ForumHelper
-     */
-    private $forumHelper;
-
-    /**
-     * CategoryActionService service
-     *
-     * @param CategoryRepository $categoryRepository
-     * @param ForumHelper $forumHelper
-     */
     public function __construct(
         CategoryRepository $categoryRepository,
         ForumHelper $forumHelper
@@ -36,10 +23,6 @@ final class CategoryActionService
         $this->forumHelper = $forumHelper;
     }
 
-    /**
-     * @param Category $category
-     * @param User $user
-     */
     public function create(Category $category, User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -49,10 +32,6 @@ final class CategoryActionService
         $this->categoryRepository->save($category);
     }
 
-    /**
-     * @param Category $category
-     * @param User $user
-     */
     public function edit(Category $category, User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -62,10 +41,6 @@ final class CategoryActionService
         $this->categoryRepository->save($category);
     }
 
-    /**
-     * @param Category $category
-     * @param User $user
-     */
     public function remove(Category $category, User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -74,9 +49,6 @@ final class CategoryActionService
         $this->categoryRepository->remove($category);
     }
 
-    /**
-     * @param User $user
-     */
     private function ensureCategoryPermissions(User $user): void
     {
         if (!$user->hasRole('ROLE_ADMIN')) {

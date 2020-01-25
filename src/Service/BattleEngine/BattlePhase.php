@@ -12,29 +12,22 @@ use RuntimeException;
 
 abstract class BattlePhase implements IBattlePhase
 {
-    const AIR_PHASE = 'air';
-    const SEA_PHASE = 'sea';
-    const GROUND_PHASE = 'ground';
+    public const AIR_PHASE = 'air';
+    public const SEA_PHASE = 'sea';
+    public const GROUND_PHASE = 'ground';
 
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
     /**
      * @var FleetUnit[]
      */
-    protected $attackerGameUnits;
+    protected array $attackerGameUnits;
 
     /**
      * @var WorldRegionUnit[]
      */
-    protected $defenderGameUnits;
-
-    /**
-     * @var array
-     */
-    protected $battleLog = [];
+    protected array $defenderGameUnits;
+    protected array $battleLog = [];
 
     /**
      * BattlePhase constructor.
@@ -66,9 +59,6 @@ abstract class BattlePhase implements IBattlePhase
         return new $className($battlePhaseName, $attackerGameUnits, $defenderGameUnits);
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -90,17 +80,11 @@ abstract class BattlePhase implements IBattlePhase
         return $this->defenderGameUnits;
     }
 
-    /**
-     * @return array
-     */
     public function getBattleLog(): array
     {
         return $this->battleLog;
     }
 
-    /**
-     * @param string $log
-     */
     protected function addToBattleLog(string $log): void
     {
         $this->battleLog[] = $log;
@@ -155,11 +139,6 @@ abstract class BattlePhase implements IBattlePhase
         return $gameUnits;
     }
 
-    /**
-     * @param GameUnit $gameUnit
-     * @param int $power
-     * @return int
-     */
     private function calculateCasualties(GameUnit $gameUnit, int $power): int
     {
         $health = $gameUnit->getBattleStats()->getHealth();
@@ -176,10 +155,6 @@ abstract class BattlePhase implements IBattlePhase
         return intval($power / $health);
     }
 
-    /**
-     * @param GameUnit $gameUnit
-     * @return AbstractBattleStats
-     */
     private function getBattlePhaseBattleStats(GameUnit $gameUnit): AbstractBattleStats
     {
         if ($this->name === BattlePhase::AIR_PHASE) {
@@ -193,9 +168,6 @@ abstract class BattlePhase implements IBattlePhase
         throw new RunTimeException("Invalid BattleStats for {$this->name}");
     }
 
-    /**
-     * @return int
-     */
     public function getAttackPower(): int
     {
         $power = 0;
@@ -206,9 +178,6 @@ abstract class BattlePhase implements IBattlePhase
         return $power;
     }
 
-    /**
-     * @return int
-     */
     public function getDefensePower(): int
     {
         $power = 0;

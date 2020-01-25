@@ -19,34 +19,11 @@ use RuntimeException;
 
 final class FleetActionService
 {
-    /**
-     * @var FleetRepository
-     */
-    private $fleetRepository;
+    private FleetRepository $fleetRepository;
+    private FleetUnitRepository $fleetUnitRepository;
+    private GameUnitRepository $gameUnitRepository;
+    private WorldRegionUnitRepository $worldRegionUnitRepository;
 
-    /**
-     * @var FleetUnitRepository
-     */
-    private $fleetUnitRepository;
-
-    /**
-     * @var GameUnitRepository
-     */
-    private $gameUnitRepository;
-
-    /**
-     * @var WorldRegionUnitRepository
-     */
-    private $worldRegionUnitRepository;
-
-    /**
-     * FleetActionService service
-     *
-     * @param FleetRepository $fleetRepository
-     * @param FleetUnitRepository $fleetUnitRepository
-     * @param GameUnitRepository $gameUnitRepository
-     * @param WorldRegionUnitRepository $worldRegionUnitRepository
-     */
     public function __construct(
         FleetRepository $fleetRepository,
         FleetUnitRepository $fleetUnitRepository,
@@ -59,11 +36,6 @@ final class FleetActionService
         $this->worldRegionUnitRepository = $worldRegionUnitRepository;
     }
 
-    /**
-     * @param int $fleetId
-     * @param Player $player
-     * @return bool
-     */
     public function recall(int $fleetId, Player $player): bool
     {
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
@@ -77,11 +49,6 @@ final class FleetActionService
         return true;
     }
 
-    /**
-     * @param int $fleetId
-     * @param Player $player
-     * @return bool
-     */
     public function reinforce(int $fleetId, Player $player): bool
     {
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
@@ -95,14 +62,6 @@ final class FleetActionService
         return true;
     }
 
-    /**
-     * @param WorldRegion $region
-     * @param WorldRegion $targetRegion
-     * @param Player $player
-     * @param GameUnitType $gameUnitType
-     * @param array $unitData
-     * @throws \Exception
-     */
     public function sendGameUnits(WorldRegion $region, WorldRegion $targetRegion, Player $player, GameUnitType $gameUnitType, array $unitData): void
     {
         if ($targetRegion->getWorld()->getId() != $player->getWorld()->getId()) {
@@ -135,11 +94,6 @@ final class FleetActionService
         }
     }
 
-    /**
-     * @param int $fleetId
-     * @param Player $player
-     * @return Fleet
-     */
     private function getFleetByIdAndPlayer(int $fleetId, Player $player): Fleet
     {
         $fleet = $this->fleetRepository->findByIdAndPlayer($fleetId, $player);
@@ -151,10 +105,6 @@ final class FleetActionService
         return $fleet;
     }
 
-    /**
-     * @param Fleet $fleet
-     * @param WorldRegion $worldRegion
-     */
     private function addFleetUnitsToWorldRegion(Fleet $fleet, WorldRegion $worldRegion): void
     {
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
@@ -164,10 +114,6 @@ final class FleetActionService
         $this->fleetRepository->remove($fleet);
     }
 
-    /**
-     * @param FleetUnit $fleetUnit
-     * @param WorldRegion $worldRegion
-     */
     private function addFleetUnitToWorldRegion(FleetUnit $fleetUnit, WorldRegion $worldRegion): void
     {
         $worldRegionUnit = null;
@@ -187,12 +133,6 @@ final class FleetActionService
         $this->worldRegionUnitRepository->save($worldRegionUnit);
     }
 
-    /**
-     * @param WorldRegion $region
-     * @param GameUnit $gameUnit
-     * @param int $amount
-     * @param Fleet $fleet
-     */
     private function addFleetUnitToFleet(WorldRegion $region, GameUnit $gameUnit, int $amount, Fleet $fleet): void
     {
         $hasUnit = false;

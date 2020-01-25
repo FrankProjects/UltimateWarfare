@@ -14,28 +14,10 @@ use RuntimeException;
 
 final class FederationBankActionService
 {
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
+    private FederationRepository $federationRepository;
+    private FederationNewsRepository $federationNewsRepository;
+    private PlayerRepository $playerRepository;
 
-    /**
-     * @var FederationNewsRepository
-     */
-    private $federationNewsRepository;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * FederationBankActionService constructor.
-     *
-     * @param FederationRepository $federationRepository
-     * @param FederationNewsRepository $federationNewsRepository
-     * @param PlayerRepository $playerRepository
-     */
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
@@ -46,10 +28,6 @@ final class FederationBankActionService
         $this->playerRepository = $playerRepository;
     }
 
-    /**
-     * @param Player $player
-     * @param array $resources
-     */
     public function deposit(Player $player, array $resources): void
     {
         $this->ensureFederationEnabled($player);
@@ -89,10 +67,6 @@ final class FederationBankActionService
         }
     }
 
-    /**
-     * @param Player $player
-     * @param array $resources
-     */
     public function withdraw(Player $player, array $resources): void
     {
         $this->ensureFederationEnabled($player);
@@ -137,9 +111,6 @@ final class FederationBankActionService
         }
     }
 
-    /**
-     * @param Player $player
-     */
     private function ensureFederationEnabled(Player $player): void
     {
         $world = $player->getWorld();
@@ -148,12 +119,6 @@ final class FederationBankActionService
         }
     }
 
-    /**
-     * @param string $resourceString
-     * @param int $amount
-     * @param string $resourceName
-     * @return string
-     */
     private function addToResourceString(string $resourceString, int $amount, string $resourceName): string
     {
         if ($resourceString !== '') {

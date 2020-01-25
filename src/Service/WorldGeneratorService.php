@@ -15,34 +15,11 @@ use RuntimeException;
 
 final class WorldGeneratorService
 {
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private WorldSectorRepository $worldSectorRepository;
+    private PerlinNoiseGenerator $worldGenerator;
+    private WorldImageGeneratorService $worldImageGeneratorService;
 
-    /**
-     * @var WorldSectorRepository
-     */
-    private $worldSectorRepository;
-
-    /**
-     * @var PerlinNoiseGenerator
-     */
-    private $worldGenerator;
-
-    /**
-     * @var WorldImageGeneratorService
-     */
-    private $worldImageGeneratorService;
-
-    /**
-     * WorldGeneratorService constructor
-     *
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param WorldSectorRepository $worldSectorRepository
-     * @param PerlinNoiseGenerator $worldGenerator
-     * @param WorldImageGeneratorService $worldImageGeneratorService
-     */
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         WorldSectorRepository $worldSectorRepository,
@@ -55,12 +32,6 @@ final class WorldGeneratorService
         $this->worldImageGeneratorService = $worldImageGeneratorService;
     }
 
-    /**
-     * @param World $world
-     * @param bool $save
-     * @param int $sector
-     * @return array
-     */
     public function generate(World $world, bool $save, int $sector): array
     {
         $mapConfiguration = $world->getMapConfiguration();
@@ -77,12 +48,6 @@ final class WorldGeneratorService
         return $map;
     }
 
-    /**
-     * @param World $world
-     * @param array $map
-     * @param MapConfiguration $mapConfiguration
-     * @param int $sector
-     */
     private function generateWorldSectors(World $world, array $map, MapConfiguration $mapConfiguration, int $sector): void
     {
         if ($mapConfiguration->getSize() != 25) {
@@ -107,11 +72,6 @@ final class WorldGeneratorService
         }
     }
 
-    /**
-     * @param WorldSector $worldSector
-     * @param array $map
-     * @param MapConfiguration $mapConfiguration
-     */
     private function generateWorldRegions(WorldSector $worldSector, array $map, MapConfiguration $mapConfiguration): void
     {
         $startX = (($worldSector->getX() - 1) * 5) + 1;
@@ -143,11 +103,6 @@ final class WorldGeneratorService
         }
     }
 
-    /**
-     * @param MapConfiguration $mapConfiguration
-     * @param int $z
-     * @return string
-     */
     private static function getTypeFromConfiguration(MapConfiguration $mapConfiguration, int $z): string
     {
         if ($z < $mapConfiguration->getWaterLevel()) {
@@ -159,10 +114,7 @@ final class WorldGeneratorService
         }
         return WorldRegion::TYPE_MOUNTAIN;
     }
-    /**
-     * @param string $type
-     * @return int
-     */
+
     private static function getRandomSpaceFromType(string $type): int
     {
         if ($type === WorldRegion::TYPE_MOUNTAIN) {
