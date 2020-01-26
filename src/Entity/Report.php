@@ -4,134 +4,64 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * Report
- */
 class Report
 {
-    const TYPE_ATTACKED = 1;
-    const TYPE_GENERAL = 2;
-    const TYPE_MARKET = 4;
-    const TYPE_AID = 5;
+    public const TYPE_ATTACKED = 1;
+    public const TYPE_GENERAL = 2;
+    public const TYPE_MARKET = 4;
+    public const TYPE_AID = 5;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private int $type;
+    private int $timestamp;
+    private string $report;
+    private Player $player;
 
-    /**
-     * @var int
-     */
-    private $type;
-
-    /**
-     * @var int
-     */
-    private $timestamp;
-
-    /**
-     * @var string
-     */
-    private $report;
-
-    /**
-     * @var Player
-     */
-    private $player;
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set type
-     *
-     * @param int $type
-     */
-    public function setType(int $type)
+    public function setType(int $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * Get type
-     *
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * Set timestamp
-     *
-     * @param int $timestamp
-     */
-    public function setTimestamp(int $timestamp)
+    public function setTimestamp(int $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * Get timestamp
-     *
-     * @return int
-     */
     public function getTimestamp(): int
     {
         return $this->timestamp;
     }
 
-    /**
-     * Set report
-     *
-     * @param string $report
-     */
-    public function setReport(string $report)
+    public function setReport(string $report): void
     {
         $this->report = $report;
     }
 
-    /**
-     * Get report
-     *
-     * @return string
-     */
     public function getReport(): string
     {
         return $this->report;
     }
 
-    /**
-     * @return Player
-     */
     public function getPlayer(): Player
     {
         return $this->player;
     }
 
-    /**
-     * @param Player $player
-     */
-    public function setPlayer(Player $player)
+    public function setPlayer(Player $player): void
     {
         $this->player = $player;
     }
 
-    /**
-     * @param Player $player
-     * @param int $timestamp
-     * @param int $type
-     * @param string $message
-     * @return Report
-     */
     public static function createForPlayer(Player $player, int $timestamp, int $type, string $message): Report
     {
         $report = new Report();
@@ -143,10 +73,6 @@ class Report
         return $report;
     }
 
-    /**
-     * @param int $type
-     * @return string
-     */
     public static function getReportSubject(int $type): string
     {
         if ($type == self::TYPE_ATTACKED) {

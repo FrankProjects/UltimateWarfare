@@ -10,26 +10,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ReportController extends BaseGameController
 {
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
+    private ReportRepository $reportRepository;
 
-    /**
-     * ReportController constructor.
-     *
-     * @param ReportRepository $reportRepository
-     */
     public function __construct(
         ReportRepository $reportRepository
     ) {
         $this->reportRepository = $reportRepository;
     }
 
-    /**
-     * @param int $type
-     * @return Response
-     */
     public function report(int $type): Response
     {
         switch ($type):

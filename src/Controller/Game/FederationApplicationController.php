@@ -12,22 +12,9 @@ use Throwable;
 
 final class FederationApplicationController extends BaseGameController
 {
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
+    private FederationRepository $federationRepository;
+    private FederationApplicationActionService $federationApplicationActionService;
 
-    /**
-     * @var FederationApplicationActionService
-     */
-    private $federationApplicationActionService;
-
-    /**
-     * FederationApplicationController constructor.
-     *
-     * @param FederationRepository $federationRepository
-     * @param FederationApplicationActionService $federationApplicationActionService
-     */
     public function __construct(
         FederationRepository $federationRepository,
         FederationApplicationActionService $federationApplicationActionService
@@ -36,9 +23,6 @@ final class FederationApplicationController extends BaseGameController
         $this->federationApplicationActionService = $federationApplicationActionService;
     }
 
-    /**
-     * @return Response
-     */
     public function showFederationApplications(): Response
     {
         return $this->render('game/federation/applications.html.twig', [
@@ -46,10 +30,6 @@ final class FederationApplicationController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $federationApplicationId
-     * @return Response
-     */
     public function acceptFederationApplication(int $federationApplicationId): Response
     {
         try {
@@ -62,10 +42,6 @@ final class FederationApplicationController extends BaseGameController
         return $this->redirectToRoute('Game/Federation/Applications');
     }
 
-    /**
-     * @param int $federationApplicationId
-     * @return Response
-     */
     public function rejectFederationApplication(int $federationApplicationId): Response
     {
         try {
@@ -78,11 +54,6 @@ final class FederationApplicationController extends BaseGameController
         return $this->redirectToRoute('Game/Federation/Applications');
     }
 
-    /**
-     * @param Request $request
-     * @param int $federationId
-     * @return Response
-     */
     public function sendApplication(Request $request, int $federationId): Response
     {
         $player = $this->getPlayer();

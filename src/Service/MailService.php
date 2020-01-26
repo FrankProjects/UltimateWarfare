@@ -10,35 +10,17 @@ use RuntimeException;
 use Swift_Mailer;
 use Psr\Log\LoggerInterface;
 use Swift_Message;
-use Twig_Environment;
+use Twig\Environment;
 
 final class MailService
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
+    private Environment $twig;
+    private Swift_Mailer $mailer;
 
-    /**
-     * @var Twig_Environment
-     */
-    private $twig;
-
-    /**
-     * @var Swift_Mailer
-     */
-    private $mailer;
-
-    /**
-     * MailService constructor
-     *
-     * @param LoggerInterface $logger
-     * @param Twig_Environment $twig
-     * @param Swift_Mailer $mailer
-     */
     public function __construct(
         LoggerInterface $logger,
-        Twig_Environment $twig,
+        Environment $twig,
         Swift_Mailer $mailer
     ) {
         $this->logger = $logger;
@@ -46,9 +28,6 @@ final class MailService
         $this->mailer = $mailer;
     }
 
-    /**
-     * @param User $user
-     */
     public function sendRegistrationMail(User $user): void
     {
         $mailParameters = [
@@ -71,10 +50,6 @@ final class MailService
         $this->sendMail($message, $user->getEmail(), 'registration');
     }
 
-    /**
-     * @param User $user
-     * @param string $ipAddress
-     */
     public function sendPasswordResetMail(User $user, string $ipAddress): void
     {
         $mailParameters = [
@@ -94,11 +69,6 @@ final class MailService
         $this->sendMail($message, $user->getEmail(), 'password reset');
     }
 
-    /**
-     * @param string $templateName
-     * @param array $parameters
-     * @return string
-     */
     private function generateMailBody(string $templateName, array $parameters): string
     {
         try {
@@ -108,11 +78,6 @@ final class MailService
         }
     }
 
-    /**
-     * @param Swift_Message $message
-     * @param string $email
-     * @param string $type
-     */
     private function sendMail(Swift_Message $message, string $email, string $type): void
     {
         $messages = $this->mailer->send($message);

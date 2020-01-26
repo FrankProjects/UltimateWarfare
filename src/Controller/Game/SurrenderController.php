@@ -12,12 +12,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class SurrenderController extends BaseGameController
 {
-    /**
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     * @param PlayerRepository $playerRepository
-     * @return Response
-     */
     public function surrender(Request $request, UserPasswordEncoderInterface $encoder, PlayerRepository $playerRepository): Response
     {
         $player = $this->getPlayer();

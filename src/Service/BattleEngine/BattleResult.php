@@ -9,7 +9,7 @@ final class BattleResult
     /**
      * @var BattlePhase[]
      */
-    private $battlePhases;
+    private array $battlePhases;
 
     /**
      * BattleResult constructor.
@@ -29,9 +29,6 @@ final class BattleResult
         return $this->battlePhases;
     }
 
-    /**
-     * @return bool
-     */
     public function hasWon(): bool
     {
         $battlePhases = $this->getBattlePhases();

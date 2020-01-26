@@ -6,7 +6,6 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Message;
 use FrankProjects\UltimateWarfare\Repository\MessageRepository;
-use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\Action\MessageActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,22 +14,9 @@ use Throwable;
 
 final class MessageController extends BaseGameController
 {
-    /**
-     * @var MessageRepository
-     */
-    private $messageRepository;
+    private MessageRepository $messageRepository;
+    private MessageActionService $messageActionService;
 
-    /**
-     * @var MessageActionService
-     */
-    private $messageActionService;
-
-    /**
-     * MessageController constructor.
-     *
-     * @param MessageRepository $messageRepository
-     * @param MessageActionService $messageActionService
-     */
     public function __construct(
         MessageRepository $messageRepository,
         MessageActionService $messageActionService
@@ -39,15 +25,11 @@ final class MessageController extends BaseGameController
         $this->messageActionService = $messageActionService;
     }
 
-    /**
-     * XXX TODO: Fix pagination
-     *
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
     public function inbox(Request $request): Response
     {
+        /**
+         * XXX TODO: Fix pagination
+         */
         $player = $this->getPlayer();
         if ($player->getNotifications()->getMessage()) {
             $this->messageActionService->disableMessageNotification($player);
@@ -66,14 +48,11 @@ final class MessageController extends BaseGameController
         ]);
     }
 
-    /**
-     * XXX TODO: Fix smilies display
-     *
-     * @param int $messageId
-     * @return Response
-     */
     public function inboxRead(int $messageId): Response
     {
+        /**
+         * XXX TODO: Fix smilies display
+         */
         $player = $this->getPlayer();
 
         try {
@@ -93,10 +72,6 @@ final class MessageController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $messageId
-     * @return RedirectResponse
-     */
     public function inboxDelete(int $messageId): RedirectResponse
     {
         try {
@@ -109,15 +84,11 @@ final class MessageController extends BaseGameController
         return $this->redirectToRoute('Game/Message/Inbox');
     }
 
-    /**
-     * XXX TODO: Fix pagination
-     *
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
     public function outbox(Request $request): Response
     {
+        /**
+         * XXX TODO: Fix pagination
+         */
         $player = $this->getPlayer();
 
         foreach ($this->getSelectedMessagesFromRequest($request) as $messageId) {
@@ -133,14 +104,11 @@ final class MessageController extends BaseGameController
         ]);
     }
 
-    /**
-     * XXX TODO: Fix smilies display
-     *
-     * @param int $messageId
-     * @return Response
-     */
     public function outboxRead(int $messageId): Response
     {
+        /**
+         * XXX TODO: Fix smilies display
+         */
         try {
             $message = $this->messageActionService->getMessageByIdAndFromPlayer($messageId, $this->getPlayer());
         } catch (Throwable $e) {
@@ -154,10 +122,6 @@ final class MessageController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $messageId
-     * @return RedirectResponse
-     */
     public function outboxDelete(int $messageId): RedirectResponse
     {
         try {
@@ -170,11 +134,6 @@ final class MessageController extends BaseGameController
         return $this->redirectToRoute('Game/Message/Outbox');
     }
 
-    /**
-     * @param Request $request
-     * @param string $playerName
-     * @return Response
-     */
     public function newMessage(Request $request, $playerName = ''): Response
     {
         $player = $this->getPlayer();
@@ -209,10 +168,6 @@ final class MessageController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return array
-     */
     private function getSelectedMessagesFromRequest(Request $request): array
     {
         $selectedMessages = [];

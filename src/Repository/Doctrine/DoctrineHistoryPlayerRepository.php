@@ -11,21 +11,9 @@ use FrankProjects\UltimateWarfare\Repository\HistoryPlayerRepository;
 
 final class DoctrineHistoryPlayerRepository implements HistoryPlayerRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineHistoryPlayerRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -34,17 +22,13 @@ final class DoctrineHistoryPlayerRepository implements HistoryPlayerRepository
 
     /**
      * @param int $worldId
-     * @param int $round
      * @return HistoryPlayer[]
      */
-    public function findByWorldAndRound(int $worldId, int $round): array
+    public function findByWorld(int $worldId): array
     {
-        return $this->repository->findBy(['worldId' => $worldId, 'round' => $round], ['regions' => 'DESC']);
+        return $this->repository->findBy(['worldId' => $worldId], ['regions' => 'DESC']);
     }
 
-    /**
-     * @param HistoryPlayer $historyPlayer
-     */
     public function save(HistoryPlayer $historyPlayer): void
     {
         $this->entityManager->persist($historyPlayer);

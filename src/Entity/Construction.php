@@ -4,147 +4,71 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * Construction
- */
 class Construction
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private int $number;
+    private int $timestamp;
+    private Player $player;
+    private WorldRegion $worldRegion;
+    private GameUnit $gameUnit;
 
-    /**
-     * @var int
-     */
-    private $number;
-
-    /**
-     * @var int
-     */
-    private $timestamp;
-
-    /**
-     * @var Player
-     */
-    private $player;
-
-    /**
-     * @var WorldRegion
-     */
-    private $worldRegion;
-
-    /**
-     * @var GameUnit
-     */
-    private $gameUnit;
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set number
-     *
-     * @param int $number
-     */
-    public function setNumber(int $number)
+    public function setNumber(int $number): void
     {
         $this->number = $number;
     }
 
-    /**
-     * Get number
-     *
-     * @return int
-     */
     public function getNumber(): int
     {
         return $this->number;
     }
 
-    /**
-     * Set timestamp
-     *
-     * @param int $timestamp
-     */
-    public function setTimestamp(int $timestamp)
+    public function setTimestamp(int $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * Get timestamp
-     *
-     * @return int
-     */
     public function getTimestamp(): int
     {
         return $this->timestamp;
     }
 
-    /**
-     * @return Player
-     */
     public function getPlayer(): Player
     {
         return $this->player;
     }
 
-    /**
-     * @param Player $player
-     */
-    public function setPlayer(Player $player)
+    public function setPlayer(Player $player): void
     {
         $this->player = $player;
     }
 
-    /**
-     * @return WorldRegion
-     */
     public function getWorldRegion(): WorldRegion
     {
         return $this->worldRegion;
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     */
-    public function setWorldRegion(WorldRegion $worldRegion)
+    public function setWorldRegion(WorldRegion $worldRegion): void
     {
         $this->worldRegion = $worldRegion;
     }
 
-    /**
-     * @return GameUnit
-     */
     public function getGameUnit(): GameUnit
     {
         return $this->gameUnit;
     }
 
-    /**
-     * @param GameUnit $gameUnit
-     */
-    public function setGameUnit(GameUnit $gameUnit)
+    public function setGameUnit(GameUnit $gameUnit): void
     {
         $this->gameUnit = $gameUnit;
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @param Player $player
-     * @param GameUnit $gameUnit
-     * @param int $amount
-     * @return Construction
-     */
-    public static function create(WorldRegion $worldRegion, Player $player, GameUnit $gameUnit, int $amount)
+    public static function create(WorldRegion $worldRegion, Player $player, GameUnit $gameUnit, int $amount): Construction
     {
         $construction = new Construction();
         $construction->setWorldRegion($worldRegion);

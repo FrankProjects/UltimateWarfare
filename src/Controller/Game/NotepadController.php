@@ -11,11 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class NotepadController extends BaseGameController
 {
-    /**
-     * @param Request $request
-     * @param PlayerRepository $playerRepository
-     * @return Response
-     */
     public function notepad(Request $request, PlayerRepository $playerRepository): Response
     {
         $player = $this->getPlayer();

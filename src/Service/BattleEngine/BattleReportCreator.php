@@ -11,26 +11,14 @@ use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 
 final class BattleReportCreator
 {
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
+    private ReportRepository $reportRepository;
 
-    /**
-     * BattleReportCreator constructor.
-     *
-     * @param ReportRepository $reportRepository
-     */
     public function __construct(
         ReportRepository $reportRepository
     ) {
         $this->reportRepository = $reportRepository;
     }
 
-    /**
-     * @param Fleet $fleet
-     * @param int $timestamp
-     */
     public function createBattleWonReports(Fleet $fleet, int $timestamp): void
     {
         $targetWorldRegion = $fleet->getTargetWorldRegion();
@@ -52,10 +40,6 @@ final class BattleReportCreator
         }
     }
 
-    /**
-     * @param Fleet $fleet
-     * @param int $timestamp
-     */
     public function createBattleLostReports(Fleet $fleet, int $timestamp): void
     {
         $targetWorldRegion = $fleet->getTargetWorldRegion();
@@ -77,11 +61,6 @@ final class BattleReportCreator
         }
     }
 
-    /**
-     * @param Player $player
-     * @param int $timestamp
-     * @param string $report
-     */
     private function createReport(Player $player, int $timestamp, string $report): void
     {
         $report = Report::createForPlayer($player, $timestamp, Report::TYPE_ATTACKED, $report);

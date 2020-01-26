@@ -13,8 +13,5 @@ interface HistoryRepository
      */
     public function findAll(): array;
 
-    /**
-     * @param History $history
-     */
     public function save(History $history): void;
 }

@@ -5,21 +5,17 @@
 {% block content %}
     <table class="table text-center">
         <tr class="tabletop">
-            <td colspan="3"><b>Hall Of Fame</b></td>
+            <td colspan="2"><b>Hall Of Fame</b></td>
         </tr>
         <tr>
-            <td width="70"><b>World</b></td>
-            <td width="400"><b>Name</b></td>
+            <td width="470"><b>World</b></td>
             <td width="230"><b>End Date</b></td>
         </tr>
 
         {% for gameWorld in history %}
             <tr>
                 <td>
-                    {{ gameWorld.worldId }}
-                </td>
-                <td>
-                    <a class="B" href="{{ path('Site/HallOfFameRound', {'worldId': gameWorld.worldId, 'round': gameWorld.round }) }}"><b>{{ gameWorld.name }}</b></a>
+                    <a class="B" href="{{ path('Site/HallOfFameWorld', {'worldId': gameWorld.worldId }) }}"><b>{{ gameWorld.name }}</b></a>
                 </td>
                 <td>
                     {{ gameWorld.endDate|date }}
@@ -28,7 +24,7 @@
 
         {% else %}
             <tr>
-                <td colspan="3">No history...</td>
+                <td colspan="2">No history...</td>
             </tr>
         {% endfor %}
     </table>

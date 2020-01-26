@@ -9,10 +9,6 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 
 interface MessageRepository
 {
-    /**
-     * @param int $id
-     * @return Message|null
-     */
     public function find(int $id): ?Message;
 
     /**
@@ -29,13 +25,7 @@ interface MessageRepository
      */
     public function findNonDeletedMessagesFromPlayer(Player $player, int $limit = 100): array;
 
-    /**
-     * @param Message $message
-     */
     public function remove(Message $message): void;
 
-    /**
-     * @param Message $message
-     */
     public function save(Message $message): void;
 }

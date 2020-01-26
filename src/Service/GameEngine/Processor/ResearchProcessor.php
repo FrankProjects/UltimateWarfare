@@ -12,28 +12,10 @@ use FrankProjects\UltimateWarfare\Service\NetworthUpdaterService;
 
 final class ResearchProcessor implements Processor
 {
-    /**
-     * @var ResearchPlayerRepository
-     */
-    private $researchPlayerRepository;
+    private ResearchPlayerRepository $researchPlayerRepository;
+    private ReportRepository $reportRepository;
+    private NetworthUpdaterService $networthUpdaterService;
 
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
-
-    /**
-     * @var NetworthUpdaterService
-     */
-    private $networthUpdaterService;
-
-    /**
-     * ResearchProcessor constructor.
-     *
-     * @param ResearchPlayerRepository $researchPlayerRepository
-     * @param ReportRepository $reportRepository
-     * @param NetworthUpdaterService $networthUpdaterService
-     */
     public function __construct(
         ResearchPlayerRepository $researchPlayerRepository,
         ReportRepository $reportRepository,
@@ -44,9 +26,6 @@ final class ResearchProcessor implements Processor
         $this->networthUpdaterService = $networthUpdaterService;
     }
 
-    /**
-     * @param int $timestamp
-     */
     public function run(int $timestamp): void
     {
         $researches = $this->researchPlayerRepository->getNonActiveCompletedResearch($timestamp);

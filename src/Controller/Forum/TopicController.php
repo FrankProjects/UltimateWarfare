@@ -19,34 +19,11 @@ use Throwable;
 
 class TopicController extends BaseForumController
 {
-    /**
-     * @var TopicActionService
-     */
-    private $topicActionService;
+    private TopicActionService $topicActionService;
+    private PostActionService $postActionService;
+    private CategoryRepository $categoryRepository;
+    private TopicRepository $topicRepository;
 
-    /**
-     * @var PostActionService
-     */
-    private $postActionService;
-
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
-
-    /**
-     * @var TopicRepository
-     */
-    private $topicRepository;
-
-    /**
-     * TopicController constructor.
-     *
-     * @param TopicActionService $topicActionService
-     * @param PostActionService $postActionService
-     * @param CategoryRepository $categoryRepository
-     * @param TopicRepository $topicRepository
-     */
     public function __construct(
         TopicActionService $topicActionService,
         PostActionService $postActionService,
@@ -59,11 +36,6 @@ class TopicController extends BaseForumController
         $this->topicRepository = $topicRepository;
     }
 
-    /**
-     * @param Request $request
-     * @param int $topicId
-     * @return Response
-     */
     public function topic(Request $request, int $topicId): Response
     {
         $topic = $this->topicRepository->find($topicId);
@@ -92,12 +64,7 @@ class TopicController extends BaseForumController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param int $categoryId
-     * @return RedirectResponse|Response
-     */
-    public function create(Request $request, int $categoryId)
+    public function create(Request $request, int $categoryId): Response
     {
         $category = $this->categoryRepository->find($categoryId);
 
@@ -128,10 +95,6 @@ class TopicController extends BaseForumController
         ]);
     }
 
-    /**
-     * @param int $topicId
-     * @return RedirectResponse
-     */
     public function remove(int $topicId): RedirectResponse
     {
         $topic = $this->topicRepository->find($topicId);
@@ -158,12 +121,7 @@ class TopicController extends BaseForumController
         return $this->redirectToRoute('Forum/Category', ['categoryId' => $category->getId()], 302);
     }
 
-    /**
-     * @param Request $request
-     * @param int $topicId
-     * @return RedirectResponse|Response
-     */
-    public function edit(Request $request, int $topicId)
+    public function edit(Request $request, int $topicId): Response
     {
         $topic = $this->topicRepository->find($topicId);
 
@@ -198,27 +156,19 @@ class TopicController extends BaseForumController
         ]);
     }
 
-    /**
-     * XXX TODO: Implement sticky topic
-     *
-     * @param Request $request
-     * @param int $topicId
-     * @return RedirectResponse
-     */
     public function sticky(Request $request, int $topicId): RedirectResponse
     {
+        /**
+         * XXX TODO: Implement sticky topic
+         */
         return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId], 302);
     }
 
-    /**
-     * XXX TODO: Implement unsticky topic
-     *
-     * @param Request $request
-     * @param int $topicId
-     * @return RedirectResponse
-     */
     public function unsticky(Request $request, int $topicId): RedirectResponse
     {
+        /**
+         * XXX TODO: Implement unsticky topic
+         */
         return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId], 302);
     }
 }

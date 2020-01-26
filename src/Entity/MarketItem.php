@@ -4,182 +4,97 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * MarketItem
- */
+use InvalidArgumentException;
+
 class MarketItem
 {
     /**
      * @var string
      */
-    const TYPE_BUY = 'buy';
+    public const TYPE_BUY = 'buy';
 
     /**
      * @var string
      */
-    const TYPE_SELL = 'sell';
+    public const TYPE_SELL = 'sell';
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private int $amount;
+    private int $price;
+    private World $world;
+    private Player $player;
+    private string $gameResource;
+    private string $type;
 
-    /**
-     * @var int
-     */
-    private $amount;
-
-    /**
-     * @var int
-     */
-    private $price;
-
-    /**
-     * @var World
-     */
-    private $world;
-
-    /**
-     * @var Player
-     */
-    private $player;
-
-    /**
-     * @var string
-     */
-    private $gameResource;
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set amount
-     *
-     * @param int $amount
-     */
     public function setAmount(int $amount): void
     {
         $this->amount = $amount;
     }
 
-    /**
-     * Get amount
-     *
-     * @return int
-     */
     public function getAmount(): int
     {
         return $this->amount;
     }
 
-    /**
-     * Set price
-     *
-     * @param int $price
-     */
     public function setPrice(int $price): void
     {
         $this->price = $price;
     }
 
-    /**
-     * Get price
-     *
-     * @return int
-     */
     public function getPrice(): int
     {
         return $this->price;
     }
 
-    /**
-     * @return World
-     */
     public function getWorld(): World
     {
         return $this->world;
     }
 
-    /**
-     * @param World $world
-     */
     public function setWorld(World $world): void
     {
         $this->world = $world;
     }
 
-    /**
-     * @return Player
-     */
     public function getPlayer(): Player
     {
         return $this->player;
     }
 
-    /**
-     * @param Player $player
-     */
     public function setPlayer(Player $player): void
     {
         $this->player = $player;
     }
 
-    /**
-     * @return string
-     */
     public function getGameResource(): string
     {
         return $this->gameResource;
     }
 
-    /**
-     * @param string $gameResource
-     */
     public function setGameResource(string $gameResource): void
     {
         $this->gameResource = $gameResource;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     */
     public function setType(string $type): void
     {
         if (!in_array($type, [self::TYPE_BUY, self::TYPE_SELL])) {
-            throw new \InvalidArgumentException("Invalid type");
+            throw new InvalidArgumentException("Invalid type");
         }
 
         $this->type = $type;
     }
 
-    /**
-     * @param Player $player
-     * @param string $gameResource
-     * @param int $amount
-     * @param int $price
-     * @param string $type
-     * @return MarketItem
-     */
     public static function createForPlayer(Player $player, string $gameResource, int $amount, int $price, string $type): MarketItem
     {
         $marketItem = new MarketItem();

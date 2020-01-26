@@ -5,9 +5,6 @@ FrankProjects\UltimateWarfare\Entity\History:
         world:
             columns:
                 - world_id
-        round:
-            columns:
-                - round
     id:
         id:
             type: integer
@@ -24,11 +21,6 @@ FrankProjects\UltimateWarfare\Entity\History:
             options:
                 unsigned: true
             column: world_id
-        round:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
         name:
             type: string
             nullable: false

@@ -18,40 +18,12 @@ use RuntimeException;
 
 final class ConstructionActionService
 {
-    /**
-     * @var ConstructionRepository
-     */
-    private $constructionRepository;
+    private ConstructionRepository $constructionRepository;
+    private GameUnitRepository $gameUnitRepository;
+    private PlayerRepository $playerRepository;
+    private WorldRegionUnitRepository $worldRegionUnitRepository;
+    private NetworthUpdaterService $networthUpdaterService;
 
-    /**
-     * @var GameUnitRepository
-     */
-    private $gameUnitRepository;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var WorldRegionUnitRepository
-     */
-    private $worldRegionUnitRepository;
-
-    /**
-     * @var NetworthUpdaterService
-     */
-    private $networthUpdaterService;
-
-    /**
-     * ConstructionActionService constructor.
-     *
-     * @param ConstructionRepository $constructionRepository
-     * @param GameUnitRepository $gameUnitRepository
-     * @param PlayerRepository $playerRepository
-     * @param WorldRegionUnitRepository $worldRegionUnitRepository
-     * @param NetworthUpdaterService $networthUpdaterService
-     */
     public function __construct(
         ConstructionRepository $constructionRepository,
         GameUnitRepository $gameUnitRepository,
@@ -66,13 +38,6 @@ final class ConstructionActionService
         $this->networthUpdaterService = $networthUpdaterService;
     }
 
-    /**
-     * @param WorldRegion $region
-     * @param Player $player
-     * @param GameUnitType $gameUnitType
-     * @param array $constructionData
-     * @throws \Exception
-     */
     public function constructGameUnits(WorldRegion $region, Player $player, GameUnitType $gameUnitType, array $constructionData): void
     {
         $priceCash = 0;
@@ -141,13 +106,6 @@ final class ConstructionActionService
         }
     }
 
-    /**
-     * @param WorldRegion $region
-     * @param Player $player
-     * @param GameUnitType $gameUnitType
-     * @param array $destroyData
-     * @throws \Exception
-     */
     public function removeGameUnits(WorldRegion $region, Player $player, GameUnitType $gameUnitType, array $destroyData): void
     {
         foreach ($destroyData as $gameUnitId => $amount) {
@@ -171,10 +129,6 @@ final class ConstructionActionService
         $this->networthUpdaterService->updateNetworthForPlayer($player);
     }
 
-    /**
-     * @param Player $player
-     * @param int $constructionId
-     */
     public function cancelConstruction(Player $player, int $constructionId): void
     {
         $construction = $this->constructionRepository->find($constructionId);
@@ -190,11 +144,6 @@ final class ConstructionActionService
         $this->constructionRepository->remove($construction);
     }
 
-    /**
-     * @param GameUnitType $gameUnitType
-     * @param WorldRegion $worldRegion
-     * @return int
-     */
     public function getBuildingSpaceLeft(GameUnitType $gameUnitType, WorldRegion $worldRegion): int
     {
         if ($gameUnitType->getId() != 1) {
@@ -207,11 +156,6 @@ final class ConstructionActionService
         return $worldRegion->getSpace() - $regionBuildings - $buildingsInConstruction;
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @param GameUnitType $gameUnitType
-     * @return int
-     */
     public function getCountGameUnitsInConstruction(WorldRegion $worldRegion, GameUnitType $gameUnitType): int
     {
         $buildingsInConstruction = 0;
@@ -224,11 +168,6 @@ final class ConstructionActionService
         return $buildingsInConstruction;
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @param GameUnitType $gameUnitType
-     * @return int
-     */
     public function getCountGameUnitsInWorldRegion(WorldRegion $worldRegion, GameUnitType $gameUnitType): int
     {
         $regionBuildings = 0;
@@ -241,11 +180,6 @@ final class ConstructionActionService
         return $regionBuildings;
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @param GameUnit $gameUnit
-     * @param int $amount
-     */
     private function removeGameUnitsFromWorldRegion(WorldRegion $worldRegion, GameUnit $gameUnit, int $amount): void
     {
         foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {

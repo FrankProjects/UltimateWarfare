@@ -14,28 +14,10 @@ use RuntimeException;
 
 final class ResearchActionService
 {
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
+    private PlayerRepository $playerRepository;
+    private ResearchRepository $researchRepository;
+    private ResearchPlayerRepository $researchPlayerRepository;
 
-    /**
-     * @var ResearchRepository
-     */
-    private $researchRepository;
-
-    /**
-     * @var ResearchPlayerRepository
-     */
-    private $researchPlayerRepository;
-
-    /**
-     * ResearchActionService service
-     *
-     * @param ResearchRepository $researchRepository
-     * @param ResearchPlayerRepository $researchPlayerRepository
-     * @param PlayerRepository $playerRepository
-     */
     public function __construct(
         ResearchRepository $researchRepository,
         ResearchPlayerRepository $researchPlayerRepository,
@@ -46,10 +28,6 @@ final class ResearchActionService
         $this->playerRepository = $playerRepository;
     }
 
-    /**
-     * @param int $researchId
-     * @param Player $player
-     */
     public function performResearch(int $researchId, Player $player): void
     {
         $research = $this->getResearchById($researchId);
@@ -69,10 +47,6 @@ final class ResearchActionService
         $this->researchPlayerRepository->save($researchPlayer);
     }
 
-    /**
-     * @param int $researchId
-     * @param Player $player
-     */
     public function performCancel(int $researchId, Player $player): void
     {
         $research = $this->getResearchById($researchId);
@@ -91,10 +65,6 @@ final class ResearchActionService
         }
     }
 
-    /**
-     * @param int $researchId
-     * @return Research
-     */
     private function getResearchById(int $researchId): Research
     {
         $research = $this->researchRepository->find($researchId);
@@ -110,10 +80,6 @@ final class ResearchActionService
         return $research;
     }
 
-    /**
-     * @param Research $research
-     * @param Player $player
-     */
     private function ensureCanResearch(Research $research, Player $player): void
     {
         $researchArray = [];

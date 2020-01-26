@@ -14,31 +14,15 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 
 final class DoctrineConstructionRepository implements ConstructionRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineConstructionRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Construction::class);
     }
 
-    /**
-     * @param int $id
-     * @return Construction|null
-     */
     public function find(int $id): ?Construction
     {
         return $this->repository->find($id);
@@ -53,10 +37,6 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         return $this->repository->findBy(['player' => $player]);
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @return array
-     */
     public function getGameUnitConstructionSumByWorldRegion(WorldRegion $worldRegion): array
     {
         $results = $this->entityManager
@@ -77,10 +57,6 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         return $gameUnits;
     }
 
-    /**
-     * @param Player $player
-     * @return array
-     */
     public function getGameUnitConstructionSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
@@ -136,18 +112,12 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->getResult();
     }
 
-    /**
-     * @param Construction $construction
-     */
     public function remove(Construction $construction): void
     {
         $this->entityManager->remove($construction);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Construction $construction
-     */
     public function save(Construction $construction): void
     {
         $this->entityManager->persist($construction);

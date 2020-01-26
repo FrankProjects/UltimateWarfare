@@ -15,13 +15,7 @@ interface FederationNewsRepository
      */
     public function findByFederationSortedByTimestamp(Federation $federation): array;
 
-    /**
-     * @param FederationNews $federationNews
-     */
     public function remove(FederationNews $federationNews): void;
 
-    /**
-     * @param FederationNews $federationNews
-     */
     public function save(FederationNews $federationNews): void;
 }

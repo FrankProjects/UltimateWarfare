@@ -14,22 +14,9 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class UserController extends BaseGameController
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private UserRepository $userRepository;
+    private UnbanRequestRepository $unbanRequestRepository;
 
-    /**
-     * @var UnbanRequestRepository
-     */
-    private $unbanRequestRepository;
-
-    /**
-     * UserController constructor.
-     *
-     * @param UserRepository $userRepository
-     * @param UnbanRequestRepository $unbanRequestRepository
-     */
     public function __construct(
         UserRepository $userRepository,
         UnbanRequestRepository $unbanRequestRepository
@@ -38,9 +25,6 @@ final class UserController extends BaseGameController
         $this->unbanRequestRepository = $unbanRequestRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function account(): Response
     {
         return $this->render('game/account.html.twig', [
@@ -48,10 +32,6 @@ final class UserController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function banned(Request $request): Response
     {
         $user = $this->getGameUser(false);
@@ -82,11 +62,6 @@ final class UserController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     * @return Response
-     */
     public function edit(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $user = $this->getGameUser();
@@ -125,9 +100,6 @@ final class UserController extends BaseGameController
         ]);
     }
 
-    /**
-     * @return string
-     */
     private function getAccountType(): string
     {
         $user = $this->getGameUser();
@@ -144,11 +116,6 @@ final class UserController extends BaseGameController
         return 'Guest';
     }
 
-    /**
-     * Change settings
-     *
-     * @param Request $request
-     */
     private function changeSettings(Request $request)
     {
         $user = $this->getGameUser();

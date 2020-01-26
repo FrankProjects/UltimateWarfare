@@ -15,23 +15,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 final class UserSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private RouterInterface $router;
+    private UserRepository $userRepository;
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * PlayerSubscriber constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
-     * @param UserRepository $userRepository
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
@@ -42,9 +28,6 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @param RequestEvent $event
-     */
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMasterRequest()) {
@@ -67,9 +50,6 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         }
     }
 
-    /**
-     * @param RequestEvent $event
-     */
     private function checkBannedAndRedirect(RequestEvent $event): void
     {
         if (
@@ -89,9 +69,6 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         $event->setResponse($response);
     }
 
-    /**
-     * @return array
-     */
     public static function getSubscribedEvents(): array
     {
         return [

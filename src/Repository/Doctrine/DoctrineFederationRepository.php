@@ -12,42 +12,20 @@ use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 
 final class DoctrineFederationRepository implements FederationRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineFederationRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Federation::class);
     }
 
-    /**
-     * @param int $id
-     * @param World $world
-     * @return Federation|null
-     */
     public function findByIdAndWorld(int $id, World $world): ?Federation
     {
         return $this->repository->findOneBy(['id' => $id, 'world' => $world]);
     }
 
-    /**
-     * @param string $name
-     * @param World $world
-     * @return Federation|null
-     */
     public function findByNameAndWorld(string $name, World $world): ?Federation
     {
         return $this->repository->findOneBy(['name' => $name, 'world' => $world]);
@@ -62,9 +40,6 @@ final class DoctrineFederationRepository implements FederationRepository
         return $this->repository->findBy(['world' => $world], ['regions' => 'DESC']);
     }
 
-    /**
-     * @param Federation $federation
-     */
     public function remove(Federation $federation): void
     {
         foreach ($federation->getFederationApplications() as $application) {
@@ -85,9 +60,6 @@ final class DoctrineFederationRepository implements FederationRepository
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Federation $federation
-     */
     public function save(Federation $federation): void
     {
         $this->entityManager->persist($federation);

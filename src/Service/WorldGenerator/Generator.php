@@ -8,9 +8,5 @@ use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 
 interface Generator
 {
-    /**
-     * @param MapConfiguration $mapConfiguration
-     * @return array
-     */
     public function generate(MapConfiguration $mapConfiguration): array;
 }

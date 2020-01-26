@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
+use DateTime;
 use FrankProjects\UltimateWarfare\Form\ResetPasswordType;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Service\MailService;
@@ -16,28 +17,10 @@ use Throwable;
 
 final class ResetPasswordController extends AbstractController
 {
-    /**
-     * @var MailService
-     */
-    private $mailService;
+    private MailService $mailService;
+    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserRepository $userRepository;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $passwordEncoder;
-
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * ResetPasswordController constructor
-     *
-     * @param MailService $mailService
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param UserRepository $userRepository
-     */
     public function __construct(
         MailService $mailService,
         UserPasswordEncoderInterface $passwordEncoder,
@@ -48,11 +31,6 @@ final class ResetPasswordController extends AbstractController
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
     public function requestPasswordReset(Request $request): Response
     {
         $email = $request->request->get('email');
@@ -66,7 +44,7 @@ final class ResetPasswordController extends AbstractController
                     $generator = new TokenGenerator();
                     $token = $generator->generateToken(40);
 
-                    $user->setPasswordRequestedAt(new \DateTime());
+                    $user->setPasswordRequestedAt(new DateTime());
                     $user->setConfirmationToken($token);
                     $this->userRepository->save($user);
 
@@ -87,11 +65,6 @@ final class ResetPasswordController extends AbstractController
         return $this->render('site/requestPasswordReset.html.twig');
     }
 
-    /**
-     * @param Request $request
-     * @param string $token
-     * @return Response
-     */
     public function resetPassword(Request $request, string $token): Response
     {
         $user = $this->userRepository->findByConfirmationToken($token);

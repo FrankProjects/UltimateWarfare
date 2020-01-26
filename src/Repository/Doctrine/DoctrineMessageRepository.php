@@ -12,31 +12,15 @@ use FrankProjects\UltimateWarfare\Repository\MessageRepository;
 
 final class DoctrineMessageRepository implements MessageRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineMessageRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Message::class);
     }
 
-    /**
-     * @param int $id
-     * @return Message|null
-     */
     public function find(int $id): ?Message
     {
         return $this->repository->find($id);
@@ -76,18 +60,12 @@ final class DoctrineMessageRepository implements MessageRepository
             ->getResult();
     }
 
-    /**
-     * @param Message $message
-     */
     public function remove(Message $message): void
     {
         $this->entityManager->remove($message);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Message $message
-     */
     public function save(Message $message): void
     {
         $this->entityManager->persist($message);

@@ -11,10 +11,6 @@ use FrankProjects\UltimateWarfare\Entity\WorldSector;
 
 interface WorldRegionRepository
 {
-    /**
-     * @param int $id
-     * @return WorldRegion|null
-     */
     public function find(int $id): ?WorldRegion;
 
     /**
@@ -31,36 +27,13 @@ interface WorldRegionRepository
      */
     public function findByWorldAndPlayer(World $world, ?Player $player): array;
 
-    /**
-     * @param World $world
-     * @param int $x
-     * @param int $y
-     * @return WorldRegion|null
-     */
     public function findByWorldXY(World $world, int $x, int $y): ?WorldRegion;
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @return array
-     */
     public function getWorldGameUnitSumByWorldRegion(WorldRegion $worldRegion): array;
 
-    /**
-     * @param int $id
-     * @param Player $player
-     * @return WorldRegion|null
-     */
     public function getPreviousWorldRegionForPlayer(int $id, Player $player): ?WorldRegion;
 
-    /**
-     * @param int $id
-     * @param Player $player
-     * @return WorldRegion|null
-     */
     public function getNextWorldRegionForPlayer(int $id, Player $player): ?WorldRegion;
 
-    /**
-     * @param WorldRegion $worldRegion
-     */
     public function save(WorldRegion $worldRegion): void;
 }

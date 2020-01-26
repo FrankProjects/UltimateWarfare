@@ -12,31 +12,15 @@ use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 
 final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineUnbanRequestRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(UnbanRequest::class);
     }
 
-    /**
-     * @param int $id
-     * @return UnbanRequest|null
-     */
     public function find(int $id): ?UnbanRequest
     {
         return $this->repository->find($id);
@@ -50,27 +34,17 @@ final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
         return $this->repository->findAll();
     }
 
-    /**
-     * @param User $user
-     * @return UnbanRequest|null
-     */
     public function findByUser(User $user): ?UnbanRequest
     {
         return $this->repository->findOneBy(['user' => $user]);
     }
 
-    /**
-     * @param UnbanRequest $unbanRequest
-     */
     public function remove(UnbanRequest $unbanRequest): void
     {
         $this->entityManager->remove($unbanRequest);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param UnbanRequest $unbanRequest
-     */
     public function save(UnbanRequest $unbanRequest): void
     {
         $this->entityManager->persist($unbanRequest);

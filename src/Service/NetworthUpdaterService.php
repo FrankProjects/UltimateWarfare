@@ -11,28 +11,10 @@ use FrankProjects\UltimateWarfare\Util\NetworthCalculator;
 
 final class NetworthUpdaterService
 {
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
+    private FederationRepository $federationRepository;
+    private PlayerRepository $playerRepository;
+    private NetworthCalculator $networthCalculator;
 
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var NetworthCalculator
-     */
-    private $networthCalculator;
-
-    /**
-     * NetworthUpdaterService constructor.
-     *
-     * @param FederationRepository $federationRepository
-     * @param PlayerRepository $playerRepository
-     * @param NetworthCalculator $networthCalculator
-     */
     public function __construct(
         FederationRepository $federationRepository,
         PlayerRepository $playerRepository,
@@ -43,9 +25,6 @@ final class NetworthUpdaterService
         $this->networthCalculator = $networthCalculator;
     }
 
-    /**
-     * @param Player $player
-     */
     public function updateNetworthForPlayer(Player $player): void
     {
         $networth = $this->networthCalculator->calculateNetworthForPlayer($player);

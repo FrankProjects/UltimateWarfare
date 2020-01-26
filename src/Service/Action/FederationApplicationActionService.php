@@ -18,40 +18,12 @@ use RuntimeException;
 
 final class FederationApplicationActionService
 {
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
+    private FederationRepository $federationRepository;
+    private FederationNewsRepository $federationNewsRepository;
+    private FederationApplicationRepository $federationApplicationRepository;
+    private PlayerRepository $playerRepository;
+    private ReportRepository $reportRepository;
 
-    /**
-     * @var FederationNewsRepository
-     */
-    private $federationNewsRepository;
-
-    /**
-     * @var FederationApplicationRepository
-     */
-    private $federationApplicationRepository;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
-
-    /**
-     * FederationApplicationActionService constructor.
-     *
-     * @param FederationRepository $federationRepository
-     * @param FederationApplicationRepository $federationApplicationRepository
-     * @param FederationNewsRepository $federationNewsRepository
-     * @param PlayerRepository $playerRepository
-     * @param ReportRepository $reportRepository
-     */
     public function __construct(
         FederationRepository $federationRepository,
         FederationApplicationRepository $federationApplicationRepository,
@@ -66,10 +38,6 @@ final class FederationApplicationActionService
         $this->reportRepository = $reportRepository;
     }
 
-    /**
-     * @param Player $player
-     * @param int $applicationId
-     */
     public function acceptFederationApplication(Player $player, int $applicationId): void
     {
         $this->ensureFederationEnabled($player);
@@ -79,7 +47,7 @@ final class FederationApplicationActionService
             throw new RunTimeException("Player is already in another Federation!");
         }
 
-        if (count($player->getFederation()->getPlayers()) >= $player->getWorld()->getFedLimit()) {
+        if (count($player->getFederation()->getPlayers()) >= $player->getWorld()->getFederationLimit()) {
             throw new RunTimeException("Federation members world limit reached!");
         }
 
@@ -101,16 +69,12 @@ final class FederationApplicationActionService
 
         $federation = $federationApplication->getFederation();
         $federation->setNetworth($federation->getNetworth() + $federationApplication->getPlayer()->getNetworth());
-        $federation->setRegions($federation->getRegions() + $federationApplication->getPlayer()->getRegions());
+        $federation->setRegions($federation->getRegions() + count($federationApplication->getPlayer()->getWorldRegions()));
         $this->federationRepository->save($federation);
 
         $this->federationApplicationRepository->remove($federationApplication);
     }
 
-    /**
-     * @param Player $player
-     * @param int $applicationId
-     */
     public function rejectFederationApplication(Player $player, int $applicationId): void
     {
         $this->ensureFederationEnabled($player);
@@ -128,11 +92,6 @@ final class FederationApplicationActionService
         $this->federationApplicationRepository->remove($federationApplication);
     }
 
-    /**
-     * @param Player $player
-     * @param Federation $federation
-     * @param string $application
-     */
     public function sendFederationApplication(Player $player, Federation $federation, string $application): void
     {
         $this->ensureFederationEnabled($player);
@@ -149,9 +108,6 @@ final class FederationApplicationActionService
         $this->federationApplicationRepository->save($federationApplication);
     }
 
-    /**
-     * @param Player $player
-     */
     private function ensureFederationEnabled(Player $player): void
     {
         $world = $player->getWorld();
@@ -160,11 +116,6 @@ final class FederationApplicationActionService
         }
     }
 
-    /**
-     * @param Player $player
-     * @param int $federationApplicationId
-     * @return FederationApplication
-     */
     private function getFederationApplication(Player $player, int $federationApplicationId): FederationApplication
     {
         $federationApplication = $this->federationApplicationRepository->findByIdAndWorld($federationApplicationId, $player->getWorld());

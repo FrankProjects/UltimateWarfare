@@ -4,196 +4,76 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * HistoryPlayer
- */
 class HistoryPlayer
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private int $worldId;
+    private string $playerName;
+    private int $userId;
+    private int $federationId;
+    private int $regions;
+    private int $networth;
 
-    /**
-     * @var int
-     */
-    private $worldId;
-
-    /**
-     * @var int
-     */
-    private $round;
-
-    /**
-     * @var string
-     */
-    private $playerName;
-
-    /**
-     * @var int
-     */
-    private $userId;
-
-    /**
-     * @var int
-     */
-    private $fedId;
-
-    /**
-     * @var int
-     */
-    private $regions;
-
-    /**
-     * @var int
-     */
-    private $networth;
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set worldId
-     *
-     * @param int $worldId
-     */
-    public function setWorldId(int $worldId)
+    public function setWorldId(int $worldId): void
     {
         $this->worldId = $worldId;
     }
 
-    /**
-     * Get worldId
-     *
-     * @return int
-     */
     public function getWorldId(): int
     {
         return $this->worldId;
     }
 
-    /**
-     * Set round
-     *
-     * @param int $round
-     */
-    public function setRound(int $round)
-    {
-        $this->round = $round;
-    }
-
-    /**
-     * Get round
-     *
-     * @return int
-     */
-    public function getRound(): int
-    {
-        return $this->round;
-    }
-
-    /**
-     * Set playerName
-     *
-     * @param string $playerName
-     */
-    public function setPlayerName(string $playerName)
+    public function setPlayerName(string $playerName): void
     {
         $this->playerName = $playerName;
     }
 
-    /**
-     * Get playerName
-     *
-     * @return string
-     */
     public function getPlayerName(): string
     {
         return $this->playerName;
     }
 
-    /**
-     * Set userId
-     *
-     * @param int $userId
-     */
-    public function setUserId(int $userId)
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
 
-    /**
-     * Get userId
-     *
-     * @return int
-     */
     public function getUserId(): int
     {
         return $this->userId;
     }
 
-    /**
-     * Set fedId
-     *
-     * @param int $fedId
-     */
-    public function setFedId(int $fedId)
+    public function getFederationId(): int
     {
-        $this->fedId = $fedId;
+        return $this->federationId;
     }
 
-    /**
-     * Get fedId
-     *
-     * @return int
-     */
-    public function getFedId(): int
+    public function setFederationId(int $federationId): void
     {
-        return $this->fedId;
+        $this->federationId = $federationId;
     }
 
-    /**
-     * Set regions
-     *
-     * @param int $regions
-     */
-    public function setRegions(int $regions)
+    public function setRegions(int $regions): void
     {
         $this->regions = $regions;
     }
 
-    /**
-     * Get regions
-     *
-     * @return int
-     */
     public function getRegions(): int
     {
         return $this->regions;
     }
 
-    /**
-     * Set networth
-     *
-     * @param int $networth
-     */
-    public function setNetworth(int $networth)
+    public function setNetworth(int $networth): void
     {
         $this->networth = $networth;
     }
 
-    /**
-     * Get networth
-     *
-     * @return int
-     */
     public function getNetworth(): int
     {
         return $this->networth;

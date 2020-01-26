@@ -9,11 +9,6 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 
 interface FleetRepository
 {
-    /**
-     * @param int $id
-     * @param Player $player
-     * @return Fleet
-     */
     public function findByIdAndPlayer(int $id, Player $player): ?Fleet;
 
     /**
@@ -22,13 +17,7 @@ interface FleetRepository
      */
     public function findByPlayer(Player $player): array;
 
-    /**
-     * @param Fleet $fleet
-     */
     public function remove(Fleet $fleet): void;
 
-    /**
-     * @param Fleet $fleet
-     */
     public function save(Fleet $fleet): void;
 }

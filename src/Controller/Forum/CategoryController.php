@@ -16,28 +16,10 @@ use Throwable;
 
 class CategoryController extends BaseForumController
 {
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
+    private CategoryRepository $categoryRepository;
+    private TopicRepository $topicRepository;
+    private CategoryActionService $categoryActionService;
 
-    /**
-     * @var TopicRepository
-     */
-    private $topicRepository;
-
-    /**
-     * @var CategoryActionService
-     */
-    private $categoryActionService;
-
-    /**
-     * CategoryController constructor.
-     *
-     * @param CategoryRepository $categoryRepository
-     * @param TopicRepository $topicRepository
-     * @param CategoryActionService $categoryActionService
-     */
     public function __construct(
         CategoryRepository $categoryRepository,
         TopicRepository $topicRepository,
@@ -48,10 +30,6 @@ class CategoryController extends BaseForumController
         $this->categoryActionService = $categoryActionService;
     }
 
-    /**
-     * @param int $categoryId
-     * @return Response
-     */
     public function category(int $categoryId): Response
     {
         $category = $this->categoryRepository->find($categoryId);
@@ -64,11 +42,7 @@ class CategoryController extends BaseForumController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return RedirectResponse|Response
-     */
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
@@ -91,12 +65,7 @@ class CategoryController extends BaseForumController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param int $categoryId
-     * @return RedirectResponse|Response
-     */
-    public function edit(Request $request, int $categoryId)
+    public function edit(Request $request, int $categoryId): Response
     {
         $category = $this->categoryRepository->find($categoryId);
 
@@ -125,10 +94,6 @@ class CategoryController extends BaseForumController
         ]);
     }
 
-    /**
-     * @param int $categoryId
-     * @return RedirectResponse
-     */
     public function remove(int $categoryId): RedirectResponse
     {
         $category = $this->categoryRepository->find($categoryId);

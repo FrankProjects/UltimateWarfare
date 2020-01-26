@@ -6,10 +6,6 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 
 final class IncomeCalculator extends AbstractPlayerCalculator
 {
-    /**
-     * @param Player $player
-     * @return Player\Income
-     */
     public function calculateIncomeForPlayer(Player $player): Player\Income
     {
         $this->abstractGameResources = new Player\Income();

@@ -16,22 +16,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class ChatController extends BaseController
 {
-    /**
-     * @var ChatLineRepository
-     */
-    private $chatLineRepository;
+    private ChatLineRepository $chatLineRepository;
+    private ChatUserRepository $chatUserRepository;
 
-    /**
-     * @var ChatUserRepository
-     */
-    private $chatUserRepository;
-
-    /**
-     * ChatController constructor.
-     *
-     * @param ChatLineRepository $chatLineRepository
-     * @param ChatUserRepository $chatUserRepository
-     */
     public function __construct(
         ChatLineRepository $chatLineRepository,
         ChatUserRepository $chatUserRepository
@@ -40,9 +27,6 @@ final class ChatController extends BaseController
         $this->chatUserRepository = $chatUserRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function chat(): Response
     {
         $isGuest = true;
@@ -66,9 +50,6 @@ final class ChatController extends BaseController
         ]);
     }
 
-    /**
-     * @return JsonResponse
-     */
     public function getUsers(): JsonResponse
     {
         $chatUsers = $this->chatUserRepository->findInactiveChatUsers();
@@ -96,10 +77,6 @@ final class ChatController extends BaseController
         ]);
     }
 
-    /**
-     * @param int $lastChatLineId
-     * @return JsonResponse
-     */
     public function getChat(int $lastChatLineId): JsonResponse
     {
         $this->updateUser();
@@ -133,10 +110,6 @@ final class ChatController extends BaseController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function addChat(Request $request): JsonResponse
     {
         $text = '';

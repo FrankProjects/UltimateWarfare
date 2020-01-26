@@ -12,28 +12,10 @@ use RuntimeException;
 
 final class WorldActionService
 {
-    /**
-     * @var WorldRepository
-     */
-    private $worldRepository;
+    private WorldRepository $worldRepository;
+    private PlayerRepository $playerRepository;
+    private FederationRepository $federationRepository;
 
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
-
-    /**
-     * WorldActionService service
-     *
-     * @param WorldRepository $worldRepository
-     * @param PlayerRepository $playerRepository
-     * @param FederationRepository $federationRepository
-     */
     public function __construct(
         WorldRepository $worldRepository,
         PlayerRepository $playerRepository,
@@ -44,9 +26,6 @@ final class WorldActionService
         $this->federationRepository = $federationRepository;
     }
 
-    /**
-     * @param int $worldId
-     */
     public function remove(int $worldId): void
     {
         $world = $this->getWorld($worldId);
@@ -77,10 +56,6 @@ final class WorldActionService
         }
     }
 
-    /**
-     * @param int $worldId
-     * @return World
-     */
     private function getWorld(int $worldId): World
     {
         $world = $this->worldRepository->find($worldId);

@@ -18,40 +18,12 @@ use Throwable;
 
 final class ConstructionController extends BaseGameController
 {
-    /**
-     * @var ConstructionRepository
-     */
-    private $constructionRepository;
+    private ConstructionRepository $constructionRepository;
+    private GameUnitTypeRepository $gameUnitTypeRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private ConstructionActionService $constructionActionService;
+    private RegionActionService $regionActionService;
 
-    /**
-     * @var GameUnitTypeRepository
-     */
-    private $gameUnitTypeRepository;
-
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
-
-    /**
-     * @var ConstructionActionService
-     */
-    private $constructionActionService;
-
-    /**
-     * @var RegionActionService
-     */
-    private $regionActionService;
-
-    /**
-     * ConstructionController constructor.
-     *
-     * @param ConstructionRepository $constructionRepository
-     * @param GameUnitTypeRepository $gameUnitTypeRepository
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param ConstructionActionService $constructionActionService
-     * @param RegionActionService $regionActionService
-     */
     public function __construct(
         ConstructionRepository $constructionRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
@@ -66,10 +38,6 @@ final class ConstructionController extends BaseGameController
         $this->regionActionService = $regionActionService;
     }
 
-    /**
-     * @param int $type
-     * @return Response
-     */
     public function construction(int $type): Response
     {
         $gameUnitType = $this->gameUnitTypeRepository->find($type);
@@ -94,18 +62,12 @@ final class ConstructionController extends BaseGameController
         ]);
     }
 
-    /**
-     * XXX TODO: Fix unit info page
-     * XXX TODO: Fix buildtime to human readable format
-     *
-     * @param Request $request
-     * @param int $regionId
-     * @param int $gameUnitTypeId
-     * @return Response
-     * @throws \Exception
-     */
     public function constructGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
+        /**
+         * XXX TODO: Fix unit info page
+         * XXX TODO: Fix buildtime to human readable format
+         */
         try {
             $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $this->getPlayer());
         } catch (WorldRegionNotFoundException $e) {
@@ -140,13 +102,11 @@ final class ConstructionController extends BaseGameController
         ]);
     }
 
-    /**
-     * XXX TODO: Refactor to show what game units are being built/trained
-     *
-     * @param GameUnitType $gameUnitType
-     */
     private function addConstructGameUnitsFlash(GameUnitType $gameUnitType): void
     {
+        /**
+         * XXX TODO: Refactor to show what game units are being built/trained
+         */
         if ($gameUnitType->getId() == 4) {
             $this->addFlash('success', 'New units are now being trained!');
         } else {
@@ -154,13 +114,6 @@ final class ConstructionController extends BaseGameController
         }
     }
 
-    /**
-     * @param Request $request
-     * @param int $regionId
-     * @param int $gameUnitTypeId
-     * @return Response
-     * @throws \Exception
-     */
     public function removeGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
         try {
@@ -193,13 +146,11 @@ final class ConstructionController extends BaseGameController
         ]);
     }
 
-    /**
-     * XXX TODO: Refactor to show what game units are being destroyed/disbanded
-     *
-     * @param GameUnitType $gameUnitType
-     */
     private function addRemoveGameUnitsFlash(GameUnitType $gameUnitType): void
     {
+        /**
+         * XXX TODO: Refactor to show what game units are being destroyed/disbanded
+         */
         if ($gameUnitType->getId() == 4) {
             $this->addFlash('success', "You have disbanded units!");
         } else {
@@ -207,10 +158,6 @@ final class ConstructionController extends BaseGameController
         }
     }
 
-    /**
-     * @param int $constructionId
-     * @return RedirectResponse
-     */
     public function cancel(int $constructionId): RedirectResponse
     {
         try {

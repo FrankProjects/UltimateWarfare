@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service;
 
+use Exception;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ConstructionProcessor;
@@ -11,28 +12,10 @@ use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ResearchProcessor
 
 final class GameEngine
 {
-    /**
-     * @var ConstructionProcessor
-     */
-    private $constructionProcessor;
+    private ConstructionProcessor $constructionProcessor;
+    private ResearchProcessor $researchProcessor;
+    private PlayerRepository $playerRepository;
 
-    /**
-     * @var ResearchProcessor
-     */
-    private $researchProcessor;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * GameEngine constructor.
-     *
-     * @param ConstructionProcessor $constructionProcessor
-     * @param ResearchProcessor $researchProcessor
-     * @param PlayerRepository $playerRepository
-     */
     public function __construct(
         ConstructionProcessor $constructionProcessor,
         ResearchProcessor $researchProcessor,
@@ -43,11 +26,7 @@ final class GameEngine
         $this->playerRepository = $playerRepository;
     }
 
-    /**
-     * @param Player|null $player
-     * @throws \Exception
-     */
-    public function run(?Player $player)
+    public function run(?Player $player): void
     {
         $timestamp = time();
 
@@ -60,11 +39,6 @@ final class GameEngine
         $this->processPopulationGrowth($timestamp);
     }
 
-    /**
-     * @param Player $player
-     * @param int $timestamp
-     * @return bool
-     */
     public function processPlayerIncome(Player $player, int $timestamp): bool
     {
         // Don't update player income more than once every minute...
@@ -116,17 +90,14 @@ final class GameEngine
 
         try {
             $this->playerRepository->save($player);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
         return true;
     }
 
-    /**
-     * @param int $timestamp
-     */
-    public function processPopulationGrowth(int $timestamp)
+    public function processPopulationGrowth(int $timestamp): void
     {
         /**
          * //income

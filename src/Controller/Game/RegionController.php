@@ -15,34 +15,11 @@ use Throwable;
 
 final class RegionController extends BaseGameController
 {
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private GameUnitTypeRepository $gameUnitTypeRepository;
+    private ConstructionActionService $constructionActionService;
+    private RegionActionService $regionActionService;
 
-    /**
-     * @var GameUnitTypeRepository
-     */
-    private $gameUnitTypeRepository;
-
-    /**
-     * @var ConstructionActionService
-     */
-    private $constructionActionService;
-
-    /**
-     * @var RegionActionService
-     */
-    private $regionActionService;
-
-    /**
-     * RegionController constructor.
-     *
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param GameUnitTypeRepository $gameUnitTypeRepository
-     * @param ConstructionActionService $constructionActionService
-     * @param RegionActionService $regionActionService
-     */
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
@@ -55,12 +32,6 @@ final class RegionController extends BaseGameController
         $this->regionActionService = $regionActionService;
     }
 
-    /**
-     * @param Request $request
-     * @param int $regionId
-     * @return Response
-     * @throws \Exception
-     */
     public function buy(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
@@ -88,10 +59,6 @@ final class RegionController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param int $regionId
-     * @return Response
-     */
     public function region(int $regionId): Response
     {
         $player = $this->getPlayer();
@@ -116,13 +83,11 @@ final class RegionController extends BaseGameController
         ]);
     }
 
-    /**
-     * XXX TODO: Add sorting support (by building space, population, buildings, units)
-     *
-     * @return Response
-     */
     public function regionList(): Response
     {
+        /**
+         * XXX TODO: Add sorting support (by building space, population, buildings, units)
+         */
         $player = $this->getPlayer();
         $regions = $player->getWorldRegions();
 

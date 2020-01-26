@@ -9,17 +9,8 @@ use FrankProjects\UltimateWarfare\Entity\World;
 
 interface PlayerRepository
 {
-    /**
-     * @param int $id
-     * @return Player|null
-     */
     public function find(int $id): ?Player;
 
-    /**
-     * @param string $playerName
-     * @param World $world
-     * @return Player|null
-     */
     public function findByNameAndWorld(string $playerName, World $world): ?Player;
 
     /**
@@ -36,13 +27,7 @@ interface PlayerRepository
      */
     public function findByWorldAndNetworth(World $world, $limit = 10): array;
 
-    /**
-     * @param Player $player
-     */
     public function remove(Player $player): void;
 
-    /**
-     * @param Player $player
-     */
     public function save(Player $player): void;
 }

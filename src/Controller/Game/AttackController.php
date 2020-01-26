@@ -15,34 +15,11 @@ use Throwable;
 
 final class AttackController extends BaseGameController
 {
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private GameUnitTypeRepository $gameUnitTypeRepository;
+    private FleetActionService $fleetActionService;
+    private RegionActionService $regionActionService;
 
-    /**
-     * @var GameUnitTypeRepository
-     */
-    private $gameUnitTypeRepository;
-
-    /**
-     * @var FleetActionService
-     */
-    private $fleetActionService;
-
-    /**
-     * @var RegionActionService
-     */
-    private $regionActionService;
-
-    /**
-     * RegionController constructor.
-     *
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param GameUnitTypeRepository $gameUnitTypeRepository
-     * @param FleetActionService $fleetActionService
-     * @param RegionActionService $regionActionService
-     */
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
@@ -55,11 +32,6 @@ final class AttackController extends BaseGameController
         $this->regionActionService = $regionActionService;
     }
 
-    /**
-     * @param int $regionId
-     * @return Response
-     * @throws \Exception
-     */
     public function attack(int $regionId): Response
     {
         $player = $this->getPlayer();
@@ -83,13 +55,6 @@ final class AttackController extends BaseGameController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param int $regionId
-     * @param int $playerRegionId
-     * @return Response
-     * @throws \Exception
-     */
     public function attackSelectGameUnits(Request $request, int $regionId, int $playerRegionId): Response
     {
         $player = $this->getPlayer();

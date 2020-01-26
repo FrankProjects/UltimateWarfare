@@ -10,13 +10,9 @@ interface HistoryFederationRepository
 {
     /**
      * @param int $worldId
-     * @param int $round
      * @return HistoryFederation[]
      */
-    public function findByWorldAndRound(int $worldId, int $round): array;
+    public function findByWorld(int $worldId): array;
 
-    /**
-     * @param HistoryFederation $historyFederation
-     */
     public function save(HistoryFederation $historyFederation): void;
 }

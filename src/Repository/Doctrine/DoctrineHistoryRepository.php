@@ -11,21 +11,9 @@ use FrankProjects\UltimateWarfare\Repository\HistoryRepository;
 
 final class DoctrineHistoryRepository implements HistoryRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineHistoryRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -40,9 +28,6 @@ final class DoctrineHistoryRepository implements HistoryRepository
         return $this->repository->findAll();
     }
 
-    /**
-     * @param History $history
-     */
     public function save(History $history): void
     {
         $this->entityManager->persist($history);

@@ -8,15 +8,8 @@ use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 
 class PerlinNoiseGenerator implements Generator
 {
-    /**
-     * @var array
-     */
-    private $world;
+    private array $world;
 
-    /**
-     * @param MapConfiguration $mapConfiguration
-     * @return array
-     */
     public function generate(MapConfiguration $mapConfiguration): array
     {
         $this->initWorld($mapConfiguration);
@@ -28,11 +21,6 @@ class PerlinNoiseGenerator implements Generator
         return $this->world;
     }
 
-    /**
-     * @param int $size
-     * @param float $persistence
-     * @param int $octave
-     */
     private function octave(int $size, float $persistence, int $octave): void
     {
         $freq = pow(2, $octave);
@@ -71,9 +59,6 @@ class PerlinNoiseGenerator implements Generator
         }
     }
 
-    /**
-     * @param MapConfiguration $mapConfiguration
-     */
     private function initWorld(MapConfiguration $mapConfiguration): void
     {
         mt_srand(intval($mapConfiguration->getSeed() * $mapConfiguration->getPersistence() * $mapConfiguration->getSize()));
@@ -87,18 +72,11 @@ class PerlinNoiseGenerator implements Generator
         }
     }
 
-    /**
-     * @return float
-     */
     private function random(): float
     {
         return mt_rand() / getrandmax();
     }
 
-    /**
-     * @param int $size
-     * @return int
-     */
     private function getOctaves(int $size): int
     {
         return (int)log($size, 2);
