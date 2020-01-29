@@ -58,14 +58,6 @@ hr {
     width: 95%;
 }
 
-fieldset {
-    width:60%;
-    padding: 1em;
-    border:1px solid #443311;
-    margin-left:auto;
-    margin-right:auto;
-}
-
 .worldtable {
     background-color:#F8F4E8;
     border:1px solid #804000;
