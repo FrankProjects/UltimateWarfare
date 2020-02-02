@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <embeddable name="FrankProjects\UltimateWarfare\Entity\World\MapConfiguration">
+    <field name="size" type="integer" column="size">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="persistence" type="float" column="persistence">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="seed" type="integer" column="seed">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="waterLevel" type="integer" column="water_level">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="beachLevel" type="integer" column="beach_level">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="forrestLevel" type="integer" column="forrest_level">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+  </embeddable>
+</doctrine-mapping>

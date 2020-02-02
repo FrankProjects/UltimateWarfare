@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\HistoryFederation" table="history_federation">
+    <indexes>
+      <index name="world" columns="world_id"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="worldId" type="integer" column="world_id">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="federation" column="federation" length="64">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="federationId" type="integer" column="federation_id">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="regions" type="integer" column="regions">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="networth" type="integer" column="networth">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+  </entity>
+</doctrine-mapping>

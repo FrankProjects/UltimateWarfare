@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\ResearchNeeds" table="research_needs">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="research" target-entity="FrankProjects\UltimateWarfare\Entity\Research" inversed-by="researchNeeds">
+      <join-columns>
+        <join-column name="research_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="requiredResearch" target-entity="FrankProjects\UltimateWarfare\Entity\Research" inversed-by="requiredResearch">
+      <join-columns>
+        <join-column name="required_research_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>
