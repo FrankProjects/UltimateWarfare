@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\MarketItem" table="market_item">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="amount" type="integer" column="amount">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="price" type="integer" column="price">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="type" column="type"/>
+    <field name="gameResource" column="game_resource"/>
+    <many-to-one field="player" target-entity="FrankProjects\UltimateWarfare\Entity\Player" inversed-by="marketItems">
+      <join-columns>
+        <join-column name="player_id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="world" target-entity="FrankProjects\UltimateWarfare\Entity\World" inversed-by="marketItems">
+      <join-columns>
+        <join-column name="world_id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

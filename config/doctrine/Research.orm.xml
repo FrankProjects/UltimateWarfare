@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\Research" table="research">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="name" column="name" length="100">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="pic" column="pic" length="100">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="cost" type="integer" column="cost">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="timestamp" type="integer" column="timestamp">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="description" type="text" column="description" length="65535">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="active" type="boolean" column="active">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <one-to-many field="researchPlayers" target-entity="FrankProjects\UltimateWarfare\Entity\ResearchPlayer" mapped-by="research"/>
+    <one-to-many field="researchNeeds" target-entity="FrankProjects\UltimateWarfare\Entity\ResearchNeeds" mapped-by="research"/>
+    <one-to-many field="requiredResearch" target-entity="FrankProjects\UltimateWarfare\Entity\ResearchNeeds" mapped-by="requiredResearch"/>
+  </entity>
+</doctrine-mapping>

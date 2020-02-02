@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\WorldRegionUnit" table="world_region_unit">
+    <unique-constraints>
+      <unique-constraint name="unique_world_region_unit" columns="unit_id,region_id"/>
+    </unique-constraints>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="amount" type="integer" column="amount">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="morale" type="integer" column="morale">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <many-to-one field="worldRegion" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion" inversed-by="worldRegionUnits">
+      <join-columns>
+        <join-column name="region_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="gameUnit" target-entity="FrankProjects\UltimateWarfare\Entity\GameUnit" inversed-by="worldRegionUnits">
+      <join-columns>
+        <join-column name="unit_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

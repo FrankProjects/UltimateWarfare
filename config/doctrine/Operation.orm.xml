@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\Operation" table="operation">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="needs" type="integer" column="needs">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="name" column="name" length="100">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="pic" column="pic" length="100">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="unitId" type="integer" column="unit_id">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="cost" type="integer" column="cost">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="tick" type="integer" column="tick">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="description" type="text" column="description" length="65535">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="active" type="boolean" column="active">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+    <field name="difficulty" type="float" column="difficulty" precision="10" scale="0">
+      <options>
+        <option name="default">0.5</option>
+      </options>
+    </field>
+    <field name="maxDistance" type="integer" column="max_distance">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+  </entity>
+</doctrine-mapping>

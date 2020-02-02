@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\Message" table="messages">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="fromDelete" type="boolean" column="from_delete">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="toDelete" type="boolean" column="to_delete">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="status" type="smallint" column="status">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="adminMessage" type="boolean" column="admin_message">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="subject" column="subject" length="255">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="timestamp" type="integer" column="timestamp">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="message" type="text" column="message" length="65535">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <many-to-one field="world" target-entity="FrankProjects\UltimateWarfare\Entity\World" inversed-by="messages">
+      <join-columns>
+        <join-column name="world_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="fromPlayer" target-entity="FrankProjects\UltimateWarfare\Entity\Player" inversed-by="fromMessages">
+      <join-columns>
+        <join-column name="from_player_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="toPlayer" target-entity="FrankProjects\UltimateWarfare\Entity\Player" inversed-by="toMessages">
+      <join-columns>
+        <join-column name="to_player_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

@@ -13,7 +13,7 @@ doctrine:
         mappings:
             FrankProjects\UltimateWarfare:
                 is_bundle: false
-                type: yml
+                type: xml
                 dir: '%kernel.project_dir%/config/doctrine'
                 prefix: 'FrankProjects\UltimateWarfare\Entity'
                 alias: Game

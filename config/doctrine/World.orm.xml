@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\World" table="world">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="name" column="name" length="100">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="image" column="image" length="255">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="description" type="text" column="description" length="65535">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="status" type="smallint" column="status">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="public" type="boolean" column="public">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="maxPlayers" type="smallint" column="max_players">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="startTimestamp" type="integer" column="start_timestamp">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="endTimestamp" type="integer" column="end_timestamp">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="market" type="boolean" column="market"/>
+    <field name="federation" type="boolean" column="federation"/>
+    <field name="federationLimit" type="integer" column="federation_limit">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <embedded name="mapConfiguration" class="FrankProjects\UltimateWarfare\Entity\World\MapConfiguration"/>
+    <embedded name="resources" class="FrankProjects\UltimateWarfare\Entity\World\Resources"/>
+    <one-to-many field="players" target-entity="FrankProjects\UltimateWarfare\Entity\Player" mapped-by="world"/>
+    <one-to-many field="worldRegions" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion" mapped-by="world"/>
+    <one-to-many field="worldSectors" target-entity="FrankProjects\UltimateWarfare\Entity\WorldSector" mapped-by="world"/>
+    <one-to-many field="marketItems" target-entity="FrankProjects\UltimateWarfare\Entity\MarketItem" mapped-by="world"/>
+    <one-to-many field="messages" target-entity="FrankProjects\UltimateWarfare\Entity\Message" mapped-by="world"/>
+    <one-to-many field="federations" target-entity="FrankProjects\UltimateWarfare\Entity\Federation" mapped-by="world"/>
+  </entity>
+</doctrine-mapping>
