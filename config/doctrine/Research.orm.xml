@@ -9,7 +9,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="pic" column="pic" length="100">
+    <field name="image" column="image" length="100">
       <options>
         <option name="fixed"/>
       </options>
