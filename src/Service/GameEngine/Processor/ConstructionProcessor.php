@@ -93,7 +93,7 @@ final class ConstructionProcessor implements Processor
         $worldRegionUnit = $this->getWorldRegionUnit($construction);
 
         if ($worldRegionUnit !== null) {
-            $worldRegionUnit->setAmount($construction->getNumber());
+            $worldRegionUnit->setAmount($worldRegionUnit->getAmount() + $construction->getNumber());
         } else {
             $worldRegionUnit = WorldRegionUnit::create($construction->getWorldRegion(), $construction->getGameUnit(), $construction->getNumber());
         }
@@ -125,14 +125,12 @@ final class ConstructionProcessor implements Processor
     private function getWorldRegionUnit(Construction $construction): ?WorldRegionUnit
     {
         $worldRegion = $construction->getWorldRegion();
-        $worldRegionUnit = null;
         foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnitObject) {
-            if ($worldRegionUnitObject->getGameUnit()->getId() == $construction->getGameUnit()->getId()) {
-                $worldRegionUnit = $worldRegionUnitObject;
-                break;
+            if ($worldRegionUnitObject->getGameUnit()->getId() === $construction->getGameUnit()->getId()) {
+                return $worldRegionUnitObject;
             }
         }
 
-        return $worldRegionUnit;
+        return null;
     }
 }
