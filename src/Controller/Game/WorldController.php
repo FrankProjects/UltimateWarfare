@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\WorldSector;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
+use FrankProjects\UltimateWarfare\Service\WorldGeneratorService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,6 +27,21 @@ final class WorldController extends BaseGameController
         $this->playerRepository = $playerRepository;
         $this->worldRepository = $worldRepository;
         $this->worldRegionRepository = $worldRegionRepository;
+    }
+
+    public function create(WorldGeneratorService $worldGeneratorService): Response
+    {
+        $worlds = $this->worldRepository->findByPublic(true);
+
+        if (count($worlds) !== 0) {
+            $this->addFlash('error', 'There are active worlds, no need to create a new one at this moment');
+            return $this->redirectToRoute('Game/SelectWorld', [], 302);
+        }
+
+        $this->addFlash('success', 'Successfully created a new world!');
+        $worldGeneratorService->generateBasicWorld();
+
+        return $this->redirectToRoute('Game/SelectWorld', [], 302);
     }
 
     public function selectWorld(): Response
