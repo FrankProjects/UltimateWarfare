@@ -19,7 +19,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="image" column="image" length="100" nullable="true">
+    <field name="image" column="image" length="100">
       <options>
         <option name="fixed"/>
       </options>

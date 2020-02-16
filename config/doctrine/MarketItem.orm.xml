@@ -18,12 +18,12 @@
     <field name="gameResource" column="game_resource"/>
     <many-to-one field="player" target-entity="FrankProjects\UltimateWarfare\Entity\Player" inversed-by="marketItems">
       <join-columns>
-        <join-column name="player_id"/>
+        <join-column name="player_id" nullable="false"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="world" target-entity="FrankProjects\UltimateWarfare\Entity\World" inversed-by="marketItems">
       <join-columns>
-        <join-column name="world_id"/>
+        <join-column name="world_id" nullable="false"/>
       </join-columns>
     </many-to-one>
   </entity>

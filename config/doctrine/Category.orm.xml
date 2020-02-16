@@ -4,7 +4,7 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="title" column="title" length="50" nullable="true">
+    <field name="title" column="title" length="255">
       <options>
         <option name="fixed"/>
       </options>
