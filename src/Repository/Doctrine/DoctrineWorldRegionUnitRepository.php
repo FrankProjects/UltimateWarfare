@@ -78,7 +78,7 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
 
     public function save(WorldRegionUnit $worldRegionUnit): void
     {
-        $this->entityManager->merge($worldRegionUnit);
+        $this->entityManager->persist($worldRegionUnit);
         $this->entityManager->flush();
     }
 }
