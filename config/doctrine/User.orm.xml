@@ -20,7 +20,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="signup" type="datetime" column="signup" nullable="true"/>
+    <field name="signup" type="datetime" column="signup"/>
     <field name="active" type="boolean" column="active">
       <options>
         <option name="default">1</option>
