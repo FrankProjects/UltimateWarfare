@@ -1,4 +1,4 @@
-INSERT INTO `research` (`id`, `name`, `pic`, `cost`, `timestamp`, `description`, `active`) VALUES
+INSERT INTO `research` (`id`, `name`, `image`, `cost`, `timestamp`, `description`, `active`) VALUES
 (1, 'Research', 'research.gif', 2500, 180, 'Research new technological advancements', 1),
 (2, 'Research Level 2', 'research.gif', 15000, 7200, 'Research new technological advancements', 1),
 (3, 'Research Level 3', 'research.gif', 200000, 36000, 'Research new technological advancements', 1),
