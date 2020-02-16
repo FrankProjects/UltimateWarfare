@@ -66,4 +66,9 @@ final class DoctrineWorldRepository implements WorldRepository
         $this->entityManager->persist($world);
         $this->entityManager->flush();
     }
+
+    public function refresh(World $world): void
+    {
+        $this->entityManager->refresh($world);
+    }
 }

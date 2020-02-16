@@ -37,4 +37,9 @@ final class DoctrineWorldSectorRepository implements WorldSectorRepository
         $this->entityManager->persist($worldSector);
         $this->entityManager->flush();
     }
+
+    public function refresh(WorldSector $worldSector): void
+    {
+        $this->entityManager->refresh($worldSector);
+    }
 }

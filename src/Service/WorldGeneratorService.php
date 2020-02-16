@@ -9,27 +9,55 @@ use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldSector;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldSectorRepository;
 use FrankProjects\UltimateWarfare\Service\WorldGenerator\PerlinNoiseGenerator;
 use RuntimeException;
 
 final class WorldGeneratorService
 {
+    private WorldRepository $worldRepository;
     private WorldRegionRepository $worldRegionRepository;
     private WorldSectorRepository $worldSectorRepository;
     private PerlinNoiseGenerator $worldGenerator;
     private WorldImageGeneratorService $worldImageGeneratorService;
 
     public function __construct(
+        WorldRepository $worldRepository,
         WorldRegionRepository $worldRegionRepository,
         WorldSectorRepository $worldSectorRepository,
         PerlinNoiseGenerator $worldGenerator,
         WorldImageGeneratorService $worldImageGeneratorService
     ) {
+        $this->worldRepository = $worldRepository;
         $this->worldRegionRepository = $worldRegionRepository;
         $this->worldSectorRepository = $worldSectorRepository;
         $this->worldGenerator = $worldGenerator;
         $this->worldImageGeneratorService = $worldImageGeneratorService;
+    }
+
+    public function generateBasicWorld(): void
+    {
+        $world = new World();
+        $this->worldRepository->save($world);
+        $this->generate($world, true, 0);
+
+        $resources = $world->getResources();
+        $resources->setCash(25000);
+        $resources->setFood(1000);
+        $resources->setSteel(200);
+        $resources->setWood(500);
+
+        $world->setName('Game World #' . $world->getId());
+        $world->setDescription('Standard generated game world');
+        $world->setPublic(true);
+        $world->setStarttime(time());
+        $world->setEndTimestamp(time() + 3600 * 24 * 365);
+        $world->setMaxPlayers(100);
+        $world->setFederationLimit(10);
+        $world->setStatus(1);
+        $world->setResources($resources);
+        $this->worldRepository->save($world);
     }
 
     public function generate(World $world, bool $save, int $sector): array

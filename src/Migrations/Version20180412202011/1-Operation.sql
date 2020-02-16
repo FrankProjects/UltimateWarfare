@@ -1,4 +1,4 @@
-INSERT INTO `operation` (`id`, `needs`, `name`, `pic`, `unit_id`, `cost`, `tick`, `description`, `active`, `difficulty`, `max_distance`) VALUES
+INSERT INTO `operation` (`id`, `needs`, `name`, `image`, `unit_id`, `cost`, `tick`, `description`, `active`, `difficulty`, `max_distance`) VALUES
 (1, 100, 'Missile Attack', 'op_rocket.gif', 405, 50, 0, 'Launch an Missile attack against an enemy country. Every rocket has 50% chance in destroying an building.\n\n\"Your enemy will recieve an report about this attack if you succeed and fail.\"', 1, 0.5, 2),
 (2, 100, 'Stealth Bombing', 'op_stealthbombing.gif', 404, 15000, 0, 'Launch an Bombing run against an enemy country with your Stealth planes. Every Stealth Bomber is able to hit 5 buildings (train stations, aiports or harbors).\n(Airforce Only)\n\n\"Your enemy will recieve an report about this attack if you succeed and fail. But it will hidde your name if you succeed.\"', 1, 0.5, 0),
 (3, 104, 'Spy Technology', 'spy.gif', 407, 150, 0, 'Spy on an enemy country and retrieve important data like buildings and units.\n\n\"If you fail, your enemy recieves an report about your spy attack\"', 1, 0.1, 3),

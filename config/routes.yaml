@@ -503,6 +503,10 @@ Game/World:
     path:      /game/world
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::world
 
+Game/World/Create:
+    path:      /game/world/create
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::create
+
 Game/World/Region:
     path:      /game/world/region/{regionId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::region

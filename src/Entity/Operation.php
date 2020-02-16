@@ -12,7 +12,7 @@ class Operation
     private ?int $id;
     private int $needs;
     private string $name;
-    private string $pic;
+    private string $image;
     private int $unitId;
     private int $cost;
     private int $tick;

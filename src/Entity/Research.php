@@ -7,14 +7,11 @@ namespace FrankProjects\UltimateWarfare\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-/**
- * XXX TODO: Rename pic to image
- */
 class Research
 {
     private ?int $id;
     private string $name;
-    private string $pic;
+    private string $image;
     private int $cost;
     private int $timestamp;
     private string $description;
@@ -57,14 +54,14 @@ class Research
         return $this->name;
     }
 
-    public function setPic(string $pic): void
+    public function getImage(): string
     {
-        $this->pic = $pic;
+        return $this->image;
     }
 
-    public function getPic(): string
+    public function setImage(string $image): void
     {
-        return $this->pic;
+        $this->image = $image;
     }
 
     public function setCost(int $cost): void
