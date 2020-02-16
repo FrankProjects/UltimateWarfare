@@ -33,6 +33,9 @@ final class WorldImageGeneratorService
         $worldImageName = $world->getId() . '.jpg';
         $worldImagePath = $this->params->get('kernel.project_dir') . '/public/images/world/' . $worldImageName;
 
+        // Refresh object from DB, otherwise world image generation will fail
+        $this->worldRepository->refresh($world);
+
         $worldImageBuilder = new WorldImageBuilder();
         $worldImageBuilder->generateForWorld($world, $worldImagePath);
 
@@ -44,6 +47,9 @@ final class WorldImageGeneratorService
     {
         $worldSectorImageName = $worldSector->getId() . '.jpg';
         $worldSectorImageDirectory = $this->params->get('kernel.project_dir') . '/public/images/world/sector/' . $worldSectorImageName;
+
+        // Refresh object from DB, otherwise world image generation will fail
+        $this->worldSectorRepository->refresh($worldSector);
 
         $worldSectorImageBuilder = new WorldSectorImageBuilder();
         $worldSectorImageBuilder->generateForWorldSector($worldSector, $worldSectorImageDirectory);

@@ -12,9 +12,10 @@ class WorldSectorImageBuilder extends AbstractImageBuilder
 {
     public function generateForWorldSector(WorldSector $worldSector, string $path): void
     {
-        $size = (int)sqrt(count($worldSector->getWorldRegions())) * 25;
+        $worldSectorRegionsCount = count($worldSector->getWorldRegions());
+        $size = (int)sqrt($worldSectorRegionsCount) * 25;
         if ($size === 0) {
-            throw new RuntimeException("Not enough WorldRegions");
+            throw new RuntimeException("Not enough WorldRegions[count={$worldSectorRegionsCount}] for WorldSector[id={$worldSector->getId()}]");
         }
 
         $this->createImageResource($size, $size);
