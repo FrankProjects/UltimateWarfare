@@ -24,4 +24,6 @@ interface WorldRepository
     public function remove(World $world): void;
 
     public function save(World $world): void;
+
+    public function refresh(World $world): void;
 }

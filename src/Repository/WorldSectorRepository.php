@@ -14,4 +14,6 @@ interface WorldSectorRepository
     public function findByWorldXY(World $world, int $x, int $y): ?WorldSector;
 
     public function save(WorldSector $worldSector): void;
+
+    public function refresh(WorldSector $worldSector): void;
 }
