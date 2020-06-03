@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
 use FrankProjects\UltimateWarfare\Entity\Player;

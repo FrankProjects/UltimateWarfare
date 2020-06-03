@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Command\World;
 
 use FrankProjects\UltimateWarfare\Service\WorldGeneratorService;

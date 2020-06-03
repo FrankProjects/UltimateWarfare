@@ -3,27 +3,27 @@
     "license": "proprietary",
     "require": {
         "php": "^7.4",
-        "doctrine/common": "^2.11",
-        "doctrine/doctrine-bundle": "^2.0",
+        "doctrine/common": "^2.13",
+        "doctrine/doctrine-bundle": "^2.1",
         "doctrine/doctrine-migrations-bundle": "^2.1",
         "doctrine/orm": "^2.7",
-        "symfony/asset": "^5.0",
-        "symfony/console": "^5.0",
-        "symfony/flex": "^1.6",
-        "symfony/form": "^5.0",
-        "symfony/framework-bundle": "^5.0",
+        "symfony/asset": "^5.1",
+        "symfony/console": "^5.1",
+        "symfony/flex": "^1.7",
+        "symfony/form": "^5.1",
+        "symfony/framework-bundle": "^5.1",
         "symfony/monolog-bundle": "^3.5",
-        "symfony/security-bundle": "^5.0",
+        "symfony/security-bundle": "^5.1",
         "symfony/swiftmailer-bundle": "^3.4",
-        "symfony/translation": "^5.0",
-        "symfony/twig-bundle": "^5.0",
-        "symfony/web-profiler-bundle": "^5.0",
-        "symfony/yaml": "^5.0",
+        "symfony/translation": "^5.1",
+        "symfony/twig-bundle": "^5.1",
+        "symfony/web-profiler-bundle": "^5.1",
+        "symfony/yaml": "^5.1",
         "twig/twig": "^3.0",
         "ext-gd": "*"
     },
     "require-dev": {
-        "symfony/dotenv": "^5.0"
+        "symfony/dotenv": "^5.1"
     },
     "config": {
         "preferred-install": {
@@ -60,7 +60,7 @@
         "symfony": {
             "id": "01C0SF16B9AEFHYZFFXCZJK7ZN",
             "allow-contrib": false,
-            "require": "5.0.*"
+            "require": "5.1.*"
         }
     }
 }
