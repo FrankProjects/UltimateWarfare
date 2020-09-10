@@ -684,20 +684,6 @@ Site/Chat:
     path:      /chat
     controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::chat
 
-Site/AddChat:
-    path:      /chat/add-chat
-    controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::addChat
-
-Site/GetChat:
-    path:      /chat/get-chat/{lastChatLineId}
-    controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::getChat
-    requirements:
-        lastChatLineId: '\d+'
-
-Site/GetUsers:
-    path:      /chat/get-users
-    controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::getUsers
-
 Site/Community:
     path:      /community
     controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::community
