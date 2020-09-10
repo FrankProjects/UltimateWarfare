@@ -39,6 +39,6 @@ class CreateWorldCommand extends Command
         $this->worldGeneratorService->generateBasicWorld();
         $output->writeln('Generated new map!');
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

@@ -45,6 +45,6 @@ class ListWorldCommand extends Command
             $output->writeln($world->getId() . "\t" . $world->getName() . "\t" . $world->getStatus() . "\t" . count($world->getPlayers()) . '/' . $world->getMaxPlayers());
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }
