@@ -48,7 +48,7 @@ class RegenerateWordMapImagesCommand extends Command
 
         $output->writeln('Done!');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function processWorld(OutputInterface $output, World $world): void

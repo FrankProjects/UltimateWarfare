@@ -74,7 +74,7 @@ class UpdatePlayerIncomeCommand extends Command
 
         $output->writeln('Done!');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function processPlayer(OutputInterface $output, Player $player, bool $commit): void

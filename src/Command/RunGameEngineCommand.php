@@ -39,6 +39,6 @@ class RunGameEngineCommand extends Command
         $this->gameEngine->run(null);
         $output->writeln('Done!');
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

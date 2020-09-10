@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
 use FrankProjects\UltimateWarfare\Entity\User;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,6 +35,6 @@ class MakeAdminCommand extends AbstractUserCommand
             return 1;
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }
