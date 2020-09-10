@@ -13,7 +13,7 @@ final class Version20180412202011 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $finder = new Finder();
-        $finder->in('src/Migrations/Version20180412202011');
+        $finder->in('migrations/Version20180412202011');
         $finder->name('*.sql');
         $finder->sortByName();
 
