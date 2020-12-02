@@ -111,6 +111,9 @@
     "php": {
         "version": "7.4"
     },
+    "phpstan/phpstan": {
+        "version": "0.12.58"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -155,6 +158,18 @@
     },
     "react/stream": {
         "version": "v1.1.1"
+    },
+    "squizlabs/php_codesniffer": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "0dc9cceda799fd3a08b96987e176a261028a3709"
+        },
+        "files": [
+            "phpcs.xml.dist"
+        ]
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.2.3"
@@ -279,6 +294,21 @@
     },
     "symfony/options-resolver": {
         "version": "v5.1.5"
+    },
+    "symfony/phpunit-bridge": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "6d0e35f749d5f4bfe1f011762875275cd3f9874f"
+        },
+        "files": [
+            ".env.test",
+            "bin/phpunit",
+            "phpunit.xml.dist",
+            "tests/bootstrap.php"
+        ]
     },
     "symfony/polyfill-ctype": {
         "version": "v1.18.1"
