@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Form\Game;
 
-use FrankProjects\UltimateWarfare\Entity\player;
+use FrankProjects\UltimateWarfare\Entity\Player;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

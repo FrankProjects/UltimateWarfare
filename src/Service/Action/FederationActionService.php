@@ -190,7 +190,7 @@ final class FederationActionService
 
         $federation = $player->getFederation();
         $federation->setNetworth($federation->getNetworth() - $kickPlayer->getNetworth());
-        $federation->setRegions($federation->getRegions() - $kickPlayer->getRegions());
+        $federation->setRegions($federation->getRegions() - count($kickPlayer->getWorldRegions()));
         $this->federationRepository->save($federation);
 
         $reportString = "You have been kicked from Federation {$federation->getName()}";
