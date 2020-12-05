@@ -34,15 +34,21 @@ final class RegisterController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->registerActionService->register($user);
-                $this->addFlash('success', "You successfully created an account! An e-mail has been sent to {$user->getEmail()} with your activation code...");
+                $this->addFlash(
+                    'success',
+                    "You successfully created an account! An e-mail has been sent to {$user->getEmail()} with your activation code..."
+                );
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render('site/register.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'site/register.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
 
     public function activateUser(string $token): Response

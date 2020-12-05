@@ -40,7 +40,8 @@ final class ResetPasswordController extends AbstractController
             if ($user) {
                 if (!$user->isEnabled()) {
                     $this->addFlash('error', 'Your account is not activated!');
-                } elseif ($user->getPasswordRequestedAt() === null || $user->getPasswordRequestedAt()->getTimestamp() + 12 * 60 * 60 < time()) {
+                } elseif ($user->getPasswordRequestedAt() === null || $user->getPasswordRequestedAt()->getTimestamp(
+                    ) + 12 * 60 * 60 < time()) {
                     $generator = new TokenGenerator();
                     $token = $generator->generateToken(40);
 
@@ -50,7 +51,10 @@ final class ResetPasswordController extends AbstractController
 
                     try {
                         $this->mailService->sendPasswordResetMail($user, $request->getClientIp());
-                        $this->addFlash('success', "An e-mail has been sent to {$user->getEmail()} with your recovery instructions... Check your Spam mail if you didn't receive an email");
+                        $this->addFlash(
+                            'success',
+                            "An e-mail has been sent to {$user->getEmail()} with your recovery instructions... Check your Spam mail if you didn't receive an email"
+                        );
                     } catch (Throwable $e) {
                         $this->addFlash('error', $e->getMessage());
                     }
@@ -83,10 +87,13 @@ final class ResetPasswordController extends AbstractController
                 return $this->redirectToRoute('Site/Login');
             }
 
-            return $this->render('site/resetPassword.html.twig', [
-                'form' => $form->createView(),
-                'token' => $token
-            ]);
+            return $this->render(
+                'site/resetPassword.html.twig',
+                [
+                    'form' => $form->createView(),
+                    'token' => $token
+                ]
+            );
         }
 
         $this->addFlash('error', 'Invalid password reset token!');

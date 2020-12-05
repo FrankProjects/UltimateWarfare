@@ -27,9 +27,12 @@ final class UserController extends BaseGameController
 
     public function account(): Response
     {
-        return $this->render('game/account.html.twig', [
-            'user' => $this->getGameUser()
-        ]);
+        return $this->render(
+            'game/account.html.twig',
+            [
+                'user' => $this->getGameUser()
+            ]
+        );
     }
 
     public function banned(Request $request): Response
@@ -56,10 +59,13 @@ final class UserController extends BaseGameController
             $this->addFlash('success', 'We have received your request, we will try to read your request ASAP...');
         }
 
-        return $this->render('game/banned.html.twig', [
-            'user' => $user,
-            'unbanRequest' => $unbanRequest
-        ]);
+        return $this->render(
+            'game/banned.html.twig',
+            [
+                'user' => $user,
+                'unbanRequest' => $unbanRequest
+            ]
+        );
     }
 
     public function edit(Request $request, UserPasswordEncoderInterface $encoder): Response
@@ -93,11 +99,14 @@ final class UserController extends BaseGameController
             }
         }
 
-        return $this->render('game/editAccount.html.twig', [
-            'user' => $this->getGameUser(),
-            'userType' => $this->getAccountType(),
-            'changePasswordForm' => $changePasswordForm->createView()
-        ]);
+        return $this->render(
+            'game/editAccount.html.twig',
+            [
+                'user' => $this->getGameUser(),
+                'userType' => $this->getAccountType(),
+                'changePasswordForm' => $changePasswordForm->createView()
+            ]
+        );
     }
 
     private function getAccountType(): string

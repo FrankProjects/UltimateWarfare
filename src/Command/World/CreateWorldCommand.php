@@ -30,11 +30,13 @@ class CreateWorldCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln([
-            'Generating new world',
-            '============',
-            '',
-        ]);
+        $output->writeln(
+            [
+                'Generating new world',
+                '============',
+                '',
+            ]
+        );
 
         $this->worldGeneratorService->generateBasicWorld();
         $output->writeln('Generated new map!');

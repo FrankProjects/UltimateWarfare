@@ -56,7 +56,12 @@ final class FederationApplicationActionService
         $this->federationNewsRepository->save($federationNews);
 
         $reportString = "You have been accepted in the Federation {$player->getFederation()->getName()}";
-        $report = Report::createForPlayer($federationApplication->getPlayer(), time(), Report::TYPE_GENERAL, $reportString);
+        $report = Report::createForPlayer(
+            $federationApplication->getPlayer(),
+            time(),
+            Report::TYPE_GENERAL,
+            $reportString
+        );
         $this->reportRepository->save($report);
 
         $applicationPlayer = $federationApplication->getPlayer();
@@ -69,7 +74,9 @@ final class FederationApplicationActionService
 
         $federation = $federationApplication->getFederation();
         $federation->setNetworth($federation->getNetworth() + $federationApplication->getPlayer()->getNetworth());
-        $federation->setRegions($federation->getRegions() + count($federationApplication->getPlayer()->getWorldRegions()));
+        $federation->setRegions(
+            $federation->getRegions() + count($federationApplication->getPlayer()->getWorldRegions())
+        );
         $this->federationRepository->save($federation);
 
         $this->federationApplicationRepository->remove($federationApplication);
@@ -86,7 +93,12 @@ final class FederationApplicationActionService
         $this->federationNewsRepository->save($federationNews);
 
         $reportString = "You have been rejected by the Federation {$player->getFederation()->getName()}";
-        $report = Report::createForPlayer($federationApplication->getPlayer(), time(), Report::TYPE_GENERAL, $reportString);
+        $report = Report::createForPlayer(
+            $federationApplication->getPlayer(),
+            time(),
+            Report::TYPE_GENERAL,
+            $reportString
+        );
         $this->reportRepository->save($report);
 
         $this->federationApplicationRepository->remove($federationApplication);
@@ -118,7 +130,10 @@ final class FederationApplicationActionService
 
     private function getFederationApplication(Player $player, int $federationApplicationId): FederationApplication
     {
-        $federationApplication = $this->federationApplicationRepository->findByIdAndWorld($federationApplicationId, $player->getWorld());
+        $federationApplication = $this->federationApplicationRepository->findByIdAndWorld(
+            $federationApplicationId,
+            $player->getWorld()
+        );
 
         if (!$federationApplication) {
             throw new RunTimeException('FederationApplication does not exist!');

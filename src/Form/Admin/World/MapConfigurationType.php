@@ -16,40 +16,70 @@ class MapConfigurationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('seed', TextType::class, [
-                'label' => 'label.seed',
-                'required' => false
-            ])
-            ->add('size', TextType::class, [
-                'label' => 'label.size'
-            ])
-            ->add('waterLevel', RangeType::class, [
-                'label' => 'label.waterLevel',
-                'attr' => array('min' => 0, 'max' => 1000),
-            ])
-            ->add('beachLevel', RangeType::class, [
-                'label' => 'label.beachLevel',
-                'attr' => array('min' => 0, 'max' => 1000),
-            ])
-            ->add('forrestLevel', RangeType::class, [
-                'label' => 'label.forrestLevel',
-                'attr' => array('min' => 0, 'max' => 1000),
-            ])
-            ->add('save', CheckboxType::class, [
-                'label' => 'label.save',
-                'mapped' => false,
-                'required' => false
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'label.generate'
-            ]);
+            ->add(
+                'seed',
+                TextType::class,
+                [
+                    'label' => 'label.seed',
+                    'required' => false
+                ]
+            )
+            ->add(
+                'size',
+                TextType::class,
+                [
+                    'label' => 'label.size'
+                ]
+            )
+            ->add(
+                'waterLevel',
+                RangeType::class,
+                [
+                    'label' => 'label.waterLevel',
+                    'attr' => array('min' => 0, 'max' => 1000),
+                ]
+            )
+            ->add(
+                'beachLevel',
+                RangeType::class,
+                [
+                    'label' => 'label.beachLevel',
+                    'attr' => array('min' => 0, 'max' => 1000),
+                ]
+            )
+            ->add(
+                'forrestLevel',
+                RangeType::class,
+                [
+                    'label' => 'label.forrestLevel',
+                    'attr' => array('min' => 0, 'max' => 1000),
+                ]
+            )
+            ->add(
+                'save',
+                CheckboxType::class,
+                [
+                    'label' => 'label.save',
+                    'mapped' => false,
+                    'required' => false
+                ]
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'label.generate'
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => MapConfiguration::class,
-            'translation_domain' => 'world'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => MapConfiguration::class,
+                'translation_domain' => 'world'
+            ]
+        );
     }
 }

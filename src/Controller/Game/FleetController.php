@@ -37,9 +37,12 @@ final class FleetController extends BaseGameController
 
     public function fleetList(): Response
     {
-        return $this->render('game/fleetList.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/fleetList.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function recall(int $fleetId): Response
@@ -51,9 +54,12 @@ final class FleetController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/fleetList.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/fleetList.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function reinforce(int $fleetId): Response
@@ -65,9 +71,12 @@ final class FleetController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/fleetList.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/fleetList.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function sendGameUnits(Request $request, int $regionId): Response
@@ -86,7 +95,10 @@ final class FleetController extends BaseGameController
         if ($request->isMethod(Request::METHOD_POST)) {
             $targetRegionId = intval($request->request->get('target', 0));
             try {
-                $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld($targetRegionId, $player->getWorld());
+                $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld(
+                    $targetRegionId,
+                    $player->getWorld()
+                );
             } catch (WorldRegionNotFoundException $e) {
                 $this->addFlash('error', $e->getMessage());
                 return $this->redirectToRoute('Game/RegionList', [], 302);
@@ -94,7 +106,13 @@ final class FleetController extends BaseGameController
 
             if ($targetRegion) {
                 try {
-                    $this->fleetActionService->sendGameUnits($worldRegion, $targetRegion, $player, $gameUnitType, $request->get('units'));
+                    $this->fleetActionService->sendGameUnits(
+                        $worldRegion,
+                        $targetRegion,
+                        $player,
+                        $gameUnitType,
+                        $request->get('units')
+                    );
                     $this->addFlash('success', 'You successfully send units!');
                 } catch (Throwable $e) {
                     $this->addFlash('error', $e->getMessage());
@@ -107,13 +125,16 @@ final class FleetController extends BaseGameController
         $gameUnitsData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
         $targetRegions = $this->getTargetWorldRegionData($player, $worldRegion);
 
-        return $this->render('game/region/sendUnits.html.twig', [
-            'region' => $worldRegion,
-            'player' => $player,
-            'gameUnitType' => $gameUnitType,
-            'targetRegions' => $targetRegions,
-            'gameUnitsData' => $gameUnitsData
-        ]);
+        return $this->render(
+            'game/region/sendUnits.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $player,
+                'gameUnitType' => $gameUnitType,
+                'targetRegions' => $targetRegions,
+                'gameUnitsData' => $gameUnitsData
+            ]
+        );
     }
 
     /**

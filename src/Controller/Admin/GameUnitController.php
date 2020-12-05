@@ -22,9 +22,12 @@ final class GameUnitController extends AbstractController
 
     public function list(): Response
     {
-        return $this->render('admin/gameunit/list.html.twig', [
-            'gameUnits' => $this->gameUnitRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/gameunit/list.html.twig',
+            [
+                'gameUnits' => $this->gameUnitRepository->findAll()
+            ]
+        );
     }
 
     public function edit(Request $request, int $gameUnitId): Response
@@ -43,8 +46,11 @@ final class GameUnitController extends AbstractController
             return $this->redirectToRoute('Admin/GameUnit/List', [], 302);
         }
 
-        return $this->render('admin/gameunit/edit.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'admin/gameunit/edit.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
     }
 }

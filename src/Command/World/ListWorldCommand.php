@@ -33,16 +33,22 @@ class ListWorldCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln([
-            'World list',
-            '============',
-            '',
-        ]);
+        $output->writeln(
+            [
+                'World list',
+                '============',
+                '',
+            ]
+        );
 
         $output->writeln("ID\tName\t\tStatus\tPlayers");
 
         foreach ($this->worldRepository->findAll() as $world) {
-            $output->writeln($world->getId() . "\t" . $world->getName() . "\t" . $world->getStatus() . "\t" . count($world->getPlayers()) . '/' . $world->getMaxPlayers());
+            $output->writeln(
+                $world->getId() . "\t" . $world->getName() . "\t" . $world->getStatus() . "\t" . count(
+                    $world->getPlayers()
+                ) . '/' . $world->getMaxPlayers()
+            );
         }
 
         return Command::SUCCESS;

@@ -16,23 +16,33 @@ class NotepadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('notepad', TextareaType::class, [
-                'label' => false,
-                'translation_domain' => 'notepad',
-                'attr' => [
-                    'rows' => 15,
-                    'cols' => 80
+            ->add(
+                'notepad',
+                TextareaType::class,
+                [
+                    'label' => false,
+                    'translation_domain' => 'notepad',
+                    'attr' => [
+                        'rows' => 15,
+                        'cols' => 80
                     ]
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Update'
-            ]);
+                ]
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'Update'
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => Player::class,
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => Player::class,
+            )
+        );
     }
 }

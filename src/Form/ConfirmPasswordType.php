@@ -13,17 +13,23 @@ class ConfirmPasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('plainPassword', PasswordType::class, [
-                'mapped' => false,
-                'label' => 'label.password',
-                'translation_domain' => 'account'
-            ]);
+            ->add(
+                'plainPassword',
+                PasswordType::class,
+                [
+                    'mapped' => false,
+                    'label' => 'label.password',
+                    'translation_domain' => 'account'
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => User::class,
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => User::class,
+            )
+        );
     }
 }

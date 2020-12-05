@@ -12,8 +12,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class SurrenderController extends BaseGameController
 {
-    public function surrender(Request $request, UserPasswordEncoderInterface $encoder, PlayerRepository $playerRepository): Response
-    {
+    public function surrender(
+        Request $request,
+        UserPasswordEncoderInterface $encoder,
+        PlayerRepository $playerRepository
+    ): Response {
         $player = $this->getPlayer();
         $user = $this->getGameUser();
         $confirmPasswordForm = $this->createForm(ConfirmPasswordType::class, $user);
@@ -31,10 +34,13 @@ final class SurrenderController extends BaseGameController
             }
         }
 
-        return $this->render('game/surrender.html.twig', [
-            'player' => $this->getPlayer(),
-            'canSurrender' => $player->canSurrender(),
-            'confirmPasswordForm' => $confirmPasswordForm->createView()
-        ]);
+        return $this->render(
+            'game/surrender.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'canSurrender' => $player->canSurrender(),
+                'confirmPasswordForm' => $confirmPasswordForm->createView()
+            ]
+        );
     }
 }

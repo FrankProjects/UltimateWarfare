@@ -17,29 +17,47 @@ class TopicType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
-            ->add('content', TextareaType::class, [
-                'attr' => array('cols' => 70, 'rows' => 8),
-            ])
-            ->add('sticky', CheckboxType::class, [
-                "translation_domain" => "forum",
-                "label" => "action.topic.sticky",
-                'required' => false
-            ])
-            ->add('closed', CheckboxType::class, [
-                "translation_domain" => "forum",
-                "label" => "action.topic.close",
-                'required' => false
-            ])
-            ->add('submit', SubmitType::class, [
-                "label" => "label.post",
-                "translation_domain" => "forum"
-            ]);
+            ->add(
+                'content',
+                TextareaType::class,
+                [
+                    'attr' => array('cols' => 70, 'rows' => 8),
+                ]
+            )
+            ->add(
+                'sticky',
+                CheckboxType::class,
+                [
+                    "translation_domain" => "forum",
+                    "label" => "action.topic.sticky",
+                    'required' => false
+                ]
+            )
+            ->add(
+                'closed',
+                CheckboxType::class,
+                [
+                    "translation_domain" => "forum",
+                    "label" => "action.topic.close",
+                    'required' => false
+                ]
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    "label" => "label.post",
+                    "translation_domain" => "forum"
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => Topic::class,
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => Topic::class,
+            )
+        );
     }
 }

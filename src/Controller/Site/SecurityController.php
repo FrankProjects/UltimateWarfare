@@ -19,10 +19,13 @@ final class SecurityController extends AbstractController
             ? $this->get('security.csrf.token_manager')->getToken('authenticate')->getValue()
             : null;
 
-        return $this->render('site/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error'         => $error,
-            'csrf_token'    => $csrfToken,
-        ]);
+        return $this->render(
+            'site/login.html.twig',
+            [
+                'last_username' => $lastUsername,
+                'error' => $error,
+                'csrf_token' => $csrfToken,
+            ]
+        );
     }
 }

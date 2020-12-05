@@ -47,11 +47,14 @@ final class ResearchController extends BaseGameController
             }
         }
 
-        return $this->render('game/research.html.twig', [
-            'player' => $player,
-            'ongoingResearch' => $ongoingResearch,
-            'unresearched' => $unresearched
-        ]);
+        return $this->render(
+            'game/research.html.twig',
+            [
+                'player' => $player,
+                'ongoingResearch' => $ongoingResearch,
+                'unresearched' => $unresearched
+            ]
+        );
     }
 
     public function history(): Response
@@ -59,10 +62,13 @@ final class ResearchController extends BaseGameController
         $player = $this->getPlayer();
         $finishedResearch = $this->researchRepository->findFinishedByPlayer($player);
 
-        return $this->render('game/researchHistory.html.twig', [
-            'player' => $player,
-            'finishedResearch' => $finishedResearch
-        ]);
+        return $this->render(
+            'game/researchHistory.html.twig',
+            [
+                'player' => $player,
+                'finishedResearch' => $finishedResearch
+            ]
+        );
     }
 
     public function performResearch(int $researchId): Response

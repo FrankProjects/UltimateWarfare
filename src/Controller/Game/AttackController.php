@@ -48,11 +48,14 @@ final class AttackController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/region/attackFrom.html.twig', [
-            'region' => $worldRegion,
-            'player' => $player,
-            'playerRegions' => $playerRegions
-        ]);
+        return $this->render(
+            'game/region/attackFrom.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $player,
+                'playerRegions' => $playerRegions
+            ]
+        );
     }
 
     public function attackSelectGameUnits(Request $request, int $regionId, int $playerRegionId): Response
@@ -86,18 +89,27 @@ final class AttackController extends BaseGameController
         $gameUnitType = $this->gameUnitTypeRepository->find(4);
 
         if ($request->isMethod(Request::METHOD_POST) && $request->get('units') !== null) {
-            $this->fleetActionService->sendGameUnits($playerRegion, $worldRegion, $player, $gameUnitType, $request->get('units'));
+            $this->fleetActionService->sendGameUnits(
+                $playerRegion,
+                $worldRegion,
+                $player,
+                $gameUnitType,
+                $request->get('units')
+            );
             return $this->redirectToRoute('Game/Fleets', [], 302);
         }
 
         $gameUnitsData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($playerRegion);
 
-        return $this->render('game/region/attackSelectGameUnits.html.twig', [
-            'region' => $worldRegion,
-            'playerRegion' => $playerRegion,
-            'player' => $player,
-            'gameUnitType' => $gameUnitType,
-            'gameUnitsData' => $gameUnitsData
-        ]);
+        return $this->render(
+            'game/region/attackSelectGameUnits.html.twig',
+            [
+                'region' => $worldRegion,
+                'playerRegion' => $playerRegion,
+                'player' => $player,
+                'gameUnitType' => $gameUnitType,
+                'gameUnitsData' => $gameUnitsData
+            ]
+        );
     }
 }

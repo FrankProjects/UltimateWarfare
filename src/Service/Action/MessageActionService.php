@@ -48,8 +48,13 @@ final class MessageActionService
         $this->messageRepository->save($message);
     }
 
-    public function sendMessage(Player $player, string $subject, string $message, string $toPlayerName, bool $adminMessage): void
-    {
+    public function sendMessage(
+        Player $player,
+        string $subject,
+        string $message,
+        string $toPlayerName,
+        bool $adminMessage
+    ): void {
         if ($subject == '') {
             throw new RunTimeException('Please type a subject');
         }

@@ -10,9 +10,11 @@ class UpkeepType extends AbstractGameResourcesType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Upkeep::class,
-            'translation_domain' => 'gameresources'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => Upkeep::class,
+                'translation_domain' => 'gameresources'
+            ]
+        );
     }
 }

@@ -44,8 +44,8 @@ final class DoctrineTopicRepository implements TopicRepository
     public function findLastAnnouncements(int $limit): array
     {
         return $this->entityManager->createQuery(
-                'SELECT t.id, t.title FROM Game:Topic t WHERE t.category = :category ORDER BY t.createDateTime DESC'
-            )
+            'SELECT t.id, t.title FROM Game:Topic t WHERE t.category = :category ORDER BY t.createDateTime DESC'
+        )
             ->setParameter('category', 1)
             ->setMaxResults(intval($limit))
             ->getResult();
@@ -58,11 +58,11 @@ final class DoctrineTopicRepository implements TopicRepository
     public function getByCategorySortedByStickyAndDate(Category $category): array
     {
         return $this->entityManager->createQuery(
-                'SELECT t FROM Game:Topic t
+            'SELECT t FROM Game:Topic t
                  LEFT JOIN Game:Post p WITH p.topic = t 
                  WHERE t.category = :category
                  ORDER BY t.sticky, p.createDateTime DESC'
-            )
+        )
             ->setParameter('category', $category->getId())
             ->getResult();
     }

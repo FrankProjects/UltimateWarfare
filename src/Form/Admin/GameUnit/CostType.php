@@ -10,9 +10,11 @@ class CostType extends AbstractGameResourcesType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Cost::class,
-            'translation_domain' => 'gameresources'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => Cost::class,
+                'translation_domain' => 'gameresources'
+            ]
+        );
     }
 }

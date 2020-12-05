@@ -31,17 +31,26 @@ final class MarketController extends BaseGameController
         $player = $this->getPlayer();
         $world = $player->getWorld();
         if (!$world->getMarket()) {
-            return $this->render('game/market/disabled.html.twig', [
-                'player' => $player
-            ]);
+            return $this->render(
+                'game/market/disabled.html.twig',
+                [
+                    'player' => $player
+                ]
+            );
         }
 
-        $marketItems = $this->marketItemRepository->findByWorldMarketItemType($player->getWorld(), MarketItem::TYPE_SELL);
+        $marketItems = $this->marketItemRepository->findByWorldMarketItemType(
+            $player->getWorld(),
+            MarketItem::TYPE_SELL
+        );
 
-        return $this->render('game/market/buy.html.twig', [
-            'player' => $player,
-            'marketItems' => $marketItems
-        ]);
+        return $this->render(
+            'game/market/buy.html.twig',
+            [
+                'player' => $player,
+                'marketItems' => $marketItems
+            ]
+        );
     }
 
     public function buyOrder(int $marketItemId): RedirectResponse
@@ -61,17 +70,26 @@ final class MarketController extends BaseGameController
         $player = $this->getPlayer();
         $world = $player->getWorld();
         if (!$world->getMarket()) {
-            return $this->render('game/market/disabled.html.twig', [
-                'player' => $player
-            ]);
+            return $this->render(
+                'game/market/disabled.html.twig',
+                [
+                    'player' => $player
+                ]
+            );
         }
 
-        $marketItems = $this->marketItemRepository->findByWorldMarketItemType($player->getWorld(), MarketItem::TYPE_BUY);
+        $marketItems = $this->marketItemRepository->findByWorldMarketItemType(
+            $player->getWorld(),
+            MarketItem::TYPE_BUY
+        );
 
-        return $this->render('game/market/sell.html.twig', [
-            'player' => $player,
-            'marketItems' => $marketItems
-        ]);
+        return $this->render(
+            'game/market/sell.html.twig',
+            [
+                'player' => $player,
+                'marketItems' => $marketItems
+            ]
+        );
     }
 
     public function sellOrder(int $marketItemId): RedirectResponse
@@ -91,15 +109,21 @@ final class MarketController extends BaseGameController
         $player = $this->getPlayer();
         $world = $player->getWorld();
         if (!$world->getMarket()) {
-            return $this->render('game/market/disabled.html.twig', [
-                'player' => $player
-            ]);
+            return $this->render(
+                'game/market/disabled.html.twig',
+                [
+                    'player' => $player
+                ]
+            );
         }
 
-        return $this->render('game/market/offers.html.twig', [
-            'player' => $player,
-            'marketItems' => $player->getMarketItems()
-        ]);
+        return $this->render(
+            'game/market/offers.html.twig',
+            [
+                'player' => $player,
+                'marketItems' => $player->getMarketItems()
+            ]
+        );
     }
 
     public function cancelOrder(int $marketItemId): RedirectResponse
@@ -119,9 +143,12 @@ final class MarketController extends BaseGameController
         $player = $this->getPlayer();
         $world = $player->getWorld();
         if (!$world->getMarket()) {
-            return $this->render('game/market/disabled.html.twig', [
-                'player' => $player
-            ]);
+            return $this->render(
+                'game/market/disabled.html.twig',
+                [
+                    'player' => $player
+                ]
+            );
         }
 
         if ($request->isMethod(Request::METHOD_POST)) {
@@ -138,9 +165,12 @@ final class MarketController extends BaseGameController
             }
         }
 
-        return $this->render('game/market/placeOffer.html.twig', [
-            'player' => $player,
-            'gameResources' => GameResource::getAll()
-        ]);
+        return $this->render(
+            'game/market/placeOffer.html.twig',
+            [
+                'player' => $player,
+                'gameResources' => GameResource::getAll()
+            ]
+        );
     }
 }

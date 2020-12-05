@@ -11,17 +11,33 @@ abstract class AbstractGameResourcesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('cash', TextType::class, [
-                'label' => 'label.cash'
-            ])
-            ->add('food', TextType::class, [
-                'label' => 'label.food'
-            ])
-            ->add('wood', TextType::class, [
-                'label' => 'label.wood'
-            ])
-            ->add('steel', TextType::class, [
-                'label' => 'label.steel'
-            ]);
+            ->add(
+                'cash',
+                TextType::class,
+                [
+                    'label' => 'label.cash'
+                ]
+            )
+            ->add(
+                'food',
+                TextType::class,
+                [
+                    'label' => 'label.food'
+                ]
+            )
+            ->add(
+                'wood',
+                TextType::class,
+                [
+                    'label' => 'label.wood'
+                ]
+            )
+            ->add(
+                'steel',
+                TextType::class,
+                [
+                    'label' => 'label.steel'
+                ]
+            );
     }
 }

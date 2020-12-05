@@ -22,9 +22,12 @@ final class NotepadController extends BaseGameController
             $this->addFlash('success', 'Notepad saved!');
         }
 
-        return $this->render('game/notepad.html.twig', [
-            'player' => $player,
-            'form' => $notepadForm->createView()
-        ]);
+        return $this->render(
+            'game/notepad.html.twig',
+            [
+                'player' => $player,
+                'form' => $notepadForm->createView()
+            ]
+        );
     }
 }

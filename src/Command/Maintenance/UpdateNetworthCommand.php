@@ -48,11 +48,13 @@ class UpdateNetworthCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln([
-            'Updating networth of all players',
-            '============',
-            '',
-        ]);
+        $output->writeln(
+            [
+                'Updating networth of all players',
+                '============',
+                '',
+            ]
+        );
 
         $commit = $input->getOption('commit');
         $commit = ($commit !== false);

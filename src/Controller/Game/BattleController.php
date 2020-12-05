@@ -38,10 +38,13 @@ final class BattleController extends BaseGameController
             return $this->redirectToRoute('Game/Fleets', [], 302);
         }
 
-        return $this->render('game/battle.html.twig', [
-            'player' => $player,
-            'battleResults' => $battleResults,
-            'hasWon' => $battleResults->hasWon()
-        ]);
+        return $this->render(
+            'game/battle.html.twig',
+            [
+                'player' => $player,
+                'battleResults' => $battleResults,
+                'hasWon' => $battleResults->hasWon()
+            ]
+        );
     }
 }

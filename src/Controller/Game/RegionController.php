@@ -52,11 +52,14 @@ final class RegionController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/region/buy.html.twig', [
-            'region' => $worldRegion,
-            'player' => $player,
-            'price'  => $player->getRegionPrice()
-        ]);
+        return $this->render(
+            'game/region/buy.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $player,
+                'price' => $player->getRegionPrice()
+            ]
+        );
     }
 
     public function region(int $regionId): Response
@@ -73,14 +76,17 @@ final class RegionController extends BaseGameController
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
         $gameUnitsData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
 
-        return $this->render('game/region.html.twig', [
-            'region' => $worldRegion,
-            'player' => $player,
-            'previousRegion' => $this->worldRegionRepository->getPreviousWorldRegionForPlayer($regionId, $player),
-            'nextRegion' => $this->worldRegionRepository->getNextWorldRegionForPlayer($regionId, $player),
-            'gameUnitTypes' => $gameUnitTypes,
-            'gameUnitsData' => $gameUnitsData
-        ]);
+        return $this->render(
+            'game/region.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $player,
+                'previousRegion' => $this->worldRegionRepository->getPreviousWorldRegionForPlayer($regionId, $player),
+                'nextRegion' => $this->worldRegionRepository->getNextWorldRegionForPlayer($regionId, $player),
+                'gameUnitTypes' => $gameUnitTypes,
+                'gameUnitsData' => $gameUnitsData
+            ]
+        );
     }
 
     public function regionList(): Response
@@ -95,13 +101,22 @@ final class RegionController extends BaseGameController
         $gameUnitType = $this->gameUnitTypeRepository->find(1);
 
         foreach ($regions as $region) {
-            $region->buildingsInConstruction = $this->constructionActionService->getCountGameUnitsInConstruction($region, $gameUnitType);
-            $region->buildings = $this->constructionActionService->getCountGameUnitsInWorldRegion($region, $gameUnitType);
+            $region->buildingsInConstruction = $this->constructionActionService->getCountGameUnitsInConstruction(
+                $region,
+                $gameUnitType
+            );
+            $region->buildings = $this->constructionActionService->getCountGameUnitsInWorldRegion(
+                $region,
+                $gameUnitType
+            );
         }
 
-        return $this->render('game/regionList.html.twig', [
-            'regions' => $regions,
-            'player' => $player
-        ]);
+        return $this->render(
+            'game/regionList.html.twig',
+            [
+                'regions' => $regions,
+                'player' => $player
+            ]
+        );
     }
 }

@@ -90,8 +90,11 @@ class Fleet
         return $this->fleetUnits;
     }
 
-    public static function createForPlayer(Player $player, WorldRegion $worldRegion, WorldRegion $targetWorldRegion): Fleet
-    {
+    public static function createForPlayer(
+        Player $player,
+        WorldRegion $worldRegion,
+        WorldRegion $targetWorldRegion
+    ): Fleet {
         $distanceCalculator = new DistanceCalculator();
         $distance = $distanceCalculator->calculateDistance(
             $targetWorldRegion->getX(),

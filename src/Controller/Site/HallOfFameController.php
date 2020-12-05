@@ -30,9 +30,12 @@ final class HallOfFameController extends BaseController
     {
         $history = $this->historyRepository->findAll();
 
-        return $this->render('site/hallOfFame.html.twig', [
-            'history' => $history
-        ]);
+        return $this->render(
+            'site/hallOfFame.html.twig',
+            [
+                'history' => $history
+            ]
+        );
     }
 
     public function world(int $worldId): Response
@@ -43,9 +46,12 @@ final class HallOfFameController extends BaseController
         $federations = $this->historyFederationRepository->findByWorld($worldId);
         $players = $this->historyPlayerRepository->findByWorld($worldId);
 
-        return $this->render('site/hallOfFameWorld.html.twig', [
-            'federations' => $federations,
-            'players' => $players
-        ]);
+        return $this->render(
+            'site/hallOfFameWorld.html.twig',
+            [
+                'federations' => $federations,
+                'players' => $players
+            ]
+        );
     }
 }

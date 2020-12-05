@@ -46,7 +46,9 @@ final class WorldImageGeneratorService
     public function generateWorldSectorImage(WorldSector $worldSector): void
     {
         $worldSectorImageName = $worldSector->getId() . '.jpg';
-        $worldSectorImageDirectory = $this->params->get('kernel.project_dir') . '/public/images/world/sector/' . $worldSectorImageName;
+        $worldSectorImageDirectory = $this->params->get(
+                'kernel.project_dir'
+            ) . '/public/images/world/sector/' . $worldSectorImageName;
 
         // Refresh object from DB, otherwise world image generation will fail
         $this->worldSectorRepository->refresh($worldSector);

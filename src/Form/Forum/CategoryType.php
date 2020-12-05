@@ -15,16 +15,22 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
-            ->add('submit', SubmitType::class, [
-                "label" => "label.post",
-                "translation_domain" => "forum"
-            ]);
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    "label" => "label.post",
+                    "translation_domain" => "forum"
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => Category::class,
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => Category::class,
+            )
+        );
     }
 }

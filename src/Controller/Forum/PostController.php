@@ -69,10 +69,13 @@ class PostController extends BaseForumController
             return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
         }
 
-        return $this->render('forum/post_edit.html.twig', [
-            'topic' => $topic,
-            'user' => $this->getGameUser(),
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'forum/post_edit.html.twig',
+            [
+                'topic' => $topic,
+                'user' => $this->getGameUser(),
+                'form' => $form->createView()
+            ]
+        );
     }
 }

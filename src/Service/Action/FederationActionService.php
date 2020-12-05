@@ -230,7 +230,6 @@ final class FederationActionService
 
         $changePlayer->setFederationHierarchy($role);
         $this->playerRepository->save($changePlayer);
-
         /**
          * XXX TODO!
          *

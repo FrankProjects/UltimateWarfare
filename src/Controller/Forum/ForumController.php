@@ -13,9 +13,12 @@ class ForumController extends BaseForumController
     {
         $categories = $categoryRepository->findAll();
 
-        return $this->render('forum/forum.html.twig', [
-            'categories' => $categories,
-            'user' => $this->getGameUser()
-        ]);
+        return $this->render(
+            'forum/forum.html.twig',
+            [
+                'categories' => $categories,
+                'user' => $this->getGameUser()
+            ]
+        );
     }
 }
