@@ -1,19 +1,11 @@
 name: "Static Analysis"
 
-on:
-  pull_request:
-    branches:
-      - "*.x"
-      - "master"
-  push:
-    branches:
-      - "*.x"
-      - "master"
+on: [ push, pull_request ]
 
 jobs:
   static-analysis-phpstan:
     name: "Static Analysis with PHPStan"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
 
     strategy:
       matrix:

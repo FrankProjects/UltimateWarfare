@@ -1,19 +1,11 @@
 name: "Coding Standards"
 
-on:
-  pull_request:
-    branches:
-      - "*.x"
-      - "master"
-  push:
-    branches:
-      - "*.x"
-      - "master"
+on: [ push, pull_request ]
 
 jobs:
   coding-standards:
     name: "Coding Standards"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
 
     strategy:
       matrix:
