@@ -70,7 +70,8 @@ final class FederationApplicationController extends BaseGameController
         try {
             $application = $request->get('application');
 
-            if ($federation !== null &&
+            if (
+                $federation !== null &&
                 $request->isMethod(Request::METHOD_POST) &&
                 $application !== null
             ) {

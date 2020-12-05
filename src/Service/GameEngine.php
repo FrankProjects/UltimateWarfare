@@ -109,7 +109,8 @@ final class GameEngine
          *
          * $income_pop_increase = 0;
          *
-         * $query = "SELECT id, pop, (SELECT ifnull(amount,0) FROM world_region_units WHERE region_id = world_region.id AND unit_id = 5) as house FROM world_region WHERE owner = $player_id";
+         * $query = "SELECT id, pop, (SELECT ifnull(amount,0) FROM world_region_units WHERE region_id = world_region.id
+         * AND unit_id = 5) as house FROM world_region WHERE owner = $player_id";
          * $result = $db->query($query);
          * if ($db->num_rows($result) > 0) {
          * while ($arr = $db->fetch_assoc($result)) {

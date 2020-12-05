@@ -187,7 +187,8 @@ final class MessageController extends BaseGameController
     {
         $selectedMessages = [];
 
-        if ($request->isMethod(Request::METHOD_POST) &&
+        if (
+            $request->isMethod(Request::METHOD_POST) &&
             $request->get('del') !== null &&
             $request->get('selected_messages') !== null
         ) {

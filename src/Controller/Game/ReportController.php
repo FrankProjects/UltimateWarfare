@@ -20,7 +20,7 @@ final class ReportController extends BaseGameController
 
     public function report(int $type): Response
     {
-        switch ($type):
+        switch ($type) :
             case Report::TYPE_ATTACKED:
             case Report::TYPE_GENERAL:
             case Report::TYPE_MARKET:

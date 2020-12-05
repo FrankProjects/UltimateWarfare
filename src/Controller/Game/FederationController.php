@@ -257,7 +257,8 @@ final class FederationController extends BaseGameController
     public function changePlayerHierarchy(Request $request): Response
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST) &&
+            if (
+                $request->isMethod(Request::METHOD_POST) &&
                 $request->get('playerId') !== null &&
                 $request->get('role') !== null
             ) {

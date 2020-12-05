@@ -40,8 +40,10 @@ final class ResetPasswordController extends AbstractController
             if ($user) {
                 if (!$user->isEnabled()) {
                     $this->addFlash('error', 'Your account is not activated!');
-                } elseif ($user->getPasswordRequestedAt() === null || $user->getPasswordRequestedAt()->getTimestamp(
-                    ) + 12 * 60 * 60 < time()) {
+                } elseif (
+                    $user->getPasswordRequestedAt() === null ||
+                    $user->getPasswordRequestedAt()->getTimestamp() + 12 * 60 * 60 < time()
+                ) {
                     $generator = new TokenGenerator();
                     $token = $generator->generateToken(40);
 
