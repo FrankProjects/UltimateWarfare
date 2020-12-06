@@ -96,7 +96,7 @@ class Fleet
         WorldRegion $targetWorldRegion
     ): Fleet {
         $distanceCalculator = new DistanceCalculator();
-        $distance = $distanceCalculator->calculateDistance(
+        $travelTime = $distanceCalculator->calculateDistanceTravelTime(
             $targetWorldRegion->getX(),
             $targetWorldRegion->getY(),
             $worldRegion->getX(),
@@ -108,7 +108,7 @@ class Fleet
         $fleet->setWorldRegion($worldRegion);
         $fleet->setTargetWorldRegion($targetWorldRegion);
         $fleet->setTimestamp(time());
-        $fleet->setTimestampArrive(time() + ($distance * 100));
+        $fleet->setTimestampArrive(time() + $travelTime);
 
         return $fleet;
     }

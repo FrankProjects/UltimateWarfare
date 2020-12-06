@@ -148,14 +148,14 @@ final class FleetController extends BaseGameController
 
         $targetRegions = [];
         foreach ($player->getWorldRegions() as $worldRegion) {
-            $distance = $distanceCalculator->calculateDistance(
-                    $worldRegion->getX(),
-                    $worldRegion->getY(),
-                    $region->getX(),
-                    $region->getY()
-                ) * 100;
+            $travelTime = $distanceCalculator->calculateDistanceTravelTime(
+                $worldRegion->getX(),
+                $worldRegion->getY(),
+                $region->getX(),
+                $region->getY()
+            );
 
-            $worldRegion->distance = $distance;
+            $worldRegion->distance = $travelTime;
             $targetRegions[] = $worldRegion;
         }
 

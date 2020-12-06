@@ -12,4 +12,9 @@ final class DistanceCalculator
         $distance = pow($differenceX, 2) + pow($differenceY, 2);
         return intval(2 * round(sqrt($distance)));
     }
+
+    public function calculateDistanceTravelTime(int $targetX, int $targetY, int $sourceX, int $sourceY): int
+    {
+        return $this->calculateDistance($targetX, $targetY, $sourceX, $sourceY) * 100;
+    }
 }
