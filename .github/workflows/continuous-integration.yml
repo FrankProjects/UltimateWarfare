@@ -39,7 +39,7 @@ jobs:
         run: "composer install --no-interaction --prefer-dist"
 
       - name: "Run PHPUnit"
-        run: "bin/phpunit --coverage-clover=coverage.xml"
+        run: "php bin/phpunit --coverage-clover=coverage.xml"
 
       - name: "Upload coverage file"
         uses: "actions/upload-artifact@v2"

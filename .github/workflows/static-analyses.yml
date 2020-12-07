@@ -32,5 +32,9 @@ jobs:
       - name: "Install dependencies with composer"
         run: "composer install --no-interaction --no-progress"
 
+      # Install phpunit to fix "Class PHPUnit\Framework\TestCase not found."
+      - name: "Install phpunit for phpstan"
+        run: "php bin/phpunit install"
+
       - name: "Run a static analysis with phpstan/phpstan"
         run: "vendor/bin/phpstan analyse"
