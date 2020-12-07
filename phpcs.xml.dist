@@ -8,8 +8,6 @@
     <arg name="colors"/>
     <arg name="extensions" value="php"/>
 
-    <config name="ignore_warnings_on_exit" value="1"/>
-
     <rule ref="PSR12"/>
 
     <file>config/</file>
