@@ -20,14 +20,14 @@ final class ReportController extends BaseGameController
 
     public function report(int $type): Response
     {
-        switch ($type):
+        switch ($type) :
             case Report::TYPE_ATTACKED:
             case Report::TYPE_GENERAL:
             case Report::TYPE_MARKET:
             case Report::TYPE_AID:
                 $reports = $this->reportRepository->findReportsByType($this->getPlayer(), $type);
-        break;
-        default:
+                break;
+            default:
                 $reports = $this->reportRepository->findReports($this->getPlayer());
         endswitch;
 
@@ -41,10 +41,13 @@ final class ReportController extends BaseGameController
          *
          */
 
-        return $this->render('game/reports.html.twig', [
-            'player' => $this->getPlayer(),
-            'reports' => $reports,
-            'reportSubject' => Report::getReportSubject($type)
-        ]);
+        return $this->render(
+            'game/reports.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'reports' => $reports,
+                'reportSubject' => Report::getReportSubject($type)
+            ]
+        );
     }
 }

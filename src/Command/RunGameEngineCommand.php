@@ -30,11 +30,13 @@ class RunGameEngineCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // outputs multiple lines to the console (adding "\n" at the end of each line)
-        $output->writeln([
-            'Running the GameEngine',
-            '============',
-            '',
-        ]);
+        $output->writeln(
+            [
+                'Running the GameEngine',
+                '============',
+                '',
+            ]
+        );
 
         $this->gameEngine->run(null);
         $output->writeln('Done!');

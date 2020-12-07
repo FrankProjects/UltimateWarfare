@@ -29,8 +29,8 @@ final class DoctrinePostRepository implements PostRepository
     public function getLastPostByUser(User $user): ?Post
     {
         return $this->entityManager->createQuery(
-                'SELECT p FROM Game:Post p WHERE p.user = :user ORDER BY p.createDateTime DESC'
-            )
+            'SELECT p FROM Game:Post p WHERE p.user = :user ORDER BY p.createDateTime DESC'
+        )
             ->setParameter('user', $user->getId())
             ->setMaxResults(1)
             ->getOneOrNullResult();

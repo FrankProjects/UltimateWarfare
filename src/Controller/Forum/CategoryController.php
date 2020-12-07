@@ -35,11 +35,14 @@ class CategoryController extends BaseForumController
         $category = $this->categoryRepository->find($categoryId);
         $topics = $this->topicRepository->getByCategorySortedByStickyAndDate($category);
 
-        return $this->render('forum/category.html.twig', [
-            'category' => $category,
-            'topics' => $topics,
-            'user' => $this->getGameUser()
-        ]);
+        return $this->render(
+            'forum/category.html.twig',
+            [
+                'category' => $category,
+                'topics' => $topics,
+                'user' => $this->getGameUser()
+            ]
+        );
     }
 
     public function create(Request $request): Response
@@ -58,11 +61,14 @@ class CategoryController extends BaseForumController
             return $this->redirectToRoute('Forum');
         }
 
-        return $this->render('forum/category/create.html.twig', [
-            'category' => $category,
-            'user' => $this->getGameUser(),
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'forum/category/create.html.twig',
+            [
+                'category' => $category,
+                'user' => $this->getGameUser(),
+                'form' => $form->createView()
+            ]
+        );
     }
 
     public function edit(Request $request, int $categoryId): Response
@@ -87,11 +93,14 @@ class CategoryController extends BaseForumController
             return $this->redirectToRoute('Forum');
         }
 
-        return $this->render('forum/category/edit.html.twig', [
-            'category' => $category,
-            'user' => $this->getGameUser(),
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'forum/category/edit.html.twig',
+            [
+                'category' => $category,
+                'user' => $this->getGameUser(),
+                'form' => $form->createView()
+            ]
+        );
     }
 
     public function remove(int $categoryId): RedirectResponse

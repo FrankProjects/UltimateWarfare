@@ -47,9 +47,15 @@ final class DoctrineReportRepository implements ReportRepository
               FROM Game:Report r
               WHERE r.player = :player AND r.type = :type AND r.timestamp < :timestamp
               ORDER BY r.timestamp DESC'
-        )->setParameter('timestamp', time()
-        )->setParameter('player', $player
-        )->setParameter('type', $type
+        )->setParameter(
+            'timestamp',
+            time()
+        )->setParameter(
+            'player',
+            $player
+        )->setParameter(
+            'type',
+            $type
         )->setMaxResults($limit)
             ->getResult();
     }
@@ -66,8 +72,12 @@ final class DoctrineReportRepository implements ReportRepository
               FROM Game:Report r
               WHERE r.player = :player AND r.timestamp < :timestamp
               ORDER BY r.timestamp DESC'
-        )->setParameter('timestamp', time()
-        )->setParameter('player', $player
+        )->setParameter(
+            'timestamp',
+            time()
+        )->setParameter(
+            'player',
+            $player
         )->setMaxResults($limit)
             ->getResult();
     }

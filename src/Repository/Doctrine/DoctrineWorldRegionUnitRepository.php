@@ -39,7 +39,9 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
               JOIN Game:WorldRegion wr WITH wru.worldRegion = wr
               JOIN Game:GameUnit gu WITH wru.gameUnit = gu
               WHERE wr.player = :player'
-        )->setParameter('player', $player
+        )->setParameter(
+            'player',
+            $player
         )->getResult();
     }
 

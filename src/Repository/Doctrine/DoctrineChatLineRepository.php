@@ -27,11 +27,11 @@ final class DoctrineChatLineRepository implements ChatLineRepository
     public function findChatLinesByLastChatLineId(int $chatLineId): array
     {
         return $this->entityManager->createQuery(
-                'SELECT cl
+            'SELECT cl
               FROM Game:ChatLine cl
               WHERE cl.id > :chatLineId
               ORDER BY cl.timestamp ASC'
-            )->setParameter('chatLineId', $chatLineId)
+        )->setParameter('chatLineId', $chatLineId)
             ->getResult();
     }
 
@@ -42,10 +42,10 @@ final class DoctrineChatLineRepository implements ChatLineRepository
     public function findChatLinesOlderThanSeconds(int $seconds): array
     {
         return $this->entityManager->createQuery(
-                'SELECT cl
+            'SELECT cl
               FROM Game:ChatLine cl
               WHERE cl.timestamp < :timestamp'
-            )->setParameter('timestamp', time() - $seconds)
+        )->setParameter('timestamp', time() - $seconds)
             ->getResult();
     }
 

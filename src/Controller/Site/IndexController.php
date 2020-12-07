@@ -27,9 +27,12 @@ final class IndexController extends BaseController
         $gameNews = $this->gameNewsRepository->findActiveMainPageNews();
         $latestAnnouncements = $this->topicRepository->findLastAnnouncements(7);
 
-        return $this->render('site/index.html.twig', [
-            'latestAnnouncements' => $latestAnnouncements,
-            'gameNews' => $gameNews
-        ]);
+        return $this->render(
+            'site/index.html.twig',
+            [
+                'latestAnnouncements' => $latestAnnouncements,
+                'gameNews' => $gameNews
+            ]
+        );
     }
 }

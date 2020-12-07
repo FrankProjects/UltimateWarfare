@@ -57,11 +57,14 @@ class TopicController extends BaseForumController
             }
         }
 
-        return $this->render('forum/topic.html.twig', [
-            'topic' => $topic,
-            'user' => $this->getGameUser(),
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'forum/topic.html.twig',
+            [
+                'topic' => $topic,
+                'user' => $this->getGameUser(),
+                'form' => $form->createView()
+            ]
+        );
     }
 
     public function create(Request $request, int $categoryId): Response
@@ -88,11 +91,14 @@ class TopicController extends BaseForumController
             return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
         }
 
-        return $this->render('forum/topic_create.html.twig', [
-            'topic' => $topic,
-            'user' => $this->getGameUser(),
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'forum/topic_create.html.twig',
+            [
+                'topic' => $topic,
+                'user' => $this->getGameUser(),
+                'form' => $form->createView()
+            ]
+        );
     }
 
     public function remove(int $topicId): RedirectResponse
@@ -149,11 +155,14 @@ class TopicController extends BaseForumController
             return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
         }
 
-        return $this->render('forum/topic_edit.html.twig', [
-            'topic' => $topic,
-            'user' => $this->getGameUser(),
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'forum/topic_edit.html.twig',
+            [
+                'topic' => $topic,
+                'user' => $this->getGameUser(),
+                'form' => $form->createView()
+            ]
+        );
     }
 
     public function sticky(Request $request, int $topicId): RedirectResponse

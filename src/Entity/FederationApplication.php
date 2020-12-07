@@ -46,8 +46,11 @@ class FederationApplication
         $this->player = $player;
     }
 
-    public static function createForFederation(Federation $federation, Player $player, string $application): FederationApplication
-    {
+    public static function createForFederation(
+        Federation $federation,
+        Player $player,
+        string $application
+    ): FederationApplication {
         $federationApplication = new FederationApplication();
         $federationApplication->setFederation($federation);
         $federationApplication->setPlayer($player);

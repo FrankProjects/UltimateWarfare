@@ -46,7 +46,9 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
               FROM Game:MarketItem m
               WHERE m.world = :world AND m.type = :type
               ORDER BY m.id DESC'
-        )->setParameter('world', $world
+        )->setParameter(
+            'world',
+            $world
         )->setParameter('type', $type)
             ->getResult();
     }

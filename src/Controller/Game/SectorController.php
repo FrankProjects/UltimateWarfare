@@ -31,9 +31,12 @@ final class SectorController extends BaseGameController
         $sector = $this->worldSectorRepository->findByIdAndWorld($sectorId, $player->getWorld());
 
         if (!$sector) {
-            return $this->render('game/sectorNotFound.html.twig', [
-                'player' => $player,
-            ]);
+            return $this->render(
+                'game/sectorNotFound.html.twig',
+                [
+                    'player' => $player,
+                ]
+            );
         }
 
         $regions = [];
@@ -41,15 +44,18 @@ final class SectorController extends BaseGameController
             $regions[$region->getY()][$region->getX()] = $region;
         }
 
-        return $this->render('game/sector.html.twig', [
-            'sector' => $sector,
-            'regions' => $regions,
-            'player' => $player,
-            'mapSettings' => [
-                'searchFound' => true,
-                'searchFree' => false,
-                'searchPlayerName' => false
+        return $this->render(
+            'game/sector.html.twig',
+            [
+                'sector' => $sector,
+                'regions' => $regions,
+                'player' => $player,
+                'mapSettings' => [
+                    'searchFound' => true,
+                    'searchFree' => false,
+                    'searchPlayerName' => false
+                ]
             ]
-        ]);
+        );
     }
 }

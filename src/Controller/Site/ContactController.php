@@ -36,8 +36,11 @@ final class ContactController extends AbstractController
             $this->addFlash('success', 'Thank you for contacting us!');
         }
 
-        return $this->render('site/contact.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'site/contact.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
     }
 }

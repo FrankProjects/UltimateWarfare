@@ -150,6 +150,6 @@ For updating your local development environment, do a `git pull`, optionally fol
 
 ### Style guide and standards
 
-PHP code should be in PSR2-style with a few additional rules. See [.styleci.yml](https://github.com/FrankProjects/UltimateWarfare/blob/master/.styleci.yml) for the defined [preset](https://styleci.readme.io/docs/presets#section-psr2) and [additional rules](https://styleci.readme.io/docs/fixers).
+PHP code should be in PSR12-style.
 
 Please add relevant unit tests or feature tests if possible.

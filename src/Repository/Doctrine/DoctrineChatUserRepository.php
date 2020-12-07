@@ -44,10 +44,10 @@ final class DoctrineChatUserRepository implements ChatUserRepository
     public function findInactiveChatUsers(): array
     {
         return $this->entityManager->createQuery(
-                'SELECT cu
+            'SELECT cu
               FROM Game:ChatUser cu
               WHERE cu.timestampActivity < :timestamp'
-            )->setParameter('timestamp', time() - 25)
+        )->setParameter('timestamp', time() - 25)
             ->getResult();
     }
 

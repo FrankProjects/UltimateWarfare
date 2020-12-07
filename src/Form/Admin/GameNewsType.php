@@ -16,31 +16,53 @@ class GameNewsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, [
-                'label' => 'label.title'
-            ])
-            ->add('message', TextareaType::class, [
-                'label' => 'label.message',
-                'attr' => array('cols' => 70, 'rows' => 8),
-            ])
-            ->add('enabled', CheckboxType::class, [
-                'label' => 'label.enabled',
-                'required' => false
-            ])
-            ->add('mainpage', CheckboxType::class, [
-                'label' => 'label.mainpage',
-                'required' => false
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'label.save'
-            ]);
+            ->add(
+                'title',
+                TextType::class,
+                [
+                    'label' => 'label.title'
+                ]
+            )
+            ->add(
+                'message',
+                TextareaType::class,
+                [
+                    'label' => 'label.message',
+                    'attr' => array('cols' => 70, 'rows' => 8),
+                ]
+            )
+            ->add(
+                'enabled',
+                CheckboxType::class,
+                [
+                    'label' => 'label.enabled',
+                    'required' => false
+                ]
+            )
+            ->add(
+                'mainpage',
+                CheckboxType::class,
+                [
+                    'label' => 'label.mainpage',
+                    'required' => false
+                ]
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'label.save'
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => GameNews::class,
-            'translation_domain' => 'gamenews'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => GameNews::class,
+                'translation_domain' => 'gamenews'
+            ]
+        );
     }
 }

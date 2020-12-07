@@ -50,14 +50,14 @@ final class RegionActionService
 
         $playerRegions = [];
         foreach ($player->getWorldRegions() as $playerWorldRegion) {
-            $distance = $this->distanceCalculator->calculateDistance(
-                    $playerWorldRegion->getX(),
-                    $playerWorldRegion->getY(),
-                    $worldRegion->getX(),
-                    $worldRegion->getY()
-                ) * 100;
+            $travelTime = $this->distanceCalculator->calculateDistanceTravelTime(
+                $playerWorldRegion->getX(),
+                $playerWorldRegion->getY(),
+                $worldRegion->getX(),
+                $worldRegion->getY()
+            );
 
-            $playerWorldRegion->distance = $this->timeCalculator->calculateTimeLeft($distance);
+            $playerWorldRegion->distance = $this->timeCalculator->calculateTimeLeft($travelTime);
             $playerRegions[] = $playerWorldRegion;
         }
 

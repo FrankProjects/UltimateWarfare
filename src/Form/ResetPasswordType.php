@@ -15,26 +15,36 @@ class ResetPasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'first_options'  => [
-                    'label' => 'label.password',
-                    'translation_domain' => 'register'
-                ],
-                'second_options' => [
-                    'label' => 'label.password_repeat',
-                    'translation_domain' => 'register'
+            ->add(
+                'plainPassword',
+                RepeatedType::class,
+                [
+                    'type' => PasswordType::class,
+                    'first_options' => [
+                        'label' => 'label.password',
+                        'translation_domain' => 'register'
+                    ],
+                    'second_options' => [
+                        'label' => 'label.password_repeat',
+                        'translation_domain' => 'register'
+                    ]
                 ]
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Reset Password'
-            ]);
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'Reset Password'
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => User::class,
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => User::class,
+            )
+        );
     }
 }

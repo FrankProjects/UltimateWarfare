@@ -42,10 +42,13 @@ final class MessageController extends BaseGameController
 
         $messages = $this->messageRepository->findNonDeletedMessagesToPlayer($player);
 
-        return $this->render('game/message/inbox.html.twig', [
-            'player' => $player,
-            'messages' => $messages
-        ]);
+        return $this->render(
+            'game/message/inbox.html.twig',
+            [
+                'player' => $player,
+                'messages' => $messages
+            ]
+        );
     }
 
     public function inboxRead(int $messageId): Response
@@ -66,10 +69,13 @@ final class MessageController extends BaseGameController
             return $this->redirectToRoute('Game/Message/Inbox');
         }
 
-        return $this->render('game/message/inboxRead.html.twig', [
-            'player' => $player,
-            'message' => $message
-        ]);
+        return $this->render(
+            'game/message/inboxRead.html.twig',
+            [
+                'player' => $player,
+                'message' => $message
+            ]
+        );
     }
 
     public function inboxDelete(int $messageId): RedirectResponse
@@ -98,10 +104,13 @@ final class MessageController extends BaseGameController
 
         $messages = $this->messageRepository->findNonDeletedMessagesFromPlayer($player);
 
-        return $this->render('game/message/outbox.html.twig', [
-            'player' => $player,
-            'messages' => $messages
-        ]);
+        return $this->render(
+            'game/message/outbox.html.twig',
+            [
+                'player' => $player,
+                'messages' => $messages
+            ]
+        );
     }
 
     public function outboxRead(int $messageId): Response
@@ -116,10 +125,13 @@ final class MessageController extends BaseGameController
             return $this->redirectToRoute('Game/Message/Outbox');
         }
 
-        return $this->render('game/message/outboxRead.html.twig', [
-            'player' => $this->getPlayer(),
-            'message' => $message
-        ]);
+        return $this->render(
+            'game/message/outboxRead.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'message' => $message
+            ]
+        );
     }
 
     public function outboxDelete(int $messageId): RedirectResponse
@@ -160,19 +172,23 @@ final class MessageController extends BaseGameController
             }
         }
 
-        return $this->render('game/message/new.html.twig', [
-            'player' => $player,
-            'toPlayerName' => $playerName,
-            'subject' => $request->request->get('subject'),
-            'message' => $request->request->get('message')
-        ]);
+        return $this->render(
+            'game/message/new.html.twig',
+            [
+                'player' => $player,
+                'toPlayerName' => $playerName,
+                'subject' => $request->request->get('subject'),
+                'message' => $request->request->get('message')
+            ]
+        );
     }
 
     private function getSelectedMessagesFromRequest(Request $request): array
     {
         $selectedMessages = [];
 
-        if ($request->isMethod(Request::METHOD_POST) &&
+        if (
+            $request->isMethod(Request::METHOD_POST) &&
             $request->get('del') !== null &&
             $request->get('selected_messages') !== null
         ) {

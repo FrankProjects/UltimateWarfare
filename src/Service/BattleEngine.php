@@ -96,8 +96,12 @@ final class BattleEngine
         }
     }
 
-    private function processResults(BattleResult $battleResults, Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
-    {
+    private function processResults(
+        BattleResult $battleResults,
+        Fleet $fleet,
+        array $attackerGameUnits,
+        array $defenderGameUnits
+    ): void {
         $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
         $timestamp = time();
 

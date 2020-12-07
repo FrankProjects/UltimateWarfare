@@ -4,8 +4,6 @@ Ultimate Warfare
 ![Ultimate Warfare](https://raw.githubusercontent.com/FrankProjects/UltimateWarfare/master/public/images/banner.jpg)
 
 [![Build Status](https://github.com/FrankProjects/UltimateWarfare/workflows/Continuous%20Integration/badge.svg)](https://github.com/FrankProjects/UltimateWarfare/actions)
-[![StyleCI](https://github.styleci.io/repos/126375561/shield)](https://github.styleci.io/repos/126375561)
-[![Maintainability](https://api.codeclimate.com/v1/badges/2aecf6889aa57d760beb/maintainability)](https://codeclimate.com/github/FrankProjects/UltimateWarfare/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 *Note: Ultimate Warfare is still in development. Some features of the game have not been implemented yet.*

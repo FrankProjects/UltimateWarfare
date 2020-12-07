@@ -47,7 +47,11 @@ final class BattleUpdaterService
         }
 
         foreach ($attackerGameUnits as $fleetUnit) {
-            $worldRegionUnit = WorldRegionUnit::create($targetWorldRegion, $fleetUnit->getGameUnit(), $fleetUnit->getAmount());
+            $worldRegionUnit = WorldRegionUnit::create(
+                $targetWorldRegion,
+                $fleetUnit->getGameUnit(),
+                $fleetUnit->getAmount()
+            );
             $this->worldRegionUnitRepository->save($worldRegionUnit);
         }
         $this->fleetRepository->remove($fleet);

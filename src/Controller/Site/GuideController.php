@@ -32,9 +32,12 @@ final class GuideController extends BaseController
             return $this->redirectToRoute('Guide/ListUnits');
         }
 
-        return $this->render('site/guide/gameUnit.html.twig', [
-            'gameUnit' => $gameUnit
-        ]);
+        return $this->render(
+            'site/guide/gameUnit.html.twig',
+            [
+                'gameUnit' => $gameUnit
+            ]
+        );
     }
 
     public function federation(): Response
@@ -61,18 +64,24 @@ final class GuideController extends BaseController
     {
         $operations = $operationRepository->findAll();
 
-        return $this->render('site/guide/listOperations.html.twig', [
-            'operations' => $operations
-        ]);
+        return $this->render(
+            'site/guide/listOperations.html.twig',
+            [
+                'operations' => $operations
+            ]
+        );
     }
 
     public function listResearch(ResearchRepository $researchRepository): Response
     {
         $researches = $researchRepository->findAll();
 
-        return $this->render('site/guide/listResearch.html.twig', [
-            'researches' => $researches
-        ]);
+        return $this->render(
+            'site/guide/listResearch.html.twig',
+            [
+                'researches' => $researches
+            ]
+        );
     }
 
     public function listUnits(int $gameUnitTypeId, GameUnitTypeRepository $gameUnitTypeRepository): Response
@@ -82,14 +91,20 @@ final class GuideController extends BaseController
         if ($gameUnitType === null) {
             $gameUnitTypes = $gameUnitTypeRepository->findAll();
 
-            return $this->render('site/guide/selectGameUnitType.html.twig', [
-                'gameUnitTypes' => $gameUnitTypes
-            ]);
+            return $this->render(
+                'site/guide/selectGameUnitType.html.twig',
+                [
+                    'gameUnitTypes' => $gameUnitTypes
+                ]
+            );
         }
 
-        return $this->render('site/guide/listGameUnits.html.twig', [
-            'gameUnitType' => $gameUnitType
-        ]);
+        return $this->render(
+            'site/guide/listGameUnits.html.twig',
+            [
+                'gameUnitType' => $gameUnitType
+            ]
+        );
     }
 
     public function logOff(): Response

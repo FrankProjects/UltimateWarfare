@@ -61,7 +61,9 @@ class PerlinNoiseGenerator implements Generator
 
     private function initWorld(MapConfiguration $mapConfiguration): void
     {
-        mt_srand(intval($mapConfiguration->getSeed() * $mapConfiguration->getPersistence() * $mapConfiguration->getSize()));
+        mt_srand(
+            intval($mapConfiguration->getSeed() * $mapConfiguration->getPersistence() * $mapConfiguration->getSize())
+        );
 
         $this->world = [];
         for ($y = 0; $y < $mapConfiguration->getSize(); $y++) {

@@ -27,12 +27,14 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
     public function getNonActiveCompletedResearch(int $timestamp): array
     {
         return $this->entityManager->createQuery(
-                'SELECT rp
+            'SELECT rp
               FROM Game:ResearchPlayer rp
               JOIN Game:Research r WITH rp.research = r
               WHERE rp.active = 0 AND (rp.timestamp + r.timestamp) < :timestamp'
-            )->setParameter('timestamp', $timestamp
-            )->getResult();
+        )->setParameter(
+            'timestamp',
+            $timestamp
+        )->getResult();
     }
 
     public function remove(ResearchPlayer $researchPlayer): void

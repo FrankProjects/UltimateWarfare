@@ -1,14 +1,6 @@
 name: "Continuous Integration"
 
-on:
-  pull_request:
-    branches:
-      - "*.x"
-      - "master"
-  push:
-    branches:
-      - "*.x"
-      - "master"
+on: [ push, pull_request ]
 
 env:
   fail-fast: true
@@ -16,13 +8,12 @@ env:
 jobs:
   phpunit:
     name: "PHPUnit"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
 
     strategy:
       matrix:
         php-version:
           - "7.4"
-          - "8.0"
 
     steps:
       - name: "Checkout"
@@ -45,10 +36,10 @@ jobs:
           restore-keys: "php-${{ matrix.php-version }}-composer-locked-"
 
       - name: "Install dependencies with composer"
-        run: "composer update --no-interaction --prefer-dist"
+        run: "composer install --no-interaction --prefer-dist"
 
       - name: "Run PHPUnit"
-        run: "bin/phpunit --coverage-clover=coverage.xml"
+        run: "php bin/phpunit --coverage-clover=coverage.xml"
 
       - name: "Upload coverage file"
         uses: "actions/upload-artifact@v2"
@@ -58,7 +49,7 @@ jobs:
 
   upload_coverage:
     name: "Upload coverage to Codecov"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
     needs:
       - "phpunit"
 

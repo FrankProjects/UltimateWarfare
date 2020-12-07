@@ -16,31 +16,57 @@ class BattleStatsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('health', TextType::class, [
-                'label' => 'label.health'
-            ])
-            ->add('armor', TextType::class, [
-                'label' => 'label.armor'
-            ])
-            ->add('travelSpeed', TextType::class, [
-                'label' => 'label.travelSpeed'
-            ])
-            ->add('airBattleStats', AirBattleStatsType::class, [
-                'label' => 'label.airBattleStats'
-            ])
-            ->add('seaBattleStats', SeaBattleStatsType::class, [
-                'label' => 'label.seaBattleStats'
-            ])
-            ->add('groundBattleStats', GroundBattleStatsType::class, [
-                'label' => 'label.groundBattleStats'
-            ]);
+            ->add(
+                'health',
+                TextType::class,
+                [
+                    'label' => 'label.health'
+                ]
+            )
+            ->add(
+                'armor',
+                TextType::class,
+                [
+                    'label' => 'label.armor'
+                ]
+            )
+            ->add(
+                'travelSpeed',
+                TextType::class,
+                [
+                    'label' => 'label.travelSpeed'
+                ]
+            )
+            ->add(
+                'airBattleStats',
+                AirBattleStatsType::class,
+                [
+                    'label' => 'label.airBattleStats'
+                ]
+            )
+            ->add(
+                'seaBattleStats',
+                SeaBattleStatsType::class,
+                [
+                    'label' => 'label.seaBattleStats'
+                ]
+            )
+            ->add(
+                'groundBattleStats',
+                GroundBattleStatsType::class,
+                [
+                    'label' => 'label.groundBattleStats'
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => BattleStats::class,
-            'translation_domain' => 'gameunit'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => BattleStats::class,
+                'translation_domain' => 'gameunit'
+            ]
+        );
     }
 }

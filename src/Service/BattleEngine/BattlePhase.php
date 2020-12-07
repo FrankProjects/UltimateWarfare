@@ -49,8 +49,11 @@ abstract class BattlePhase implements IBattlePhase
      * @param WorldRegionUnit[] $defenderGameUnits
      * @return BattlePhase
      */
-    public static function factory(string $battlePhaseName, array $attackerGameUnits, array $defenderGameUnits): BattlePhase
-    {
+    public static function factory(
+        string $battlePhaseName,
+        array $attackerGameUnits,
+        array $defenderGameUnits
+    ): BattlePhase {
         $className = "FrankProjects\\UltimateWarfare\\Service\\BattleEngine\\BattlePhase\\" . ucfirst($battlePhaseName);
         if (!class_exists($className)) {
             throw new RunTimeException("Unknown BattlePhase {$battlePhaseName}");
@@ -132,7 +135,9 @@ abstract class BattlePhase implements IBattlePhase
                 $this->addToBattleLog("All {$action} {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
             } elseif ($deaths > 0) {
                 $gameUnits[$index]->setAmount($gameUnit->getAmount() - $deaths);
-                $this->addToBattleLog("{$deaths} {$action} {$gameUnit->getGameUnit()->getNameMulti()} died in the fight");
+                $this->addToBattleLog(
+                    "{$deaths} {$action} {$gameUnit->getGameUnit()->getNameMulti()} died in the fight"
+                );
             }
         }
 

@@ -44,10 +44,13 @@ final class ChatController extends BaseController
             $this->get('session')->set('chatName', $chatName);
         }
 
-        return $this->render('site/chat.html.twig', [
-            'chatName' => $chatName,
-            'isGuest' => $isGuest
-        ]);
+        return $this->render(
+            'site/chat.html.twig',
+            [
+                'chatName' => $chatName,
+                'isGuest' => $isGuest
+            ]
+        );
     }
 
     public function getUsers(): JsonResponse
@@ -71,10 +74,12 @@ final class ChatController extends BaseController
             $chatUserArray[] = ['name' => htmlentities($chatUser->getName())];
         }
 
-        return $this->json([
-            'users' => $chatUserArray,
-            'total' => count($chatUsers)
-        ]);
+        return $this->json(
+            [
+                'users' => $chatUserArray,
+                'total' => count($chatUsers)
+            ]
+        );
     }
 
     public function getChat(int $lastChatLineId): JsonResponse
@@ -99,15 +104,17 @@ final class ChatController extends BaseController
             $chat['name'] = htmlentities($chatLine->getName());
             $chat['text'] = htmlentities($chatLine->getText());
             $chat['time'] = [
-                'hours'   => date('H', $chatLine->getTimestamp()),
+                'hours' => date('H', $chatLine->getTimestamp()),
                 'minutes' => date('i', $chatLine->getTimestamp())
             ];
             $chats[] = $chat;
         }
 
-        return $this->json([
-            'chats' => $chats
-        ]);
+        return $this->json(
+            [
+                'chats' => $chats
+            ]
+        );
     }
 
     public function addChat(Request $request): JsonResponse
@@ -126,10 +133,12 @@ final class ChatController extends BaseController
         $chatLine = ChatLine::create($chatName, $text, time());
         $this->chatLineRepository->save($chatLine);
 
-        return $this->json([
-            'status'   => 1,
-            'insertID' => $chatLine->getId()
-        ]);
+        return $this->json(
+            [
+                'status' => 1,
+                'insertID' => $chatLine->getId()
+            ]
+        );
     }
 
     /**
@@ -146,7 +155,7 @@ final class ChatController extends BaseController
             $this->chatUserRepository->save($chatUser);
         } else {
             $chatUser = ChatUser::create($chatName, time());
-            $chatLine = ChatLine::create('[System]', $chatName .' joined the chat', time());
+            $chatLine = ChatLine::create('[System]', $chatName . ' joined the chat', time());
             $this->chatUserRepository->save($chatUser);
             $this->chatLineRepository->save($chatLine);
         }

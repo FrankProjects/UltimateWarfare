@@ -36,11 +36,13 @@ class RegenerateWordMapImagesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln([
-            'Regenerating all world map images',
-            '============',
-            '',
-        ]);
+        $output->writeln(
+            [
+                'Regenerating all world map images',
+                '============',
+                '',
+            ]
+        );
 
         foreach ($this->worldRepository->findAll() as $world) {
             $this->processWorld($output, $world);

@@ -99,9 +99,12 @@ final class UserController extends AbstractController
 
     public function list(): Response
     {
-        return $this->render('admin/user/list.html.twig', [
-            'users' => $this->userRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/user/list.html.twig',
+            [
+                'users' => $this->userRepository->findAll()
+            ]
+        );
     }
 
     public function makeAdmin(int $userId): RedirectResponse
@@ -132,9 +135,12 @@ final class UserController extends AbstractController
 
     public function read(int $userId): Response
     {
-        return $this->render('admin/user/read.html.twig', [
-            'user' => $this->userRepository->find($userId)
-        ]);
+        return $this->render(
+            'admin/user/read.html.twig',
+            [
+                'user' => $this->userRepository->find($userId)
+            ]
+        );
     }
 
     private function getUserObject(int $userId): User
