@@ -95,7 +95,11 @@ final class ConstructionProcessor implements Processor
         if ($worldRegionUnit !== null) {
             $worldRegionUnit->setAmount($worldRegionUnit->getAmount() + $construction->getNumber());
         } else {
-            $worldRegionUnit = WorldRegionUnit::create($construction->getWorldRegion(), $construction->getGameUnit(), $construction->getNumber());
+            $worldRegionUnit = WorldRegionUnit::create(
+                $construction->getWorldRegion(),
+                $construction->getGameUnit(),
+                $construction->getNumber()
+            );
         }
 
         $player = $this->updatePlayerResources($construction->getPlayer(), $construction);

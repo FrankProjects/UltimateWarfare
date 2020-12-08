@@ -244,8 +244,11 @@ final class MarketActionService
         return $resources;
     }
 
-    private function substractAndValidateGameResources(string $gameResource, Resources $resources, int $amount): Resources
-    {
+    private function substractAndValidateGameResources(
+        string $gameResource,
+        Resources $resources,
+        int $amount
+    ): Resources {
         switch ($gameResource) {
             case GameResource::GAME_RESOURCE_WOOD:
                 $this->ensureEnoughResources($amount, $resources->getWood(), GameResource::GAME_RESOURCE_WOOD);

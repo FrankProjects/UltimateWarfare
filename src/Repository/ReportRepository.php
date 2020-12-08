@@ -18,7 +18,7 @@ interface ReportRepository
 
     /**
      * @param Player $player
-     * @param $type
+     * @param int $type
      * @param int $limit
      * @return Report[]
      */

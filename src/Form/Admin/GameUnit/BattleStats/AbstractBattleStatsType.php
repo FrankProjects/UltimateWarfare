@@ -11,17 +11,33 @@ abstract class AbstractBattleStatsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('attack', TextType::class, [
-                'label' => 'label.attack'
-            ])
-            ->add('attackSpeed', TextType::class, [
-                'label' => 'label.attackSpeed'
-            ])
-            ->add('defence', TextType::class, [
-                'label' => 'label.defence'
-            ])
-            ->add('defenceSpeed', TextType::class, [
-                'label' => 'label.defenceSpeed'
-            ]);
+            ->add(
+                'attack',
+                TextType::class,
+                [
+                    'label' => 'label.attack'
+                ]
+            )
+            ->add(
+                'attackSpeed',
+                TextType::class,
+                [
+                    'label' => 'label.attackSpeed'
+                ]
+            )
+            ->add(
+                'defence',
+                TextType::class,
+                [
+                    'label' => 'label.defence'
+                ]
+            )
+            ->add(
+                'defenceSpeed',
+                TextType::class,
+                [
+                    'label' => 'label.defenceSpeed'
+                ]
+            );
     }
 }

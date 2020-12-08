@@ -9,9 +9,11 @@ class GroundBattleStatsType extends AbstractBattleStatsType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => GroundBattleStats::class,
-            'translation_domain' => 'gameunit'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => GroundBattleStats::class,
+                'translation_domain' => 'gameunit'
+            ]
+        );
     }
 }

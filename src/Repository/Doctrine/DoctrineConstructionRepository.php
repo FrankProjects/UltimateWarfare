@@ -91,7 +91,9 @@ final class DoctrineConstructionRepository implements ConstructionRepository
               JOIN Game:GameUnit gu WITH c.gameUnit = gu
               WHERE c.player = :player AND gu.gameUnitType = :gameUnitType
               ORDER BY c.timestamp DESC'
-            )->setParameter('player', $player
+            )->setParameter(
+                'player',
+                $player
             )->setParameter('gameUnitType', $gameUnitType)
             ->getResult();
     }

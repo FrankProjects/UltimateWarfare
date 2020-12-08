@@ -25,15 +25,21 @@ final class FederationApplicationController extends BaseGameController
 
     public function showFederationApplications(): Response
     {
-        return $this->render('game/federation/applications.html.twig', [
-            'player' => $this->getPlayer(),
-        ]);
+        return $this->render(
+            'game/federation/applications.html.twig',
+            [
+                'player' => $this->getPlayer(),
+            ]
+        );
     }
 
     public function acceptFederationApplication(int $federationApplicationId): Response
     {
         try {
-            $this->federationApplicationActionService->acceptFederationApplication($this->getPlayer(), $federationApplicationId);
+            $this->federationApplicationActionService->acceptFederationApplication(
+                $this->getPlayer(),
+                $federationApplicationId
+            );
             $this->addFlash('success', 'You successfully accepted a new player!');
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
@@ -45,7 +51,10 @@ final class FederationApplicationController extends BaseGameController
     public function rejectFederationApplication(int $federationApplicationId): Response
     {
         try {
-            $this->federationApplicationActionService->rejectFederationApplication($this->getPlayer(), $federationApplicationId);
+            $this->federationApplicationActionService->rejectFederationApplication(
+                $this->getPlayer(),
+                $federationApplicationId
+            );
             $this->addFlash('success', 'You successfully rejected a player!');
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
@@ -61,19 +70,27 @@ final class FederationApplicationController extends BaseGameController
         try {
             $application = $request->get('application');
 
-            if ($federation !== null &&
+            if (
+                $federation !== null &&
                 $request->isMethod(Request::METHOD_POST) &&
                 $application !== null
             ) {
-                $this->federationApplicationActionService->sendFederationApplication($this->getPlayer(), $federation, $application);
+                $this->federationApplicationActionService->sendFederationApplication(
+                    $this->getPlayer(),
+                    $federation,
+                    $application
+                );
                 $this->addFlash('success', 'You successfully send your application!');
             }
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/sendApplication.html.twig', [
-            'player' => $this->getPlayer(),
-        ]);
+        return $this->render(
+            'game/federation/sendApplication.html.twig',
+            [
+                'player' => $this->getPlayer(),
+            ]
+        );
     }
 }

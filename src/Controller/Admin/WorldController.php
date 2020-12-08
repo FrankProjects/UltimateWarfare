@@ -47,16 +47,22 @@ final class WorldController extends AbstractController
             return $this->redirectToRoute('Admin/World/List', [], 302);
         }
 
-        return $this->render('admin/world/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'admin/world/create.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
 
     public function list(): Response
     {
-        return $this->render('admin/world/list.html.twig', [
-            'worlds' => $this->worldRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/world/list.html.twig',
+            [
+                'worlds' => $this->worldRepository->findAll()
+            ]
+        );
     }
 
     public function edit(Request $request, int $worldId): Response
@@ -75,9 +81,12 @@ final class WorldController extends AbstractController
             return $this->redirectToRoute('Admin/World/List', [], 302);
         }
 
-        return $this->render('admin/world/edit.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'admin/world/edit.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
     }
 
     public function remove(int $worldId): RedirectResponse
@@ -123,9 +132,12 @@ final class WorldController extends AbstractController
             $this->addFlash('success', 'Generated new map!');
         }
 
-        return $this->render('admin/world/generator.html.twig', [
-            'map' => $map,
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'admin/world/generator.html.twig',
+            [
+                'map' => $map,
+                'form' => $form->createView(),
+            ]
+        );
     }
 }

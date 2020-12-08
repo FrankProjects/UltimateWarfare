@@ -21,16 +21,22 @@ final class ContactController extends AbstractController
 
     public function list(): Response
     {
-        return $this->render('admin/contact/list.html.twig', [
-            'contacts' => $this->contactRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/contact/list.html.twig',
+            [
+                'contacts' => $this->contactRepository->findAll()
+            ]
+        );
     }
 
     public function read(int $contactId): Response
     {
-        return $this->render('admin/contact/read.html.twig', [
-            'contact' => $this->contactRepository->find($contactId)
-        ]);
+        return $this->render(
+            'admin/contact/read.html.twig',
+            [
+                'contact' => $this->contactRepository->find($contactId)
+            ]
+        );
     }
 
     public function remove(int $contactId): RedirectResponse

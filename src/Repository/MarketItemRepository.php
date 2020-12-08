@@ -24,6 +24,6 @@ interface MarketItemRepository
     public function findByWorldMarketItemType(World $world, string $type): array;
 
     public function remove(MarketItem $marketItem): void;
-    
+
     public function save(MarketItem $marketItem): void;
 }

@@ -31,29 +31,41 @@ final class FederationController extends BaseGameController
     {
         $player = $this->getPlayer();
         if ($player->getFederation() == null) {
-            return $this->render('game/federation/noFederation.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
+            return $this->render(
+                'game/federation/noFederation.html.twig',
+                [
+                    'player' => $this->getPlayer()
+                ]
+            );
         }
 
-        return $this->render('game/federation/yourFederation.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/federation/yourFederation.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function showFederation(int $federationId): Response
     {
         $federation = $this->federationRepository->findByIdAndWorld($federationId, $this->getPlayer()->getWorld());
         if ($federation == null) {
-            return $this->render('game/federation/noFederation.html.twig', [
-                'player' => $this->getPlayer()
-            ]);
+            return $this->render(
+                'game/federation/noFederation.html.twig',
+                [
+                    'player' => $this->getPlayer()
+                ]
+            );
         }
 
-        return $this->render('game/federation/federation.html.twig', [
-            'player' => $this->getPlayer(),
-            'federation' => $federation
-        ]);
+        return $this->render(
+            'game/federation/federation.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'federation' => $federation
+            ]
+        );
     }
 
     public function federationNews(): Response
@@ -61,10 +73,13 @@ final class FederationController extends BaseGameController
         $player = $this->getPlayer();
         $federationNews = $this->federationNewsRepository->findByFederationSortedByTimestamp($player->getFederation());
 
-        return $this->render('game/federation/news.html.twig', [
-            'player' => $player,
-            'federationNews' => $federationNews
-        ]);
+        return $this->render(
+            'game/federation/news.html.twig',
+            [
+                'player' => $player,
+                'federationNews' => $federationNews
+            ]
+        );
     }
 
     public function createFederation(Request $request): Response
@@ -86,30 +101,39 @@ final class FederationController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/create.html.twig', [
-            'player' => $this->getPlayer(),
-            'federationName' => $federationName
-        ]);
+        return $this->render(
+            'game/federation/create.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'federationName' => $federationName
+            ]
+        );
     }
 
     public function joinFederation(): Response
     {
         $federations = $this->federationRepository->findByWorldSortedByRegion($this->getPlayer()->getWorld());
 
-        return $this->render('game/federation/join.html.twig', [
-            'player' => $this->getPlayer(),
-            'federations' => $federations
-        ]);
+        return $this->render(
+            'game/federation/join.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'federations' => $federations
+            ]
+        );
     }
 
     public function listFederations(): Response
     {
         $federations = $this->federationRepository->findByWorldSortedByRegion($this->getPlayer()->getWorld());
 
-        return $this->render('game/federation/list.html.twig', [
-            'player' => $this->getPlayer(),
-            'federations' => $federations
-        ]);
+        return $this->render(
+            'game/federation/list.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'federations' => $federations
+            ]
+        );
     }
 
     public function sendAid(Request $request): Response
@@ -126,9 +150,12 @@ final class FederationController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/sendAid.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/federation/sendAid.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function removeFederation(Request $request): Response
@@ -144,9 +171,12 @@ final class FederationController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/removeFederation.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/federation/removeFederation.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function changeFederationName(Request $request): Response
@@ -162,9 +192,12 @@ final class FederationController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/changeFederationName.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/federation/changeFederationName.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function leaveFederation(Request $request): Response
@@ -180,9 +213,12 @@ final class FederationController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/leaveFederation.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/federation/leaveFederation.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function kickPlayer(int $playerId): Response
@@ -210,27 +246,38 @@ final class FederationController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/updateLeadershipMessage.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/federation/updateLeadershipMessage.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
     public function changePlayerHierarchy(Request $request): Response
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST) &&
+            if (
+                $request->isMethod(Request::METHOD_POST) &&
                 $request->get('playerId') !== null &&
                 $request->get('role') !== null
             ) {
-                $this->federationActionService->changePlayerHierarchy($this->getPlayer(), $request->get('playerId'), $request->get('role'));
+                $this->federationActionService->changePlayerHierarchy(
+                    $this->getPlayer(),
+                    $request->get('playerId'),
+                    $request->get('role')
+                );
                 $this->addFlash('success', "You successfully updated a player rank");
             }
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/changePlayerHierarchy.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/federation/changePlayerHierarchy.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 }

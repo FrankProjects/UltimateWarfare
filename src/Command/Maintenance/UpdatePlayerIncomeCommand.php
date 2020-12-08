@@ -51,11 +51,13 @@ class UpdatePlayerIncomeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln([
-            'Updating income resources of all players',
-            '============',
-            '',
-        ]);
+        $output->writeln(
+            [
+                'Updating income resources of all players',
+                '============',
+                '',
+            ]
+        );
 
         $commit = $input->getOption('commit');
         $commit = ($commit !== false);

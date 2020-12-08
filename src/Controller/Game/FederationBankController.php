@@ -31,9 +31,12 @@ final class FederationBankController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/bank/deposit.html.twig', [
-            'player' => $this->getPlayer(),
-        ]);
+        return $this->render(
+            'game/federation/bank/deposit.html.twig',
+            [
+                'player' => $this->getPlayer(),
+            ]
+        );
     }
 
     public function withdraw(Request $request): Response
@@ -48,8 +51,11 @@ final class FederationBankController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/bank/withdraw.html.twig', [
-            'player' => $this->getPlayer(),
-        ]);
+        return $this->render(
+            'game/federation/bank/withdraw.html.twig',
+            [
+                'player' => $this->getPlayer(),
+            ]
+        );
     }
 }

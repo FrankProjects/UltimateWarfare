@@ -18,43 +18,85 @@ class GameUnitType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'label.name'
-            ])
-            ->add('nameMulti', TextType::class, [
-                'label' => 'label.nameMulti',
-            ])
-            ->add('networth', TextType::class, [
-                'label' => 'label.networth'
-            ])
-            ->add('timestamp', TextType::class, [
-                'label' => 'label.timestamp'
-            ])
-            ->add('description', TextType::class, [
-                'label' => 'label.description'
-            ])
-            ->add('battleStats', BattleStatsType::class, [
-                'label' => 'label.battleStats',
-            ])
-            ->add('cost', CostType::class, [
-                'label' => 'label.cost',
-            ])
-            ->add('income', IncomeType::class, [
-                'label' => 'label.income',
-            ])
-            ->add('upkeep', UpkeepType::class, [
-                'label' => 'label.upkeep',
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'label.save'
-            ]);
+            ->add(
+                'name',
+                TextType::class,
+                [
+                    'label' => 'label.name'
+                ]
+            )
+            ->add(
+                'nameMulti',
+                TextType::class,
+                [
+                    'label' => 'label.nameMulti',
+                ]
+            )
+            ->add(
+                'networth',
+                TextType::class,
+                [
+                    'label' => 'label.networth'
+                ]
+            )
+            ->add(
+                'timestamp',
+                TextType::class,
+                [
+                    'label' => 'label.timestamp'
+                ]
+            )
+            ->add(
+                'description',
+                TextType::class,
+                [
+                    'label' => 'label.description'
+                ]
+            )
+            ->add(
+                'battleStats',
+                BattleStatsType::class,
+                [
+                    'label' => 'label.battleStats',
+                ]
+            )
+            ->add(
+                'cost',
+                CostType::class,
+                [
+                    'label' => 'label.cost',
+                ]
+            )
+            ->add(
+                'income',
+                IncomeType::class,
+                [
+                    'label' => 'label.income',
+                ]
+            )
+            ->add(
+                'upkeep',
+                UpkeepType::class,
+                [
+                    'label' => 'label.upkeep',
+                ]
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'label.save'
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => GameUnit::class,
-            'translation_domain' => 'gameunit'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => GameUnit::class,
+                'translation_domain' => 'gameunit'
+            ]
+        );
     }
 }

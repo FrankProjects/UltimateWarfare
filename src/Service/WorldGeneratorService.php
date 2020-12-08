@@ -76,8 +76,12 @@ final class WorldGeneratorService
         return $map;
     }
 
-    private function generateWorldSectors(World $world, array $map, MapConfiguration $mapConfiguration, int $sector): void
-    {
+    private function generateWorldSectors(
+        World $world,
+        array $map,
+        MapConfiguration $mapConfiguration,
+        int $sector
+    ): void {
         if ($mapConfiguration->getSize() != 25) {
             throw new RuntimeException("MapGenerator only supports size 25!");
         }
@@ -100,8 +104,11 @@ final class WorldGeneratorService
         }
     }
 
-    private function generateWorldRegions(WorldSector $worldSector, array $map, MapConfiguration $mapConfiguration): void
-    {
+    private function generateWorldRegions(
+        WorldSector $worldSector,
+        array $map,
+        MapConfiguration $mapConfiguration
+    ): void {
         $startX = (($worldSector->getX() - 1) * 5) + 1;
         $startY = (($worldSector->getY() - 1) * 5) + 1;
 

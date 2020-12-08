@@ -242,13 +242,15 @@ class User implements UserInterface, EquatableInterface, Serializable
      */
     public function serialize()
     {
-        return serialize([
-            $this->id,
-            $this->username,
-            $this->enabled,
-            $this->email,
-            $this->password
-        ]);
+        return serialize(
+            [
+                $this->id,
+                $this->username,
+                $this->enabled,
+                $this->email,
+                $this->password
+            ]
+        );
     }
 
     /**

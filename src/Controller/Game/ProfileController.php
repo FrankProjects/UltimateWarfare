@@ -19,9 +19,12 @@ final class ProfileController extends BaseGameController
             return $this->redirectToRoute('Game/Headquarter');
         }
 
-        return $this->render('game/profile.html.twig', [
-            'player' => $player,
-            'profilePlayer' => $profilePlayer,
-        ]);
+        return $this->render(
+            'game/profile.html.twig',
+            [
+                'player' => $player,
+                'profilePlayer' => $profilePlayer,
+            ]
+        );
     }
 }

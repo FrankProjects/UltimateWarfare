@@ -228,8 +228,14 @@ class WorldRegion
         return "{$this->getX()}, {$this->getY()}";
     }
 
-    public static function createForWorldSector(WorldSector $worldSector, int $x, int $y, int $z, string $type, int $space): WorldRegion
-    {
+    public static function createForWorldSector(
+        WorldSector $worldSector,
+        int $x,
+        int $y,
+        int $z,
+        string $type,
+        int $space
+    ): WorldRegion {
         $worldRegion = new WorldRegion();
         $worldRegion->setWorld($worldSector->getWorld());
         $worldRegion->setWorldSector($worldSector);

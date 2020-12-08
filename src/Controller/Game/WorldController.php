@@ -54,20 +54,26 @@ final class WorldController extends BaseGameController
             }
         }
 
-        return $this->render('game/selectWorld.html.twig', [
-            'worlds' => $validWorlds,
-            'user' => $this->getGameUser()
-        ]);
+        return $this->render(
+            'game/selectWorld.html.twig',
+            [
+                'worlds' => $validWorlds,
+                'user' => $this->getGameUser()
+            ]
+        );
     }
 
     public function selectName(int $worldId): Response
     {
         $world = $this->worldRepository->find($worldId);
 
-        return $this->render('game/selectName.html.twig', [
-            'world' => $world,
-            'user' => $this->getGameUser()
-        ]);
+        return $this->render(
+            'game/selectName.html.twig',
+            [
+                'world' => $world,
+                'user' => $this->getGameUser()
+            ]
+        );
     }
 
     public function start(Request $request, int $worldId): Response
@@ -105,15 +111,18 @@ final class WorldController extends BaseGameController
             $sectors[$sector->getX()][$sector->getY()] = $sector;
         }
 
-        return $this->render('game/world.html.twig', [
-            'sectors' => $sectors,
-            'player' => $player,
-            'mapSettings' => [
-                'searchFound' => true,
-                'searchFree' => false,
-                'searchPlayerName' => false
+        return $this->render(
+            'game/world.html.twig',
+            [
+                'sectors' => $sectors,
+                'player' => $player,
+                'mapSettings' => [
+                    'searchFound' => true,
+                    'searchFree' => false,
+                    'searchPlayerName' => false
+                ]
             ]
-        ]);
+        );
     }
 
     public function searchFree(): Response
@@ -127,15 +136,18 @@ final class WorldController extends BaseGameController
             $sectors[$sector->getX()][$sector->getY()] = $sector;
         }
 
-        return $this->render('game/world.html.twig', [
-            'sectors' => $sectors,
-            'player' => $player,
-            'mapSettings' => [
-                'searchFound' => true,
-                'searchFree' => true,
-                'searchPlayerName' => false
+        return $this->render(
+            'game/world.html.twig',
+            [
+                'sectors' => $sectors,
+                'player' => $player,
+                'mapSettings' => [
+                    'searchFound' => true,
+                    'searchFree' => true,
+                    'searchPlayerName' => false
+                ]
             ]
-        ]);
+        );
     }
 
     public function searchPlayer(Request $request): Response
@@ -162,16 +174,19 @@ final class WorldController extends BaseGameController
             $sectors[$sector->getX()][$sector->getY()] = $sector;
         }
 
-        return $this->render('game/world.html.twig', [
-            'sectors' => $sectors,
-            'player' => $player,
-            'mapSettings' => [
-                'searchFound' => $searchFound,
-                'searchFree' => false,
-                'searchPlayerName' => true,
-                'playerName' => $playerName
+        return $this->render(
+            'game/world.html.twig',
+            [
+                'sectors' => $sectors,
+                'player' => $player,
+                'mapSettings' => [
+                    'searchFound' => $searchFound,
+                    'searchFree' => false,
+                    'searchPlayerName' => true,
+                    'playerName' => $playerName
+                ]
             ]
-        ]);
+        );
     }
 
     private function getRegionCount(WorldSector $sector, ?Player $player = null): int

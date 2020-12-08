@@ -126,8 +126,13 @@ class Message
         $this->toPlayer = $toPlayer;
     }
 
-    public static function create(Player $fromPlayer, Player $toPlayer, string $subject, string $content, bool $adminMessage): Message
-    {
+    public static function create(
+        Player $fromPlayer,
+        Player $toPlayer,
+        string $subject,
+        string $content,
+        bool $adminMessage
+    ): Message {
         $message = new Message();
         $message->setFromPlayer($fromPlayer);
         $message->setToPlayer($toPlayer);

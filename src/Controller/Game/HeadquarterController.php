@@ -33,29 +33,41 @@ final class HeadquarterController extends BaseGameController
             $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_SPECIAL_UNITS)
         ];
 
-        return $this->render('game/headquarter/army.html.twig', [
-            'player' => $this->getPlayer(),
-            'gameUnitTypes' => $gameUnitTypes,
-            'gameUnitData' => $this->worldRegionUnitRepository->getGameUnitSumByPlayerAndGameUnitTypes($this->getPlayer(), $gameUnitTypes)
-        ]);
+        return $this->render(
+            'game/headquarter/army.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'gameUnitTypes' => $gameUnitTypes,
+                'gameUnitData' => $this->worldRegionUnitRepository->getGameUnitSumByPlayerAndGameUnitTypes(
+                    $this->getPlayer(),
+                    $gameUnitTypes
+                )
+            ]
+        );
     }
 
     public function headquarter(): Response
     {
         $reports = $this->reportRepository->findReports($this->getPlayer(), 10);
 
-        return $this->render('game/headquarter.html.twig', [
-            'player' => $this->getPlayer(),
-            'reports' => $reports
-        ]);
+        return $this->render(
+            'game/headquarter.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'reports' => $reports
+            ]
+        );
     }
 
     public function income(): Response
     {
-        return $this->render('game/headquarter/income.html.twig', [
-            'player' => $this->getPlayer(),
-            'incomePop' => 0,
-        ]);
+        return $this->render(
+            'game/headquarter/income.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'incomePop' => 0,
+            ]
+        );
     }
 
     public function infrastructure(): Response
@@ -66,10 +78,16 @@ final class HeadquarterController extends BaseGameController
             $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_SPECIAL_BUILDINGS)
         ];
 
-        return $this->render('game/headquarter/infrastructure.html.twig', [
-            'player' => $this->getPlayer(),
-            'gameUnitTypes' => $gameUnitTypes,
-            'gameUnitData' => $this->worldRegionUnitRepository->getGameUnitSumByPlayerAndGameUnitTypes($this->getPlayer(), $gameUnitTypes)
-        ]);
+        return $this->render(
+            'game/headquarter/infrastructure.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'gameUnitTypes' => $gameUnitTypes,
+                'gameUnitData' => $this->worldRegionUnitRepository->getGameUnitSumByPlayerAndGameUnitTypes(
+                    $this->getPlayer(),
+                    $gameUnitTypes
+                )
+            ]
+        );
     }
 }

@@ -95,8 +95,13 @@ class MarketItem
         $this->type = $type;
     }
 
-    public static function createForPlayer(Player $player, string $gameResource, int $amount, int $price, string $type): MarketItem
-    {
+    public static function createForPlayer(
+        Player $player,
+        string $gameResource,
+        int $amount,
+        int $price,
+        string $type
+    ): MarketItem {
         $marketItem = new MarketItem();
         $marketItem->setWorld($player->getWorld());
         $marketItem->setPlayer($player);

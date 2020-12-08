@@ -38,8 +38,12 @@ final class ConstructionActionService
         $this->networthUpdaterService = $networthUpdaterService;
     }
 
-    public function constructGameUnits(WorldRegion $region, Player $player, GameUnitType $gameUnitType, array $constructionData): void
-    {
+    public function constructGameUnits(
+        WorldRegion $region,
+        Player $player,
+        GameUnitType $gameUnitType,
+        array $constructionData
+    ): void {
         $priceCash = 0;
         $priceWood = 0;
         $priceSteel = 0;
@@ -106,8 +110,12 @@ final class ConstructionActionService
         }
     }
 
-    public function removeGameUnits(WorldRegion $region, Player $player, GameUnitType $gameUnitType, array $destroyData): void
-    {
+    public function removeGameUnits(
+        WorldRegion $region,
+        Player $player,
+        GameUnitType $gameUnitType,
+        array $destroyData
+    ): void {
         foreach ($destroyData as $gameUnitId => $amount) {
             $amount = intval($amount);
             if ($amount < 1) {

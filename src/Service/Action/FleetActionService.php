@@ -62,8 +62,13 @@ final class FleetActionService
         return true;
     }
 
-    public function sendGameUnits(WorldRegion $region, WorldRegion $targetRegion, Player $player, GameUnitType $gameUnitType, array $unitData): void
-    {
+    public function sendGameUnits(
+        WorldRegion $region,
+        WorldRegion $targetRegion,
+        Player $player,
+        GameUnitType $gameUnitType,
+        array $unitData
+    ): void {
         if ($targetRegion->getWorld()->getId() != $player->getWorld()->getId()) {
             throw new RunTimeException('Target region does not exist!');
         }
@@ -127,7 +132,11 @@ final class FleetActionService
         }
 
         if ($found === false) {
-            $worldRegionUnit = WorldRegionUnit::create($worldRegion, $fleetUnit->getGameUnit(), $fleetUnit->getAmount());
+            $worldRegionUnit = WorldRegionUnit::create(
+                $worldRegion,
+                $fleetUnit->getGameUnit(),
+                $fleetUnit->getAmount()
+            );
         }
 
         $this->worldRegionUnitRepository->save($worldRegionUnit);

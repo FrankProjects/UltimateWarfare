@@ -9,9 +9,11 @@ class AirBattleStatsType extends AbstractBattleStatsType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => AirBattleStats::class,
-            'translation_domain' => 'gameunit'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => AirBattleStats::class,
+                'translation_domain' => 'gameunit'
+            ]
+        );
     }
 }

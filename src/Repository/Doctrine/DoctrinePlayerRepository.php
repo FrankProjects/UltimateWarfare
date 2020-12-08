@@ -46,7 +46,9 @@ final class DoctrinePlayerRepository implements PlayerRepository
               GROUP BY p.id
               HAVING p.world = :world
               ORDER BY COUNT(wr.player) DESC'
-            )->setParameter('world', $world
+            )->setParameter(
+                'world',
+                $world
             )->setMaxResults($limit)
             ->getResult();
     }
@@ -64,7 +66,9 @@ final class DoctrinePlayerRepository implements PlayerRepository
               FROM Game:Player p
               WHERE p.world = :world
               ORDER BY p.networth DESC'
-            )->setParameter('world', $world
+            )->setParameter(
+                'world',
+                $world
             )->setMaxResults($limit)
             ->getResult();
     }

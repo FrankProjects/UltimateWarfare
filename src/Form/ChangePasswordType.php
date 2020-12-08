@@ -15,29 +15,43 @@ class ChangePasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('oldPassword', PasswordType::class, [
-                'mapped' => false,
-                'label' => 'label.old_password',
-            ])
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'first_options'  => [
-                    'label' => 'label.password',
-                ],
-                'second_options' => [
-                    'label' => 'label.password_repeat',
+            ->add(
+                'oldPassword',
+                PasswordType::class,
+                [
+                    'mapped' => false,
+                    'label' => 'label.old_password',
                 ]
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'label.change_password'
-            ]);
+            )
+            ->add(
+                'plainPassword',
+                RepeatedType::class,
+                [
+                    'type' => PasswordType::class,
+                    'first_options' => [
+                        'label' => 'label.password',
+                    ],
+                    'second_options' => [
+                        'label' => 'label.password_repeat',
+                    ]
+                ]
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'label.change_password'
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => User::class,
-            'translation_domain' => 'account'
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => User::class,
+                'translation_domain' => 'account'
+            )
+        );
     }
 }

@@ -34,16 +34,22 @@ final class GameNewsController extends AbstractController
             return $this->redirectToRoute('Admin/GameNews/List', [], 302);
         }
 
-        return $this->render('admin/gamenews/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'admin/gamenews/create.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
 
     public function list(): Response
     {
-        return $this->render('admin/gamenews/list.html.twig', [
-            'gameNews' => $this->gameNewsRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/gamenews/list.html.twig',
+            [
+                'gameNews' => $this->gameNewsRepository->findAll()
+            ]
+        );
     }
 
     public function edit(Request $request, int $gameNewsId): Response
@@ -62,9 +68,12 @@ final class GameNewsController extends AbstractController
             return $this->redirectToRoute('Admin/GameNews/List', [], 302);
         }
 
-        return $this->render('admin/gamenews/edit.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'admin/gamenews/edit.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
     }
 
     public function remove(int $gameNewsId): RedirectResponse

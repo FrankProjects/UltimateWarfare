@@ -68,8 +68,12 @@ class Construction
         $this->gameUnit = $gameUnit;
     }
 
-    public static function create(WorldRegion $worldRegion, Player $player, GameUnit $gameUnit, int $amount): Construction
-    {
+    public static function create(
+        WorldRegion $worldRegion,
+        Player $player,
+        GameUnit $gameUnit,
+        int $amount
+    ): Construction {
         $construction = new Construction();
         $construction->setWorldRegion($worldRegion);
         $construction->setPlayer($player);
