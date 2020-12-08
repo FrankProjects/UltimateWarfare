@@ -25,10 +25,12 @@ final class ChatServer extends Command
         $port = 8080;
         $address = '0.0.0.0';
 
-        $output->writeln([
-            "Starting chat server on {$address} port {$port}",
-            '============',
-        ]);
+        $output->writeln(
+            [
+                "Starting chat server on {$address} port {$port}",
+                '============',
+            ]
+        );
 
         $chatServer = IoServer::factory(
             new HttpServer(

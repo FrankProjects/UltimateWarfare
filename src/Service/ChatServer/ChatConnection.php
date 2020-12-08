@@ -10,6 +10,7 @@ use Ratchet\WebSocket\WsConnection;
 class ChatConnection extends WsConnection implements ConnectionInterface
 {
     private ChatUser $chatUser;
+
     public function __construct()
     {
         $this->chatUser = new ChatUser();

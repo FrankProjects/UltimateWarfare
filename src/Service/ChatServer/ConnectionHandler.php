@@ -22,7 +22,7 @@ class ConnectionHandler implements MessageComponentInterface
     /**
      * @param ConnectionInterface $conn
      */
-    function onOpen(ConnectionInterface $conn): void
+    public function onOpen(ConnectionInterface $conn): void
     {
         echo 'new connection!' . PHP_EOL;
         $this->connections->attach($conn);
@@ -34,7 +34,7 @@ class ConnectionHandler implements MessageComponentInterface
     /**
      * @param ConnectionInterface $conn
      */
-    function onClose(ConnectionInterface $conn): void
+    public function onClose(ConnectionInterface $conn): void
     {
         $this->connections->detach($conn);
     }
@@ -43,7 +43,7 @@ class ConnectionHandler implements MessageComponentInterface
      * @param ConnectionInterface $conn
      * @param Exception $e
      */
-    function onError(ConnectionInterface $conn, Exception $e): void
+    public function onError(ConnectionInterface $conn, Exception $e): void
     {
         //$conn->send('Error ' . $e->getMessage() . PHP_EOL);
         $conn->close();
@@ -53,14 +53,13 @@ class ConnectionHandler implements MessageComponentInterface
      * @param ConnectionInterface $from
      * @param string $msg
      */
-    function onMessage(ConnectionInterface $from, $msg): void
+    public function onMessage(ConnectionInterface $from, $msg): void
     {
         echo 'new message!' . PHP_EOL;
         foreach ($this->connections as $connection) {
             $package = json_decode($msg);
 
             if (is_object($package) == true) {
-
                 /**
                  * @var ChatConnection $from
                  */
@@ -77,7 +76,6 @@ class ConnectionHandler implements MessageComponentInterface
                         break;
                     default:
                         echo "onMessage no valid type type {$package->type}" . PHP_EOL;
-
                 }
             }
         }
