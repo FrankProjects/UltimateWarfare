@@ -121,11 +121,11 @@ final class FleetActionService
 
     private function addFleetUnitToWorldRegion(FleetUnit $fleetUnit, WorldRegion $worldRegion): void
     {
-        $worldRegionUnit = null;
         $found = false;
         foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
             if ($fleetUnit->getGameUnit()->getId() === $worldRegionUnit->getGameUnit()->getId()) {
                 $worldRegionUnit->setAmount($worldRegionUnit->getAmount() + $fleetUnit->getAmount());
+                $this->worldRegionUnitRepository->save($worldRegionUnit);
                 $found = true;
                 break;
             }
@@ -137,9 +137,8 @@ final class FleetActionService
                 $fleetUnit->getGameUnit(),
                 $fleetUnit->getAmount()
             );
+            $this->worldRegionUnitRepository->save($worldRegionUnit);
         }
-
-        $this->worldRegionUnitRepository->save($worldRegionUnit);
     }
 
     private function addFleetUnitToFleet(WorldRegion $region, GameUnit $gameUnit, int $amount, Fleet $fleet): void

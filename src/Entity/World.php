@@ -110,7 +110,7 @@ class World
 
     public function isValidStatus(int $status): bool
     {
-        return in_array($status, self::getAllStatusOptions());
+        return in_array($status, self::getAllStatusOptions(), true);
     }
 
     public static function getAllStatusOptions(): array
@@ -301,7 +301,7 @@ class World
             return false;
         }
 
-        if (!in_array($this->getStatus(), [self::STATUS_CREATED, self::STATUS_RUNNING])) {
+        if (!in_array($this->getStatus(), [self::STATUS_CREATED, self::STATUS_RUNNING], true)) {
             return false;
         }
 

@@ -83,4 +83,26 @@ abstract class AbstractGameResources
         }
         return false;
     }
+
+    public function getValueByName(string $name): int
+    {
+        $reflectionObject = new \ReflectionObject($this);
+        try {
+            $refProperty = $reflectionObject->getProperty($name);
+        } catch (\ReflectionException $e) {
+            throw new \RunTimeException("Unknown resource {$name}");
+        }
+        return $refProperty->getValue($this);
+    }
+
+    public function setValueByName(string $name, int $value): void
+    {
+        $reflectionObject = new \ReflectionObject($this);
+        try {
+            $refProperty = $reflectionObject->getProperty($name);
+        } catch (\ReflectionException $e) {
+            throw new \RunTimeException("Unknown resource {$name}");
+        }
+        $refProperty->setValue($this, $value);
+    }
 }

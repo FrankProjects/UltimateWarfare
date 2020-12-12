@@ -56,9 +56,11 @@ final class RegionActionService
                 $worldRegion->getX(),
                 $worldRegion->getY()
             );
-
-            $playerWorldRegion->distance = $this->timeCalculator->calculateTimeLeft($travelTime);
-            $playerRegions[] = $playerWorldRegion;
+            $travelTimeLeft = $this->timeCalculator->calculateTimeLeft($travelTime);
+            $playerRegions[] = [
+                'region' => $playerWorldRegion,
+                'travelTime' => $travelTimeLeft
+            ];
         }
 
         return $playerRegions;

@@ -150,7 +150,7 @@ final class ChatController extends BaseController
 
         $chatUser = $this->chatUserRepository->findByName($chatName);
 
-        if ($chatUser) {
+        if ($chatUser !== null) {
             $chatUser->setTimestampActivity(time());
             $this->chatUserRepository->save($chatUser);
         } else {

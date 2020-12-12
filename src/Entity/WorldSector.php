@@ -14,6 +14,7 @@ class WorldSector
     private int $y;
     private string $image;
     private World $world;
+    private int $regionCount;
 
     /**
      * @var Collection|WorldRegion[]
@@ -89,5 +90,15 @@ class WorldSector
         $worldSector->setImage('');
 
         return $worldSector;
+    }
+
+    public function setRegionCount(int $regionCount): void
+    {
+        $this->regionCount = $regionCount;
+    }
+
+    public function getRegionCount(): int
+    {
+        return $this->regionCount;
     }
 }

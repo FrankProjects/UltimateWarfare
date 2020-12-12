@@ -93,7 +93,7 @@ class WorldRegion
 
     public function isValidType(string $type): bool
     {
-        return in_array($type, self::getAllTypes());
+        return in_array($type, self::getAllTypes(), true);
     }
 
     public static function getAllTypes(): array

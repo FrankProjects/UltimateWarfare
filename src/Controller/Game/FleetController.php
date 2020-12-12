@@ -104,7 +104,7 @@ final class FleetController extends BaseGameController
                 return $this->redirectToRoute('Game/RegionList', [], 302);
             }
 
-            if ($targetRegion) {
+            if ($targetRegion !== null) {
                 try {
                     $this->fleetActionService->sendGameUnits(
                         $worldRegion,
@@ -155,8 +155,10 @@ final class FleetController extends BaseGameController
                 $region->getY()
             );
 
-            $worldRegion->distance = $travelTime;
-            $targetRegions[] = $worldRegion;
+            $targetRegions[] = [
+                'region' => $worldRegion,
+                'travelTime' => $travelTime
+            ];
         }
 
         return $targetRegions;

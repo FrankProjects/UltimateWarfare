@@ -41,19 +41,19 @@
         {% for playerRegion in playerRegions %}
             <tr>
                 <td width="120">
-                    <img src="{{ asset('images/map/' ~ playerRegion.type ~ '.jpg') }}" alt="Region {{ playerRegion.id }}" width="120" height="100">
+                    <img src="{{ asset('images/map/' ~ playerRegion.region.type ~ '.jpg') }}" alt="Region {{ playerRegion.region.id }}" width="120" height="100">
                 </td>
                 <td class="text-left" width="370">
                     <ul>
-                        <li>Position: {{ playerRegion.x }}, {{ playerRegion.y }}: {{ playerRegion.region }}</li>
-                        <li>Travel time to target: {{ playerRegion.distance }}</li>
+                        <li>Position: {{ playerRegion.region.x }}, {{ playerRegion.region.y }}</li>
+                        <li>Travel time to target: {{ playerRegion.travelTime }}</li>
                         <li>
-                            <a class="B" href="{{ path('Game/World/Region/AttackSelectGameUnits', {'regionId': region.id, 'playerRegionId': playerRegion.id}) }}">Attack</a> with this region.
+                            <a class="B" href="{{ path('Game/World/Region/AttackSelectGameUnits', {'regionId': region.id, 'playerRegionId': playerRegion.region.id}) }}">Attack</a> with this region.
                         </li>
                     </ul>
                 </td>
                 <td class="text-left" width="210">
-                    {% for regionUnit in playerRegion.worldRegionUnits %}
+                    {% for regionUnit in playerRegion.region.worldRegionUnits %}
                         {% if regionUnit.amount > 1 %}
                             {{ regionUnit.amount }} {{ regionUnit.gameUnit.nameMulti }}<br />
                         {% else %}

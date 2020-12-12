@@ -34,10 +34,10 @@ final class ResetPasswordController extends AbstractController
     public function requestPasswordReset(Request $request): Response
     {
         $email = $request->request->get('email');
-        if ($email) {
+        if ($email !== null) {
             $user = $this->userRepository->findByEmail($email);
 
-            if ($user) {
+            if ($user !== null) {
                 if (!$user->isEnabled()) {
                     $this->addFlash('error', 'Your account is not activated!');
                 } elseif (
@@ -75,7 +75,7 @@ final class ResetPasswordController extends AbstractController
     {
         $user = $this->userRepository->findByConfirmationToken($token);
 
-        if ($user) {
+        if ($user !== null) {
             $form = $this->createForm(ResetPasswordType::class, $user);
 
             $form->handleRequest($request);
