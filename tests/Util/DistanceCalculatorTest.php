@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Tests\Util;
 
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
@@ -11,12 +13,12 @@ class DistanceCalculatorTest extends TestCase
     {
         $calculator = new DistanceCalculator();
         $result = $calculator->calculateDistance(1, 1, 1, 1);
-        $this->assertEquals(0, $result);
+        self::assertEquals(0, $result);
 
         $result = $calculator->calculateDistance(1, 1, 2, 1);
-        $this->assertEquals(2, $result);
+        self::assertEquals(2, $result);
 
         $result = $calculator->calculateDistance(1, 1, 10, 10);
-        $this->assertEquals(26, $result);
+        self::assertEquals(26, $result);
     }
 }
