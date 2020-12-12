@@ -4,4 +4,7 @@ parameters:
     - src/
     - tests/
   bootstrapFiles:
-    - bin/.phpunit/phpunit-7.5-0/vendor/autoload.php
+    - bin/.phpunit/phpunit-9.5-0/vendor/autoload.php
+
+includes:
+  - vendor/phpstan/phpstan-strict-rules/rules.neon
