@@ -19,10 +19,8 @@ class GameUnitType
     private string $name;
     private string $imageDir;
 
-    /**
-     * @var Collection|GameUnit[]
-     */
-    private $gameUnits = [];
+    /** @var Collection<GameUnit> */
+    private Collection $gameUnits;
 
     public function __construct()
     {

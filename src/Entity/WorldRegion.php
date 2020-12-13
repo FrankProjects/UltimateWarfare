@@ -29,24 +29,24 @@ class WorldRegion
     private ?Player $player;
 
     /**
-     * @var Collection|WorldRegionUnit[]
+     * @var Collection<WorldRegionUnit>
      */
-    private $worldRegionUnits = [];
+    private Collection $worldRegionUnits;
 
     /**
-     * @var Collection|Construction[]
+     * @var Collection<Construction>
      */
-    private $constructions = [];
+    private Collection $constructions;
 
     /**
-     * @var Collection|Fleet[]
+     * @var Collection<Fleet>
      */
-    private $fleets = [];
+    private Collection $fleets;
 
     /**
-     * @var Collection|Fleet[]
+     * @var Collection<Fleet>
      */
-    private $targetFleets = [];
+    private Collection $targetFleets;
 
     public function __construct()
     {
@@ -161,7 +161,7 @@ class WorldRegion
     }
 
     /**
-     * @return Collection|WorldRegionUnit[]
+     * @return Collection<WorldRegionUnit>
      */
     public function getWorldRegionUnits(): Collection
     {

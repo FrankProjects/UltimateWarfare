@@ -29,35 +29,23 @@ class World
     private bool $federation = true;
     private int $federationLimit = 0;
 
-    /**
-     * @var Collection|WorldRegion[]
-     */
-    private $worldRegions = [];
+    /** @var Collection<WorldRegion> */
+    private Collection $worldRegions;
 
-    /**
-     * @var Collection|WorldSector[]
-     */
-    private $worldSectors = [];
+    /** @var Collection<WorldSector> */
+    private Collection $worldSectors;
 
-    /**
-     * @var Collection|Player[]
-     */
-    private $players = [];
+    /** @var Collection<Player> */
+    private Collection $players;
 
-    /**
-     * @var Collection|MarketItem[]
-     */
-    private $marketItems = [];
+    /** @var Collection<MarketItem> */
+    private Collection $marketItems;
 
-    /**
-     * @var Collection|Message[]
-     */
-    private $messages = [];
+    /** @var Collection<Message> */
+    private Collection $messages;
 
-    /**
-     * @var Collection|Federation[]
-     */
-    private $federations = [];
+    /** @var Collection<Federation> */
+    private Collection $federations;
     private Resources $resources;
     private MapConfiguration $mapConfiguration;
 

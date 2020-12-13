@@ -18,20 +18,14 @@ class Federation
     private int $networth = 0;
     private World $world;
 
-    /**
-     * @var Collection|Player[]
-     */
-    private $players = [];
+    /** @var Collection<Player> */
+    private Collection $players;
 
-    /**
-     * @var Collection|FederationApplication[]
-     */
-    private $federationApplications = [];
+    /** @var Collection<FederationApplication> */
+    private Collection $federationApplications;
 
-    /**
-     * @var Collection|FederationNews[]
-     */
-    private $federationNews = [];
+    /** @var Collection<FederationNews> */
+    private Collection $federationNews;
     private Resources $resources;
 
     public function __construct()

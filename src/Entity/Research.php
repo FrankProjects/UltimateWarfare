@@ -17,20 +17,14 @@ class Research
     private string $description;
     private bool $active = false;
 
-    /**
-     * @var Collection|ResearchPlayer[]
-     */
-    private $researchPlayers = [];
+    /** @var Collection<ResearchPlayer> */
+    private Collection $researchPlayers;
 
-    /**
-     * @var Collection|ResearchNeeds[]
-     */
-    private $researchNeeds = [];
+    /** @var Collection<ResearchNeeds> */
+    private Collection $researchNeeds;
 
-    /**
-     * @var Collection|ResearchNeeds[]
-     */
-    private $requiredResearch = [];
+    /** @var Collection<ResearchNeeds> */
+    private Collection $requiredResearch;
 
     public function __construct()
     {

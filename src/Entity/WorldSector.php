@@ -16,10 +16,8 @@ class WorldSector
     private World $world;
     private int $regionCount;
 
-    /**
-     * @var Collection|WorldRegion[]
-     */
-    private $worldRegions = [];
+    /** @var Collection<WorldRegion> */
+    private Collection $worldRegions;
 
     public function __construct()
     {
