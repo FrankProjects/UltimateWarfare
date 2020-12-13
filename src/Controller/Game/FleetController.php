@@ -104,21 +104,17 @@ final class FleetController extends BaseGameController
                 return $this->redirectToRoute('Game/RegionList', [], 302);
             }
 
-            if ($targetRegion !== null) {
-                try {
-                    $this->fleetActionService->sendGameUnits(
-                        $worldRegion,
-                        $targetRegion,
-                        $player,
-                        $gameUnitType,
-                        $request->get('units')
-                    );
-                    $this->addFlash('success', 'You successfully send units!');
-                } catch (Throwable $e) {
-                    $this->addFlash('error', $e->getMessage());
-                }
-            } else {
-                $this->addFlash('error', "Target region does not exist.");
+            try {
+                $this->fleetActionService->sendGameUnits(
+                    $worldRegion,
+                    $targetRegion,
+                    $player,
+                    $gameUnitType,
+                    $request->get('units')
+                );
+                $this->addFlash('success', 'You successfully send units!');
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
         }
 
