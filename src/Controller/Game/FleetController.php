@@ -137,11 +137,6 @@ final class FleetController extends BaseGameController
         );
     }
 
-    /**
-     * @param Player $player
-     * @param WorldRegion $region
-     * @return WorldRegion[]
-     */
     private function getTargetWorldRegionData(Player $player, WorldRegion $region): array
     {
         $distanceCalculator = new DistanceCalculator();

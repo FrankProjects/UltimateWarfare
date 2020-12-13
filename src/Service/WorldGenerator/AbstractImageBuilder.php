@@ -9,19 +9,19 @@ use RuntimeException;
 
 abstract class AbstractImageBuilder
 {
-    /**
-     * @var resource
-     */
+    /** @var resource|\GdImage */
     protected $image;
 
     protected function createImageResource(int $sizeX, int $sizeY): void
     {
         $this->ensureGD();
 
-        $this->image = @imagecreatetruecolor($sizeX, $sizeY);
-        if ($this->image === false) {
+        $image = @imagecreatetruecolor($sizeX, $sizeY);
+        if ($image === false) {
             throw new RunTimeException("imagecreatetruecolor failed for size {$sizeX}/{$sizeY}");
         }
+
+        $this->image = $image;
     }
 
     protected function getWorldRegionColor(WorldRegion $worldRegion): int
