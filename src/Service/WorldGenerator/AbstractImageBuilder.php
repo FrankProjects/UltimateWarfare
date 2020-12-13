@@ -9,7 +9,7 @@ use RuntimeException;
 
 abstract class AbstractImageBuilder
 {
-    /** @var resource|\GdImage */
+    /** @var resource */
     protected $image;
 
     protected function createImageResource(int $sizeX, int $sizeY): void
@@ -61,8 +61,7 @@ abstract class AbstractImageBuilder
 
     protected function ensureGD(): void
     {
-        $testGD = get_extension_funcs("gd");
-        if (!$testGD) {
+        if (extension_loaded('gd') === false) {
             throw new RunTimeException("GD not installed!");
         }
     }
