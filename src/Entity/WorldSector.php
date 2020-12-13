@@ -14,11 +14,10 @@ class WorldSector
     private int $y;
     private string $image;
     private World $world;
+    private int $regionCount;
 
-    /**
-     * @var Collection|WorldRegion[]
-     */
-    private $worldRegions = [];
+    /** @var Collection<WorldRegion> */
+    private Collection $worldRegions;
 
     public function __construct()
     {
@@ -89,5 +88,15 @@ class WorldSector
         $worldSector->setImage('');
 
         return $worldSector;
+    }
+
+    public function setRegionCount(int $regionCount): void
+    {
+        $this->regionCount = $regionCount;
+    }
+
+    public function getRegionCount(): int
+    {
+        return $this->regionCount;
     }
 }

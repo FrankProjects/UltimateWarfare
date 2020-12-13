@@ -88,7 +88,7 @@ class MarketItem
 
     public function setType(string $type): void
     {
-        if (!in_array($type, [self::TYPE_BUY, self::TYPE_SELL])) {
+        if (!in_array($type, [self::TYPE_BUY, self::TYPE_SELL], true)) {
             throw new InvalidArgumentException("Invalid type");
         }
 

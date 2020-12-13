@@ -104,21 +104,17 @@ final class FleetController extends BaseGameController
                 return $this->redirectToRoute('Game/RegionList', [], 302);
             }
 
-            if ($targetRegion) {
-                try {
-                    $this->fleetActionService->sendGameUnits(
-                        $worldRegion,
-                        $targetRegion,
-                        $player,
-                        $gameUnitType,
-                        $request->get('units')
-                    );
-                    $this->addFlash('success', 'You successfully send units!');
-                } catch (Throwable $e) {
-                    $this->addFlash('error', $e->getMessage());
-                }
-            } else {
-                $this->addFlash('error', "Target region does not exist.");
+            try {
+                $this->fleetActionService->sendGameUnits(
+                    $worldRegion,
+                    $targetRegion,
+                    $player,
+                    $gameUnitType,
+                    $request->get('units')
+                );
+                $this->addFlash('success', 'You successfully send units!');
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
         }
 
@@ -137,11 +133,6 @@ final class FleetController extends BaseGameController
         );
     }
 
-    /**
-     * @param Player $player
-     * @param WorldRegion $region
-     * @return WorldRegion[]
-     */
     private function getTargetWorldRegionData(Player $player, WorldRegion $region): array
     {
         $distanceCalculator = new DistanceCalculator();
@@ -155,8 +146,10 @@ final class FleetController extends BaseGameController
                 $region->getY()
             );
 
-            $worldRegion->distance = $travelTime;
-            $targetRegions[] = $worldRegion;
+            $targetRegions[] = [
+                'region' => $worldRegion,
+                'travelTime' => $travelTime
+            ];
         }
 
         return $targetRegions;

@@ -11,7 +11,6 @@ class BaseForumController extends BaseController
 {
     public function getGameUser(): ?User
     {
-        /** @var User $user */
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof User) {
             return null;

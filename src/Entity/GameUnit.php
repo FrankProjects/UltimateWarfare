@@ -23,20 +23,14 @@ class GameUnit
     private string $description;
     private GameUnitType $gameUnitType;
 
-    /**
-     * @var Collection|WorldRegionUnit[]
-     */
-    private $worldRegionUnits = [];
+    /** @var Collection<WorldRegionUnit> */
+    private Collection $worldRegionUnits;
 
-    /**
-     * @var Collection|Construction[]
-     */
-    private $constructions = [];
+    /** @var Collection<Construction> */
+    private Collection $constructions;
 
-    /**
-     * @var Collection|FleetUnit[]
-     */
-    private $fleetUnits = [];
+    /** @var Collection<FleetUnit> */
+    private Collection $fleetUnits;
     private BattleStats $battleStats;
     private Cost $cost;
     private Income $income;

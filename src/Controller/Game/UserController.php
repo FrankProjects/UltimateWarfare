@@ -94,7 +94,7 @@ final class UserController extends BaseGameController
         }
 
         if ($request->isMethod(Request::METHOD_POST)) {
-            if ($request->request->get('change_settings')) {
+            if ($request->request->get('change_settings') !== null) {
                 $this->changeSettings($request);
             }
         }
@@ -114,11 +114,11 @@ final class UserController extends BaseGameController
         $user = $this->getGameUser();
         $roles = $user->getRoles();
 
-        if (in_array('ROLE_PLAYER', $roles)) {
+        if (in_array('ROLE_PLAYER', $roles, true)) {
             return 'Player';
         }
 
-        if (in_array('ROLE_ADMIN', $roles)) {
+        if (in_array('ROLE_ADMIN', $roles, true)) {
             return 'Admin';
         }
 
@@ -129,7 +129,7 @@ final class UserController extends BaseGameController
     {
         $user = $this->getGameUser();
 
-        if ($request->request->get('adviser')) {
+        if ($request->request->get('adviser') !== null) {
             if ($user->getAdviser() == 0) {
                 $user->setAdviser(true);
                 $this->userRepository->save($user);

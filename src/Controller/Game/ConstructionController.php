@@ -43,7 +43,7 @@ final class ConstructionController extends BaseGameController
         $gameUnitType = $this->gameUnitTypeRepository->find($type);
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
-        if (!$gameUnitType) {
+        if ($gameUnitType === null) {
             $constructionData = $this->constructionRepository->getGameUnitConstructionSumByPlayer($this->getPlayer());
             return $this->render(
                 'game/constructionSummary.html.twig',
@@ -83,7 +83,7 @@ final class ConstructionController extends BaseGameController
 
         $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
 
-        if (!$gameUnitType) {
+        if ($gameUnitType === null) {
             $this->addFlash('error', 'Unknown GameUnitType!');
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
@@ -140,7 +140,7 @@ final class ConstructionController extends BaseGameController
         }
 
         $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
-        if (!$gameUnitType) {
+        if ($gameUnitType === null) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 

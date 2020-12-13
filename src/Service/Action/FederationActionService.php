@@ -79,12 +79,14 @@ final class FederationActionService
                 continue;
             }
 
-            if ($amount > $player->getResources()->$resourceName) {
+            $resourceAmount = $player->getResources()->getValueByName($resourceName);
+            if ($amount > $resourceAmount) {
                 throw new RunTimeException("You don't have enough {$resourceName}!");
             }
 
-            $player->getResources()->$resourceName -= $amount;
-            $aidPlayer->getResources()->$resourceName += $amount;
+            $player->getResources()->setValueByName($resourceName, $resourceAmount - $amount);
+            $aidPlayerResourceAmount = $aidPlayer->getResources()->getValueByName($resourceName);
+            $aidPlayer->getResources()->setValueByName($resourceName, $aidPlayerResourceAmount + $amount);
 
             if ($resourceString !== '') {
                 $resourceString .= ', ';

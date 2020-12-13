@@ -88,10 +88,10 @@ class UpdatePlayerIncomeCommand extends Command
 
         if (!$player->getIncome()->equals($income) || !$player->getUpkeep()->equals($upkeep)) {
             $output->writeln("Mismatch found: {$player->getName()}");
-            $output->writeln(print_r($income));
-            $output->writeln(print_r($player->getIncome()));
-            $output->writeln(print_r($upkeep));
-            $output->writeln(print_r($player->getUpkeep()));
+            $output->writeln(print_r($income, true));
+            $output->writeln(print_r($player->getIncome(), true));
+            $output->writeln(print_r($upkeep, true));
+            $output->writeln(print_r($player->getUpkeep(), true));
 
             $player->setIncome($income);
             $player->setUpkeep($upkeep);

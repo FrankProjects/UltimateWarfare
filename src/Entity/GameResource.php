@@ -13,7 +13,7 @@ class GameResource
 
     public static function isValid(string $gameResource): bool
     {
-        return in_array($gameResource, self::getAll());
+        return in_array($gameResource, self::getAll(), true);
     }
 
     public static function getAll(): array

@@ -33,7 +33,7 @@ final class RegisterActionService
     {
         $user = $this->userRepository->findByConfirmationToken($token);
 
-        if (!$user) {
+        if ($user === null) {
             throw new RunTimeException("User with this token does not exist");
         }
 

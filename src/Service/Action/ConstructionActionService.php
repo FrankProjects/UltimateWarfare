@@ -141,7 +141,7 @@ final class ConstructionActionService
     {
         $construction = $this->constructionRepository->find($constructionId);
 
-        if (!$construction) {
+        if ($construction === null) {
             throw new RunTimeException('This construction queue does not exist!');
         }
 

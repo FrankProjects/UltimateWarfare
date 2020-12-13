@@ -138,7 +138,7 @@ final class WorldGeneratorService
         }
     }
 
-    private static function getTypeFromConfiguration(MapConfiguration $mapConfiguration, int $z): string
+    private function getTypeFromConfiguration(MapConfiguration $mapConfiguration, int $z): string
     {
         if ($z < $mapConfiguration->getWaterLevel()) {
             return WorldRegion::TYPE_WATER;
@@ -150,7 +150,7 @@ final class WorldGeneratorService
         return WorldRegion::TYPE_MOUNTAIN;
     }
 
-    private static function getRandomSpaceFromType(string $type): int
+    private function getRandomSpaceFromType(string $type): int
     {
         if ($type === WorldRegion::TYPE_MOUNTAIN) {
             return rand(800, 1500);

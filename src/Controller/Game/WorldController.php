@@ -107,7 +107,7 @@ final class WorldController extends BaseGameController
 
         $sectors = [];
         foreach ($world->getWorldSectors() as $sector) {
-            $sector->regionCount = $this->getRegionCount($sector, $player);
+            $sector->setRegionCount($this->getRegionCount($sector, $player));
             $sectors[$sector->getX()][$sector->getY()] = $sector;
         }
 
@@ -132,7 +132,7 @@ final class WorldController extends BaseGameController
 
         $sectors = [];
         foreach ($world->getWorldSectors() as $sector) {
-            $sector->regionCount = $this->getRegionCount($sector);
+            $sector->setRegionCount($this->getRegionCount($sector));
             $sectors[$sector->getX()][$sector->getY()] = $sector;
         }
 
@@ -158,7 +158,7 @@ final class WorldController extends BaseGameController
 
         $playerSearch = $this->playerRepository->findByNameAndWorld($playerName, $world);
 
-        if ($playerSearch) {
+        if ($playerSearch !== null) {
             $searchFound = true;
         } else {
             $searchFound = false;
@@ -167,9 +167,9 @@ final class WorldController extends BaseGameController
         $sectors = [];
         foreach ($world->getWorldSectors() as $sector) {
             if ($searchFound) {
-                $sector->regionCount = $this->getRegionCount($sector, $playerSearch);
+                $sector->setRegionCount($this->getRegionCount($sector, $playerSearch));
             } else {
-                $sector->regionCount = 0;
+                $sector->setRegionCount(0);
             }
             $sectors[$sector->getX()][$sector->getY()] = $sector;
         }

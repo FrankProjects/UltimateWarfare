@@ -195,7 +195,7 @@ final class MarketActionService
     {
         $marketItem = $this->marketItemRepository->find($marketItemId);
 
-        if (!$marketItem) {
+        if ($marketItem === null) {
             throw new RunTimeException('Market order does not exist!');
         }
 
