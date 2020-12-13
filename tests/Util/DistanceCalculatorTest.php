@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class DistanceCalculatorTest extends TestCase
 {
-    public function testCalculateDistance()
+    public function testCalculateDistance(): void
     {
         $calculator = new DistanceCalculator();
         $result = $calculator->calculateDistance(1, 1, 1, 1);
