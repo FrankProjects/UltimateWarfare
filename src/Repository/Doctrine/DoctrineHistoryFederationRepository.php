@@ -7,7 +7,6 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\HistoryFederation;
-use FrankProjects\UltimateWarfare\Entity\HistoryPlayer;
 use FrankProjects\UltimateWarfare\Repository\HistoryFederationRepository;
 
 final class DoctrineHistoryFederationRepository implements HistoryFederationRepository
@@ -23,7 +22,7 @@ final class DoctrineHistoryFederationRepository implements HistoryFederationRepo
 
     /**
      * @param int $worldId
-     * @return HistoryPlayer[]
+     * @return HistoryFederation[]
      */
     public function findByWorld(int $worldId): array
     {
