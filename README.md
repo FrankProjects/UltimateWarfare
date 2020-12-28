@@ -36,7 +36,7 @@ The old game code dates back to 2005-2012 and contains a lot of legacy PHP, for 
 
 In 2017 I started porting the game code to Symfony 5 and twig templates. To learn the symfony framework but also with the idea in mind to publish to game code later.
 While porting the game code to symfony, I used more modern development techniques.
-The new codebase is PHP 7.4 compatible with PHP strict typ hinting.
+The new codebase is PHP 8.0 compatible with PHP strict typ hinting.
 
 
 ## Missing features
