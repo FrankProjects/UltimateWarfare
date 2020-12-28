@@ -9,10 +9,13 @@ use SplObjectStorage;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
+use function json_decode;
+use function json_encode;
+
 class ConnectionHandler implements MessageComponentInterface
 {
     private array $chatConnections = [];
-    protected ?SplObjectStorage $connections = null;
+    protected SplObjectStorage $connections;
 
     public function __construct()
     {

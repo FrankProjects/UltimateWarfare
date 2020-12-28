@@ -21,7 +21,8 @@
         "symfony/twig-bundle": "^5.2",
         "symfony/web-profiler-bundle": "^5.2",
         "symfony/yaml": "^5.2",
-        "twig/twig": "^3.1"
+        "twig/twig": "^3.1",
+        "ext-json": "*"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.12.64",
