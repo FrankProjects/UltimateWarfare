@@ -7,18 +7,16 @@ namespace FrankProjects\UltimateWarfare\Controller\Site;
 use FrankProjects\UltimateWarfare\Controller\BaseController;
 use FrankProjects\UltimateWarfare\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 final class ChatController extends BaseController
 {
     public function chat(): Response
     {
-        /** @var User $user */
         $user = $this->getUser();
-        if (!is_object($user) || !$user instanceof UserInterface) {
-            $userId = 0;
-        } else {
+        if ($user instanceof User) {
             $userId = $user->getId();
+        } else {
+            $userId = 0;
         }
 
         return $this->render('site/chat.html.twig', [
