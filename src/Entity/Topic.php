@@ -21,10 +21,8 @@ class Topic
     private User $user;
     private ?User $editUser;
 
-    /**
-     * @var Collection|Post[]
-     */
-    private $posts = [];
+    /** @var Collection<Post> */
+    private Collection $posts;
 
     public function __construct()
     {

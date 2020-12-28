@@ -30,7 +30,7 @@ final class SectorController extends BaseGameController
         $player = $this->getPlayer();
         $sector = $this->worldSectorRepository->findByIdAndWorld($sectorId, $player->getWorld());
 
-        if (!$sector) {
+        if ($sector === null) {
             return $this->render(
                 'game/sectorNotFound.html.twig',
                 [

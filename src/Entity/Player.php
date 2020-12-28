@@ -44,50 +44,32 @@ class Player
     private World $world;
     private ?Federation $federation;
 
-    /**
-     * @var Collection|Report[]
-     */
-    private $reports = [];
+    /** @var Collection<Report> */
+    private Collection $reports;
 
-    /**
-     * @var Collection|Construction[]
-     */
-    private $constructions = [];
+    /** @var Collection<Construction> */
+    private Collection $constructions;
 
-    /**
-     * @var Collection|WorldRegion[]
-     */
-    private $worldRegions = [];
+    /** @var Collection<WorldRegion> */
+    private Collection $worldRegions;
 
-    /**
-     * @var Collection|Fleet[]
-     */
-    private $fleets = [];
+    /** @var Collection<Fleet> */
+    private Collection $fleets;
 
-    /**
-     * @var Collection|MarketItem[]
-     */
-    private $marketItems = [];
+    /** @var Collection<MarketItem> */
+    private Collection $marketItems;
 
-    /**
-     * @var Collection|Message[]
-     */
-    private $fromMessages = [];
+    /** @var Collection<Message> */
+    private Collection $fromMessages;
 
-    /**
-     * @var Collection|Message[]
-     */
-    private $toMessages = [];
+    /** @var Collection<Message> */
+    private Collection $toMessages;
 
-    /**
-     * @var Collection|ResearchPlayer[]
-     */
-    private $playerResearch = [];
+    /** @var Collection<ResearchPlayer> */
+    private Collection $playerResearch;
 
-    /**
-     * @var Collection|FederationApplication[]
-     */
-    private $federationApplications = [];
+    /** @var Collection<FederationApplication> */
+    private Collection $federationApplications;
 
     private Income $income;
     private Notifications $notifications;

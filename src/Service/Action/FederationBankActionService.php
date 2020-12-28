@@ -46,13 +46,14 @@ final class FederationBankActionService
             if ($amount <= 0) {
                 continue;
             }
-
-            if ($amount > $player->getResources()->$resourceName) {
+            $resourceAmount = $player->getResources()->getValueByName($resourceName);
+            if ($amount > $resourceAmount) {
                 throw new RunTimeException("You don't have enough {$resourceName}!");
             }
 
-            $player->getResources()->$resourceName -= $amount;
-            $federation->getResources()->$resourceName += $amount;
+            $player->getResources()->setValueByName($resourceName, $resourceAmount - $amount);
+            $federationResourceAmount = $federation->getResources()->getValueByName($resourceName);
+            $federation->getResources()->setValueByName($resourceName, $federationResourceAmount + $amount);
 
             $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);
         }
@@ -91,12 +92,14 @@ final class FederationBankActionService
                 continue;
             }
 
-            if ($amount > $player->getFederation()->getResources()->$resourceName) {
+            $resourceAmount = $player->getResources()->getValueByName($resourceName);
+            if ($amount > $resourceAmount) {
                 throw new RunTimeException("Federation Bank doesn't have enough {$resourceName}!");
             }
 
-            $player->getResources()->$resourceName += $amount;
-            $federation->getResources()->$resourceName -= $amount;
+            $player->getResources()->setValueByName($resourceName, $resourceAmount + $amount);
+            $federationResourceAmount = $federation->getResources()->getValueByName($resourceName);
+            $federation->getResources()->setValueByName($resourceName, $federationResourceAmount - $amount);
 
             $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);
         }

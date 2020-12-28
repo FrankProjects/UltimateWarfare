@@ -65,7 +65,7 @@ final class MessageActionService
 
         $toPlayer = $this->playerRepository->findByNameAndWorld($toPlayerName, $player->getWorld());
 
-        if (!$toPlayer) {
+        if ($toPlayer === null) {
             throw new RunTimeException('No such player');
         }
 
@@ -86,7 +86,7 @@ final class MessageActionService
     {
         $message = $this->messageRepository->find($messageId);
 
-        if (!$message) {
+        if ($message === null) {
             throw new RunTimeException('No such message!');
         }
 

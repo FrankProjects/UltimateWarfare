@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Form\Admin\GameUnit;
 
 use FrankProjects\UltimateWarfare\Entity\GameUnit\Income;
@@ -8,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomeType extends AbstractGameResourcesType
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

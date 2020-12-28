@@ -43,7 +43,7 @@ final class LoginController extends BaseGameController
 
         $player = $playerRepository->find($playerId);
 
-        if (!$player) {
+        if ($player === null) {
             return $this->redirectToRoute('Game/Login');
         }
 

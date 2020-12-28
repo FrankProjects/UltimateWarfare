@@ -32,35 +32,23 @@ class User implements UserInterface, EquatableInterface, Serializable
     private bool $adviser = false;
     private bool $forumBan = false;
 
-    /**
-     * @var Collection|Player[]
-     */
-    private $players = [];
+    /** @var Collection<Player> */
+    private Collection $players;
 
-    /**
-     * @var Collection|Topic[]
-     */
-    private $topics = [];
+    /** @var Collection<Topic> */
+    private Collection $topics;
 
-    /**
-     * @var Collection|Topic[]
-     */
-    private $topicsEdited = [];
+    /** @var Collection<Topic> */
+    private Collection $topicsEdited;
 
-    /**
-     * @var Collection|Topic[]
-     */
-    private $topicsLastPost = [];
+    /** @var Collection<Topic> */
+    private Collection $topicsLastPost;
 
-    /**
-     * @var Collection|Topic[]
-     */
-    private $posts = [];
+    /** @var Collection<Topic> */
+    private Collection $posts;
 
-    /**
-     * @var Collection|Topic[]
-     */
-    private $postsEdited = [];
+    /** @var Collection<Topic> */
+    private Collection $postsEdited;
 
     public function __construct()
     {

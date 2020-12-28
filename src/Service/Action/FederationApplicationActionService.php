@@ -135,7 +135,7 @@ final class FederationApplicationActionService
             $player->getWorld()
         );
 
-        if (!$federationApplication) {
+        if ($federationApplication === null) {
             throw new RunTimeException('FederationApplication does not exist!');
         }
 

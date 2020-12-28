@@ -28,7 +28,7 @@ final class ResearchController extends BaseGameController
         $ongoingResearch = $this->researchRepository->findOngoingByPlayer($player);
         $unresearched = $this->researchRepository->findUnresearchedByPlayer($player);
         $researchPlayerRecords = $player->getPlayerResearch();
-
+        $researchDataArray = [];
         $researchPlayerArray = [];
         foreach ($researchPlayerRecords as $researchPlayer) {
             $researchPlayerArray[] = $researchPlayer->getResearch()->getId();
@@ -36,13 +36,15 @@ final class ResearchController extends BaseGameController
 
         // XXX TODO: Make better code
         foreach ($unresearched as $key => $notResearched) {
-            $unresearched[$key]->needs['done'] = [];
-            $unresearched[$key]->needs['notDone'] = [];
+            $researchDataArray[$key]['needs']['done'] = [];
+            $researchDataArray[$key]['needs']['notDone'] = [];
+            $researchDataArray[$key]['research'] = $notResearched;
+
             foreach ($notResearched->getResearchNeeds() as $researchNeed) {
-                if (in_array($researchNeed->getRequiredResearch()->getId(), $researchPlayerArray)) {
-                    $unresearched[$key]->needs['done'][] = $researchNeed;
+                if (in_array($researchNeed->getRequiredResearch()->getId(), $researchPlayerArray, true)) {
+                    $researchDataArray[$key]['needs']['done'][] = $researchNeed;
                 } else {
-                    $unresearched[$key]->needs['notDone'][] = $researchNeed;
+                    $researchDataArray[$key]['needs']['notDone'][] = $researchNeed;
                 }
             }
         }
@@ -52,7 +54,7 @@ final class ResearchController extends BaseGameController
             [
                 'player' => $player,
                 'ongoingResearch' => $ongoingResearch,
-                'unresearched' => $unresearched
+                'researchDataArray' => $researchDataArray
             ]
         );
     }

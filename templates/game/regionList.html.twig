@@ -7,30 +7,30 @@
         <tr>
             <td class="tabletop" colspan="3"><b>Regions</b></td>
         </tr>
-        {% for region in regions %}
+        {% for regionData in regionList %}
             <tr>
                 <td width="120">
-                    <img src="{{ asset('images/map/' ~ region.type ~ '.jpg') }}" alt="Region {{ region.id }}" width="120" height="100">
+                    <img src="{{ asset('images/map/' ~ regionData.region.type ~ '.jpg') }}" alt="Region {{ regionData.region.id }}" width="120" height="100">
                 </td>
                 <td class="text-left" width="370">
                     <ul>
-                        <li>Position: {{ region.x }}, {{ region.y }}</li>
-                        <li>Built: {{ region.buildings }}
-                            {% if region.buildingsInConstruction > 0 %}
-                                ( {{ region.buildingsInConstruction }} )
+                        <li>Position: {{ regionData.region.x }}, {{ regionData.region.y }}</li>
+                        <li>Built: {{ regionData.buildings }}
+                            {% if regionData.buildingsInConstruction > 0 %}
+                                ( {{ regionData.buildingsInConstruction }} )
                             {% endif %}
-                            / {{ region.space }}
+                            / {{ regionData.region.space }}
                         </li>
-                        <li>Population: {{ region.population }} / {{ region.population * 500 }}
-                        <li>Click <a class="B" href="{{ path('Game/World/Region', {'regionId': region.id}) }}">here</a> to go to this region.</li>
+                        <li>Population: {{ regionData.region.population }} / {{ regionData.region.population * 500 }}
+                        <li>Click <a class="B" href="{{ path('Game/World/Region', {'regionId': regionData.region.id}) }}">here</a> to go to this region.</li>
                         <li>Quick Links:
-                            <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 1}) }}">Build</a> -
-                            <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': 4}) }}">Build Units</a>
+                            <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': regionData.region.id, 'gameUnitTypeId': 1}) }}">Build</a> -
+                            <a class="B" href="{{ path('Game/World/Region/Build', {'regionId': regionData.region.id, 'gameUnitTypeId': 4}) }}">Build Units</a>
                         </li>
                     </ul>
                 </td>
                 <td class="text-left" width="210">
-                    {% for unit in region.worldRegionUnits %}
+                    {% for unit in regionData.region.worldRegionUnits %}
                         {{ unit.gameUnit.name }}: {{ unit.amount }}
                         <br />
                     {% else %}

@@ -51,7 +51,7 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
     {
         $playerId = $this->session->get('playerId');
 
-        if (!$playerId) {
+        if ($playerId === null) {
             return;
         }
 

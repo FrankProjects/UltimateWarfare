@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Form\Admin;
 
 use FrankProjects\UltimateWarfare\Entity\GameNews;
@@ -13,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class GameNewsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add(
@@ -56,7 +58,7 @@ class GameNewsType extends AbstractType
             );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

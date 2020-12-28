@@ -17,10 +17,8 @@ class Fleet
     private WorldRegion $worldRegion;
     private WorldRegion $targetWorldRegion;
 
-    /**
-     * @var Collection|FleetUnit[]
-     */
-    private $fleetUnits = [];
+    /** @var Collection<FleetUnit> */
+    private Collection $fleetUnits;
 
     public function __construct()
     {

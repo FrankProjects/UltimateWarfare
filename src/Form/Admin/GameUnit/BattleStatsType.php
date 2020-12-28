@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Form\Admin\GameUnit;
 
 use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats;
@@ -13,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BattleStatsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add(
@@ -60,7 +62,7 @@ class BattleStatsType extends AbstractType
             );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

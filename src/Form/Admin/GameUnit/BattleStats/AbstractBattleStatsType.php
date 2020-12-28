@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Form\Admin\GameUnit\BattleStats;
 
 use Symfony\Component\Form\AbstractType;
@@ -8,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 abstract class AbstractBattleStatsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add(
