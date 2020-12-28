@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\WorldGenerator;
 
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use GdImage;
 use RuntimeException;
 
 abstract class AbstractImageBuilder
 {
-    /** @var resource */
-    protected $image;
+    protected GdImage $image;
 
     protected function createImageResource(int $sizeX, int $sizeY): void
     {
         $this->ensureGD();
 
-        $image = @imagecreatetruecolor($sizeX, $sizeY);
+        $image = imagecreatetruecolor($sizeX, $sizeY);
         if ($image === false) {
             throw new RunTimeException("imagecreatetruecolor failed for size {$sizeX}/{$sizeY}");
         }
@@ -52,10 +52,6 @@ abstract class AbstractImageBuilder
 
     protected function saveImage(string $imagePath): void
     {
-        if ($this->image === null) {
-            throw new RunTimeException("Image is null  for {$imagePath}");
-        }
-
         imagejpeg($this->image, $imagePath);
     }
 
