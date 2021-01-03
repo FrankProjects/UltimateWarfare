@@ -7,7 +7,6 @@ namespace FrankProjects\UltimateWarfare\Controller\Admin;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Form\Admin\World\MapConfigurationType;
 use FrankProjects\UltimateWarfare\Form\Admin\WorldType;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Service\Action\WorldActionService;
 use FrankProjects\UltimateWarfare\Service\WorldGeneratorService;
@@ -20,18 +19,15 @@ use Throwable;
 final class WorldController extends AbstractController
 {
     private WorldRepository $worldRepository;
-    private WorldRegionRepository $worldRegionRepository;
     private WorldActionService $worldActionService;
     private WorldGeneratorService $worldGeneratorService;
 
     public function __construct(
         WorldRepository $worldRepository,
-        WorldRegionRepository $worldRegionRepository,
         WorldActionService $worldActionService,
         WorldGeneratorService $worldGeneratorService
     ) {
         $this->worldRepository = $worldRepository;
-        $this->worldRegionRepository = $worldRegionRepository;
         $this->worldActionService = $worldActionService;
         $this->worldGeneratorService = $worldGeneratorService;
     }
