@@ -40,35 +40,35 @@
         <tr>
             <td class="tabletop" colspan="3"><b>Research</b></td>
         </tr>
-        {% for research in unresearched %}
+        {% for researchData in researchDataArray %}
             <tr>
                 <td width="150" rowspan="2">
-                    <img src="{{ asset('images/research/' ~ research.pic ) }}" alt="{{ research.name }}" width="150" height="130">
+                    <img src="{{ asset('images/research/' ~ researchData.research.image ) }}" alt="{{ researchData.research.name }}" width="150" height="130">
                 </td>
-                <td class="text-left" width="550" colspan="2">{{ research.description }}</td>
+                <td class="text-left" width="550" colspan="2">{{ researchData.research.description }}</td>
             </tr>
             <tr>
                 <td class="text-left" valign="top">
-                    <div><b>Name:</b> {{ research.name }}</div>
-                    <div><b>Costs:</b> ${{ research.cost }}</div>
+                    <div><b>Name:</b> {{ researchData.research.name }}</div>
+                    <div><b>Costs:</b> ${{ researchData.research.cost }}</div>
                     <div><b>Duration:</b>
-                        {% set days = (research.timestamp / (24 * 60 * 60))|round(0, 'floor') %}
-                        {% set hours = ((research.timestamp - (days * 24 * 60 * 60)) / (60 * 60))|round(0, 'floor') %}
-                        {% set minutes = ((research.timestamp - (days * 24 * 60 * 60) - (hours * 60 * 60)) / 60)| round(0, 'floor') %}
+                        {% set days = (researchData.research.timestamp / (24 * 60 * 60))|round(0, 'floor') %}
+                        {% set hours = ((researchData.research.timestamp - (days * 24 * 60 * 60)) / (60 * 60))|round(0, 'floor') %}
+                        {% set minutes = ((researchData.research.timestamp - (days * 24 * 60 * 60) - (hours * 60 * 60)) / 60)| round(0, 'floor') %}
 
                         {% if days > 0 %}{{ days }} days {% endif %}
                         {% if hours > 0 %}{{ hours }} hours {% endif %}
                         {% if minutes > 0 %}{{ minutes }} minutes{% endif %}
                     </div>
-                    <a class="btn btn-primary" href="{{ path('Game/Research/Perform', {'researchId': research.id}) }}"><b>Research</b></a>
+                    <a class="btn btn-primary" href="{{ path('Game/Research/Perform', {'researchId': researchData.research.id}) }}"><b>Research</b></a>
                 </td>
                 <td valign="top">
                     <b>Requirements:</b><br />
-                    {% for researchNeed in research.needs['notDone'] %}
+                    {% for researchNeed in researchData.needs.notDone %}
                         <div class="bad">{{ researchNeed.requiredResearch.name }}</div>
                     {% endfor %}
 
-                    {% for researchNeed in research.needs['done'] %}
+                    {% for researchNeed in researchData.needs.done %}
                         <div class="good">{{ researchNeed.requiredResearch.name }}</div>
                     {% endfor %}
                 </td>

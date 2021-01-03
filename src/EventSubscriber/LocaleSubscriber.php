@@ -4,39 +4,24 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\EventSubscriber;
 
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class LocaleSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var string
-     */
-    private $defaultLocale;
-
-    /**
-     * @var array
-     */
-    private $validLocales = [
+    private string $defaultLocale;
+    private array $validLocales = [
         'en',
         'nl'
     ];
 
-    /**
-     * LocaleSubscriber constructor.
-     *
-     * @param string $defaultLocale
-     */
-    public function __construct($defaultLocale = 'en')
+    public function __construct(string $defaultLocale = 'en')
     {
         $this->defaultLocale = $defaultLocale;
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
-    public function onKernelRequest(GetResponseEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
         if (!$event->isMasterRequest() || !$request->hasPreviousSession()) {
@@ -44,7 +29,7 @@ class LocaleSubscriber implements EventSubscriberInterface
         }
 
         $locale = $request->query->get('_locale');
-        if ($locale !== null && in_array($locale, $this->validLocales)) {
+        if ($locale !== null && in_array($locale, $this->validLocales, true)) {
             $request->getSession()->set('_locale', $locale);
         } else {
             // if no explicit locale has been set on this request, use one from the session
@@ -52,9 +37,6 @@ class LocaleSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @return array
-     */
     public static function getSubscribedEvents(): array
     {
         return [

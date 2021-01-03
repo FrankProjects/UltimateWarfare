@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\Federation;
 use FrankProjects\UltimateWarfare\Entity\FederationNews;
+use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
@@ -16,34 +17,11 @@ use RuntimeException;
 
 final class FederationActionService
 {
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
+    private FederationRepository $federationRepository;
+    private FederationNewsRepository $federationNewsRepository;
+    private PlayerRepository $playerRepository;
+    private ReportRepository $reportRepository;
 
-    /**
-     * @var FederationNewsRepository
-     */
-    private $federationNewsRepository;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
-
-    /**
-     * FederationActionService constructor.
-     *
-     * @param FederationRepository $federationRepository
-     * @param FederationNewsRepository $federationNewsRepository
-     * @param PlayerRepository $playerRepository
-     * @param ReportRepository $reportRepository
-     */
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
@@ -56,10 +34,6 @@ final class FederationActionService
         $this->reportRepository = $reportRepository;
     }
 
-    /**
-     * @param Player $player
-     * @param string $federationName
-     */
     public function createFederation(Player $player, string $federationName): void
     {
         $this->ensureFederationEnabled($player);
@@ -81,11 +55,6 @@ final class FederationActionService
         $this->playerRepository->save($player);
     }
 
-    /**
-     * @param Player $player
-     * @param int $playerId
-     * @param array $resources
-     */
     public function sendAid(Player $player, int $playerId, array $resources): void
     {
         $this->ensureFederationEnabled($player);
@@ -101,15 +70,23 @@ final class FederationActionService
 
         $resourceString = '';
         foreach ($resources as $resourceName => $amount) {
-            $this->ensureValidResourcename($resourceName);
-
-            if ($amount < 0) {
-                throw new RunTimeException("You can't send negative {$resourceName}!");
+            if (!GameResource::isValid($resourceName)) {
+                continue;
             }
 
-            if ($amount > $player->getResources()->$resourceName) {
+            $amount = intval($amount);
+            if ($amount <= 0) {
+                continue;
+            }
+
+            $resourceAmount = $player->getResources()->getValueByName($resourceName);
+            if ($amount > $resourceAmount) {
                 throw new RunTimeException("You don't have enough {$resourceName}!");
             }
+
+            $player->getResources()->setValueByName($resourceName, $resourceAmount - $amount);
+            $aidPlayerResourceAmount = $aidPlayer->getResources()->getValueByName($resourceName);
+            $aidPlayer->getResources()->setValueByName($resourceName, $aidPlayerResourceAmount + $amount);
 
             if ($resourceString !== '') {
                 $resourceString .= ', ';
@@ -117,35 +94,27 @@ final class FederationActionService
             $resourceString .= $amount . ' ' . $resourceName;
         }
 
+        if ($resourceString !== '') {
+            $news = "{$player->getName()} has sent {$resourceString} to {$aidPlayer->getName()}";
+            $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+            $this->federationNewsRepository->save($federationNews);
 
-        /**
-         * XXX TODO!
-         *
-         * $db->query("UPDATE player set cash = cash - $cash, wood = wood - $wood, steel = steel - $steel, food = food - $food WHERE id = $player_id");
-         * $db->query("UPDATE player set cash = cash + $cash, wood = wood + $wood, steel = steel + $steel, food = food + $food WHERE id = $to_id");
-         */
+            $aidPlayerNotifications = $aidPlayer->getNotifications();
+            $aidPlayerNotifications->setAid(true);
+            $aidPlayer->setNotifications($aidPlayerNotifications);
+            $this->playerRepository->save($aidPlayer);
+            $this->playerRepository->save($player);
 
-        $news = "{$player->getName()} has sent {$resourceString} to {$aidPlayer->getName()}";
-        $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
-        $this->federationNewsRepository->save($federationNews);
+            $reportString = "{$player->getName()} has sent {$resourceString} to you";
+            $report = Report::createForPlayer($aidPlayer, time(), Report::TYPE_AID, $reportString);
+            $this->reportRepository->save($report);
 
-        $aidPlayerNotifications = $aidPlayer->getNotifications();
-        $aidPlayerNotifications->setAid(true);
-        $aidPlayer->setNotifications($aidPlayerNotifications);
-        $this->playerRepository->save($aidPlayer);
-
-        $reportString = "{$player->getName()} has sent {$resourceString} to you";
-        $report = Report::createForPlayer($aidPlayer, time(), Report::TYPE_AID, $reportString);
-        $this->reportRepository->save($report);
-
-        $reportString = "You have send {$resourceString} to {$aidPlayer->getName()}";
-        $report = Report::createForPlayer($player, time(), Report::TYPE_AID, $reportString);
-        $this->reportRepository->save($report);
+            $reportString = "You have send {$resourceString} to {$aidPlayer->getName()}";
+            $report = Report::createForPlayer($player, time(), Report::TYPE_AID, $reportString);
+            $this->reportRepository->save($report);
+        }
     }
 
-    /**
-     * @param Player $player
-     */
     public function removeFederation(Player $player): void
     {
         $this->ensureFederationEnabled($player);
@@ -157,10 +126,6 @@ final class FederationActionService
         $this->federationRepository->remove($player->getFederation());
     }
 
-    /**
-     * @param Player $player
-     * @param string $federationName
-     */
     public function changeFederationName(Player $player, string $federationName): void
     {
         $this->ensureFederationEnabled($player);
@@ -178,9 +143,6 @@ final class FederationActionService
         $this->federationRepository->save($federation);
     }
 
-    /**
-     * @param Player $player
-     */
     public function leaveFederation(Player $player): void
     {
         $this->ensureFederationEnabled($player);
@@ -203,10 +165,6 @@ final class FederationActionService
         $this->federationRepository->save($federation);
     }
 
-    /**
-     * @param Player $player
-     * @param int $playerId
-     */
     public function kickPlayer(Player $player, int $playerId): void
     {
         $this->ensureFederationEnabled($player);
@@ -234,7 +192,7 @@ final class FederationActionService
 
         $federation = $player->getFederation();
         $federation->setNetworth($federation->getNetworth() - $kickPlayer->getNetworth());
-        $federation->setRegions($federation->getRegions() - $kickPlayer->getRegions());
+        $federation->setRegions($federation->getRegions() - count($kickPlayer->getWorldRegions()));
         $this->federationRepository->save($federation);
 
         $reportString = "You have been kicked from Federation {$federation->getName()}";
@@ -242,10 +200,6 @@ final class FederationActionService
         $this->reportRepository->save($report);
     }
 
-    /**
-     * @param Player $player
-     * @param string $message
-     */
     public function updateLeadershipMessage(Player $player, string $message): void
     {
         $this->ensureFederationEnabled($player);
@@ -259,11 +213,6 @@ final class FederationActionService
         $this->federationRepository->save($federation);
     }
 
-    /**
-     * @param Player $player
-     * @param int $playerId
-     * @param int $role
-     */
     public function changePlayerHierarchy(Player $player, int $playerId, int $role): void
     {
         $this->ensureFederationEnabled($player);
@@ -283,7 +232,6 @@ final class FederationActionService
 
         $changePlayer->setFederationHierarchy($role);
         $this->playerRepository->save($changePlayer);
-
         /**
          * XXX TODO!
          *
@@ -308,27 +256,11 @@ final class FederationActionService
          */
     }
 
-    /**
-     * @param Player $player
-     */
     private function ensureFederationEnabled(Player $player): void
     {
         $world = $player->getWorld();
         if (!$world->getFederation()) {
             throw new RunTimeException("Federations not enabled!");
-        }
-    }
-
-    /**
-     * XXX TODO: Fix me
-     *
-     * @param string $resourceName
-     */
-    private function ensureValidResourceName(string $resourceName): void
-    {
-        $validResourceNames = ['cash', 'wood', 'steel', 'food'];
-        if (!in_array($resourceName, $validResourceNames)) {
-            throw new RunTimeException("Invalid resource type {$resourceName}!");
         }
     }
 }

@@ -9,10 +9,6 @@ use FrankProjects\UltimateWarfare\Entity\Research;
 
 interface ResearchRepository
 {
-    /**
-     * @param int $id
-     * @return Research|null
-     */
     public function find(int $id): ?Research;
 
     /**
@@ -38,13 +34,7 @@ interface ResearchRepository
      */
     public function findUnresearchedByPlayer(Player $player): array;
 
-    /**
-     * @param Research $research
-     */
     public function remove(Research $research): void;
 
-    /**
-     * @param Research $research
-     */
     public function save(Research $research): void;
 }

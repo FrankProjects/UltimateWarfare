@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\FleetUnit" table="fleet_unit">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="amount" type="integer" column="amount">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <many-to-one field="fleet" target-entity="FrankProjects\UltimateWarfare\Entity\Fleet" inversed-by="fleetUnits">
+      <join-columns>
+        <join-column name="fleet_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="gameUnit" target-entity="FrankProjects\UltimateWarfare\Entity\GameUnit" inversed-by="fleetUnits">
+      <join-columns>
+        <join-column name="game_unit_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

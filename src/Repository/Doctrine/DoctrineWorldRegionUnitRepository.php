@@ -13,31 +13,15 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 
 final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineWorldRegionUnitRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(WorldRegionUnit::class);
     }
 
-    /**
-     * @param int $id
-     * @return WorldRegionUnit|null
-     */
     public function find(int $id): ?WorldRegionUnit
     {
         return $this->repository->find($id);
@@ -55,7 +39,9 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
               JOIN Game:WorldRegion wr WITH wru.worldRegion = wr
               JOIN Game:GameUnit gu WITH wru.gameUnit = gu
               WHERE wr.player = :player'
-        )->setParameter('player', $player
+        )->setParameter(
+            'player',
+            $player
         )->getResult();
     }
 
@@ -86,21 +72,15 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
         return $gameUnits;
     }
 
-    /**
-     * @param WorldRegionUnit $worldRegionUnit
-     */
     public function remove(WorldRegionUnit $worldRegionUnit): void
     {
         $this->entityManager->remove($worldRegionUnit);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param WorldRegionUnit $worldRegionUnit
-     */
     public function save(WorldRegionUnit $worldRegionUnit): void
     {
-        $this->entityManager->merge($worldRegionUnit);
+        $this->entityManager->persist($worldRegionUnit);
         $this->entityManager->flush();
     }
 }

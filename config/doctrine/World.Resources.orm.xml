@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <embeddable name="FrankProjects\UltimateWarfare\Entity\World\Resources">
+    <field name="cash" type="integer" column="cash">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="steel" type="integer" column="steel">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="wood" type="integer" column="wood">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="food" type="integer" column="food">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+  </embeddable>
+</doctrine-mapping>

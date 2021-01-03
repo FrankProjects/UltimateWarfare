@@ -12,28 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class HallOfFameController extends BaseController
 {
-    /**
-     * @var HistoryRepository
-     */
-    private $historyRepository;
+    private HistoryRepository $historyRepository;
+    private HistoryPlayerRepository $historyPlayerRepository;
+    private HistoryFederationRepository $historyFederationRepository;
 
-    /**
-     * @var HistoryPlayerRepository
-     */
-    private $historyPlayerRepository;
-
-    /**
-     * @var HistoryFederationRepository
-     */
-    private $historyFederationRepository;
-
-    /**
-     * HallOfFameController constructor.
-     *
-     * @param HistoryRepository $historyRepository
-     * @param HistoryPlayerRepository $historyPlayerRepository
-     * @param HistoryFederationRepository $historyFederationRepository
-     */
     public function __construct(
         HistoryRepository $historyRepository,
         HistoryPlayerRepository $historyPlayerRepository,
@@ -44,32 +26,32 @@ final class HallOfFameController extends BaseController
         $this->historyFederationRepository = $historyFederationRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function hallOfFame(): Response
     {
         $history = $this->historyRepository->findAll();
 
-        return $this->render('site/hallOfFame.html.twig', [
-            'history' => $history
-        ]);
+        return $this->render(
+            'site/hallOfFame.html.twig',
+            [
+                'history' => $history
+            ]
+        );
     }
 
-    /**
-     * XXX TODO: order by
-     * @param int $worldId
-     * @param int $round
-     * @return Response
-     */
-    public function round(int $worldId, int $round): Response
+    public function world(int $worldId): Response
     {
-        $federations = $this->historyFederationRepository->findByWorldAndRound($worldId, $round);
-        $players = $this->historyPlayerRepository->findByWorldAndRound($worldId, $round);
+        /**
+         * XXX TODO: order by
+         */
+        $federations = $this->historyFederationRepository->findByWorld($worldId);
+        $players = $this->historyPlayerRepository->findByWorld($worldId);
 
-        return $this->render('site/hallOfFameRound.html.twig', [
-            'federations' => $federations,
-            'players' => $players
-        ]);
+        return $this->render(
+            'site/hallOfFameWorld.html.twig',
+            [
+                'federations' => $federations,
+                'players' => $players
+            ]
+        );
     }
 }

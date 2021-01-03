@@ -3,33 +3,39 @@
 {% block title %}Ultimate Warfare - About{% endblock title %}
 
 {% block content %}
-    <div>
-        <h3>About Ultimate Warfare</h3>
-        <p>
-            Ultimate Warfare is an online multiplayer browser based strategy game where you compete with thousands of others for world domination.
-        </p>
-        <p>
-            Grow powerful and nuke your enemies! Send sniper teams or special forces demolitions teams to wreak havoc! Watch your enemy with spy satellites and send a squadron of stealth bombers to knock out his key infrastructure! AND MUCH MORE! We are in advanced open beta, new players are welcome!
-        </p>
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td><b>About Ultimate Warfare</b></td>
+        </tr>
+        <tr>
+            <td>
+                <p>
+                    Ultimate Warfare is an online multiplayer browser based strategy game where you compete with thousands of others for world domination.
+                </p>
+                <p>
+                    Grow powerful and nuke your enemies! Send sniper teams or special forces demolitions teams to wreak havoc! Watch your enemy with spy satellites and send a squadron of stealth bombers to knock out his key infrastructure! AND MUCH MORE! We are in advanced open beta, new players are welcome!
+                </p>
 
-        <br />
-        <br />
+                <br />
+                <br />
 
-        <h3>Who are we?</h3>
-        <p>
-            This Game is designed, created and maintained by Frank Schreuder.
-        </p>
-        <p>
-            Would like to know more about me and my projects? Take a look at <a class="B" href="https://frankprojects.com">Frank Projects</a>.
-        </p>
-        <br />
-        <br />
+                <h3>Who are we?</h3>
+                <p>
+                    This Game is designed, created and maintained by Frank Schreuder.
+                </p>
+                <p>
+                    Would like to know more about me and my projects? Take a look at <a class="B" href="https://frankprojects.com">Frank Projects</a>.
+                </p>
+                <br />
+                <br />
 
-        <h3>Contact</h3>
-        <p>
-            Use our <a class="B" href="{{ url('Site/Contact') }}">contact form</a> if you would like to contact us.
-        </p>
+                <h3>Contact</h3>
+                <p>
+                    Use our <a class="B" href="{{ url('Site/Contact') }}">contact form</a> if you would like to contact us.
+                </p>
 
-        <img src="{{ asset('images/banner_small.jpg') }}" alt="Ultimate-Warfare Banner" height="130" width="250" />
-    </div>
+                <img src="{{ asset('images/banner_small.jpg') }}" alt="Ultimate-Warfare Banner" height="130" width="250" />
+            </td>
+        </tr>
+    </table>
 {% endblock %}

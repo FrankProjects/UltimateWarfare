@@ -25,7 +25,7 @@
             <tr>
                 <td width="400">
                     <b>{{ world.name }}</b><br />
-                    <img src="{{ asset(world.image) }}" alt="{{ world.name }}" width="400" height="255">
+                    <img src="{{ asset('images/world/' ~ world.image) }}" alt="{{ world.name }}">
                 </td>
                 <td width="300">
                     <b>Max players:</b> {{ world.maxplayers }}<br /><br />

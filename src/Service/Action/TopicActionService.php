@@ -14,28 +14,10 @@ use RuntimeException;
 
 final class TopicActionService
 {
-    /**
-     * @var TopicRepository
-     */
-    private $topicRepository;
+    private TopicRepository $topicRepository;
+    private PostRepository $postRepository;
+    private ForumHelper $forumHelper;
 
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
-
-    /**
-     * @var ForumHelper
-     */
-    private $forumHelper;
-
-    /**
-     * TopicActionService service
-     *
-     * @param TopicRepository $topicRepository
-     * @param PostRepository $postRepository
-     * @param ForumHelper $forumHelper
-     */
     public function __construct(
         TopicRepository $topicRepository,
         PostRepository $postRepository,
@@ -46,12 +28,6 @@ final class TopicActionService
         $this->forumHelper = $forumHelper;
     }
 
-    /**
-     * @param Topic $topic
-     * @param Category $category
-     * @param User $user
-     * @param string $ipAddress
-     */
     public function create(Topic $topic, Category $category, User $user, string $ipAddress): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -66,10 +42,6 @@ final class TopicActionService
         $this->topicRepository->save($topic);
     }
 
-    /**
-     * @param Topic $topic
-     * @param User $user
-     */
     public function edit(Topic $topic, User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -80,10 +52,6 @@ final class TopicActionService
         $this->topicRepository->save($topic);
     }
 
-    /**
-     * @param Topic $topic
-     * @param User $user
-     */
     public function remove(Topic $topic, User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -96,10 +64,6 @@ final class TopicActionService
         $this->topicRepository->remove($topic);
     }
 
-    /**
-     * @param User $user
-     * @param Topic $topic
-     */
     private function ensureTopicPermissions(User $user, Topic $topic): void
     {
         if ($user->getId() != $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {

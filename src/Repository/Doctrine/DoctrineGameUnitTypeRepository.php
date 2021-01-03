@@ -11,31 +11,15 @@ use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 
 final class DoctrineGameUnitTypeRepository implements GameUnitTypeRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineGameUnitTypeRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(GameUnitType::class);
     }
 
-    /**
-     * @param int $id
-     * @return GameUnitType|null
-     */
     public function find(int $id): ?GameUnitType
     {
         return $this->repository->find($id);
@@ -49,9 +33,6 @@ final class DoctrineGameUnitTypeRepository implements GameUnitTypeRepository
         return $this->repository->findAll();
     }
 
-    /**
-     * @param GameUnitType $gameUnitType
-     */
     public function save(GameUnitType $gameUnitType): void
     {
         $this->entityManager->persist($gameUnitType);

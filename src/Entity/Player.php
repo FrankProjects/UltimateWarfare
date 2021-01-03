@@ -11,149 +11,71 @@ use FrankProjects\UltimateWarfare\Entity\Player\Notifications;
 use FrankProjects\UltimateWarfare\Entity\Player\Resources;
 use FrankProjects\UltimateWarfare\Entity\Player\Upkeep;
 
-/**
- * Player
- */
 class Player
 {
     /**
      * @var int
      */
-    const PRICE_PER_REGION = 10000;
+    private const PRICE_PER_REGION = 10000;
 
     /**
      * @var int
      */
-    const FEDERATION_HIERARCHY_RECRUIT = 1;
+    public const FEDERATION_HIERARCHY_RECRUIT = 1;
 
     /**
      * @var int
      */
-    const FEDERATION_HIERARCHY_CAPTAIN = 3;
+    public const FEDERATION_HIERARCHY_CAPTAIN = 3;
 
     /**
      * @var int
      */
-    const FEDERATION_HIERARCHY_GENERAL = 10;
+    public const FEDERATION_HIERARCHY_GENERAL = 10;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private string $name;
+    private int $timestampJoined;
+    private int $timestampUpdate;
+    private int $networth = 0;
+    private int $federationHierarchy = 0;
+    private string $notepad = '';
+    private User $user;
+    private World $world;
+    private ?Federation $federation;
 
-    /**
-     * @var string
-     */
-    private $name;
+    /** @var Collection<Report> */
+    private Collection $reports;
 
-    /**
-     * @var int
-     */
-    private $timestampJoined;
+    /** @var Collection<Construction> */
+    private Collection $constructions;
 
-    /**
-     * @var int
-     */
-    private $timestampUpdate;
+    /** @var Collection<WorldRegion> */
+    private Collection $worldRegions;
 
-    /**
-     * @var int
-     */
-    private $networth = 0;
+    /** @var Collection<Fleet> */
+    private Collection $fleets;
 
-    /**
-     * @var int
-     */
-    private $federationHierarchy = 0;
+    /** @var Collection<MarketItem> */
+    private Collection $marketItems;
 
-    /**
-     * @var string
-     */
-    private $notepad = '';
+    /** @var Collection<Message> */
+    private Collection $fromMessages;
 
-    /**
-     * @var User
-     */
-    private $user;
+    /** @var Collection<Message> */
+    private Collection $toMessages;
 
-    /**
-     * @var World
-     */
-    private $world;
+    /** @var Collection<ResearchPlayer> */
+    private Collection $playerResearch;
 
-    /**
-     * @var Federation
-     */
-    private $federation;
+    /** @var Collection<FederationApplication> */
+    private Collection $federationApplications;
 
-    /**
-     * @var Collection|Report[]
-     */
-    private $reports = [];
+    private Income $income;
+    private Notifications $notifications;
+    private Resources $resources;
+    private Upkeep $upkeep;
 
-    /**
-     * @var Collection|Construction[]
-     */
-    private $constructions = [];
-
-    /**
-     * @var Collection|WorldRegion[]
-     */
-    private $worldRegions = [];
-
-    /**
-     * @var Collection|Fleet[]
-     */
-    private $fleets = [];
-
-    /**
-     * @var Collection|MarketItem[]
-     */
-    private $marketItems = [];
-
-    /**
-     * @var Collection|Message[]
-     */
-    private $fromMessages = [];
-
-    /**
-     * @var Collection|Message[]
-     */
-    private $toMessages = [];
-
-    /**
-     * @var Collection|ResearchPlayer[]
-     */
-    private $playerResearch = [];
-
-    /**
-     * @var Collection|FederationApplication[]
-     */
-    private $federationApplications = [];
-
-    /**
-     * @var Income
-     */
-    private $income;
-
-    /**
-     * @var Notifications
-     */
-    private $notifications;
-
-    /**
-     * @var Resources
-     */
-    private $resources;
-
-    /**
-     * @var Upkeep
-     */
-    private $upkeep;
-
-    /**
-     * Player constructor.
-     */
     public function __construct()
     {
         $this->reports = new ArrayCollection();
@@ -171,147 +93,76 @@ class Player
         $this->upkeep = new Upkeep();
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set timestampJoined
-     *
-     * @param int $timestampJoined
-     */
-    public function setTimestampJoined(int $timestampJoined)
+    public function setTimestampJoined(int $timestampJoined): void
     {
         $this->timestampJoined = $timestampJoined;
     }
 
-    /**
-     * Get timestampJoined
-     *
-     * @return int
-     */
     public function getTimestampJoined(): int
     {
         return $this->timestampJoined;
     }
 
-    /**
-     * Set timestampUpdate
-     *
-     * @param int $timestampUpdate
-     */
-    public function setTimestampUpdate(int $timestampUpdate)
+    public function setTimestampUpdate(int $timestampUpdate): void
     {
         $this->timestampUpdate = $timestampUpdate;
     }
 
-    /**
-     * Get timestampUpdate
-     *
-     * @return int
-     */
     public function getTimestampUpdate(): int
     {
         return $this->timestampUpdate;
     }
 
-    /**
-     * Set networth
-     *
-     * @param int $networth
-     */
-    public function setNetworth(int $networth)
+    public function setNetworth(int $networth): void
     {
         $this->networth = $networth;
     }
 
-    /**
-     * Get networth
-     *
-     * @return int
-     */
     public function getNetworth(): int
     {
         return $this->networth;
     }
 
-    /**
-     * Set federationHierarchy
-     *
-     * @param int $federationHierarchy
-     */
-    public function setFederationHierarchy(int $federationHierarchy)
+    public function setFederationHierarchy(int $federationHierarchy): void
     {
         $this->federationHierarchy = $federationHierarchy;
     }
 
-    /**
-     * Get federationHierarchy
-     *
-     * @return int
-     */
     public function getFederationHierarchy(): int
     {
         return $this->federationHierarchy;
     }
 
-    /**
-     * Set notepad
-     *
-     * @param string $notepad
-     */
-    public function setNotepad(string $notepad)
+    public function setNotepad(string $notepad): void
     {
         $this->notepad = $notepad;
     }
 
-    /**
-     * Get notepad
-     *
-     * @return string
-     */
     public function getNotepad(): string
     {
         return $this->notepad;
     }
 
-    /**
-     * @return Collection
-     */
     public function getReports(): Collection
     {
         return $this->reports;
     }
 
-    /**
-     * @return Collection
-     */
     public function getConstructions(): Collection
     {
         return $this->constructions;
@@ -333,205 +184,127 @@ class Player
         return $this->fleets;
     }
 
-    /**
-     * @return User
-     */
     public function getUser(): User
     {
         return $this->user;
     }
 
-    /**
-     * @param User $user
-     */
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
 
-    /**
-     * @return World
-     */
     public function getWorld(): World
     {
         return $this->world;
     }
 
-    /**
-     * @param World $world
-     */
-    public function setWorld(World $world)
+    public function setWorld(World $world): void
     {
         $this->world = $world;
     }
 
-    /**
-     * @return Federation|null
-     */
     public function getFederation(): ?Federation
     {
         return $this->federation;
     }
 
-    /**
-     * @param Federation|null $federation
-     */
-    public function setFederation(?Federation $federation)
+    public function setFederation(?Federation $federation): void
     {
         $this->federation = $federation;
     }
 
-    /**
-     * @return Collection
-     */
     public function getFromMessages(): Collection
     {
         return $this->fromMessages;
     }
 
-    /**
-     * @param Collection $fromMessages
-     */
-    public function setFromMessages(Collection $fromMessages)
+    public function setFromMessages(Collection $fromMessages): void
     {
         $this->fromMessages = $fromMessages;
     }
 
-    /**
-     * @return Collection
-     */
     public function getToMessages(): Collection
     {
         return $this->toMessages;
     }
 
-    /**
-     * @param Collection $toMessages
-     */
-    public function setToMessages(Collection $toMessages)
+    public function setToMessages(Collection $toMessages): void
     {
         $this->toMessages = $toMessages;
     }
 
-    /**
-     * @return Collection
-     */
     public function getPlayerResearch(): Collection
     {
         return $this->playerResearch;
     }
 
-    /**
-     * @param Collection $playerResearch
-     */
-    public function setPlayerResearches(Collection $playerResearch)
+    public function setPlayerResearches(Collection $playerResearch): void
     {
         $this->playerResearch = $playerResearch;
     }
 
-    /**
-     * @return Collection
-     */
     public function getFederationApplications(): Collection
     {
         return $this->federationApplications;
     }
 
-    /**
-     * @param Collection $federationApplications
-     */
-    public function setFederationApplications(Collection $federationApplications)
+    public function setFederationApplications(Collection $federationApplications): void
     {
         $this->federationApplications = $federationApplications;
     }
 
-    /**
-     * @return Collection
-     */
     public function getMarketItems(): Collection
     {
         return $this->marketItems;
     }
 
-    /**
-     * @param Collection $marketItems
-     */
     public function setMarketItems(Collection $marketItems): void
     {
         $this->marketItems = $marketItems;
     }
 
-    /**
-     * @return Resources
-     */
     public function getResources(): Resources
     {
         return $this->resources;
     }
 
-    /**
-     * @param Resources $resources
-     */
     public function setResources(Resources $resources): void
     {
         $this->resources = $resources;
     }
 
-    /**
-     * @return Notifications
-     */
     public function getNotifications(): Notifications
     {
         return $this->notifications;
     }
 
-    /**
-     * @param Notifications $notifications
-     */
     public function setNotifications(Notifications $notifications): void
     {
         $this->notifications = $notifications;
     }
 
-    /**
-     * @return Income
-     */
     public function getIncome(): Income
     {
         return $this->income;
     }
 
-    /**
-     * @param Income $income
-     */
     public function setIncome(Income $income): void
     {
         $this->income = $income;
     }
 
-    /**
-     * @return Upkeep
-     */
     public function getUpkeep(): Upkeep
     {
         return $this->upkeep;
     }
 
-    /**
-     * @param Upkeep $upkeep
-     */
     public function setUpkeep(Upkeep $upkeep): void
     {
         $this->upkeep = $upkeep;
     }
 
-    /**
-     * @param User $user
-     * @param string $name
-     * @param World $world
-     * @return Player
-     */
-    public static function create(User $user, string $name, World $world)
+    public static function create(User $user, string $name, World $world): Player
     {
         $resources = new Resources();
         $resources->setCash($world->getResources()->getCash());
@@ -550,17 +323,11 @@ class Player
         return $player;
     }
 
-    /**
-     * @return int
-     */
     public function getRegionPrice(): int
     {
         return count($this->getWorldRegions()) * self::PRICE_PER_REGION;
     }
 
-    /**
-     * @return bool
-     */
     public function canSurrender(): bool
     {
         if ($this->getTimestampJoined() + 3600 * 24 * 2 < time()) {

@@ -3,10 +3,7 @@ Ultimate Warfare
 
 ![Ultimate Warfare](https://raw.githubusercontent.com/FrankProjects/UltimateWarfare/master/public/images/banner.jpg)
 
-[![Travis-CI](https://api.travis-ci.org/FrankProjects/UltimateWarfare.svg)](https://travis-ci.org/FrankProjects/UltimateWarfare)
-[![StyleCI](https://github.styleci.io/repos/126375561/shield)](https://github.styleci.io/repos/126375561)
-[![Maintainability](https://api.codeclimate.com/v1/badges/2aecf6889aa57d760beb/maintainability)](https://codeclimate.com/github/FrankProjects/UltimateWarfare/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/2aecf6889aa57d760beb/test_coverage)](https://codeclimate.com/github/FrankProjects/UltimateWarfare/test_coverage)
+[![Build Status](https://github.com/FrankProjects/UltimateWarfare/workflows/Continuous%20Integration/badge.svg)](https://github.com/FrankProjects/UltimateWarfare/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 *Note: Ultimate Warfare is still in development. Some features of the game have not been implemented yet.*
@@ -18,7 +15,7 @@ Ultimate Warfare is a free and open-source online multiplayer browser based stra
 
 Grow powerful and nuke your enemies! Send sniper teams or special forces demolitions teams to wreak havoc! Watch your enemy with spy satellites and send a squadron of stealth bombers to knock out his key infrastructure! AND MUCH MORE!
 
-Ultimate Warfare is written in PHP on the [Symfony 4](https://symfony.com) framework.
+Ultimate Warfare is written in PHP on the [Symfony 5](https://symfony.com) framework.
 
 ## History
 
@@ -37,9 +34,9 @@ The old game code dates back to 2005-2012 and contains a lot of legacy PHP, for 
 - Html in PHP
 - PHP 5
 
-In 2017 I started porting the game code to Symfony 4 and twig templates. To learn the symfony framework but also with the idea in mind to publish to game code later.
+In 2017 I started porting the game code to Symfony 5 and twig templates. To learn the symfony framework but also with the idea in mind to publish to game code later.
 While porting the game code to symfony, I used more modern development techniques.
-The new code base is PHP 7.1 compatible with PHP strict typ hinting.
+The new codebase is PHP 8.0 compatible with PHP strict typ hinting.
 
 
 ## Missing features

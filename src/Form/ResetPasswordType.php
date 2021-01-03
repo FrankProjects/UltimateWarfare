@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Form;
 
 use FrankProjects\UltimateWarfare\Entity\User;
@@ -12,29 +14,39 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class ResetPasswordType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'first_options'  => [
-                    'label' => 'label.password',
-                    'translation_domain' => 'register'
-                ],
-                'second_options' => [
-                    'label' => 'label.password_repeat',
-                    'translation_domain' => 'register'
+            ->add(
+                'plainPassword',
+                RepeatedType::class,
+                [
+                    'type' => PasswordType::class,
+                    'first_options' => [
+                        'label' => 'label.password',
+                        'translation_domain' => 'register'
+                    ],
+                    'second_options' => [
+                        'label' => 'label.password_repeat',
+                        'translation_domain' => 'register'
+                    ]
                 ]
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Reset Password'
-            ]);
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'Reset Password'
+                ]
+            );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(array(
-            'data_class' => User::class,
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => User::class,
+            )
+        );
     }
 }

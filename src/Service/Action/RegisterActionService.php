@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
+use DateTime;
+use Exception;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Service\MailService;
@@ -13,28 +15,10 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class RegisterActionService
 {
-    /**
-     * @var MailService
-     */
-    private $mailService;
+    private MailService $mailService;
+    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserRepository $userRepository;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $passwordEncoder;
-
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * RegisterActionService constructor
-     *
-     * @param MailService $mailService
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param UserRepository $userRepository
-     */
     public function __construct(
         MailService $mailService,
         UserPasswordEncoderInterface $passwordEncoder,
@@ -45,14 +29,11 @@ final class RegisterActionService
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @param string $token
-     */
     public function activateUser(string $token): void
     {
         $user = $this->userRepository->findByConfirmationToken($token);
 
-        if (!$user) {
+        if ($user === null) {
             throw new RunTimeException("User with this token does not exist");
         }
 
@@ -65,7 +46,7 @@ final class RegisterActionService
      * XXX TODO: Add captcha
      *
      * @param User $user
-     * @throws \Exception
+     * @throws Exception
      */
     public function register(User $user): void
     {
@@ -75,11 +56,11 @@ final class RegisterActionService
         try {
             $generator = new TokenGenerator();
             $token = $generator->generateToken(40);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw new RunTimeException('TokenGenerator failed!');
         }
 
-        $user->setSignup(new \DateTime());
+        $user->setSignup(new DateTime());
         $user->setConfirmationToken($token);
 
         if ($this->userRepository->findByEmail($user->getEmail()) !== null) {
@@ -91,7 +72,6 @@ final class RegisterActionService
         }
 
         $this->userRepository->save($user);
-
         $this->mailService->sendRegistrationMail($user);
     }
 }

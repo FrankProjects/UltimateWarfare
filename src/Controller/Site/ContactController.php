@@ -13,30 +13,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ContactController extends AbstractController
 {
-    /**
-     * @var ContactRepository
-     */
-    private $contactRepository;
+    private ContactRepository $contactRepository;
 
-    /**
-     * ContactController constructor
-     *
-     * @param ContactRepository $contactRepository
-     */
     public function __construct(
         ContactRepository $contactRepository
     ) {
         $this->contactRepository = $contactRepository;
     }
 
-    /**
-     * XXX TODO: Add captcha...
-     *
-     * @param Request $request
-     * @return Response
-     */
     public function contact(Request $request): Response
     {
+        /**
+         * XXX TODO: Add captcha...
+         */
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
 
@@ -47,8 +36,11 @@ final class ContactController extends AbstractController
             $this->addFlash('success', 'Thank you for contacting us!');
         }
 
-        return $this->render('site/contact.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'site/contact.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
     }
 }

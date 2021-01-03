@@ -8,10 +8,6 @@ use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 
 interface GameUnitTypeRepository
 {
-    /**
-     * @param int $id
-     * @return GameUnitType|null
-     */
     public function find(int $id): ?GameUnitType;
 
     /**
@@ -19,8 +15,5 @@ interface GameUnitTypeRepository
      */
     public function findAll(): array;
 
-    /**
-     * @param GameUnitType $gameUnitType
-     */
     public function save(GameUnitType $gameUnitType): void;
 }

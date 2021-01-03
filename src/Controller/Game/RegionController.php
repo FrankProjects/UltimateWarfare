@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -15,34 +16,11 @@ use Throwable;
 
 final class RegionController extends BaseGameController
 {
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private GameUnitTypeRepository $gameUnitTypeRepository;
+    private ConstructionActionService $constructionActionService;
+    private RegionActionService $regionActionService;
 
-    /**
-     * @var GameUnitTypeRepository
-     */
-    private $gameUnitTypeRepository;
-
-    /**
-     * @var ConstructionActionService
-     */
-    private $constructionActionService;
-
-    /**
-     * @var RegionActionService
-     */
-    private $regionActionService;
-
-    /**
-     * RegionController constructor.
-     *
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param GameUnitTypeRepository $gameUnitTypeRepository
-     * @param ConstructionActionService $constructionActionService
-     * @param RegionActionService $regionActionService
-     */
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
@@ -55,12 +33,6 @@ final class RegionController extends BaseGameController
         $this->regionActionService = $regionActionService;
     }
 
-    /**
-     * @param Request $request
-     * @param int $regionId
-     * @return Response
-     * @throws \Exception
-     */
     public function buy(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
@@ -81,17 +53,16 @@ final class RegionController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/region/buy.html.twig', [
-            'region' => $worldRegion,
-            'player' => $player,
-            'price'  => $player->getRegionPrice()
-        ]);
+        return $this->render(
+            'game/region/buy.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $player,
+                'price' => $player->getRegionPrice()
+            ]
+        );
     }
 
-    /**
-     * @param int $regionId
-     * @return Response
-     */
     public function region(int $regionId): Response
     {
         $player = $this->getPlayer();
@@ -106,37 +77,51 @@ final class RegionController extends BaseGameController
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
         $gameUnitsData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
 
-        return $this->render('game/region.html.twig', [
-            'region' => $worldRegion,
-            'player' => $player,
-            'previousRegion' => $this->worldRegionRepository->getPreviousWorldRegionForPlayer($regionId, $player),
-            'nextRegion' => $this->worldRegionRepository->getNextWorldRegionForPlayer($regionId, $player),
-            'gameUnitTypes' => $gameUnitTypes,
-            'gameUnitsData' => $gameUnitsData
-        ]);
+        return $this->render(
+            'game/region.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $player,
+                'previousRegion' => $this->worldRegionRepository->getPreviousWorldRegionForPlayer($regionId, $player),
+                'nextRegion' => $this->worldRegionRepository->getNextWorldRegionForPlayer($regionId, $player),
+                'gameUnitTypes' => $gameUnitTypes,
+                'gameUnitsData' => $gameUnitsData
+            ]
+        );
     }
 
-    /**
-     * XXX TODO: Add sorting support (by building space, population, buildings, units)
-     *
-     * @return Response
-     */
     public function regionList(): Response
     {
+        /**
+         * XXX TODO: Add sorting support (by building space, population, buildings, units)
+         */
         $player = $this->getPlayer();
         $regions = $player->getWorldRegions();
-
-        // GameUnitType 1 = Buildings
-        $gameUnitType = $this->gameUnitTypeRepository->find(1);
+        $regionList = [];
+        $gameUnitType = $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_BUILDINGS);
 
         foreach ($regions as $region) {
-            $region->buildingsInConstruction = $this->constructionActionService->getCountGameUnitsInConstruction($region, $gameUnitType);
-            $region->buildings = $this->constructionActionService->getCountGameUnitsInWorldRegion($region, $gameUnitType);
+            $buildingsInConstruction = $this->constructionActionService->getCountGameUnitsInConstruction(
+                $region,
+                $gameUnitType
+            );
+            $buildings = $this->constructionActionService->getCountGameUnitsInWorldRegion(
+                $region,
+                $gameUnitType
+            );
+            $regionList[] = [
+                'region' => $region,
+                'buildingsInConstruction' => $buildingsInConstruction,
+                'buildings' => $buildings
+            ];
         }
 
-        return $this->render('game/regionList.html.twig', [
-            'regions' => $regions,
-            'player' => $player
-        ]);
+        return $this->render(
+            'game/regionList.html.twig',
+            [
+                'regionList' => $regionList,
+                'player' => $player
+            ]
+        );
     }
 }

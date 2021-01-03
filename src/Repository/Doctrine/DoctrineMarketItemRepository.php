@@ -12,31 +12,15 @@ use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 
 final class DoctrineMarketItemRepository implements MarketItemRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineMarketItemRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(MarketItem::class);
     }
 
-    /**
-     * @param int $id
-     * @return MarketItem|null
-     */
     public function find(int $id): ?MarketItem
     {
         return $this->repository->find($id);
@@ -62,23 +46,19 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
               FROM Game:MarketItem m
               WHERE m.world = :world AND m.type = :type
               ORDER BY m.id DESC'
-        )->setParameter('world', $world
+        )->setParameter(
+            'world',
+            $world
         )->setParameter('type', $type)
             ->getResult();
     }
 
-    /**
-     * @param MarketItem $marketItem
-     */
     public function remove(MarketItem $marketItem): void
     {
         $this->entityManager->remove($marketItem);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param MarketItem $marketItem
-     */
     public function save(MarketItem $marketItem): void
     {
         $this->entityManager->persist($marketItem);

@@ -12,22 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class UnbanRequestController extends AbstractController
 {
-    /**
-     * @var UnbanRequestRepository
-     */
-    private $unbanRequestRepository;
+    private UnbanRequestRepository $unbanRequestRepository;
+    private UserRepository $userRepository;
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * UnbanRequestController constructor
-     *
-     * @param UnbanRequestRepository $unbanRequestRepository
-     * @param UserRepository $userRepository
-     */
     public function __construct(
         UnbanRequestRepository $unbanRequestRepository,
         UserRepository $userRepository
@@ -36,20 +23,16 @@ final class UnbanRequestController extends AbstractController
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function list(): Response
     {
-        return $this->render('admin/unbanRequest/list.html.twig', [
-            'unbanRequests' => $this->unbanRequestRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/unbanRequest/list.html.twig',
+            [
+                'unbanRequests' => $this->unbanRequestRepository->findAll()
+            ]
+        );
     }
 
-    /**
-     * @param int $unbanRequestId
-     * @return RedirectResponse
-     */
     public function remove(int $unbanRequestId): RedirectResponse
     {
         $unbanRequest = $this->unbanRequestRepository->find($unbanRequestId);
@@ -63,10 +46,6 @@ final class UnbanRequestController extends AbstractController
         return $this->redirectToRoute('Admin/UnbanRequest/List', [], 302);
     }
 
-    /**
-     * @param int $unbanRequestId
-     * @return RedirectResponse
-     */
     public function unban(int $unbanRequestId): RedirectResponse
     {
         $unbanRequest = $this->unbanRequestRepository->find($unbanRequestId);

@@ -13,31 +13,15 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 
 final class DoctrineWorldRegionRepository implements WorldRegionRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineWorldRegionRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(WorldRegion::class);
     }
 
-    /**
-     * @param int $id
-     * @return WorldRegion|null
-     */
     public function find(int $id): ?WorldRegion
     {
         return $this->repository->find($id);
@@ -53,12 +37,6 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         return $this->repository->findBy(['world' => $world, 'player' => $player]);
     }
 
-    /**
-     * @param World $world
-     * @param int $x
-     * @param int $y
-     * @return WorldRegion|null
-     */
     public function findByWorldXY(World $world, int $x, int $y): ?WorldRegion
     {
         return $this->repository->findOneBy(['world' => $world, 'x' => $x, 'y' => $y]);
@@ -88,12 +66,6 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         return $gameUnits;
     }
 
-    /**
-     * @param int $id
-     * @param Player $player
-     * @return WorldRegion|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
     public function getPreviousWorldRegionForPlayer(int $id, Player $player): ?WorldRegion
     {
         return $this->entityManager
@@ -109,12 +81,6 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->getOneOrNullResult();
     }
 
-    /**
-     * @param int $id
-     * @param Player $player
-     * @return WorldRegion|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
     public function getNextWorldRegionForPlayer(int $id, Player $player): ?WorldRegion
     {
         return $this->entityManager
@@ -130,13 +96,9 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->getOneOrNullResult();
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     */
     public function save(WorldRegion $worldRegion): void
     {
         $this->entityManager->persist($worldRegion);
         $this->entityManager->flush();
-        $this->entityManager->detach($worldRegion);
     }
 }

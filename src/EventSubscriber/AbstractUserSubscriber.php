@@ -9,25 +9,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 abstract class AbstractUserSubscriber
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
-    /**
-     * AbstractPlayerSubscriber constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage
     ) {
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @return User|null
-     */
     protected function getUser(): ?User
     {
         $token = $this->tokenStorage->getToken();

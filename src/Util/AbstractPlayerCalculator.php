@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Util;
 
 use FrankProjects\UltimateWarfare\Entity\AbstractGameResources;
@@ -11,18 +13,11 @@ use RuntimeException;
 
 abstract class AbstractPlayerCalculator
 {
-    const ABSTRACT_GAME_RESOURCES_UPKEEP = 'upkeep';
-    const ABSTRACT_GAME_RESOURCES_INCOME = 'income';
+    protected const ABSTRACT_GAME_RESOURCES_UPKEEP = 'upkeep';
+    protected const ABSTRACT_GAME_RESOURCES_INCOME = 'income';
 
-    /**
-     * @var AbstractGameResources
-     */
-    protected $abstractGameResources;
+    protected AbstractGameResources $abstractGameResources;
 
-    /**
-     * @param Player $player
-     * @param string $type
-     */
     protected function calculateForFleets(Player $player, string $type): void
     {
         foreach ($player->getFleets() as $fleet) {
@@ -30,10 +25,6 @@ abstract class AbstractPlayerCalculator
         }
     }
 
-    /**
-     * @param Fleet $fleet
-     * @param string $type
-     */
     private function calculateForFleetUnits(Fleet $fleet, string $type): void
     {
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
@@ -42,10 +33,6 @@ abstract class AbstractPlayerCalculator
         }
     }
 
-    /**
-     * @param Player $player
-     * @param string $type
-     */
     protected function calculateForWorldRegions(Player $player, string $type): void
     {
         foreach ($player->getWorldRegions() as $worldRegion) {
@@ -53,10 +40,6 @@ abstract class AbstractPlayerCalculator
         }
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @param string $type
-     */
     private function calculateForWorldRegionUnits(WorldRegion $worldRegion, string $type): void
     {
         foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
@@ -65,10 +48,6 @@ abstract class AbstractPlayerCalculator
         }
     }
 
-    /**
-     * @param int $amount
-     * @param AbstractGameResources $abstractGameResources
-     */
     private function updateAbstractGameResource(int $amount, AbstractGameResources $abstractGameResources): void
     {
         $this->abstractGameResources->addCash($amount * $abstractGameResources->getCash());
@@ -77,11 +56,6 @@ abstract class AbstractPlayerCalculator
         $this->abstractGameResources->addSteel($amount * $abstractGameResources->getSteel());
     }
 
-    /**
-     * @param GameUnit $gameUnit
-     * @param string $type
-     * @return AbstractGameResources
-     */
     private function getAbstractGameResources(GameUnit $gameUnit, string $type): AbstractGameResources
     {
         if ($type === AbstractPlayerCalculator::ABSTRACT_GAME_RESOURCES_UPKEEP) {

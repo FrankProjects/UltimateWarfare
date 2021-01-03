@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
@@ -15,35 +17,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UpdatePlayerIncomeCommand extends Command
 {
     protected static $defaultName = 'game:maintenance:update:income';
+    private PlayerRepository $playerRepository;
+    private WorldRepository $worldRepository;
+    private IncomeCalculator $incomeCalculator;
+    private UpkeepCalculator $upkeepCalculator;
 
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var WorldRepository
-     */
-    private $worldRepository;
-
-    /**
-     * @var IncomeCalculator
-     */
-    private $incomeCalculator;
-
-    /**
-     * @var UpkeepCalculator
-     */
-    private $upkeepCalculator;
-
-    /**
-     * UpdatePlayerIncomeCommand constructor.
-     *
-     * @param PlayerRepository $playerRepository
-     * @param WorldRepository $worldRepository
-     * @param IncomeCalculator $incomeCalculator
-     * @param UpkeepCalculator $upkeepCalculator
-     */
     public function __construct(
         PlayerRepository $playerRepository,
         WorldRepository $worldRepository,
@@ -71,18 +49,15 @@ class UpdatePlayerIncomeCommand extends Command
             );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @throws \Exception
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln([
-            'Updating income resources of all players',
-            '============',
-            '',
-        ]);
+        $output->writeln(
+            [
+                'Updating income resources of all players',
+                '============',
+                '',
+            ]
+        );
 
         $commit = $input->getOption('commit');
         $commit = ($commit !== false);
@@ -100,13 +75,10 @@ class UpdatePlayerIncomeCommand extends Command
         }
 
         $output->writeln('Done!');
+
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param Player $player
-     * @param bool $commit
-     */
     private function processPlayer(OutputInterface $output, Player $player, bool $commit): void
     {
         $output->writeln("Processing Player: {$player->getName()}");
@@ -116,10 +88,10 @@ class UpdatePlayerIncomeCommand extends Command
 
         if (!$player->getIncome()->equals($income) || !$player->getUpkeep()->equals($upkeep)) {
             $output->writeln("Mismatch found: {$player->getName()}");
-            $output->writeln(print_r($income));
-            $output->writeln(print_r($player->getIncome()));
-            $output->writeln(print_r($upkeep));
-            $output->writeln(print_r($player->getUpkeep()));
+            $output->writeln(print_r($income, true));
+            $output->writeln(print_r($player->getIncome(), true));
+            $output->writeln(print_r($upkeep, true));
+            $output->writeln(print_r($player->getUpkeep(), true));
 
             $player->setIncome($income);
             $player->setUpkeep($upkeep);

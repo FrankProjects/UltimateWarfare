@@ -4,277 +4,135 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * Message
- */
 class Message
 {
-    const MESSAGE_STATUS_NEW = 0;
-    const MESSAGE_STATUS_READ = 1;
+    public const MESSAGE_STATUS_NEW = 0;
+    public const MESSAGE_STATUS_READ = 1;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private Player $fromPlayer;
+    private bool $fromDelete = false;
+    private Player $toPlayer;
+    private bool $toDelete = false;
+    private int $status = 0;
+    private bool $adminMessage = false;
+    private string $subject;
+    private int $timestamp;
+    private string $message;
+    private World $world;
 
-    /**
-     * @var Player
-     */
-    private $fromPlayer;
-
-    /**
-     * @var bool
-     */
-    private $fromDelete = false;
-
-    /**
-     * @var Player
-     */
-    private $toPlayer;
-
-    /**
-     * @var bool
-     */
-    private $toDelete = false;
-
-    /**
-     * @var int
-     */
-    private $status = 0;
-
-    /**
-     * @var bool
-     */
-    private $adminMessage = false;
-
-    /**
-     * @var string
-     */
-    private $subject;
-
-    /**
-     * @var int
-     */
-    private $timestamp;
-
-    /**
-     * @var string
-     */
-    private $message;
-
-    /**
-     * @var World
-     */
-    private $world;
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set fromDelete
-     *
-     * @param bool $fromDelete
-     */
     public function setFromDelete(bool $fromDelete): void
     {
         $this->fromDelete = $fromDelete;
     }
 
-    /**
-     * Get fromDelete
-     *
-     * @return bool
-     */
     public function getFromDelete(): bool
     {
         return $this->fromDelete;
     }
 
-    /**
-     * Set toDelete
-     *
-     * @param bool $toDelete
-     */
     public function setToDelete(bool $toDelete): void
     {
         $this->toDelete = $toDelete;
     }
 
-    /**
-     * Get toDelete
-     *
-     * @return bool
-     */
     public function getToDelete(): bool
     {
         return $this->toDelete;
     }
 
-    /**
-     * Set status
-     *
-     * @param int $status
-     */
     public function setStatus(int $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * Get status
-     *
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * Set adminMessage
-     *
-     * @param bool $adminMessage
-     */
     public function setAdminMessage(bool $adminMessage): void
     {
         $this->adminMessage = $adminMessage;
     }
 
-    /**
-     * Get adminMessage
-     *
-     * @return bool
-     */
     public function getAdminMessage(): bool
     {
         return $this->adminMessage;
     }
 
-    /**
-     * Set subject
-     *
-     * @param string $subject
-     */
     public function setSubject(string $subject): void
     {
         $this->subject = $subject;
     }
 
-    /**
-     * Get subject
-     *
-     * @return string
-     */
     public function getSubject(): string
     {
         return $this->subject;
     }
 
-    /**
-     * Set timestamp
-     *
-     * @param int $timestamp
-     */
     public function setTimestamp(int $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * Get timestamp
-     *
-     * @return int
-     */
     public function getTimestamp(): int
     {
         return $this->timestamp;
     }
 
-    /**
-     * Set message
-     *
-     * @param string $message
-     */
     public function setMessage(string $message): void
     {
         $this->message = $message;
     }
 
-    /**
-     * Get message
-     *
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;
     }
 
-    /**
-     * @return World
-     */
     public function getWorld(): World
     {
         return $this->world;
     }
 
-    /**
-     * @param World $world
-     */
     public function setWorld(World $world): void
     {
         $this->world = $world;
     }
 
-    /**
-     * @return Player
-     */
     public function getFromPlayer(): Player
     {
         return $this->fromPlayer;
     }
 
-    /**
-     * @param Player $fromPlayer
-     */
     public function setFromPlayer(Player $fromPlayer): void
     {
         $this->fromPlayer = $fromPlayer;
     }
 
-    /**
-     * @return Player
-     */
     public function getToPlayer(): Player
     {
         return $this->toPlayer;
     }
 
-    /**
-     * @param Player $toPlayer
-     */
     public function setToPlayer(Player $toPlayer): void
     {
         $this->toPlayer = $toPlayer;
     }
 
-    /**
-     * @param Player $fromPlayer
-     * @param Player $toPlayer
-     * @param string $subject
-     * @param string $content
-     * @param bool $adminMessage
-     * @return Message
-     */
-    public static function create(Player $fromPlayer, Player $toPlayer, string $subject, string $content, bool $adminMessage): Message
-    {
+    public static function create(
+        Player $fromPlayer,
+        Player $toPlayer,
+        string $subject,
+        string $content,
+        bool $adminMessage
+    ): Message {
         $message = new Message();
         $message->setFromPlayer($fromPlayer);
         $message->setToPlayer($toPlayer);

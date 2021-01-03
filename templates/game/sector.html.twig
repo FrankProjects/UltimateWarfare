@@ -1,0 +1,21 @@
+{% import "game/macros/map.html.twig" as mapMacros %}
+{% extends 'game.html.twig' %}
+
+{% block title %}Ultimate Warfare - World Map{% endblock title %}
+
+{% block content %}
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/World') }}">World</a> -
+        <b>Sector: {{ sector.id }}</b>
+    </p>
+
+    <table class="worldtable text">
+        {% for xRegions in regions %}
+            <tr>
+                {% for region in xRegions %}
+                    {{ mapMacros.tileRegion(region, mapSettings, player) }}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

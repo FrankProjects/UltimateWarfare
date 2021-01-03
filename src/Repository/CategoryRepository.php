@@ -8,14 +8,14 @@ use FrankProjects\UltimateWarfare\Entity\Category;
 
 interface CategoryRepository
 {
-    /**
-     * @param int $id
-     * @return Category|null
-     */
     public function find(int $id): ?Category;
 
     /**
      * @return Category[]
      */
     public function findAll(): array;
+
+    public function remove(Category $category): void;
+
+    public function save(Category $category): void;
 }

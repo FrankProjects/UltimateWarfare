@@ -4,28 +4,18 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * GameResource
- */
 class GameResource
 {
-    const GAME_RESOURCE_CASH = 'cash';
-    const GAME_RESOURCE_FOOD = 'food';
-    const GAME_RESOURCE_WOOD = 'wood';
-    const GAME_RESOURCE_STEEL = 'steel';
+    public const GAME_RESOURCE_CASH = 'cash';
+    public const GAME_RESOURCE_FOOD = 'food';
+    public const GAME_RESOURCE_WOOD = 'wood';
+    public const GAME_RESOURCE_STEEL = 'steel';
 
-    /**
-     * @param string $gameResource
-     * @return bool
-     */
     public static function isValid(string $gameResource): bool
     {
-        return in_array($gameResource, self::getAll());
+        return in_array($gameResource, self::getAll(), true);
     }
 
-    /**
-     * @return array
-     */
     public static function getAll(): array
     {
         return [

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Command;
 
 use FrankProjects\UltimateWarfare\Service\GameEngine;
@@ -10,17 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RunGameEngineCommand extends Command
 {
     protected static $defaultName = 'game:engine:run';
+    private GameEngine $gameEngine;
 
-    /**
-     * @var GameEngine
-     */
-    private $gameEngine;
-
-    /**
-     * RunGameEngineCommand constructor.
-     *
-     * @param GameEngine $gameEngine
-     */
     public function __construct(GameEngine $gameEngine)
     {
         $this->gameEngine = $gameEngine;
@@ -34,22 +27,20 @@ class RunGameEngineCommand extends Command
         $this->setHelp('Run the GameEngine to process all queued construction and research...');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @throws \Exception
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // outputs multiple lines to the console (adding "\n" at the end of each line)
-        $output->writeln([
-            'Running the GameEngine',
-            '============',
-            '',
-        ]);
+        $output->writeln(
+            [
+                'Running the GameEngine',
+                '============',
+                '',
+            ]
+        );
 
         $this->gameEngine->run(null);
-
         $output->writeln('Done!');
+
+        return Command::SUCCESS;
     }
 }

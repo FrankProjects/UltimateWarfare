@@ -9,10 +9,6 @@ use FrankProjects\UltimateWarfare\Entity\Report;
 
 interface ReportRepository
 {
-    /**
-     * @param int $id
-     * @return Report|null
-     */
     public function find(int $id): ?Report;
 
     /**
@@ -22,7 +18,7 @@ interface ReportRepository
 
     /**
      * @param Player $player
-     * @param $type
+     * @param int $type
      * @param int $limit
      * @return Report[]
      */
@@ -35,13 +31,7 @@ interface ReportRepository
      */
     public function findReports(Player $player, int $limit = 100): array;
 
-    /**
-     * @param Report $report
-     */
     public function remove(Report $report): void;
 
-    /**
-     * @param Report $report
-     */
     public function save(Report $report): void;
 }

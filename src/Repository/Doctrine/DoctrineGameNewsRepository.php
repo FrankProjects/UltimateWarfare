@@ -11,31 +11,15 @@ use FrankProjects\UltimateWarfare\Repository\GameNewsRepository;
 
 final class DoctrineGameNewsRepository implements GameNewsRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineGameNewsRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(GameNews::class);
     }
 
-    /**
-     * @param int $id
-     * @return GameNews|null
-     */
     public function find(int $id): ?GameNews
     {
         return $this->repository->find($id);
@@ -55,23 +39,17 @@ final class DoctrineGameNewsRepository implements GameNewsRepository
     public function findActiveMainPageNews(): array
     {
         return $this->entityManager->createQuery(
-                'SELECT gn.title, gn.message, gn.createDateTime FROM Game:GameNews gn WHERE gn.mainpage = 1 AND gn.enabled = 1 ORDER BY gn.createDateTime DESC'
-            )
+            'SELECT gn.title, gn.message, gn.createDateTime FROM Game:GameNews gn WHERE gn.mainpage = 1 AND gn.enabled = 1 ORDER BY gn.createDateTime DESC'
+        )
             ->getResult();
     }
 
-    /**
-     * @param GameNews $gameNews
-     */
     public function remove(GameNews $gameNews): void
     {
         $this->entityManager->remove($gameNews);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param GameNews $gameNews
-     */
     public function save(GameNews $gameNews): void
     {
         $this->entityManager->persist($gameNews);

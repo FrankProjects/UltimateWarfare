@@ -11,21 +11,9 @@ use FrankProjects\UltimateWarfare\Repository\ChatLineRepository;
 
 final class DoctrineChatLineRepository implements ChatLineRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineChatLineRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -39,11 +27,11 @@ final class DoctrineChatLineRepository implements ChatLineRepository
     public function findChatLinesByLastChatLineId(int $chatLineId): array
     {
         return $this->entityManager->createQuery(
-                'SELECT cl
+            'SELECT cl
               FROM Game:ChatLine cl
               WHERE cl.id > :chatLineId
               ORDER BY cl.timestamp ASC'
-            )->setParameter('chatLineId', $chatLineId)
+        )->setParameter('chatLineId', $chatLineId)
             ->getResult();
     }
 
@@ -54,25 +42,19 @@ final class DoctrineChatLineRepository implements ChatLineRepository
     public function findChatLinesOlderThanSeconds(int $seconds): array
     {
         return $this->entityManager->createQuery(
-                'SELECT cl
+            'SELECT cl
               FROM Game:ChatLine cl
               WHERE cl.timestamp < :timestamp'
-            )->setParameter('timestamp', time() - $seconds)
+        )->setParameter('timestamp', time() - $seconds)
             ->getResult();
     }
 
-    /**
-     * @param ChatLine $chatLine
-     */
     public function remove(ChatLine $chatLine): void
     {
         $this->entityManager->remove($chatLine);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param ChatLine $chatLine
-     */
     public function save(ChatLine $chatLine): void
     {
         $this->entityManager->persist($chatLine);

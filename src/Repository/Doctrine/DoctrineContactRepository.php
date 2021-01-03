@@ -11,31 +11,15 @@ use FrankProjects\UltimateWarfare\Repository\ContactRepository;
 
 final class DoctrineContactRepository implements ContactRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineContactRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Contact::class);
     }
 
-    /**
-     * @param int $id
-     * @return Contact|null
-     */
     public function find(int $id): ?Contact
     {
         return $this->repository->find($id);
@@ -49,18 +33,12 @@ final class DoctrineContactRepository implements ContactRepository
         return $this->repository->findAll();
     }
 
-    /**
-     * @param Contact $contact
-     */
     public function remove(Contact $contact): void
     {
         $this->entityManager->remove($contact);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Contact $contact
-     */
     public function save(Contact $contact): void
     {
         $this->entityManager->persist($contact);

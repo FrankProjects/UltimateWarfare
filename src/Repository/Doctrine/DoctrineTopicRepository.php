@@ -13,41 +13,20 @@ use FrankProjects\UltimateWarfare\Repository\TopicRepository;
 
 final class DoctrineTopicRepository implements TopicRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineTopicRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Topic::class);
     }
 
-    /**
-     * @param int $id
-     * @return Topic|null
-     */
     public function find(int $id): ?Topic
     {
         return $this->repository->find($id);
     }
 
-    /**
-     * @param User $user
-     * @return Topic|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
     public function getLastTopicByUser(User $user): ?Topic
     {
         return $this->entityManager->createQuery(
@@ -65,8 +44,8 @@ final class DoctrineTopicRepository implements TopicRepository
     public function findLastAnnouncements(int $limit): array
     {
         return $this->entityManager->createQuery(
-                'SELECT t.id, t.title FROM Game:Topic t WHERE t.category = :category ORDER BY t.createDateTime DESC'
-            )
+            'SELECT t.id, t.title FROM Game:Topic t WHERE t.category = :category ORDER BY t.createDateTime DESC'
+        )
             ->setParameter('category', 1)
             ->setMaxResults(intval($limit))
             ->getResult();
@@ -79,27 +58,21 @@ final class DoctrineTopicRepository implements TopicRepository
     public function getByCategorySortedByStickyAndDate(Category $category): array
     {
         return $this->entityManager->createQuery(
-                'SELECT t FROM Game:Topic t
+            'SELECT t FROM Game:Topic t
                  LEFT JOIN Game:Post p WITH p.topic = t 
                  WHERE t.category = :category
                  ORDER BY t.sticky, p.createDateTime DESC'
-            )
+        )
             ->setParameter('category', $category->getId())
             ->getResult();
     }
 
-    /**
-     * @param Topic $topic
-     */
     public function remove(Topic $topic): void
     {
         $this->entityManager->remove($topic);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Topic $topic
-     */
     public function save(Topic $topic): void
     {
         $this->entityManager->persist($topic);

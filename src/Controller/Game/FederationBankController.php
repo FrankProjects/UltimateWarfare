@@ -11,26 +11,14 @@ use Throwable;
 
 final class FederationBankController extends BaseGameController
 {
-    /**
-     * @var FederationBankActionService
-     */
-    private $federationBankActionService;
+    private FederationBankActionService $federationBankActionService;
 
-    /**
-     * FederationBankController constructor.
-     *
-     * @param FederationBankActionService $federationBankActionService
-     */
     public function __construct(
         FederationBankActionService $federationBankActionService
     ) {
         $this->federationBankActionService = $federationBankActionService;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function deposit(Request $request): Response
     {
         try {
@@ -43,15 +31,14 @@ final class FederationBankController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/bank/deposit.html.twig', [
-            'player' => $this->getPlayer(),
-        ]);
+        return $this->render(
+            'game/federation/bank/deposit.html.twig',
+            [
+                'player' => $this->getPlayer(),
+            ]
+        );
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function withdraw(Request $request): Response
     {
         try {
@@ -64,8 +51,11 @@ final class FederationBankController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/federation/bank/withdraw.html.twig', [
-            'player' => $this->getPlayer(),
-        ]);
+        return $this->render(
+            'game/federation/bank/withdraw.html.twig',
+            [
+                'player' => $this->getPlayer(),
+            ]
+        );
     }
 }

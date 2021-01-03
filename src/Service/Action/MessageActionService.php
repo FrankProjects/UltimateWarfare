@@ -13,22 +13,9 @@ use RuntimeException;
 
 final class MessageActionService
 {
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
+    private PlayerRepository $playerRepository;
+    private MessageRepository $messageRepository;
 
-    /**
-     * @var MessageRepository
-     */
-    private $messageRepository;
-
-    /**
-     * MessageActionService constructor.
-     *
-     * @param PlayerRepository $playerRepository
-     * @param MessageRepository $messageRepository
-     */
     public function __construct(
         PlayerRepository $playerRepository,
         MessageRepository $messageRepository
@@ -37,11 +24,7 @@ final class MessageActionService
         $this->messageRepository = $messageRepository;
     }
 
-    /**
-     * @param Player $player
-     * @param int $messageId
-     */
-    public function deleteMessageFromInbox(Player $player, int $messageId)
+    public function deleteMessageFromInbox(Player $player, int $messageId): void
     {
         $message = $this->getMessage($messageId);
 
@@ -53,11 +36,7 @@ final class MessageActionService
         $this->messageRepository->save($message);
     }
 
-    /**
-     * @param Player $player
-     * @param int $messageId
-     */
-    public function deleteMessageFromOutbox(Player $player, int $messageId)
+    public function deleteMessageFromOutbox(Player $player, int $messageId): void
     {
         $message = $this->getMessage($messageId);
 
@@ -69,15 +48,13 @@ final class MessageActionService
         $this->messageRepository->save($message);
     }
 
-    /**
-     * @param Player $player
-     * @param string $subject
-     * @param string $message
-     * @param string $toPlayerName
-     * @param bool $adminMessage
-     */
-    public function sendMessage(Player $player, string $subject, string $message, string $toPlayerName, bool $adminMessage)
-    {
+    public function sendMessage(
+        Player $player,
+        string $subject,
+        string $message,
+        string $toPlayerName,
+        bool $adminMessage
+    ): void {
         if ($subject == '') {
             throw new RunTimeException('Please type a subject');
         }
@@ -88,7 +65,7 @@ final class MessageActionService
 
         $toPlayer = $this->playerRepository->findByNameAndWorld($toPlayerName, $player->getWorld());
 
-        if (!$toPlayer) {
+        if ($toPlayer === null) {
             throw new RunTimeException('No such player');
         }
 
@@ -105,26 +82,17 @@ final class MessageActionService
         $this->playerRepository->save($toPlayer);
     }
 
-    /**
-     * @param int $messageId
-     * @return Message
-     */
     private function getMessage(int $messageId): Message
     {
         $message = $this->messageRepository->find($messageId);
 
-        if (!$message) {
+        if ($message === null) {
             throw new RunTimeException('No such message!');
         }
 
         return $message;
     }
 
-    /**
-     * @param int $messageId
-     * @param Player $player
-     * @return Message
-     */
     public function getMessageByIdAndToPlayer(int $messageId, Player $player): Message
     {
         $message = $this->getMessage($messageId);
@@ -136,11 +104,6 @@ final class MessageActionService
         return $message;
     }
 
-    /**
-     * @param int $messageId
-     * @param Player $player
-     * @return Message
-     */
     public function getMessageByIdAndFromPlayer(int $messageId, Player $player): Message
     {
         $message = $this->getMessage($messageId);
@@ -152,9 +115,6 @@ final class MessageActionService
         return $message;
     }
 
-    /**
-     * @param Player $player
-     */
     public function disableMessageNotification(Player $player): void
     {
         $player->getNotifications()->setMessage(false);

@@ -73,14 +73,14 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 ##### Assumptions:
 
-- You have [PHP](http://www.php.net/) 7.1 or higher installed and in your path.
+- You have [PHP](http://www.php.net/) 8.0 or higher installed and in your path.
 - You have [Composer](https://getcomposer.org/) installed and in your path.
 - You have a basic understanding of the [Symfony framework](https://symfony.com/).
 
 
 ##### Languages, frameworks, libraries and tools
 
-Ultimate Warfare is built on the Symfony 4 framework, using PHP 7.1 as language and twig as templating language.
+Ultimate Warfare is built on the Symfony 5 framework, using modern PHP as language and twig as templating language.
 
 I'm developing Ultimate Warfare in PhpStorm myself, but you're of course free to use whatever you see fit.
 
@@ -150,6 +150,6 @@ For updating your local development environment, do a `git pull`, optionally fol
 
 ### Style guide and standards
 
-PHP code should be in PSR2-style with a few additional rules. See [.styleci.yml](https://github.com/FrankProjects/UltimateWarfare/blob/master/.styleci.yml) for the defined [preset](https://styleci.readme.io/docs/presets#section-psr2) and [additional rules](https://styleci.readme.io/docs/fixers).
+PHP code should be in PSR12-style.
 
 Please add relevant unit tests or feature tests if possible.

@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Util;
 
+use FrankProjects\UltimateWarfare\Entity\AbstractGameResources;
 use FrankProjects\UltimateWarfare\Entity\Player;
 
 final class IncomeCalculator extends AbstractPlayerCalculator
 {
-    /**
-     * @param Player $player
-     * @return Player\Income
-     */
-    public function calculateIncomeForPlayer(Player $player): Player\Income
+    public function calculateIncomeForPlayer(Player $player): AbstractGameResources
     {
         $this->abstractGameResources = new Player\Income();
 

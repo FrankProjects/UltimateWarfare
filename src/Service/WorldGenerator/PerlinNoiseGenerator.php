@@ -4,35 +4,23 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\WorldGenerator;
 
-use FrankProjects\UltimateWarfare\Entity\WorldGeneratorConfiguration;
+use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 
 class PerlinNoiseGenerator implements Generator
 {
-    /**
-     * @var array
-     */
-    private $world;
+    private array $world;
 
-    /**
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
-     * @return array
-     */
-    public function generate(WorldGeneratorConfiguration $worldGeneratorConfiguration): array
+    public function generate(MapConfiguration $mapConfiguration): array
     {
-        $this->initWorld($worldGeneratorConfiguration);
+        $this->initWorld($mapConfiguration);
 
-        for ($k = 0; $k < $this->getOctaves($worldGeneratorConfiguration->getSize()); $k++) {
-            $this->octave($worldGeneratorConfiguration->getSize(), $worldGeneratorConfiguration->getPersistence(), $k);
+        for ($k = 0; $k < $this->getOctaves($mapConfiguration->getSize()); $k++) {
+            $this->octave($mapConfiguration->getSize(), $mapConfiguration->getPersistence(), $k);
         }
 
         return $this->world;
     }
 
-    /**
-     * @param int $size
-     * @param float $persistence
-     * @param int $octave
-     */
     private function octave(int $size, float $persistence, int $octave): void
     {
         $freq = pow(2, $octave);
@@ -71,34 +59,26 @@ class PerlinNoiseGenerator implements Generator
         }
     }
 
-    /**
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
-     */
-    private function initWorld(WorldGeneratorConfiguration $worldGeneratorConfiguration): void
+    private function initWorld(MapConfiguration $mapConfiguration): void
     {
-        mt_srand(intval($worldGeneratorConfiguration->getSeed() * $worldGeneratorConfiguration->getPersistence() * $worldGeneratorConfiguration->getSize()));
+        mt_srand(
+            intval($mapConfiguration->getSeed() * $mapConfiguration->getPersistence() * $mapConfiguration->getSize())
+        );
 
         $this->world = [];
-        for ($y = 0; $y < $worldGeneratorConfiguration->getSize(); $y++) {
+        for ($y = 0; $y < $mapConfiguration->getSize(); $y++) {
             $this->world[$y] = [];
-            for ($x = 0; $x < $worldGeneratorConfiguration->getSize(); $x++) {
+            for ($x = 0; $x < $mapConfiguration->getSize(); $x++) {
                 $this->world[$y][$x] = 0;
             }
         }
     }
 
-    /**
-     * @return float
-     */
     private function random(): float
     {
         return mt_rand() / getrandmax();
     }
 
-    /**
-     * @param int $size
-     * @return int
-     */
     private function getOctaves(int $size): int
     {
         return (int)log($size, 2);

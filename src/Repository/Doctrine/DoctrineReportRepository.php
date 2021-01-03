@@ -12,31 +12,15 @@ use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 
 final class DoctrineReportRepository implements ReportRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineReportRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Report::class);
     }
 
-    /**
-     * @param int $id
-     * @return Report|null
-     */
     public function find(int $id): ?Report
     {
         return $this->repository->find($id);
@@ -63,9 +47,15 @@ final class DoctrineReportRepository implements ReportRepository
               FROM Game:Report r
               WHERE r.player = :player AND r.type = :type AND r.timestamp < :timestamp
               ORDER BY r.timestamp DESC'
-        )->setParameter('timestamp', time()
-        )->setParameter('player', $player
-        )->setParameter('type', $type
+        )->setParameter(
+            'timestamp',
+            time()
+        )->setParameter(
+            'player',
+            $player
+        )->setParameter(
+            'type',
+            $type
         )->setMaxResults($limit)
             ->getResult();
     }
@@ -82,24 +72,22 @@ final class DoctrineReportRepository implements ReportRepository
               FROM Game:Report r
               WHERE r.player = :player AND r.timestamp < :timestamp
               ORDER BY r.timestamp DESC'
-        )->setParameter('timestamp', time()
-        )->setParameter('player', $player
+        )->setParameter(
+            'timestamp',
+            time()
+        )->setParameter(
+            'player',
+            $player
         )->setMaxResults($limit)
             ->getResult();
     }
 
-    /**
-     * @param Report $report
-     */
     public function remove(Report $report): void
     {
         $this->entityManager->remove($report);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Report $report
-     */
     public function save(Report $report): void
     {
         $this->entityManager->persist($report);

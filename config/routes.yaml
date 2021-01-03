@@ -52,12 +52,6 @@ Admin/UnbanRequest/List:
     path:      /admin/unban-request/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::list
 
-Admin/UnbanRequest/Read:
-    path:      /admin/unban-request/read/{unbanRequestId}
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::read
-    requirements:
-        unbanRequestId: '\d+'
-
 Admin/UnbanRequest/Remove:
     path:      /admin/unban-request/remove/{unbanRequestId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::remove
@@ -132,12 +126,6 @@ Admin/World/Generate:
     requirements:
         worldId: '\d+'
 
-Admin/World/GenerateImages:
-    path:      /admin/world/generate-images/{worldId}
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::generateImages
-    requirements:
-        worldId: '\d+'
-
 Admin/World/List:
     path:      /admin/world/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::list
@@ -185,12 +173,6 @@ Forum/Category/Remove:
     controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::remove
     requirements:
         categoryId: '\d+'
-
-Forum/Post/Create:
-    path:      /forum/post/create/{topicId}
-    controller: FrankProjects\UltimateWarfare\Controller\Forum\PostController::create
-    requirements:
-        topicId: '\d+'
 
 Forum/Post/Edit:
     path:      /forum/post/edit/{postId}
@@ -525,6 +507,10 @@ Game/World/GetTiles:
     path:      /game/world/get-tiles
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::getTiles
 
+Game/World/Create:
+    path:      /game/world/create
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::create
+
 Game/World/Region:
     path:      /game/world/region/{regionId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::region
@@ -634,7 +620,7 @@ Guide/ListUnits:
 
 Guide/LogOff:
     path:      /guide/log-off
-    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::logoff
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::logOff
 
 Guide/Market:
     path:      /guide/market
@@ -718,9 +704,9 @@ Site/HallOfFame:
     path:      /hall-of-fame
     controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::hallOfFame
 
-Site/HallOfFameRound:
-    path:      /hall-of-fame/{worldId}/{round}
-    controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::round
+Site/HallOfFameWorld:
+    path:      /hall-of-fame/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::world
     requirements:
         worldId: '\d+'
         round: '\d+'
@@ -735,11 +721,9 @@ Site/Login:
 
 Site/LoginCheck:
     path:      /login_check
-    controller: FrankProjects\UltimateWarfare\Controller\Site\SecurityController::check
 
 Site/Logout:
     path:      /logout
-    controller: FrankProjects\UltimateWarfare\Controller\Site\SecurityController::logout
 
 Site/ResetPassword:
     path:      /reset-password

@@ -13,34 +13,11 @@ use RuntimeException;
 
 final class BattleEngine
 {
-    /**
-     * @var BattleUpdaterService
-     */
-    private $battleUpdaterService;
+    private BattleUpdaterService $battleUpdaterService;
+    private BattleReportCreator $battleReportCreator;
+    private NetworthUpdaterService $networthUpdaterService;
+    private IncomeUpdaterService $incomeUpdaterService;
 
-    /**
-     * @var BattleReportCreator
-     */
-    private $battleReportCreator;
-
-    /**
-     * @var NetworthUpdaterService
-     */
-    private $networthUpdaterService;
-
-    /**
-     * @var IncomeUpdaterService
-     */
-    private $incomeUpdaterService;
-
-    /**
-     * BattleEngine constructor.
-     *
-     * @param BattleUpdaterService $battleUpdaterService
-     * @param BattleReportCreator $battleReportCreator
-     * @param NetworthUpdaterService $networthUpdaterService
-     * @param IncomeUpdaterService $incomeUpdaterService
-     */
     public function __construct(
         BattleUpdaterService $battleUpdaterService,
         BattleReportCreator $battleReportCreator,
@@ -86,9 +63,6 @@ final class BattleEngine
         return $battleResults;
     }
 
-    /**
-     * @return array
-     */
     private function getBattlePhases(): array
     {
         return [
@@ -98,9 +72,6 @@ final class BattleEngine
         ];
     }
 
-    /**
-     * @param Fleet $fleet
-     */
     private function ensureCanAttack(Fleet $fleet): void
     {
         if ($fleet->getTimestampArrive() > time()) {
@@ -125,14 +96,12 @@ final class BattleEngine
         }
     }
 
-    /**
-     * @param BattleResult $battleResults
-     * @param Fleet $fleet
-     * @param array $attackerGameUnits
-     * @param array $defenderGameUnits
-     */
-    private function processResults(BattleResult $battleResults, Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
-    {
+    private function processResults(
+        BattleResult $battleResults,
+        Fleet $fleet,
+        array $attackerGameUnits,
+        array $defenderGameUnits
+    ): void {
         $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
         $timestamp = time();
 

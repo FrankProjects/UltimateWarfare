@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <embeddable name="FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats">
+    <field name="health" type="integer" column="health">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="armor" type="integer" column="armor">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="travelSpeed" type="integer" column="travel_speed">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <embedded name="airBattleStats" class="FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\AirBattleStats" use-column-prefix="false"/>
+    <embedded name="seaBattleStats" class="FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\SeaBattleStats" use-column-prefix="false"/>
+    <embedded name="groundBattleStats" class="FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\GroundBattleStats" use-column-prefix="false"/>
+  </embeddable>
+</doctrine-mapping>

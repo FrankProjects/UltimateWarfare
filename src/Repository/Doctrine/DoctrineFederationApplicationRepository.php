@@ -12,49 +12,26 @@ use FrankProjects\UltimateWarfare\Repository\FederationApplicationRepository;
 
 final class DoctrineFederationApplicationRepository implements FederationApplicationRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineFederationApplicationRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(FederationApplication::class);
     }
 
-    /**
-     * @param int $id
-     * @param World $world
-     * @return FederationApplication|null
-     */
     public function findByIdAndWorld(int $id, World $world): ?FederationApplication
     {
         return $this->repository->findOneBy(['id' => $id, 'world' => $world]);
     }
 
-    /**
-     * @param FederationApplication $federationApplication
-     */
     public function remove(FederationApplication $federationApplication): void
     {
         $this->entityManager->remove($federationApplication);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param FederationApplication $federationApplication
-     */
     public function save(FederationApplication $federationApplication): void
     {
         $this->entityManager->persist($federationApplication);

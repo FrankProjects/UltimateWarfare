@@ -9,11 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RankingController extends BaseGameController
 {
-    /**
-     * @param string $sortBy
-     * @param PlayerRepository $playerRepository
-     * @return Response
-     */
     public function ranking(string $sortBy, PlayerRepository $playerRepository): Response
     {
         $player = $this->getPlayer();
@@ -26,10 +21,13 @@ final class RankingController extends BaseGameController
             $players = $playerRepository->findByWorldAndNetworth($player->getWorld());
         }
 
-        return $this->render('game/rankings.html.twig', [
-            'player' => $player,
-            'players' => $players,
-            'rankingsTitle' => $rankingsTitle
-        ]);
+        return $this->render(
+            'game/rankings.html.twig',
+            [
+                'player' => $player,
+                'players' => $players,
+                'rankingsTitle' => $rankingsTitle
+            ]
+        );
     }
 }

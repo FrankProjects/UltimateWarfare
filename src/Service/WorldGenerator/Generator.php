@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\WorldGenerator;
 
-use FrankProjects\UltimateWarfare\Entity\WorldGeneratorConfiguration;
+use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 
 interface Generator
 {
-    /**
-     * @param WorldGeneratorConfiguration $worldGeneratorConfiguration
-     * @return array
-     */
-    public function generate(WorldGeneratorConfiguration $worldGeneratorConfiguration): array;
+    public function generate(MapConfiguration $mapConfiguration): array;
 }

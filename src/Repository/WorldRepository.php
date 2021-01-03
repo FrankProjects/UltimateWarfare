@@ -8,10 +8,6 @@ use FrankProjects\UltimateWarfare\Entity\World;
 
 interface WorldRepository
 {
-    /**
-     * @param int $id
-     * @return World|null
-     */
     public function find(int $id): ?World;
 
     /**
@@ -25,13 +21,9 @@ interface WorldRepository
      */
     public function findByPublic(bool $public): array;
 
-    /**
-     * @param World $world
-     */
     public function remove(World $world): void;
 
-    /**
-     * @param World $world
-     */
     public function save(World $world): void;
+
+    public function refresh(World $world): void;
 }

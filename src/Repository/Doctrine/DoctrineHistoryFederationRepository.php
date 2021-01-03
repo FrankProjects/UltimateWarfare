@@ -7,26 +7,13 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\HistoryFederation;
-use FrankProjects\UltimateWarfare\Entity\HistoryPlayer;
 use FrankProjects\UltimateWarfare\Repository\HistoryFederationRepository;
 
 final class DoctrineHistoryFederationRepository implements HistoryFederationRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineHistoryFederationRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -35,17 +22,13 @@ final class DoctrineHistoryFederationRepository implements HistoryFederationRepo
 
     /**
      * @param int $worldId
-     * @param int $round
-     * @return HistoryPlayer[]
+     * @return HistoryFederation[]
      */
-    public function findByWorldAndRound(int $worldId, int $round): array
+    public function findByWorld(int $worldId): array
     {
-        return $this->repository->findBy(['worldId' => $worldId, 'round' => $round], ['regions' => 'DESC']);
+        return $this->repository->findBy(['worldId' => $worldId], ['regions' => 'DESC']);
     }
 
-    /**
-     * @param HistoryFederation $historyFederation
-     */
     public function save(HistoryFederation $historyFederation): void
     {
         $this->entityManager->persist($historyFederation);

@@ -13,34 +13,11 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 
 final class BattleUpdaterService
 {
-    /**
-     * @var FleetRepository
-     */
-    private $fleetRepository;
+    private FleetRepository $fleetRepository;
+    private FleetUnitRepository $fleetUnitRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private WorldRegionUnitRepository $worldRegionUnitRepository;
 
-    /**
-     * @var FleetUnitRepository
-     */
-    private $fleetUnitRepository;
-
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
-
-    /**
-     * @var WorldRegionUnitRepository
-     */
-    private $worldRegionUnitRepository;
-
-    /**
-     * BattleUpdaterService constructor.
-     *
-     * @param FleetRepository $fleetRepository
-     * @param FleetUnitRepository $fleetUnitRepository
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param WorldRegionUnitRepository $worldRegionUnitRepository
-     */
     public function __construct(
         FleetRepository $fleetRepository,
         FleetUnitRepository $fleetUnitRepository,
@@ -70,7 +47,11 @@ final class BattleUpdaterService
         }
 
         foreach ($attackerGameUnits as $fleetUnit) {
-            $worldRegionUnit = WorldRegionUnit::create($targetWorldRegion, $fleetUnit->getGameUnit(), $fleetUnit->getAmount());
+            $worldRegionUnit = WorldRegionUnit::create(
+                $targetWorldRegion,
+                $fleetUnit->getGameUnit(),
+                $fleetUnit->getAmount()
+            );
             $this->worldRegionUnitRepository->save($worldRegionUnit);
         }
         $this->fleetRepository->remove($fleet);

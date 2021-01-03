@@ -16,28 +16,10 @@ use RuntimeException;
 
 final class MarketActionService
 {
-    /**
-     * @var MarketItemRepository
-     */
-    private $marketItemRepository;
+    private MarketItemRepository $marketItemRepository;
+    private PlayerRepository $playerRepository;
+    private ReportRepository $reportRepository;
 
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
-
-    /**
-     * MarketActionService constructor.
-     *
-     * @param MarketItemRepository $marketItemRepository
-     * @param PlayerRepository $playerRepository
-     * @param ReportRepository $reportRepository
-     */
     public function __construct(
         MarketItemRepository $marketItemRepository,
         PlayerRepository $playerRepository,
@@ -48,10 +30,6 @@ final class MarketActionService
         $this->reportRepository = $reportRepository;
     }
 
-    /**
-     * @param Player $player
-     * @param int $marketItemId
-     */
     public function buyOrder(Player $player, int $marketItemId): void
     {
         $this->ensureMarketEnabled($player);
@@ -90,10 +68,6 @@ final class MarketActionService
         $this->createBuyReports($marketItem, $player);
     }
 
-    /**
-     * @param MarketItem $marketItem
-     * @param Player $player
-     */
     private function createBuyReports(MarketItem $marketItem, Player $player): void
     {
         $buyMessage = "You bought {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
@@ -103,10 +77,6 @@ final class MarketActionService
         $this->createReport($marketItem->getPlayer(), $sellMessage);
     }
 
-    /**
-     * @param Player $player
-     * @param int $marketItemId
-     */
     public function cancelOrder(Player $player, int $marketItemId): void
     {
         $this->ensureMarketEnabled($player);
@@ -129,10 +99,6 @@ final class MarketActionService
         $this->marketItemRepository->remove($marketItem);
     }
 
-    /**
-     * @param Player $player
-     * @param int $marketItemId
-     */
     public function sellOrder(Player $player, int $marketItemId): void
     {
         $this->ensureMarketEnabled($player);
@@ -166,10 +132,6 @@ final class MarketActionService
         $this->createSellReports($marketItem, $player);
     }
 
-    /**
-     * @param MarketItem $marketItem
-     * @param Player $player
-     */
     private function createSellReports(MarketItem $marketItem, Player $player): void
     {
         $sellMessage = "You sold {$marketItem->getAmount()} {$marketItem->getGameResource()}.";
@@ -179,13 +141,6 @@ final class MarketActionService
         $this->createReport($marketItem->getPlayer(), $buyMessage);
     }
 
-    /**
-     * @param Player $player
-     * @param string $gameResource
-     * @param int $price
-     * @param int $amount
-     * @param string $action
-     */
     public function placeOffer(Player $player, string $gameResource, int $price, int $amount, string $action): void
     {
         $this->ensureValidGameResource($gameResource);
@@ -214,9 +169,6 @@ final class MarketActionService
         $this->playerRepository->save($player);
     }
 
-    /**
-     * @param Player $player
-     */
     private function ensureMarketEnabled(Player $player): void
     {
         $world = $player->getWorld();
@@ -225,10 +177,6 @@ final class MarketActionService
         }
     }
 
-    /**
-     * @param MarketItem $marketItem
-     * @param Player $player
-     */
     private function ensureMarketItemNotOwnedByPlayer(MarketItem $marketItem, Player $player): void
     {
         if ($marketItem->getPlayer()->getId() === $player->getId()) {
@@ -236,9 +184,6 @@ final class MarketActionService
         }
     }
 
-    /**
-     * @param string $gameResource
-     */
     private function ensureValidGameResource(string $gameResource): void
     {
         if (!GameResource::isValid($gameResource)) {
@@ -246,16 +191,11 @@ final class MarketActionService
         }
     }
 
-    /**
-     * @param Player $player
-     * @param int $marketItemId
-     * @return MarketItem
-     */
     private function getMarketItem(Player $player, int $marketItemId): MarketItem
     {
         $marketItem = $this->marketItemRepository->find($marketItemId);
 
-        if (!$marketItem) {
+        if ($marketItem === null) {
             throw new RunTimeException('Market order does not exist!');
         }
 
@@ -266,11 +206,6 @@ final class MarketActionService
         return $marketItem;
     }
 
-    /**
-     * @param MarketItem $marketItem
-     * @param Resources $resources
-     * @return Resources
-     */
     private function addGameResources(MarketItem $marketItem, Resources $resources): Resources
     {
         switch ($marketItem->getGameResource()) {
@@ -290,12 +225,6 @@ final class MarketActionService
         return $resources;
     }
 
-
-    /**
-     * @param MarketItem $marketItem
-     * @param Resources $resources
-     * @return Resources
-     */
     private function substractGameResources(MarketItem $marketItem, Resources $resources): Resources
     {
         switch ($marketItem->getGameResource()) {
@@ -315,14 +244,11 @@ final class MarketActionService
         return $resources;
     }
 
-    /**
-     * @param string $gameResource
-     * @param Resources $resources
-     * @param int $amount
-     * @return Resources
-     */
-    private function substractAndValidateGameResources(string $gameResource, Resources $resources, int $amount): Resources
-    {
+    private function substractAndValidateGameResources(
+        string $gameResource,
+        Resources $resources,
+        int $amount
+    ): Resources {
         switch ($gameResource) {
             case GameResource::GAME_RESOURCE_WOOD:
                 $this->ensureEnoughResources($amount, $resources->getWood(), GameResource::GAME_RESOURCE_WOOD);
@@ -343,11 +269,6 @@ final class MarketActionService
         return $resources;
     }
 
-    /**
-     * @param int $amount
-     * @param int $resourceAmount
-     * @param string $resourceName
-     */
     private function ensureEnoughResources(int $amount, int $resourceAmount, string $resourceName): void
     {
         if ($amount > $resourceAmount) {
@@ -355,10 +276,6 @@ final class MarketActionService
         }
     }
 
-    /**
-     * @param Player $player
-     * @param string $text
-     */
     private function createReport(Player $player, string $text): void
     {
         $report = Report::createForPlayer($player, time(), Report::TYPE_MARKET, $text);

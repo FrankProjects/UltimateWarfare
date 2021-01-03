@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Util;
+
+use Exception;
 
 final class TokenGenerator
 {
     /**
      * @param int $length
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function generateToken(int $length): string
     {

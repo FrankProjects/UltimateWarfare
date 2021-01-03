@@ -18,40 +18,12 @@ use Throwable;
 
 final class ConstructionController extends BaseGameController
 {
-    /**
-     * @var ConstructionRepository
-     */
-    private $constructionRepository;
+    private ConstructionRepository $constructionRepository;
+    private GameUnitTypeRepository $gameUnitTypeRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private ConstructionActionService $constructionActionService;
+    private RegionActionService $regionActionService;
 
-    /**
-     * @var GameUnitTypeRepository
-     */
-    private $gameUnitTypeRepository;
-
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
-
-    /**
-     * @var ConstructionActionService
-     */
-    private $constructionActionService;
-
-    /**
-     * @var RegionActionService
-     */
-    private $regionActionService;
-
-    /**
-     * ConstructionController constructor.
-     *
-     * @param ConstructionRepository $constructionRepository
-     * @param GameUnitTypeRepository $gameUnitTypeRepository
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param ConstructionActionService $constructionActionService
-     * @param RegionActionService $regionActionService
-     */
     public function __construct(
         ConstructionRepository $constructionRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
@@ -66,46 +38,42 @@ final class ConstructionController extends BaseGameController
         $this->regionActionService = $regionActionService;
     }
 
-    /**
-     * @param int $type
-     * @return Response
-     */
     public function construction(int $type): Response
     {
         $gameUnitType = $this->gameUnitTypeRepository->find($type);
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
 
-        if (!$gameUnitType) {
+        if ($gameUnitType === null) {
             $constructionData = $this->constructionRepository->getGameUnitConstructionSumByPlayer($this->getPlayer());
-            return $this->render('game/constructionSummary.html.twig', [
-                'player' => $this->getPlayer(),
-                'gameUnitTypes' => $gameUnitTypes,
-                'constructionData' => $constructionData
-            ]);
+            return $this->render(
+                'game/constructionSummary.html.twig',
+                [
+                    'player' => $this->getPlayer(),
+                    'gameUnitTypes' => $gameUnitTypes,
+                    'constructionData' => $constructionData
+                ]
+            );
         }
 
         $constructions = $this->constructionRepository->findByPlayerAndGameUnitType($this->getPlayer(), $gameUnitType);
 
-        return $this->render('game/construction.html.twig', [
-            'player' => $this->getPlayer(),
-            'constructions' => $constructions,
-            'gameUnitType' => $gameUnitType,
-            'gameUnitTypes' => $gameUnitTypes,
-        ]);
+        return $this->render(
+            'game/construction.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'constructions' => $constructions,
+                'gameUnitType' => $gameUnitType,
+                'gameUnitTypes' => $gameUnitTypes,
+            ]
+        );
     }
 
-    /**
-     * XXX TODO: Fix unit info page
-     * XXX TODO: Fix buildtime to human readable format
-     *
-     * @param Request $request
-     * @param int $regionId
-     * @param int $gameUnitTypeId
-     * @return Response
-     * @throws \Exception
-     */
     public function constructGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
+        /**
+         * XXX TODO: Fix unit info page
+         * XXX TODO: Fix buildtime to human readable format
+         */
         try {
             $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $this->getPlayer());
         } catch (WorldRegionNotFoundException $e) {
@@ -115,38 +83,46 @@ final class ConstructionController extends BaseGameController
 
         $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
 
-        if (!$gameUnitType) {
+        if ($gameUnitType === null) {
             $this->addFlash('error', 'Unknown GameUnitType!');
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 
         if ($request->isMethod(Request::METHOD_POST)) {
             try {
-                $this->constructionActionService->constructGameUnits($worldRegion, $this->getPlayer(), $gameUnitType, $request->get('construct'));
+                $this->constructionActionService->constructGameUnits(
+                    $worldRegion,
+                    $this->getPlayer(),
+                    $gameUnitType,
+                    $request->get('construct')
+                );
                 $this->addConstructGameUnitsFlash($gameUnitType);
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render('game/region/constructGameUnits.html.twig', [
-            'region' => $worldRegion,
-            'player' => $this->getPlayer(),
-            'spaceLeft' => $this->constructionActionService->getBuildingSpaceLeft($gameUnitType, $worldRegion),
-            'gameUnitType' => $gameUnitType,
-            'gameUnitTypes' => $this->gameUnitTypeRepository->findAll(),
-            'gameUnitData' => $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion),
-            'constructionData' => $this->constructionRepository->getGameUnitConstructionSumByWorldRegion($worldRegion)
-        ]);
+        return $this->render(
+            'game/region/constructGameUnits.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $this->getPlayer(),
+                'spaceLeft' => $this->constructionActionService->getBuildingSpaceLeft($gameUnitType, $worldRegion),
+                'gameUnitType' => $gameUnitType,
+                'gameUnitTypes' => $this->gameUnitTypeRepository->findAll(),
+                'gameUnitData' => $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion),
+                'constructionData' => $this->constructionRepository->getGameUnitConstructionSumByWorldRegion(
+                    $worldRegion
+                )
+            ]
+        );
     }
 
-    /**
-     * XXX TODO: Refactor to show what game units are being built/trained
-     *
-     * @param GameUnitType $gameUnitType
-     */
     private function addConstructGameUnitsFlash(GameUnitType $gameUnitType): void
     {
+        /**
+         * XXX TODO: Refactor to show what game units are being built/trained
+         */
         if ($gameUnitType->getId() == 4) {
             $this->addFlash('success', 'New units are now being trained!');
         } else {
@@ -154,13 +130,6 @@ final class ConstructionController extends BaseGameController
         }
     }
 
-    /**
-     * @param Request $request
-     * @param int $regionId
-     * @param int $gameUnitTypeId
-     * @return Response
-     * @throws \Exception
-     */
     public function removeGameUnits(Request $request, int $regionId, int $gameUnitTypeId): Response
     {
         try {
@@ -171,35 +140,41 @@ final class ConstructionController extends BaseGameController
         }
 
         $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
-        if (!$gameUnitType) {
+        if ($gameUnitType === null) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 
         if ($request->isMethod(Request::METHOD_POST)) {
             try {
-                $this->constructionActionService->removeGameUnits($worldRegion, $this->getPlayer(), $gameUnitType, $request->get('destroy'));
+                $this->constructionActionService->removeGameUnits(
+                    $worldRegion,
+                    $this->getPlayer(),
+                    $gameUnitType,
+                    $request->get('destroy')
+                );
                 $this->addRemoveGameUnitsFlash($gameUnitType);
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render('game/region/removeGameUnits.html.twig', [
-            'region' => $worldRegion,
-            'player' => $this->getPlayer(),
-            'gameUnitType' => $gameUnitType,
-            'gameUnitTypes' => $this->gameUnitTypeRepository->findAll(),
-            'gameUnitData' => $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion),
-        ]);
+        return $this->render(
+            'game/region/removeGameUnits.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $this->getPlayer(),
+                'gameUnitType' => $gameUnitType,
+                'gameUnitTypes' => $this->gameUnitTypeRepository->findAll(),
+                'gameUnitData' => $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion),
+            ]
+        );
     }
 
-    /**
-     * XXX TODO: Refactor to show what game units are being destroyed/disbanded
-     *
-     * @param GameUnitType $gameUnitType
-     */
     private function addRemoveGameUnitsFlash(GameUnitType $gameUnitType): void
     {
+        /**
+         * XXX TODO: Refactor to show what game units are being destroyed/disbanded
+         */
         if ($gameUnitType->getId() == 4) {
             $this->addFlash('success', "You have disbanded units!");
         } else {
@@ -207,10 +182,6 @@ final class ConstructionController extends BaseGameController
         }
     }
 
-    /**
-     * @param int $constructionId
-     * @return RedirectResponse
-     */
     public function cancel(int $constructionId): RedirectResponse
     {
         try {

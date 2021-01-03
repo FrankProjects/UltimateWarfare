@@ -46,10 +46,10 @@
                 <td>To region</td>
                 <td colspan="2">
                     <select name="target">
-                        {% for targetRegion in targetRegions %}
-                            <option value="{{ targetRegion.id }}">
-                                {{ targetRegion.x }}, {{ targetRegion.y }}: {{ targetRegion.region }} - Travel time:
-                                {{ targetRegion.distance }}</option>
+                        {% for targetRegionData in targetRegions %}
+                            <option value="{{ targetRegionData.region.id }}">
+                                {{ targetRegionData.region.x }}, {{ targetRegionData.region.y }} - Travel time:
+                                {{ targetRegionData.travelTime }}</option>
                         {% endfor %}
                     </select>
                 </td>

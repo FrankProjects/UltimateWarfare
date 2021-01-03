@@ -17,40 +17,12 @@ use FrankProjects\UltimateWarfare\Service\NetworthUpdaterService;
 
 final class ConstructionProcessor implements Processor
 {
-    /**
-     * @var ConstructionRepository
-     */
-    private $constructionRepository;
+    private ConstructionRepository $constructionRepository;
+    private PlayerRepository $playerRepository;
+    private ReportRepository $reportRepository;
+    private WorldRegionUnitRepository $worldRegionUnitRepository;
+    private NetworthUpdaterService $networthUpdaterService;
 
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
-
-    /**
-     * @var WorldRegionUnitRepository
-     */
-    private $worldRegionUnitRepository;
-
-    /**
-     * @var NetworthUpdaterService
-     */
-    private $networthUpdaterService;
-
-    /**
-     * ConstructionProcessor constructor.
-     *
-     * @param ConstructionRepository $constructionRepository
-     * @param PlayerRepository $playerRepository
-     * @param ReportRepository $reportRepository
-     * @param WorldRegionUnitRepository $worldRegionUnitRepository
-     * @param NetworthUpdaterService $networthUpdaterService
-     */
     public function __construct(
         ConstructionRepository $constructionRepository,
         PlayerRepository $playerRepository,
@@ -65,9 +37,6 @@ final class ConstructionProcessor implements Processor
         $this->networthUpdaterService = $networthUpdaterService;
     }
 
-    /**
-     * @param int $timestamp
-     */
     public function run(int $timestamp): void
     {
         $constructions = $this->constructionRepository->getCompletedConstructions($timestamp);
@@ -85,11 +54,6 @@ final class ConstructionProcessor implements Processor
         }
     }
 
-    /**
-     * @param Player $player
-     * @param Construction $construction
-     * @return Player
-     */
     private function updatePlayerResources(Player $player, Construction $construction): Player
     {
         $upkeepCash = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getCash();
@@ -121,9 +85,6 @@ final class ConstructionProcessor implements Processor
         return $player;
     }
 
-    /**
-     * @param Construction $construction
-     */
     private function processConstruction(Construction $construction): void
     {
         // XXX TODO: Process income before processing construction...
@@ -132,9 +93,13 @@ final class ConstructionProcessor implements Processor
         $worldRegionUnit = $this->getWorldRegionUnit($construction);
 
         if ($worldRegionUnit !== null) {
-            $worldRegionUnit->setAmount($construction->getNumber());
+            $worldRegionUnit->setAmount($worldRegionUnit->getAmount() + $construction->getNumber());
         } else {
-            $worldRegionUnit = WorldRegionUnit::create($construction->getWorldRegion(), $construction->getGameUnit(), $construction->getNumber());
+            $worldRegionUnit = WorldRegionUnit::create(
+                $construction->getWorldRegion(),
+                $construction->getGameUnit(),
+                $construction->getNumber()
+            );
         }
 
         $player = $this->updatePlayerResources($construction->getPlayer(), $construction);
@@ -147,9 +112,6 @@ final class ConstructionProcessor implements Processor
         $this->networthUpdaterService->updateNetworthForPlayer($player);
     }
 
-    /**
-     * @param Construction $construction
-     */
     private function createConstructionReport(Construction $construction): void
     {
         $reportType = Report::TYPE_GENERAL;
@@ -164,21 +126,15 @@ final class ConstructionProcessor implements Processor
         $this->reportRepository->save($report);
     }
 
-    /**
-     * @param Construction $construction
-     * @return WorldRegionUnit|null
-     */
     private function getWorldRegionUnit(Construction $construction): ?WorldRegionUnit
     {
         $worldRegion = $construction->getWorldRegion();
-        $worldRegionUnit = null;
         foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnitObject) {
-            if ($worldRegionUnitObject->getGameUnit()->getId() == $construction->getGameUnit()->getId()) {
-                $worldRegionUnit = $worldRegionUnitObject;
-                break;
+            if ($worldRegionUnitObject->getGameUnit()->getId() === $construction->getGameUnit()->getId()) {
+                return $worldRegionUnitObject;
             }
         }
 
-        return $worldRegionUnit;
+        return null;
     }
 }

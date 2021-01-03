@@ -4,121 +4,52 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Serializable;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface, EquatableInterface, \Serializable
+class User implements UserInterface, EquatableInterface, Serializable
 {
-    const ROLE_DEFAULT = 'ROLE_USER';
-    const ROLE_ADMIN = 'ROLE_ADMIN';
+    private const ROLE_DEFAULT = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private string $username = '';
+    private string $email = '';
+    private bool $enabled = false;
+    private string $password = '';
+    private string $plainPassword = '';
+    private ?DateTime $lastLogin;
+    /** Random string sent to the user email address in order to verify it */
+    private ?string $confirmationToken = null;
+    private ?DateTime $passwordRequestedAt = null;
+    private array $roles;
+    private DateTime $signup;
+    private bool $active = true;
+    private bool $adviser = false;
+    private bool $forumBan = false;
 
-    /**
-     * @var string
-     */
-    private $username = '';
+    /** @var Collection<Player> */
+    private Collection $players;
 
-    /**
-     * @var string
-     */
-    private $email = '';
+    /** @var Collection<Topic> */
+    private Collection $topics;
 
-    /**
-     * @var bool
-     */
-    private $enabled = false;
+    /** @var Collection<Topic> */
+    private Collection $topicsEdited;
 
-    /**
-     * @var string
-     */
-    private $password = '';
+    /** @var Collection<Topic> */
+    private Collection $topicsLastPost;
 
-    /**
-     * @var string
-     */
-    private $plainPassword = '';
+    /** @var Collection<Topic> */
+    private Collection $posts;
 
-    /**
-     * @var \DateTime
-     */
-    private $lastLogin;
+    /** @var Collection<Topic> */
+    private Collection $postsEdited;
 
-    /**
-     * Random string sent to the user email address in order to verify it.
-     *
-     * @var ?string
-     */
-    private $confirmationToken = null;
-
-    /**
-     * @var \DateTime
-     */
-    private $passwordRequestedAt = null;
-
-    /**
-     * @var array
-     */
-    private $roles;
-
-    /**
-     * @var \DateTime
-     */
-    private $signup;
-
-    /**
-     * @var bool
-     */
-    private $active = true;
-
-    /**
-     * @var bool
-     */
-    private $adviser = false;
-
-    /**
-     * @var bool
-     */
-    private $forumBan = false;
-
-    /**
-     * @var Collection|Player[]
-     */
-    private $players = [];
-
-    /**
-     * @var Collection|Topic[]
-     */
-    private $topics = [];
-
-    /**
-     * @var Collection|Topic[]
-     */
-    private $topicsEdited = [];
-
-    /**
-     * @var Collection|Topic[]
-     */
-    private $topicsLastPost = [];
-
-    /**
-     * @var Collection|Topic[]
-     */
-    private $posts = [];
-
-    /**
-     * @var Collection|Topic[]
-     */
-    private $postsEdited = [];
-
-    /**
-     * User constructor.
-     */
     public function __construct()
     {
         $this->roles = [];
@@ -142,26 +73,16 @@ class User implements UserInterface, EquatableInterface, \Serializable
         return array_unique($roles);
     }
 
-    /**
-     * @param array $roles
-     */
     public function setRoles(array $roles): void
     {
         $this->roles = $roles;
     }
 
-    /**
-     * @param string $role
-     * @return bool
-     */
     public function hasRole(string $role): bool
     {
         return in_array(strtoupper($role), $this->getRoles(), true);
     }
 
-    /**
-     * @param string $role
-     */
     public function addRole(string $role): void
     {
         $role = strtoupper($role);
@@ -176,9 +97,6 @@ class User implements UserInterface, EquatableInterface, \Serializable
         return;
     }
 
-    /**
-     * @param string $role
-     */
     public function removeRole(string $role): void
     {
         $key = array_search(strtoupper($role), $this->roles, true);
@@ -187,33 +105,21 @@ class User implements UserInterface, EquatableInterface, \Serializable
         }
     }
 
-    /**
-     * @return string
-     */
     public function getPassword(): string
     {
         return $this->password;
     }
 
-    /**
-     * @param string $password
-     */
     public function setPassword(string $password): void
     {
         $this->password = $password;
     }
 
-    /**
-     * @return string
-     */
     public function getPlainPassword(): string
     {
         return $this->plainPassword;
     }
 
-    /**
-     * @param string $plainPassword
-     */
     public function setPlainPassword(string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
@@ -227,31 +133,21 @@ class User implements UserInterface, EquatableInterface, \Serializable
         return null;
     }
 
-    /**
-     * @return string
-     */
     public function getUsername(): string
     {
         return $this->username;
     }
 
-    /**
-     * @param string $username
-     */
     public function setUsername(string $username): void
     {
         $this->username = $username;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         $this->plainPassword = '';
     }
 
-    /**
-     * @param UserInterface $user
-     * @return bool
-     */
     public function isEqualTo(UserInterface $user): bool
     {
         if (!$user instanceof User) {
@@ -269,97 +165,61 @@ class User implements UserInterface, EquatableInterface, \Serializable
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function isEnabled(): bool
     {
         return $this->enabled;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     */
     public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getLastLogin(): ?\DateTime
+    public function getLastLogin(): ?DateTime
     {
         return $this->lastLogin;
     }
 
-    /**
-     * @param \DateTime $lastLogin
-     */
-    public function setLastLogin(\DateTime $lastLogin): void
+    public function setLastLogin(DateTime $lastLogin): void
     {
         $this->lastLogin = $lastLogin;
     }
 
-    /**
-     * @return string|null
-     */
     public function getConfirmationToken(): ?string
     {
         return $this->confirmationToken;
     }
 
-    /**
-     * @param string|null $confirmationToken
-     */
     public function setConfirmationToken(?string $confirmationToken): void
     {
         $this->confirmationToken = $confirmationToken;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getPasswordRequestedAt(): ?\DateTime
+    public function getPasswordRequestedAt(): ?DateTime
     {
         return $this->passwordRequestedAt;
     }
 
-    /**
-     * @param \DateTime $passwordRequestedAt
-     */
-    public function setPasswordRequestedAt(\DateTime $passwordRequestedAt): void
+    public function setPasswordRequestedAt(DateTime $passwordRequestedAt): void
     {
         $this->passwordRequestedAt = $passwordRequestedAt;
     }
 
-    /**
-     * @param bool $enabled
-     */
     public function setEnabled(bool $enabled): void
     {
         $this->enabled = $enabled;
@@ -370,13 +230,15 @@ class User implements UserInterface, EquatableInterface, \Serializable
      */
     public function serialize()
     {
-        return serialize([
-            $this->id,
-            $this->username,
-            $this->enabled,
-            $this->email,
-            $this->password
-        ]);
+        return serialize(
+            [
+                $this->id,
+                $this->username,
+                $this->enabled,
+                $this->email,
+                $this->password
+            ]
+        );
     }
 
     /**
@@ -393,177 +255,101 @@ class User implements UserInterface, EquatableInterface, \Serializable
             ) = unserialize($serialized);
     }
 
-    /**
-     * Set signup
-     *
-     * @param \DateTime $signup
-     */
-    public function setSignup(\DateTime $signup): void
+    public function setSignup(DateTime $signup): void
     {
         $this->signup = $signup;
     }
 
-    /**
-     * Get signup
-     *
-     * @return \DateTime
-     */
-    public function getSignup(): \DateTime
+    public function getSignup(): DateTime
     {
         return $this->signup;
     }
 
-    /**
-     * Set active
-     *
-     * @param bool $active
-     */
     public function setActive(bool $active): void
     {
         $this->active = $active;
     }
 
-    /**
-     * Get active
-     *
-     * @return bool
-     */
     public function getActive(): bool
     {
         return $this->active;
     }
 
-    /**
-     * Set adviser
-     *
-     * @param bool $adviser
-     */
     public function setAdviser(bool $adviser): void
     {
         $this->adviser = $adviser;
     }
 
-    /**
-     * Get adviser
-     *
-     * @return bool
-     */
     public function getAdviser(): bool
     {
         return $this->adviser;
     }
 
-    /**
-     * Set forumBan
-     *
-     * @param bool $forumBan
-     */
     public function setForumBan(bool $forumBan): void
     {
         $this->forumBan = $forumBan;
     }
 
-    /**
-     * Get forumBan
-     *
-     * @return bool
-     */
     public function getForumBan(): bool
     {
         return $this->forumBan;
     }
 
-    /**
-     * @return Collection
-     */
     public function getPlayers(): Collection
     {
         return $this->players;
     }
 
-    /**
-     * @param Collection $players
-     */
     public function setPlayers(Collection $players): void
     {
         $this->players = $players;
     }
 
-    /**
-     * @return Collection
-     */
     public function getTopics(): Collection
     {
         return $this->topics;
     }
 
-    /**
-     * @param Collection $topics
-     */
     public function setTopics(Collection $topics): void
     {
         $this->topics = $topics;
     }
 
-    /**
-     * @return Collection
-     */
     public function getTopicsEdited(): Collection
     {
         return $this->topicsEdited;
     }
 
-    /**
-     * @param Collection $topicsEdited
-     */
     public function setTopicsEdited(Collection $topicsEdited): void
     {
         $this->topicsEdited = $topicsEdited;
     }
 
-    /**
-     * @return Collection
-     */
     public function getTopicsLastPost(): Collection
     {
         return $this->topicsLastPost;
     }
 
-    /**
-     * @param Collection $topicsLastPost
-     */
     public function setTopicsLastPost(Collection $topicsLastPost): void
     {
         $this->topicsLastPost = $topicsLastPost;
     }
 
-    /**
-     * @return Collection
-     */
     public function getPosts(): Collection
     {
         return $this->posts;
     }
 
-    /**
-     * @param Collection $posts
-     */
     public function setPosts(Collection $posts): void
     {
         $this->posts = $posts;
     }
 
-    /**
-     * @return Collection
-     */
     public function getPostsEdited(): Collection
     {
         return $this->postsEdited;
     }
 
-    /**
-     * @param Collection $postsEdited
-     */
     public function setPostsEdited(Collection $postsEdited): void
     {
         $this->postsEdited = $postsEdited;

@@ -5,29 +5,13 @@
 {% block content %}
     <table class="table text-center">
         <tr>
-            <td class="tabletop"><b>Select your World</b></td>
+            <td class="tabletop" colspan="2"><b>Select your World</b></td>
         </tr>
-        <tr>
-            <td>
-                <p>
-                    Welcome <strong>{{ user.username }}</strong>
-                </p>
-                <p>
-                    On this page you will see a list of all "game worlds", select the world you would like to play here!<br>
-                    You are able to play in multiple worlds at the same time on 1 account!<br />
-                    <b>BUT</b> you are not allowed to create multiple accounts to play in 1 world!
-                </p>
-            </td>
-        </tr>
-    </table>
-    <br /><br />
-
-    {% for world in worlds %}
-        <table class="table">
+        {% for world in worlds %}
             <tr>
                 <td width="400">
                     <b>{{ world.name }}</b><br />
-                    <img src="{{ asset(world.image) }}" alt="{{ world.name }}" width="400" height="255">
+                    <img src="{{ asset('images/world/' ~ world.image) }}" alt="{{ world.name }}">
                 </td>
                 <td width="300">
                     <b>Max players:</b> {{ world.maxplayers }}<br /><br />
@@ -41,6 +25,17 @@
                     <a class="btn btn-primary" href="{{ path('Game/SelectName', {'worldId': world.id}) }}"><b>Play this World</b></a>
                 </td>
             </tr>
-        </table>
-    {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="2">
+                    <div>
+                        No active worlds to join. Create a new game world!
+                    </div>
+                    <div>
+                        <a class="btn btn-primary" href="{{ path('Game/World/Create') }}"><b>Create new world</b></a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

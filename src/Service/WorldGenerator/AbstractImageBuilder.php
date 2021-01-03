@@ -5,21 +5,23 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\WorldGenerator;
 
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use GdImage;
 use RuntimeException;
 
 abstract class AbstractImageBuilder
 {
-    /**
-     * @var resource
-     */
-    protected $image;
+    protected GdImage $image;
 
     protected function createImageResource(int $sizeX, int $sizeY): void
     {
-        $this->image = @imagecreatetruecolor($sizeX, $sizeY);
-        if ($this->image === false) {
-            throw new RunTimeException('imagecreatetruecolor failed');
+        $this->ensureGD();
+
+        $image = imagecreatetruecolor($sizeX, $sizeY);
+        if ($image === false) {
+            throw new RunTimeException("imagecreatetruecolor failed for size {$sizeX}/{$sizeY}");
         }
+
+        $this->image = $image;
     }
 
     protected function getWorldRegionColor(WorldRegion $worldRegion): int
@@ -32,7 +34,7 @@ abstract class AbstractImageBuilder
         );
 
         if ($color === false) {
-            throw new RunTimeException('imagecolorallocate failed');
+            throw new RunTimeException("imagecolorallocate failed for WorldRegion {$worldRegion->getId()}");
         }
 
         return $color;
@@ -48,17 +50,15 @@ abstract class AbstractImageBuilder
         ];
     }
 
-    public function getImage(): string
+    protected function saveImage(string $imagePath): void
     {
-        if ($this->image === null) {
-            return '';
+        imagejpeg($this->image, $imagePath);
+    }
+
+    protected function ensureGD(): void
+    {
+        if (extension_loaded('gd') === false) {
+            throw new RunTimeException("GD not installed!");
         }
-
-        ob_start();
-        imagejpeg($this->image);
-        $image_data = ob_get_contents();
-        ob_end_clean();
-
-        return base64_encode($image_data);
     }
 }

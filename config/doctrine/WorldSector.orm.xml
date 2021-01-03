@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\WorldSector" table="world_sector">
+    <unique-constraints>
+      <unique-constraint name="unique_world_sector" columns="x,y,world_id"/>
+    </unique-constraints>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="x" type="integer" column="x">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="y" type="integer" column="y">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="image" column="image" length="255">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <one-to-many field="worldRegions" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion" mapped-by="worldSector"/>
+    <many-to-one field="world" target-entity="FrankProjects\UltimateWarfare\Entity\World" inversed-by="worldSectors">
+      <join-columns>
+        <join-column name="world_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

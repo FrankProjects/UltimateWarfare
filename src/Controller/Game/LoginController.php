@@ -12,9 +12,6 @@ use Throwable;
 
 final class LoginController extends BaseGameController
 {
-    /**
-     * @return RedirectResponse
-     */
     public function login(): RedirectResponse
     {
         try {
@@ -35,11 +32,6 @@ final class LoginController extends BaseGameController
         }
     }
 
-    /**
-     * @param int $playerId
-     * @param PlayerRepository $playerRepository
-     * @return RedirectResponse
-     */
     public function loginForPlayer(int $playerId, PlayerRepository $playerRepository): RedirectResponse
     {
         try {
@@ -51,7 +43,7 @@ final class LoginController extends BaseGameController
 
         $player = $playerRepository->find($playerId);
 
-        if (!$player) {
+        if ($player === null) {
             return $this->redirectToRoute('Game/Login');
         }
 
@@ -63,9 +55,6 @@ final class LoginController extends BaseGameController
         return $this->redirectToRoute('Game/Headquarter');
     }
 
-    /**
-     * @return User
-     */
     private function getLoginUser(): User
     {
         $user = $this->getUser();

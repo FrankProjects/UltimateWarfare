@@ -10,27 +10,14 @@ use RuntimeException;
 
 final class UserActionService
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private UserRepository $userRepository;
 
-    /**
-     * UserActionService service
-     *
-     * @param UserRepository $userRepository
-     */
     public function __construct(
         UserRepository $userRepository
     ) {
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @param User $user
-     * @param string $role
-     * @return void
-     */
     public function addRoleToUser(User $user, string $role): void
     {
         if ($user->hasRole($role)) {
@@ -41,11 +28,6 @@ final class UserActionService
         $this->userRepository->save($user);
     }
 
-    /**
-     * @param User $user
-     * @param string $role
-     * @return void
-     */
     public function removeRoleFromUser(User $user, string $role): void
     {
         if (!$user->hasRole($role)) {

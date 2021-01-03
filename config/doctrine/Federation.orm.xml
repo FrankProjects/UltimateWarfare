@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\Federation" table="federation">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="name" column="name" length="100">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="leaderMessage" type="text" column="leader_message" length="65535" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="regions" type="integer" column="regions">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="networth" type="integer" column="networth">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <embedded name="resources" class="FrankProjects\UltimateWarfare\Entity\Federation\Resources"/>
+    <one-to-one field="founder" target-entity="FrankProjects\UltimateWarfare\Entity\Player">
+      <join-columns>
+        <join-column name="founder_player_id" nullable="false"/>
+      </join-columns>
+    </one-to-one>
+    <one-to-many field="players" target-entity="FrankProjects\UltimateWarfare\Entity\Player" mapped-by="federation"/>
+    <one-to-many field="federationNews" target-entity="FrankProjects\UltimateWarfare\Entity\FederationNews" mapped-by="federation"/>
+    <one-to-many field="federationApplications" target-entity="FrankProjects\UltimateWarfare\Entity\FederationApplication" mapped-by="federation"/>
+    <many-to-one field="world" target-entity="FrankProjects\UltimateWarfare\Entity\World" inversed-by="federations">
+      <join-columns>
+        <join-column name="world_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

@@ -9,10 +9,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class StoryController extends BaseGameController
 {
-    /**
-     * @param int $page
-     * @return Response
-     */
     public function page(int $page): Response
     {
         switch ($page) {
@@ -22,9 +18,12 @@ final class StoryController extends BaseGameController
                 $user = $this->getGameUser();
                 $players = $user->getPlayers();
 
-                return $this->render('game/story/chapter1_2.html.twig', [
-                    'players' => $players
-                ]);
+                return $this->render(
+                    'game/story/chapter1_2.html.twig',
+                    [
+                        'players' => $players
+                    ]
+                );
             default:
                 throw new NotFoundHttpException("Page not found!");
         }

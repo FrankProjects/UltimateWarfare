@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\Fleet" table="fleet">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="timestamp" type="integer" column="timestamp">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="timestampArrive" type="integer" column="timestamp_arrive">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <one-to-many field="fleetUnits" target-entity="FrankProjects\UltimateWarfare\Entity\FleetUnit" mapped-by="fleet"/>
+    <many-to-one field="player" target-entity="FrankProjects\UltimateWarfare\Entity\Player" inversed-by="fleets">
+      <join-columns>
+        <join-column name="player_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="worldRegion" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion" inversed-by="fleets">
+      <join-columns>
+        <join-column name="region_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="targetWorldRegion" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion" inversed-by="targetFleets">
+      <join-columns>
+        <join-column name="target_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

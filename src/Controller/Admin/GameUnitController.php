@@ -12,37 +12,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class GameUnitController extends AbstractController
 {
-    /**
-     * @var GameUnitRepository
-     */
-    private $gameUnitRepository;
+    private GameUnitRepository $gameUnitRepository;
 
-    /**
-     * GameUnitController constructor
-     *
-     * @param GameUnitRepository $gameUnitRepository
-     */
     public function __construct(
         GameUnitRepository $gameUnitRepository
     ) {
         $this->gameUnitRepository = $gameUnitRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function list(): Response
     {
-        return $this->render('admin/gameunit/list.html.twig', [
-            'gameUnits' => $this->gameUnitRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/gameunit/list.html.twig',
+            [
+                'gameUnits' => $this->gameUnitRepository->findAll()
+            ]
+        );
     }
 
-    /**
-     * @param Request $request
-     * @param int $gameUnitId
-     * @return Response
-     */
     public function edit(Request $request, int $gameUnitId): Response
     {
         $gameUnit = $this->gameUnitRepository->find($gameUnitId);
@@ -59,8 +46,11 @@ final class GameUnitController extends AbstractController
             return $this->redirectToRoute('Admin/GameUnit/List', [], 302);
         }
 
-        return $this->render('admin/gameunit/edit.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'admin/gameunit/edit.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
     }
 }

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
 use FrankProjects\UltimateWarfare\Entity\User;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,12 +22,7 @@ class MakeAdminCommand extends AbstractUserCommand
             ->addArgument('username', InputArgument::REQUIRED, 'The username');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @throws \Exception
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
 
@@ -34,6 +32,9 @@ class MakeAdminCommand extends AbstractUserCommand
             $output->writeln("Added admin role to {$username}");
         } catch (Throwable $e) {
             $output->writeln($e->getMessage());
+            return 1;
         }
+
+        return Command::SUCCESS;
     }
 }

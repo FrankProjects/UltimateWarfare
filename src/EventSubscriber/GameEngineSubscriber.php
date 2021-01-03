@@ -9,35 +9,16 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class GameEngineSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var GameEngine
-     */
-    private $gameEngine;
+    private GameEngine $gameEngine;
+    private SessionInterface $session;
+    private PlayerRepository $playerRepository;
 
-    /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * PlayerSubscriber constructor.
-     *
-     * @param GameEngine $gameEngine
-     * @param SessionInterface $session
-     * @param TokenStorageInterface $tokenStorage
-     * @param PlayerRepository $playerRepository
-     */
     public function __construct(
         GameEngine $gameEngine,
         SessionInterface $session,
@@ -50,10 +31,7 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
         $this->playerRepository = $playerRepository;
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
-    public function onKernelRequest(GetResponseEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -69,14 +47,11 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
         }
     }
 
-    /**
-     * @param User $user
-     */
     private function runGameEngine(User $user): void
     {
         $playerId = $this->session->get('playerId');
 
-        if (!$playerId) {
+        if ($playerId === null) {
             return;
         }
 
@@ -95,9 +70,7 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
             // Do nothing...
         }
     }
-    /**
-     * @return array
-     */
+
     public static function getSubscribedEvents(): array
     {
         return [

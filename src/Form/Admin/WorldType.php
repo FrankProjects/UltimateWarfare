@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Form\Admin;
 
 use FrankProjects\UltimateWarfare\Entity\World;
@@ -15,55 +17,97 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class WorldType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'label.name'
-            ])
-            ->add('description', TextareaType::class, [
-                'label' => 'label.description',
-                'attr' => array('cols' => 70, 'rows' => 8),
-            ])
-            ->add('status', ChoiceType::class, [
-                'label' => 'label.status',
-                'choices' => [
-                    'label.created' => 0,
-                    'label.running' => 1,
-                    'label.finished' => 2
+            ->add(
+                'name',
+                TextType::class,
+                [
+                    'label' => 'label.name'
                 ]
-            ])
-            ->add('public', CheckboxType::class, [
-                'label' => 'label.public',
-                'required' => false
-            ])
-            ->add('maxPlayers', TextType::class, [
-                'label' => 'label.maxPlayers'
-            ])
-            ->add('market', CheckboxType::class, [
-                'label' => 'label.market',
-                'required' => false
-            ])
-            ->add('federation', CheckboxType::class, [
-                'label' => 'label.federation',
-                'required' => false
-            ])
-            ->add('federationLimit', TextType::class, [
-                'label' => 'label.federationLimit'
-            ])
-            ->add('resources', ResourcesType::class, [
-                'label' => 'label.startResources',
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'label.save'
-            ]);
+            )
+            ->add(
+                'description',
+                TextareaType::class,
+                [
+                    'label' => 'label.description',
+                    'attr' => array('cols' => 70, 'rows' => 8),
+                ]
+            )
+            ->add(
+                'status',
+                ChoiceType::class,
+                [
+                    'label' => 'label.status',
+                    'choices' => [
+                        'label.created' => 0,
+                        'label.running' => 1,
+                        'label.finished' => 2
+                    ]
+                ]
+            )
+            ->add(
+                'public',
+                CheckboxType::class,
+                [
+                    'label' => 'label.public',
+                    'required' => false
+                ]
+            )
+            ->add(
+                'maxPlayers',
+                TextType::class,
+                [
+                    'label' => 'label.maxPlayers'
+                ]
+            )
+            ->add(
+                'market',
+                CheckboxType::class,
+                [
+                    'label' => 'label.market',
+                    'required' => false
+                ]
+            )
+            ->add(
+                'federation',
+                CheckboxType::class,
+                [
+                    'label' => 'label.federation',
+                    'required' => false
+                ]
+            )
+            ->add(
+                'federationLimit',
+                TextType::class,
+                [
+                    'label' => 'label.federationLimit'
+                ]
+            )
+            ->add(
+                'resources',
+                ResourcesType::class,
+                [
+                    'label' => 'label.startResources',
+                ]
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'label.save'
+                ]
+            );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => World::class,
-            'translation_domain' => 'world'
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => World::class,
+                'translation_domain' => 'world'
+            ]
+        );
     }
 }

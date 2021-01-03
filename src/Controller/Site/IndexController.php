@@ -11,22 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class IndexController extends BaseController
 {
-    /**
-     * @var GameNewsRepository
-     */
-    private $gameNewsRepository;
+    private GameNewsRepository $gameNewsRepository;
+    private TopicRepository $topicRepository;
 
-    /**
-     * @var TopicRepository
-     */
-    private $topicRepository;
-
-    /**
-     * IndexController constructor.
-     *
-     * @param GameNewsRepository $gameNewsRepository
-     * @param TopicRepository $topicRepository
-     */
     public function __construct(
         GameNewsRepository $gameNewsRepository,
         TopicRepository $topicRepository
@@ -35,17 +22,17 @@ final class IndexController extends BaseController
         $this->topicRepository = $topicRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function index(): Response
     {
         $gameNews = $this->gameNewsRepository->findActiveMainPageNews();
         $latestAnnouncements = $this->topicRepository->findLastAnnouncements(7);
 
-        return $this->render('site/index.html.twig', [
-            'latestAnnouncements' => $latestAnnouncements,
-            'gameNews' => $gameNews
-        ]);
+        return $this->render(
+            'site/index.html.twig',
+            [
+                'latestAnnouncements' => $latestAnnouncements,
+                'gameNews' => $gameNews
+            ]
+        );
     }
 }

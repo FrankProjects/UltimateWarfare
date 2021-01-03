@@ -14,31 +14,19 @@ use Throwable;
 
 final class RegisterController extends AbstractController
 {
-    /**
-     * @var RegisterActionService
-     */
-    private $registerActionService;
+    private RegisterActionService $registerActionService;
 
-    /**
-     * RegisterController constructor
-     *
-     * @param RegisterActionService $registerActionService
-     */
     public function __construct(
         RegisterActionService $registerActionService
     ) {
         $this->registerActionService = $registerActionService;
     }
 
-    /**
-     * XXX TODO: Add captcha
-     *
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
     public function register(Request $request): Response
     {
+        /**
+         * XXX TODO: Add captcha
+         */
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
 
@@ -46,21 +34,23 @@ final class RegisterController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->registerActionService->register($user);
-                $this->addFlash('success', "You successfully created an account! An e-mail has been sent to {$user->getEmail()} with your activation code...");
+                $this->addFlash(
+                    'success',
+                    "You successfully created an account! An e-mail has been sent to {$user->getEmail()} with your activation code..."
+                );
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render('site/register.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'site/register.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
 
-    /**
-     * @param string $token
-     * @return Response
-     */
     public function activateUser(string $token): Response
     {
         try {

@@ -14,27 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class GameNewsController extends AbstractController
 {
-    /**
-     * @var GameNewsRepository
-     */
-    private $gameNewsRepository;
+    private GameNewsRepository $gameNewsRepository;
 
-    /**
-     * GameNewsController constructor
-     *
-     * @param GameNewsRepository $gameNewsRepository
-     */
     public function __construct(
         GameNewsRepository $gameNewsRepository
     ) {
         $this->gameNewsRepository = $gameNewsRepository;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
     public function create(Request $request): Response
     {
         $gameNews = new GameNews();
@@ -47,26 +34,24 @@ final class GameNewsController extends AbstractController
             return $this->redirectToRoute('Admin/GameNews/List', [], 302);
         }
 
-        return $this->render('admin/gamenews/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'admin/gamenews/create.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
 
-    /**
-     * @return Response
-     */
     public function list(): Response
     {
-        return $this->render('admin/gamenews/list.html.twig', [
-            'gameNews' => $this->gameNewsRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/gamenews/list.html.twig',
+            [
+                'gameNews' => $this->gameNewsRepository->findAll()
+            ]
+        );
     }
 
-    /**
-     * @param Request $request
-     * @param int $gameNewsId
-     * @return Response
-     */
     public function edit(Request $request, int $gameNewsId): Response
     {
         $gameNews = $this->gameNewsRepository->find($gameNewsId);
@@ -83,15 +68,14 @@ final class GameNewsController extends AbstractController
             return $this->redirectToRoute('Admin/GameNews/List', [], 302);
         }
 
-        return $this->render('admin/gamenews/edit.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'admin/gamenews/edit.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
     }
 
-    /**
-     * @param int $gameNewsId
-     * @return RedirectResponse
-     */
     public function remove(int $gameNewsId): RedirectResponse
     {
         $gameNews = $this->gameNewsRepository->find($gameNewsId);

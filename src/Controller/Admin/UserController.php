@@ -7,6 +7,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Admin;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Service\Action\UserActionService;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,22 +15,9 @@ use Throwable;
 
 final class UserController extends AbstractController
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private UserRepository $userRepository;
+    private UserActionService $userActionService;
 
-    /**
-     * @var UserActionService
-     */
-    private $userActionService;
-
-    /**
-     * UserController constructor
-     *
-     * @param UserRepository $userRepository
-     * @param UserActionService $userActionService
-     */
     public function __construct(
         UserRepository $userRepository,
         UserActionService $userActionService
@@ -38,10 +26,6 @@ final class UserController extends AbstractController
         $this->userActionService = $userActionService;
     }
 
-    /**
-     * @param int $userId
-     * @return RedirectResponse
-     */
     public function ban(int $userId): RedirectResponse
     {
         $user = $this->getUserObject($userId);
@@ -56,10 +40,6 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
-    /**
-     * @param int $userId
-     * @return RedirectResponse
-     */
     public function unban(int $userId): RedirectResponse
     {
         $user = $this->getUserObject($userId);
@@ -74,10 +54,6 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
-    /**
-     * @param int $userId
-     * @return RedirectResponse
-     */
     public function enable(int $userId): RedirectResponse
     {
         $user = $this->getUserObject($userId);
@@ -93,10 +69,6 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
-    /**
-     * @param int $userId
-     * @return RedirectResponse
-     */
     public function forumBan(int $userId): RedirectResponse
     {
         $user = $this->getUserObject($userId);
@@ -111,10 +83,6 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
-    /**
-     * @param int $userId
-     * @return RedirectResponse
-     */
     public function forumUnban(int $userId): RedirectResponse
     {
         $user = $this->getUserObject($userId);
@@ -129,20 +97,16 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
-    /**
-     * @return Response
-     */
     public function list(): Response
     {
-        return $this->render('admin/user/list.html.twig', [
-            'users' => $this->userRepository->findAll()
-        ]);
+        return $this->render(
+            'admin/user/list.html.twig',
+            [
+                'users' => $this->userRepository->findAll()
+            ]
+        );
     }
 
-    /**
-     * @param int $userId
-     * @return RedirectResponse
-     */
     public function makeAdmin(int $userId): RedirectResponse
     {
         try {
@@ -156,10 +120,6 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
-    /**
-     * @param int $userId
-     * @return RedirectResponse
-     */
     public function removeAdmin(int $userId): RedirectResponse
     {
         try {
@@ -173,26 +133,21 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
-    /**
-     * @param int $userId
-     * @return Response
-     */
     public function read(int $userId): Response
     {
-        return $this->render('admin/user/read.html.twig', [
-            'user' => $this->userRepository->find($userId)
-        ]);
+        return $this->render(
+            'admin/user/read.html.twig',
+            [
+                'user' => $this->userRepository->find($userId)
+            ]
+        );
     }
 
-    /**
-     * @param int $userId
-     * @return User
-     */
     private function getUserObject(int $userId): User
     {
         $user = $this->userRepository->find($userId);
         if ($user === null) {
-            throw new \RuntimeException('User does not exist');
+            throw new RuntimeException('User does not exist');
         }
 
         return $user;

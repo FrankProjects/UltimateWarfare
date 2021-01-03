@@ -12,21 +12,9 @@ use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 
 final class DoctrineFederationNewsRepository implements FederationNewsRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineFederationNewsRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -42,18 +30,12 @@ final class DoctrineFederationNewsRepository implements FederationNewsRepository
         return $this->repository->findBy(['federation' => $federation], ['timestamp' => 'DESC']);
     }
 
-    /**
-     * @param FederationNews $federationNews
-     */
     public function remove(FederationNews $federationNews): void
     {
         $this->entityManager->remove($federationNews);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param FederationNews $federationNews
-     */
     public function save(FederationNews $federationNews): void
     {
         $this->entityManager->persist($federationNews);

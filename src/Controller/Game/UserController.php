@@ -14,22 +14,9 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class UserController extends BaseGameController
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private UserRepository $userRepository;
+    private UnbanRequestRepository $unbanRequestRepository;
 
-    /**
-     * @var UnbanRequestRepository
-     */
-    private $unbanRequestRepository;
-
-    /**
-     * UserController constructor.
-     *
-     * @param UserRepository $userRepository
-     * @param UnbanRequestRepository $unbanRequestRepository
-     */
     public function __construct(
         UserRepository $userRepository,
         UnbanRequestRepository $unbanRequestRepository
@@ -38,20 +25,16 @@ final class UserController extends BaseGameController
         $this->unbanRequestRepository = $unbanRequestRepository;
     }
 
-    /**
-     * @return Response
-     */
     public function account(): Response
     {
-        return $this->render('game/account.html.twig', [
-            'user' => $this->getGameUser()
-        ]);
+        return $this->render(
+            'game/account.html.twig',
+            [
+                'user' => $this->getGameUser()
+            ]
+        );
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function banned(Request $request): Response
     {
         $user = $this->getGameUser(false);
@@ -76,17 +59,15 @@ final class UserController extends BaseGameController
             $this->addFlash('success', 'We have received your request, we will try to read your request ASAP...');
         }
 
-        return $this->render('game/banned.html.twig', [
-            'user' => $user,
-            'unbanRequest' => $unbanRequest
-        ]);
+        return $this->render(
+            'game/banned.html.twig',
+            [
+                'user' => $user,
+                'unbanRequest' => $unbanRequest
+            ]
+        );
     }
 
-    /**
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     * @return Response
-     */
     public function edit(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $user = $this->getGameUser();
@@ -113,47 +94,42 @@ final class UserController extends BaseGameController
         }
 
         if ($request->isMethod(Request::METHOD_POST)) {
-            if ($request->request->get('change_settings')) {
+            if ($request->request->get('change_settings') !== null) {
                 $this->changeSettings($request);
             }
         }
 
-        return $this->render('game/editAccount.html.twig', [
-            'user' => $this->getGameUser(),
-            'userType' => $this->getAccountType(),
-            'changePasswordForm' => $changePasswordForm->createView()
-        ]);
+        return $this->render(
+            'game/editAccount.html.twig',
+            [
+                'user' => $this->getGameUser(),
+                'userType' => $this->getAccountType(),
+                'changePasswordForm' => $changePasswordForm->createView()
+            ]
+        );
     }
 
-    /**
-     * @return string
-     */
     private function getAccountType(): string
     {
         $user = $this->getGameUser();
         $roles = $user->getRoles();
 
-        if (in_array('ROLE_PLAYER', $roles)) {
+        if (in_array('ROLE_PLAYER', $roles, true)) {
             return 'Player';
         }
 
-        if (in_array('ROLE_ADMIN', $roles)) {
+        if (in_array('ROLE_ADMIN', $roles, true)) {
             return 'Admin';
         }
 
         return 'Guest';
     }
 
-    /**
-     * Change settings
-     *
-     * @param Request $request
-     */
     private function changeSettings(Request $request)
     {
         $user = $this->getGameUser();
 
-        if ($request->request->get('adviser')) {
+        if ($request->request->get('adviser') !== null) {
             if ($user->getAdviser() == 0) {
                 $user->setAdviser(true);
                 $this->userRepository->save($user);

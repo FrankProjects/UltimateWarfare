@@ -13,22 +13,9 @@ use RuntimeException;
 
 final class PostActionService
 {
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
+    private PostRepository $postRepository;
+    private ForumHelper $forumHelper;
 
-    /**
-     * @var ForumHelper
-     */
-    private $forumHelper;
-
-    /**
-     * PostActionService service
-     *
-     * @param PostRepository $postRepository
-     * @param ForumHelper $forumHelper
-     */
     public function __construct(
         PostRepository $postRepository,
         ForumHelper $forumHelper
@@ -37,12 +24,6 @@ final class PostActionService
         $this->forumHelper = $forumHelper;
     }
 
-    /**
-     * @param Post $post
-     * @param Topic $topic
-     * @param User $user
-     * @param string $ipAddress
-     */
     public function create(Post $post, Topic $topic, User $user, string $ipAddress): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -56,11 +37,6 @@ final class PostActionService
         $this->postRepository->save($post);
     }
 
-    /**
-     * @param Post $post
-     * @param User $user
-     * @throws \Exception
-     */
     public function edit(Post $post, User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -71,10 +47,6 @@ final class PostActionService
         $this->postRepository->save($post);
     }
 
-    /**
-     * @param Post $post
-     * @param User|null $user
-     */
     public function remove(Post $post, ?User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
@@ -87,10 +59,6 @@ final class PostActionService
         $this->postRepository->remove($post);
     }
 
-    /**
-     * @param User $user
-     * @param Post $post
-     */
     private function ensurePostPermissions(User $user, Post $post): void
     {
         if ($user->getId() != $post->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {

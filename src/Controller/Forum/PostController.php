@@ -14,22 +14,9 @@ use Throwable;
 
 class PostController extends BaseForumController
 {
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
+    private PostRepository $postRepository;
+    private PostActionService $postActionService;
 
-    /**
-     * @var PostActionService
-     */
-    private $postActionService;
-
-    /**
-     * PostController constructor.
-     *
-     * @param PostRepository $postRepository
-     * @param PostActionService $postActionService
-     */
     public function __construct(
         PostRepository $postRepository,
         PostActionService $postActionService
@@ -38,10 +25,6 @@ class PostController extends BaseForumController
         $this->postActionService = $postActionService;
     }
 
-    /**
-     * @param int $postId
-     * @return RedirectResponse
-     */
     public function remove(int $postId): RedirectResponse
     {
         $post = $this->postRepository->find($postId);
@@ -63,11 +46,6 @@ class PostController extends BaseForumController
         return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
     }
 
-    /**
-     * @param Request $request
-     * @param int $postId
-     * @return RedirectResponse|Response
-     */
     public function edit(Request $request, int $postId): Response
     {
         $post = $this->postRepository->find($postId);
@@ -91,10 +69,13 @@ class PostController extends BaseForumController
             return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
         }
 
-        return $this->render('forum/post_edit.html.twig', [
-            'topic' => $topic,
-            'user' => $this->getGameUser(),
-            'form' => $form->createView()
-        ]);
+        return $this->render(
+            'forum/post_edit.html.twig',
+            [
+                'topic' => $topic,
+                'user' => $this->getGameUser(),
+                'form' => $form->createView()
+            ]
+        );
     }
 }

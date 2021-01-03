@@ -11,31 +11,15 @@ use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
 
 final class DoctrineCategoryRepository implements CategoryRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineCategoryRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
-    /**
-     * @param int $id
-     * @return Category|null
-     */
     public function find(int $id): ?Category
     {
         return $this->repository->find($id);
@@ -47,5 +31,17 @@ final class DoctrineCategoryRepository implements CategoryRepository
     public function findAll(): array
     {
         return $this->repository->findAll();
+    }
+
+    public function remove(Category $category): void
+    {
+        $this->entityManager->remove($category);
+        $this->entityManager->flush();
+    }
+
+    public function save(Category $category): void
+    {
+        $this->entityManager->persist($category);
+        $this->entityManager->flush();
     }
 }

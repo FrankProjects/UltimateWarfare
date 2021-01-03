@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
+use DateTime;
 use FrankProjects\UltimateWarfare\Form\ResetPasswordType;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Service\MailService;
@@ -16,28 +17,10 @@ use Throwable;
 
 final class ResetPasswordController extends AbstractController
 {
-    /**
-     * @var MailService
-     */
-    private $mailService;
+    private MailService $mailService;
+    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserRepository $userRepository;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $passwordEncoder;
-
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * ResetPasswordController constructor
-     *
-     * @param MailService $mailService
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param UserRepository $userRepository
-     */
     public function __construct(
         MailService $mailService,
         UserPasswordEncoderInterface $passwordEncoder,
@@ -48,31 +31,32 @@ final class ResetPasswordController extends AbstractController
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
     public function requestPasswordReset(Request $request): Response
     {
         $email = $request->request->get('email');
-        if ($email) {
+        if ($email !== null) {
             $user = $this->userRepository->findByEmail($email);
 
-            if ($user) {
+            if ($user !== null) {
                 if (!$user->isEnabled()) {
                     $this->addFlash('error', 'Your account is not activated!');
-                } elseif ($user->getPasswordRequestedAt() === null || $user->getPasswordRequestedAt()->getTimestamp() + 12 * 60 * 60 < time()) {
+                } elseif (
+                    $user->getPasswordRequestedAt() === null ||
+                    $user->getPasswordRequestedAt()->getTimestamp() + 12 * 60 * 60 < time()
+                ) {
                     $generator = new TokenGenerator();
                     $token = $generator->generateToken(40);
 
-                    $user->setPasswordRequestedAt(new \DateTime());
+                    $user->setPasswordRequestedAt(new DateTime());
                     $user->setConfirmationToken($token);
                     $this->userRepository->save($user);
 
                     try {
                         $this->mailService->sendPasswordResetMail($user, $request->getClientIp());
-                        $this->addFlash('success', "An e-mail has been sent to {$user->getEmail()} with your recovery instructions... Check your Spam mail if you didn't receive an email");
+                        $this->addFlash(
+                            'success',
+                            "An e-mail has been sent to {$user->getEmail()} with your recovery instructions... Check your Spam mail if you didn't receive an email"
+                        );
                     } catch (Throwable $e) {
                         $this->addFlash('error', $e->getMessage());
                     }
@@ -87,16 +71,11 @@ final class ResetPasswordController extends AbstractController
         return $this->render('site/requestPasswordReset.html.twig');
     }
 
-    /**
-     * @param Request $request
-     * @param string $token
-     * @return Response
-     */
     public function resetPassword(Request $request, string $token): Response
     {
         $user = $this->userRepository->findByConfirmationToken($token);
 
-        if ($user) {
+        if ($user !== null) {
             $form = $this->createForm(ResetPasswordType::class, $user);
 
             $form->handleRequest($request);
@@ -110,10 +89,13 @@ final class ResetPasswordController extends AbstractController
                 return $this->redirectToRoute('Site/Login');
             }
 
-            return $this->render('site/resetPassword.html.twig', [
-                'form' => $form->createView(),
-                'token' => $token
-            ]);
+            return $this->render(
+                'site/resetPassword.html.twig',
+                [
+                    'form' => $form->createView(),
+                    'token' => $token
+                ]
+            );
         }
 
         $this->addFlash('error', 'Invalid password reset token!');

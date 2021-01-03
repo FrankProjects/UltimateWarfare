@@ -9,33 +9,16 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use FrankProjects\UltimateWarfare\Service\WorldGeneratorService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class WorldController extends BaseGameController
 {
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
+    private PlayerRepository $playerRepository;
+    private WorldRepository $worldRepository;
+    private WorldRegionRepository $worldRegionRepository;
 
-    /**
-     * @var WorldRepository
-     */
-    private $worldRepository;
-
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
-
-    /**
-     * WorldController constructor.
-     *
-     * @param PlayerRepository $playerRepository
-     * @param WorldRepository $worldRepository
-     * @param WorldRegionRepository $worldRegionRepository
-     */
     public function __construct(
         PlayerRepository $playerRepository,
         WorldRepository $worldRepository,
@@ -46,38 +29,53 @@ final class WorldController extends BaseGameController
         $this->worldRegionRepository = $worldRegionRepository;
     }
 
-    /**
-     * @return Response
-     */
-    public function selectWorld(): Response
+    public function create(WorldGeneratorService $worldGeneratorService): Response
     {
         $worlds = $this->worldRepository->findByPublic(true);
 
-        return $this->render('game/selectWorld.html.twig', [
-            'worlds' => $worlds,
-            'user' => $this->getGameUser()
-        ]);
+        if (count($worlds) !== 0) {
+            $this->addFlash('error', 'There are active worlds, no need to create a new one at this moment');
+            return $this->redirectToRoute('Game/SelectWorld', [], 302);
+        }
+
+        $this->addFlash('success', 'Successfully created a new world!');
+        $worldGeneratorService->generateBasicWorld();
+
+        return $this->redirectToRoute('Game/SelectWorld', [], 302);
     }
 
-    /**
-     * @param int $worldId
-     * @return Response
-     */
+    public function selectWorld(): Response
+    {
+        $validWorlds = [];
+        $worlds = $this->worldRepository->findByPublic(true);
+        foreach ($worlds as $world) {
+            if ($world->isJoinableForUser($this->getGameUser())) {
+                $validWorlds[] = $world;
+            }
+        }
+
+        return $this->render(
+            'game/selectWorld.html.twig',
+            [
+                'worlds' => $validWorlds,
+                'user' => $this->getGameUser()
+            ]
+        );
+    }
+
     public function selectName(int $worldId): Response
     {
         $world = $this->worldRepository->find($worldId);
 
-        return $this->render('game/selectName.html.twig', [
-            'world' => $world,
-            'user' => $this->getGameUser()
-        ]);
+        return $this->render(
+            'game/selectName.html.twig',
+            [
+                'world' => $world,
+                'user' => $this->getGameUser()
+            ]
+        );
     }
 
-    /**
-     * @param Request $request
-     * @param int $worldId
-     * @return Response
-     */
     public function start(Request $request, int $worldId): Response
     {
         $name = $request->request->get('name', null);
@@ -102,9 +100,6 @@ final class WorldController extends BaseGameController
         return $this->redirectToRoute('Game/Login', [], 302);
     }
 
-    /**
-     * @return Response
-     */
     public function world(): Response
     {
         $player = $this->getPlayer();

@@ -18,40 +18,12 @@ use RuntimeException;
 
 final class RegionActionService
 {
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private PlayerRepository $playerRepository;
+    private FederationRepository $federationRepository;
+    private DistanceCalculator $distanceCalculator;
+    private TimeCalculator $timeCalculator;
 
-    /**
-     * @var PlayerRepository
-     */
-    private $playerRepository;
-
-    /**
-     * @var FederationRepository
-     */
-    private $federationRepository;
-
-    /**
-     * @var DistanceCalculator
-     */
-    private $distanceCalculator;
-
-    /**
-     * @var TimeCalculator
-     */
-    private $timeCalculator;
-
-    /**
-     * RegionActionService service
-     *
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param PlayerRepository $playerRepository
-     * @param FederationRepository $federationRepository
-     * @param DistanceCalculator $distanceCalculator
-     * @param TimeCalculator $timeCalculator
-     */
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         PlayerRepository $playerRepository,
@@ -66,11 +38,6 @@ final class RegionActionService
         $this->timeCalculator = $timeCalculator;
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     * @param Player $player
-     * @return array
-     */
     public function getAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
     {
         if ($worldRegion->getPlayer() === null) {
@@ -83,15 +50,17 @@ final class RegionActionService
 
         $playerRegions = [];
         foreach ($player->getWorldRegions() as $playerWorldRegion) {
-            $distance = $this->distanceCalculator->calculateDistance(
-                    $playerWorldRegion->getX(),
-                    $playerWorldRegion->getY(),
-                    $worldRegion->getX(),
-                    $worldRegion->getY()
-                ) * 100;
-
-            $playerWorldRegion->distance = $this->timeCalculator->calculateTimeLeft($distance);
-            $playerRegions[] = $playerWorldRegion;
+            $travelTime = $this->distanceCalculator->calculateDistanceTravelTime(
+                $playerWorldRegion->getX(),
+                $playerWorldRegion->getY(),
+                $worldRegion->getX(),
+                $worldRegion->getY()
+            );
+            $travelTimeLeft = $this->timeCalculator->calculateTimeLeft($travelTime);
+            $playerRegions[] = [
+                'region' => $playerWorldRegion,
+                'travelTime' => $travelTimeLeft
+            ];
         }
 
         return $playerRegions;

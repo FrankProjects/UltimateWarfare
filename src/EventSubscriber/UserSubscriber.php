@@ -7,7 +7,7 @@ namespace FrankProjects\UltimateWarfare\EventSubscriber;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -15,23 +15,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 final class UserSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private RouterInterface $router;
+    private UserRepository $userRepository;
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * PlayerSubscriber constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
-     * @param UserRepository $userRepository
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
@@ -42,10 +28,7 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
-    public function onKernelRequest(GetResponseEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -67,10 +50,7 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         }
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
-    private function checkBannedAndRedirect(GetResponseEvent $event): void
+    private function checkBannedAndRedirect(RequestEvent $event): void
     {
         if (
             strpos($event->getRequest()->getRequestUri(), '/game') === false &&
@@ -89,9 +69,6 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         $event->setResponse($response);
     }
 
-    /**
-     * @return array
-     */
     public static function getSubscribedEvents(): array
     {
         return [

@@ -12,41 +12,20 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 
 final class DoctrinePlayerRepository implements PlayerRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrinePlayerRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Player::class);
     }
 
-    /**
-     * @param int $id
-     * @return Player|null
-     */
     public function find(int $id): ?Player
     {
         return $this->repository->find($id);
     }
 
-    /**
-     * @param string $playerName
-     * @param World $world
-     * @return Player|null
-     */
     public function findByNameAndWorld(string $playerName, World $world): ?Player
     {
         return $this->repository->findOneBy(['name' => $playerName, 'world' => $world]);
@@ -67,7 +46,9 @@ final class DoctrinePlayerRepository implements PlayerRepository
               GROUP BY p.id
               HAVING p.world = :world
               ORDER BY COUNT(wr.player) DESC'
-            )->setParameter('world', $world
+            )->setParameter(
+                'world',
+                $world
             )->setMaxResults($limit)
             ->getResult();
     }
@@ -85,14 +66,13 @@ final class DoctrinePlayerRepository implements PlayerRepository
               FROM Game:Player p
               WHERE p.world = :world
               ORDER BY p.networth DESC'
-            )->setParameter('world', $world
+            )->setParameter(
+                'world',
+                $world
             )->setMaxResults($limit)
             ->getResult();
     }
 
-    /**
-     * @param Player $player
-     */
     public function remove(Player $player): void
     {
         foreach ($player->getMarketItems() as $marketItem) {
@@ -151,9 +131,6 @@ final class DoctrinePlayerRepository implements PlayerRepository
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Player $player
-     */
     public function save(Player $player): void
     {
         $this->entityManager->persist($player);

@@ -11,11 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class NotepadController extends BaseGameController
 {
-    /**
-     * @param Request $request
-     * @param PlayerRepository $playerRepository
-     * @return Response
-     */
     public function notepad(Request $request, PlayerRepository $playerRepository): Response
     {
         $player = $this->getPlayer();
@@ -27,9 +22,12 @@ final class NotepadController extends BaseGameController
             $this->addFlash('success', 'Notepad saved!');
         }
 
-        return $this->render('game/notepad.html.twig', [
-            'player' => $player,
-            'form' => $notepadForm->createView()
-        ]);
+        return $this->render(
+            'game/notepad.html.twig',
+            [
+                'player' => $player,
+                'form' => $notepadForm->createView()
+            ]
+        );
     }
 }

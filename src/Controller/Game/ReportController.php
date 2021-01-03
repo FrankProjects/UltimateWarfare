@@ -10,36 +10,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ReportController extends BaseGameController
 {
-    /**
-     * @var ReportRepository
-     */
-    private $reportRepository;
+    private ReportRepository $reportRepository;
 
-    /**
-     * ReportController constructor.
-     *
-     * @param ReportRepository $reportRepository
-     */
     public function __construct(
         ReportRepository $reportRepository
     ) {
         $this->reportRepository = $reportRepository;
     }
 
-    /**
-     * @param int $type
-     * @return Response
-     */
     public function report(int $type): Response
     {
-        switch ($type):
+        switch ($type) :
             case Report::TYPE_ATTACKED:
             case Report::TYPE_GENERAL:
             case Report::TYPE_MARKET:
             case Report::TYPE_AID:
                 $reports = $this->reportRepository->findReportsByType($this->getPlayer(), $type);
-        break;
-        default:
+                break;
+            default:
                 $reports = $this->reportRepository->findReports($this->getPlayer());
         endswitch;
 
@@ -53,10 +41,13 @@ final class ReportController extends BaseGameController
          *
          */
 
-        return $this->render('game/reports.html.twig', [
-            'player' => $this->getPlayer(),
-            'reports' => $reports,
-            'reportSubject' => Report::getReportSubject($type)
-        ]);
+        return $this->render(
+            'game/reports.html.twig',
+            [
+                'player' => $this->getPlayer(),
+                'reports' => $reports,
+                'reportSubject' => Report::getReportSubject($type)
+            ]
+        );
     }
 }

@@ -80,6 +80,9 @@
     "ocramius/proxy-manager": {
         "version": "2.2.2"
     },
+    "php": {
+        "version": "8.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },

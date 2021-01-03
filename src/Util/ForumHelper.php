@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FrankProjects\UltimateWarfare\Util;
 
+use DateTime;
+use Exception;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PostRepository;
 use FrankProjects\UltimateWarfare\Repository\TopicRepository;
@@ -9,22 +13,9 @@ use RuntimeException;
 
 final class ForumHelper
 {
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
+    private PostRepository $postRepository;
+    private TopicRepository $topicRepository;
 
-    /**
-     * @var TopicRepository
-     */
-    private $topicRepository;
-
-    /**
-     * ForumHelper constructor.
-     *
-     * @param PostRepository $postRepository
-     * @param TopicRepository $topicRepository
-     */
     public function __construct(
         PostRepository $postRepository,
         TopicRepository $topicRepository
@@ -33,14 +24,11 @@ final class ForumHelper
         $this->topicRepository = $topicRepository;
     }
 
-    /**
-     * @param User $user
-     */
     public function ensureNoMassPost(User $user): void
     {
         try {
-            $dateTime = new \DateTime('- 10 seconds');
-        } catch (\Exception $e) {
+            $dateTime = new DateTime('- 10 seconds');
+        } catch (Exception $e) {
             throw new RunTimeException("Spam protection exception: {$e->getMessage()}");
         }
 
@@ -55,9 +43,6 @@ final class ForumHelper
         }
     }
 
-    /**
-     * @param User $user
-     */
     public function ensureNotBanned(User $user): void
     {
         if ($user->getForumBan()) {
@@ -65,14 +50,11 @@ final class ForumHelper
         }
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCurrentDateTime(): \DateTime
+    public function getCurrentDateTime(): DateTime
     {
         try {
-            $dateTime = new \DateTime();
-        } catch (\Exception $e) {
+            $dateTime = new DateTime();
+        } catch (Exception $e) {
             throw new RunTimeException("DateTime exception: {$e->getMessage()}");
         }
 

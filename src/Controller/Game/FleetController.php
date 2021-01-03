@@ -18,34 +18,11 @@ use Throwable;
 
 final class FleetController extends BaseGameController
 {
-    /**
-     * @var WorldRegionRepository
-     */
-    private $worldRegionRepository;
+    private WorldRegionRepository $worldRegionRepository;
+    private GameUnitTypeRepository $gameUnitTypeRepository;
+    private FleetActionService $fleetActionService;
+    private RegionActionService $regionActionService;
 
-    /**
-     * @var GameUnitTypeRepository
-     */
-    private $gameUnitTypeRepository;
-
-    /**
-     * @var FleetActionService
-     */
-    private $fleetActionService;
-
-    /**
-     * @var RegionActionService
-     */
-    private $regionActionService;
-
-    /**
-     * FleetController constructor.
-     *
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param GameUnitTypeRepository $gameUnitTypeRepository
-     * @param FleetActionService $fleetActionService
-     * @param RegionActionService $regionActionService
-     */
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         GameUnitTypeRepository $gameUnitTypeRepository,
@@ -58,20 +35,16 @@ final class FleetController extends BaseGameController
         $this->regionActionService = $regionActionService;
     }
 
-    /**
-     * @return Response
-     */
     public function fleetList(): Response
     {
-        return $this->render('game/fleetList.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/fleetList.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
-    /**
-     * @param int $fleetId
-     * @return Response
-     */
     public function recall(int $fleetId): Response
     {
         try {
@@ -81,15 +54,14 @@ final class FleetController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/fleetList.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/fleetList.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
-    /**
-     * @param int $fleetId
-     * @return Response
-     */
     public function reinforce(int $fleetId): Response
     {
         try {
@@ -99,18 +71,14 @@ final class FleetController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->render('game/fleetList.html.twig', [
-            'player' => $this->getPlayer()
-        ]);
+        return $this->render(
+            'game/fleetList.html.twig',
+            [
+                'player' => $this->getPlayer()
+            ]
+        );
     }
 
-
-    /**
-     * @param Request $request
-     * @param int $regionId
-     * @return Response
-     * @throws \Exception
-     */
     public function sendGameUnits(Request $request, int $regionId): Response
     {
         $player = $this->getPlayer();
@@ -126,52 +94,62 @@ final class FleetController extends BaseGameController
 
         if ($request->isMethod(Request::METHOD_POST)) {
             $targetRegionId = intval($request->request->get('target', 0));
-            $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld($targetRegionId, $player->getWorld());
+            try {
+                $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld(
+                    $targetRegionId,
+                    $player->getWorld()
+                );
+            } catch (WorldRegionNotFoundException $e) {
+                $this->addFlash('error', $e->getMessage());
+                return $this->redirectToRoute('Game/RegionList', [], 302);
+            }
 
-            if ($targetRegion) {
-                try {
-                    $this->fleetActionService->sendGameUnits($worldRegion, $targetRegion, $player, $gameUnitType, $request->get('units'));
-                    $this->addFlash('success', 'You successfully send units!');
-                } catch (Throwable $e) {
-                    $this->addFlash('error', $e->getMessage());
-                }
-            } else {
-                $this->addFlash('error', "Target region does not exist.");
+            try {
+                $this->fleetActionService->sendGameUnits(
+                    $worldRegion,
+                    $targetRegion,
+                    $player,
+                    $gameUnitType,
+                    $request->get('units')
+                );
+                $this->addFlash('success', 'You successfully send units!');
+            } catch (Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
             }
         }
 
         $gameUnitsData = $this->worldRegionRepository->getWorldGameUnitSumByWorldRegion($worldRegion);
         $targetRegions = $this->getTargetWorldRegionData($player, $worldRegion);
 
-        return $this->render('game/region/sendUnits.html.twig', [
-            'region' => $worldRegion,
-            'player' => $player,
-            'gameUnitType' => $gameUnitType,
-            'targetRegions' => $targetRegions,
-            'gameUnitsData' => $gameUnitsData
-        ]);
+        return $this->render(
+            'game/region/sendUnits.html.twig',
+            [
+                'region' => $worldRegion,
+                'player' => $player,
+                'gameUnitType' => $gameUnitType,
+                'targetRegions' => $targetRegions,
+                'gameUnitsData' => $gameUnitsData
+            ]
+        );
     }
 
-    /**
-     * @param Player $player
-     * @param WorldRegion $region
-     * @return WorldRegion[]
-     */
     private function getTargetWorldRegionData(Player $player, WorldRegion $region): array
     {
         $distanceCalculator = new DistanceCalculator();
 
         $targetRegions = [];
         foreach ($player->getWorldRegions() as $worldRegion) {
-            $distance = $distanceCalculator->calculateDistance(
-                    $worldRegion->getX(),
-                    $worldRegion->getY(),
-                    $region->getX(),
-                    $region->getY()
-                ) * 100;
+            $travelTime = $distanceCalculator->calculateDistanceTravelTime(
+                $worldRegion->getX(),
+                $worldRegion->getY(),
+                $region->getX(),
+                $region->getY()
+            );
 
-            $worldRegion->distance = $distance;
-            $targetRegions[] = $worldRegion;
+            $targetRegions[] = [
+                'region' => $worldRegion,
+                'travelTime' => $travelTime
+            ];
         }
 
         return $targetRegions;

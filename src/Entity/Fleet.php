@@ -8,148 +8,74 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 
-/**
- * Fleet
- */
 class Fleet
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private int $timestamp;
+    private int $timestampArrive;
+    private Player $player;
+    private WorldRegion $worldRegion;
+    private WorldRegion $targetWorldRegion;
 
-    /**
-     * @var int
-     */
-    private $timestamp;
+    /** @var Collection<FleetUnit> */
+    private Collection $fleetUnits;
 
-    /**
-     * @var int
-     */
-    private $timestampArrive;
-
-    /**
-     * @var Player
-     */
-    private $player;
-
-    /**
-     * @var WorldRegion
-     */
-    private $worldRegion;
-
-    /**
-     * @var WorldRegion
-     */
-    private $targetWorldRegion;
-
-    /**
-     * @var Collection|FleetUnit[]
-     */
-    private $fleetUnits = [];
-
-    /**
-     * Fleet constructor.
-     */
     public function __construct()
     {
         $this->fleetUnits = new ArrayCollection();
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set timestamp
-     *
-     * @param int $timestamp
-     */
-    public function setTimestamp(int $timestamp)
+    public function setTimestamp(int $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * Get timestamp
-     *
-     * @return int
-     */
     public function getTimestamp(): int
     {
         return $this->timestamp;
     }
 
-    /**
-     * Set timestampArrive
-     *
-     * @param int $timestampArrive
-     */
-    public function setTimestampArrive(int $timestampArrive)
+    public function setTimestampArrive(int $timestampArrive): void
     {
         $this->timestampArrive = $timestampArrive;
     }
 
-    /**
-     * Get timestampArrive
-     *
-     * @return int
-     */
     public function getTimestampArrive(): int
     {
         return $this->timestampArrive;
     }
 
-    /**
-     * @return Player
-     */
     public function getPlayer(): Player
     {
         return $this->player;
     }
 
-    /**
-     * @param Player $player
-     */
-    public function setPlayer(Player $player)
+    public function setPlayer(Player $player): void
     {
         $this->player = $player;
     }
 
-    /**
-     * @return WorldRegion
-     */
     public function getWorldRegion(): WorldRegion
     {
         return $this->worldRegion;
     }
 
-    /**
-     * @param WorldRegion $worldRegion
-     */
-    public function setWorldRegion(WorldRegion $worldRegion)
+    public function setWorldRegion(WorldRegion $worldRegion): void
     {
         $this->worldRegion = $worldRegion;
     }
 
-    /**
-     * @return WorldRegion
-     */
     public function getTargetWorldRegion(): WorldRegion
     {
         return $this->targetWorldRegion;
     }
 
-    /**
-     * @param WorldRegion $targetWorldRegion
-     */
-    public function setTargetWorldRegion(WorldRegion $targetWorldRegion)
+    public function setTargetWorldRegion(WorldRegion $targetWorldRegion): void
     {
         $this->targetWorldRegion = $targetWorldRegion;
     }
@@ -162,24 +88,13 @@ class Fleet
         return $this->fleetUnits;
     }
 
-    /**
-     * @param Collection $fleetUnits
-     */
-    public function setFleetUnits(Collection $fleetUnits)
-    {
-        $this->fleetUnits = $fleetUnits;
-    }
-
-    /**
-     * @param Player $player
-     * @param WorldRegion $worldRegion
-     * @param WorldRegion $targetWorldRegion
-     * @return Fleet
-     */
-    public static function createForPlayer(Player $player, WorldRegion $worldRegion, WorldRegion $targetWorldRegion): Fleet
-    {
+    public static function createForPlayer(
+        Player $player,
+        WorldRegion $worldRegion,
+        WorldRegion $targetWorldRegion
+    ): Fleet {
         $distanceCalculator = new DistanceCalculator();
-        $distance = $distanceCalculator->calculateDistance(
+        $travelTime = $distanceCalculator->calculateDistanceTravelTime(
             $targetWorldRegion->getX(),
             $targetWorldRegion->getY(),
             $worldRegion->getX(),
@@ -191,7 +106,7 @@ class Fleet
         $fleet->setWorldRegion($worldRegion);
         $fleet->setTargetWorldRegion($targetWorldRegion);
         $fleet->setTimestamp(time());
-        $fleet->setTimestampArrive(time() + ($distance * 100));
+        $fleet->setTimestampArrive(time() + $travelTime);
 
         return $fleet;
     }

@@ -9,17 +9,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ForumController extends BaseForumController
 {
-    /**
-     * @param CategoryRepository $categoryRepository
-     * @return Response
-     */
     public function index(CategoryRepository $categoryRepository): Response
     {
         $categories = $categoryRepository->findAll();
 
-        return $this->render('forum/forum.html.twig', [
-            'categories' => $categories,
-            'user' => $this->getGameUser()
-        ]);
+        return $this->render(
+            'forum/forum.html.twig',
+            [
+                'categories' => $categories,
+                'user' => $this->getGameUser()
+            ]
+        );
     }
 }

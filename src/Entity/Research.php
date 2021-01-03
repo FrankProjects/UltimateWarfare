@@ -7,64 +7,25 @@ namespace FrankProjects\UltimateWarfare\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-/**
- * Research
- */
 class Research
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
+    private string $name;
+    private string $image;
+    private int $cost;
+    private int $timestamp;
+    private string $description;
+    private bool $active = false;
 
-    /**
-     * @var string
-     */
-    private $name;
+    /** @var Collection<ResearchPlayer> */
+    private Collection $researchPlayers;
 
-    /**
-     * @var string
-     */
-    private $pic;
+    /** @var Collection<ResearchNeeds> */
+    private Collection $researchNeeds;
 
-    /**
-     * @var int
-     */
-    private $cost;
+    /** @var Collection<ResearchNeeds> */
+    private Collection $requiredResearch;
 
-    /**
-     * @var int
-     */
-    private $timestamp;
-
-    /**
-     * @var string
-     */
-    private $description;
-
-    /**
-     * @var bool
-     */
-    private $active = false;
-
-    /**
-     * @var Collection|ResearchPlayer[]
-     */
-    private $researchPlayers = [];
-
-    /**
-     * @var Collection|ResearchNeeds[]
-     */
-    private $researchNeeds = [];
-
-    /**
-     * @var Collection|ResearchNeeds[]
-     */
-    private $requiredResearch = [];
-
-    /**
-     * Research constructor.
-     */
     public function __construct()
     {
         $this->researchPlayers = new ArrayCollection();
@@ -72,180 +33,97 @@ class Research
         $this->requiredResearch = new ArrayCollection();
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set pic
-     *
-     * @param string $pic
-     */
-    public function setPic(string $pic)
+    public function getImage(): string
     {
-        $this->pic = $pic;
+        return $this->image;
     }
 
-    /**
-     * Get pic
-     *
-     * @return string
-     */
-    public function getPic(): string
+    public function setImage(string $image): void
     {
-        return $this->pic;
+        $this->image = $image;
     }
 
-    /**
-     * Set cost
-     *
-     * @param int $cost
-     */
-    public function setCost(int $cost)
+    public function setCost(int $cost): void
     {
         $this->cost = $cost;
     }
 
-    /**
-     * Get cost
-     *
-     * @return int
-     */
     public function getCost(): int
     {
         return $this->cost;
     }
 
-    /**
-     * Set timestamp
-     *
-     * @param int $timestamp
-     */
-    public function setTimestamp(int $timestamp)
+    public function setTimestamp(int $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * Get timestamp
-     *
-     * @return int
-     */
     public function getTimestamp(): int
     {
         return $this->timestamp;
     }
 
-    /**
-     * Set description
-     *
-     * @param string $description
-     */
-    public function setDescription(string $description)
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * Get description
-     *
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * Set active
-     *
-     * @param bool $active
-     */
-    public function setActive(bool $active)
+    public function setActive(bool $active): void
     {
         $this->active = $active;
     }
 
-    /**
-     * Get active
-     *
-     * @return bool
-     */
     public function getActive(): bool
     {
         return $this->active;
     }
 
-    /**
-     * @return Collection
-     */
     public function getResearchNeeds(): Collection
     {
         return $this->researchNeeds;
     }
 
-    /**
-     * @param Collection $researchNeeds
-     */
-    public function setResearchNeeds(Collection $researchNeeds)
+    public function setResearchNeeds(Collection $researchNeeds): void
     {
         $this->researchNeeds = $researchNeeds;
     }
 
-    /**
-     * @return Collection
-     */
     public function getRequiredResearch(): Collection
     {
         return $this->requiredResearch;
     }
 
-    /**
-     * @param Collection $requiredResearch
-     */
-    public function setRequiredResearch(Collection $requiredResearch)
+    public function setRequiredResearch(Collection $requiredResearch): void
     {
         $this->requiredResearch = $requiredResearch;
     }
 
-    /**
-     * @return Collection
-     */
     public function getResearchPlayers(): Collection
     {
         return $this->researchPlayers;
     }
 
-    /**
-     * @param Collection $researchPlayers
-     */
-    public function setResearchPlayers(Collection $researchPlayers)
+    public function setResearchPlayers(Collection $researchPlayers): void
     {
         $this->researchPlayers = $researchPlayers;
     }

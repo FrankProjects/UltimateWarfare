@@ -11,31 +11,15 @@ use FrankProjects\UltimateWarfare\Repository\ChatUserRepository;
 
 final class DoctrineChatUserRepository implements ChatUserRepository
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-    /**
-     * DoctrineChatUserRepository constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(ChatUser::class);
     }
 
-    /**
-     * @param string $name
-     * @return ChatUser
-     */
     public function findByName(string $name): ?ChatUser
     {
         return $this->repository->findOneBy(['name' => $name]);
@@ -60,25 +44,19 @@ final class DoctrineChatUserRepository implements ChatUserRepository
     public function findInactiveChatUsers(): array
     {
         return $this->entityManager->createQuery(
-                'SELECT cu
+            'SELECT cu
               FROM Game:ChatUser cu
               WHERE cu.timestampActivity < :timestamp'
-            )->setParameter('timestamp', time() - 25)
+        )->setParameter('timestamp', time() - 25)
             ->getResult();
     }
 
-    /**
-     * @param ChatUser $chatUser
-     */
     public function remove(ChatUser $chatUser): void
     {
         $this->entityManager->remove($chatUser);
         $this->entityManager->flush();
     }
 
-    /**
-     * @param ChatUser $chatUser
-     */
     public function save(ChatUser $chatUser): void
     {
         $this->entityManager->persist($chatUser);
