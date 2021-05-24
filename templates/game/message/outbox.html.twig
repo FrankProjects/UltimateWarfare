@@ -23,7 +23,7 @@
 
         {% for message in messages %}
             <tr>
-                <td class="text-left">
+                <td class="text-start">
                     <input type="checkbox" name="selected_messages[]" value="{{ message.id }}">
                     <a class="B" href="{{ path('Game/Message/Outbox/Read', {'messageId': message.id}) }}">
                         {% if message.adminMessage == 1 %}
@@ -47,7 +47,7 @@
             </tr>
         {% endfor %}
         <tr>
-            <td class="text-left" colspan="3">
+            <td class="text-start" colspan="3">
                 <input type="checkbox" onclick="selectAll(this.form, this.checked)">Select All <input class="btn btn-primary" type="submit" name="del" value="Delete Selected" />
             </td>
         </tr>

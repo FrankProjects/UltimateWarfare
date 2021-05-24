@@ -1,8 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <nav class="navbar col-sm-3 col-md-2 align-items-start">
-        {% include 'site/navigation.html.twig' %}
+    <nav class="navbar col-sm-3 col-md-2 navbar-expand-lg navbar-dark bg-dark align-items-start" role="navigation">
+        <div class="container-fluid flex-column">
+            <div>
+                <a class="navbar-brand" href="{{ path('Site/Homepage') }}">
+                    Ultimate Warfare
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                {% include 'site/navigation.html.twig' %}
+            </div>
+        </div>
     </nav>
 
     <main class="col-sm-9 col-md-10 justify-content-center">

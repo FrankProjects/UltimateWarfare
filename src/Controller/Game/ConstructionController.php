@@ -123,7 +123,7 @@ final class ConstructionController extends BaseGameController
         /**
          * XXX TODO: Refactor to show what game units are being built/trained
          */
-        if ($gameUnitType->getId() == 4) {
+        if ($gameUnitType->getId() == GameUnitType::GAME_UNIT_TYPE_UNITS) {
             $this->addFlash('success', 'New units are now being trained!');
         } else {
             $this->addFlash('success', 'New buildings are now being built!');
@@ -175,7 +175,7 @@ final class ConstructionController extends BaseGameController
         /**
          * XXX TODO: Refactor to show what game units are being destroyed/disbanded
          */
-        if ($gameUnitType->getId() == 4) {
+        if ($gameUnitType->getId() == GameUnitType::GAME_UNIT_TYPE_UNITS) {
             $this->addFlash('success', "You have disbanded units!");
         } else {
             $this->addFlash('success', "You have destroyed buildings!");

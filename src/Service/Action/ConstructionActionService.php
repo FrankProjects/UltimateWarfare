@@ -69,14 +69,14 @@ final class ConstructionActionService
             $priceWood = $priceWood + ($amount * $gameUnit->getCost()->getWood());
             $priceSteel = $priceSteel + ($amount * $gameUnit->getCost()->getSteel());
 
-            if ($gameUnitType->getId() == 1) {
+            if ($gameUnitType->getId() == GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
                 $totalBuild = $totalBuild + $amount;
             }
 
             $constructions[] = Construction::create($region, $player, $gameUnit, $amount);
         }
 
-        if ($gameUnitType->getId() == 1) {
+        if ($gameUnitType->getId() == GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
             $buildingsInConstruction = $this->getCountGameUnitsInConstruction($region, $gameUnitType);
             $regionBuildings = $this->getCountGameUnitsInWorldRegion($region, $gameUnitType);
             $totalSpace = $region->getSpace() - $regionBuildings - $buildingsInConstruction;
@@ -154,7 +154,7 @@ final class ConstructionActionService
 
     public function getBuildingSpaceLeft(GameUnitType $gameUnitType, WorldRegion $worldRegion): int
     {
-        if ($gameUnitType->getId() != 1) {
+        if ($gameUnitType->getId() != GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
             return 0;
         }
 
