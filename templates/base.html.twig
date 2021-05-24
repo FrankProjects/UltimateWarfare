@@ -10,13 +10,14 @@
         <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/bootstrap.min.css') }}" >
         <link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/main.css') }}" />
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         {% block stylesheets %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </head>
     <body>
         <div class="container border border-primary">
             <div class="row">
-                <img src="{{ asset('images/banner.jpg') }}" class="img-fluid" alt="Ultimate Warfare Online multiplayer Text-based game" />
+                <img src="{{ asset('images/banner.jpg') }}" class="img-fluid g-0" alt="Ultimate Warfare Online multiplayer Text-based game" />
             </div>
             <div class="row">
                 {% block body %}{% endblock %}
@@ -27,7 +28,6 @@
             <div class="row justify-content-center">
                 <p class="text-center">
                     <a class="B" href="{{ path('Site/About') }}" title="Ultimate Warfare - About">About</a> -
-                    <a class="B" href="{{ path('Site/Advertise') }}" title="Ultimate Warfare - Advertising">Advertising</a> -
                     <a class="B" href="{{ path('Site/Contact') }}" title="Ultimate Warfare - Contact">Contact</a> -
                     <a class="B" href="{{ path('Site/Community') }}" title="Ultimate Warfare - Community">Community</a>
                 </p>
