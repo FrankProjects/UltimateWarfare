@@ -43,7 +43,7 @@
                 <td width="120">
                     <img src="{{ asset('images/map/' ~ playerRegion.region.type ~ '.jpg') }}" alt="Region {{ playerRegion.region.id }}" width="120" height="100">
                 </td>
-                <td class="text-left" width="370">
+                <td class="text-start" width="370">
                     <ul>
                         <li>Position: {{ playerRegion.region.x }}, {{ playerRegion.region.y }}</li>
                         <li>Travel time to target: {{ playerRegion.travelTime }}</li>
@@ -52,7 +52,7 @@
                         </li>
                     </ul>
                 </td>
-                <td class="text-left" width="210">
+                <td class="text-start" width="210">
                     {% for regionUnit in playerRegion.region.worldRegionUnits %}
                         {% if regionUnit.amount > 1 %}
                             {{ regionUnit.amount }} {{ regionUnit.gameUnit.nameMulti }}<br />
