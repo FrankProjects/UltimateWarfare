@@ -676,10 +676,6 @@ Site/About:
     path:      /about
     controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::about
 
-Site/Advertise:
-    path:      /advertise
-    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::advertise
-
 Site/Chat:
     path:      /chat
     controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::chat
@@ -705,10 +701,6 @@ Site/Community:
 Site/Contact:
     path:      /contact
     controller: FrankProjects\UltimateWarfare\Controller\Site\ContactController::contact
-
-Site/Donate:
-    path:      /donate
-    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::donate
 
 Site/HallOfFame:
     path:      /hall-of-fame
