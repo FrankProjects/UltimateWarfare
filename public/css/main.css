@@ -1,4 +1,6 @@
-body { background: #ccbb99 !important; }
+body {
+    background: #ccbb99 !important;
+}
 
 .container { background: #f3e6c1;}
 
@@ -11,8 +13,6 @@ body { background: #ccbb99 !important; }
 .nav-link:hover{ background: #f4f4f4; color: #804000; }
 
 .navbar-collapse{ justify-content: flex-end;}
-
-.navbar-toggler{  background:#fff !important;}
 
 .border-primary {
     border-color: #804000 !important;
