@@ -16,14 +16,14 @@
     <form method="post" action="{{ path('Game/Message/Inbox') }}">
     <table class="table text-center">
         <tr class="tabletop">
-            <td class="text-left" width="400"><b>Subject</b></td>
+            <td class="text-start" width="400"><b>Subject</b></td>
             <td width="200">From</td>
             <td width="100">Date:</td>
         </tr>
 
         {% for message in messages %}
             <tr>
-                <td class="text-left">
+                <td class="text-start">
                     <input type="checkbox" name="selected_messages[]" value="{{ message.id }}">
                     {% if message.status == 0 %}
                         <img src="{{ asset('images/icons/pm_new.png') }}" width="17" height="15" alt="New message">
@@ -52,7 +52,7 @@
             </tr>
         {% endfor %}
         <tr>
-            <td class="text-left" colspan="3">
+            <td class="text-start" colspan="3">
                 <input type="checkbox" onclick="selectAll(this.form, this.checked)"><b>Select All</b>  Options: <input class="btn btn-primary" type="submit" name="del" value="Delete Selected" />
             </td>
         </tr>
