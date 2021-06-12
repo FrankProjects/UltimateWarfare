@@ -277,9 +277,6 @@
     "symfony/http-kernel": {
         "version": "v5.1.5"
     },
-    "symfony/intl": {
-        "version": "v5.1.5"
-    },
     "symfony/monolog-bridge": {
         "version": "v5.1.5"
     },
@@ -300,6 +297,9 @@
     },
     "symfony/options-resolver": {
         "version": "v5.1.5"
+    },
+    "symfony/password-hasher": {
+        "version": "v5.3.0"
     },
     "symfony/phpunit-bridge": {
         "version": "4.3",
