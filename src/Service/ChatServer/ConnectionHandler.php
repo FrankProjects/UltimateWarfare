@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\ChatServer;
 
 use Exception;
+use Psr\Log\LoggerInterface;
 use SplObjectStorage;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
-use function json_decode;
 use function json_encode;
 
 class ConnectionHandler implements MessageComponentInterface
 {
-    private array $chatConnections = [];
     protected SplObjectStorage $connections;
+    private LoggerInterface $logger;
 
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
+        $this->logger = $logger;
         $this->connections = new SplObjectStorage();
     }
 
@@ -27,9 +28,8 @@ class ConnectionHandler implements MessageComponentInterface
      */
     public function onOpen(ConnectionInterface $conn): void
     {
-        echo 'new connection!' . PHP_EOL;
+        $this->logger->debug('new connection!');
         $this->connections->attach($conn);
-//$conn->resourceId;
         $message = new Message('message', 'System', 'Welcome to chat!');
         $conn->send(json_encode($message->getStruct()));
     }
@@ -48,7 +48,7 @@ class ConnectionHandler implements MessageComponentInterface
      */
     public function onError(ConnectionInterface $conn, Exception $e): void
     {
-        //$conn->send('Error ' . $e->getMessage() . PHP_EOL);
+        $this->logger->error($e->getMessage());
         $conn->close();
     }
 
@@ -58,28 +58,25 @@ class ConnectionHandler implements MessageComponentInterface
      */
     public function onMessage(ConnectionInterface $from, $msg): void
     {
-        echo 'new message!' . PHP_EOL;
+        $this->logger->debug('new message!');
+        $message = Message::parseMessage($msg);
+        if ($message === null) {
+            $this->logger->debug('faulty message=' . $msg);
+            return;
+        }
+
         foreach ($this->connections as $connection) {
-            $package = json_decode($msg);
+            switch ($message->getType()) {
+                case Message::TYPE_MESSAGE:
+                    $this->logger->debug('onMessage message type');
 
-            if (is_object($package) == true) {
-                /**
-                 * @var ChatConnection $from
-                 */
-
-                //$package->name = $from->getChatUserName();
-                switch ($package->type) {
-                    case 'message':
-                        echo "onMessage message type" . PHP_EOL;
-
-                        if ($from != $connection) {
-                            echo "send message to client..." . PHP_EOL;
-                            $connection->send(json_encode($package));
-                        }
-                        break;
-                    default:
-                        echo "onMessage no valid type type {$package->type}" . PHP_EOL;
-                }
+                    if ($from != $connection) {
+                        $this->logger->debug('send message to client...');
+                        $connection->send(json_encode($message->getStruct()));
+                    }
+                    break;
+                default:
+                    $this->logger->warning("onMessage no valid type type {$message->getType()}");
             }
         }
     }
