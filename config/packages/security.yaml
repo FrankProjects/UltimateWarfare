@@ -1,4 +1,5 @@
 security:
+    enable_authenticator_manager: true
     password_hashers:
         FrankProjects\UltimateWarfare\Entity\User:
             algorithm: auto
@@ -23,10 +24,8 @@ security:
             pattern: ^/
             form_login:
                 provider: frankprojects
-                csrf_token_generator: security.csrf.token_manager
                 default_target_path: /game/login
             logout:       true
-            anonymous:    true
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
