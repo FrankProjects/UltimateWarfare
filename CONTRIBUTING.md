@@ -117,7 +117,25 @@ $ bin/console doctrine:schema:create
 $ bin/console doctrine:migrations:migrate
 ```
 
+#### Chat Server
 
+Add to your apache vhost file:
+```
+ProxyPass /wss/ ws://localhost:8080/
+ProxyPassReverse /wss/ ws://localhost:8080/
+```
+
+Enable mod_proxy and mod_proxy_wstunnel to handle secure websocket traffic
+```bash
+$ sudo a2enmod proxy
+$ sudo a2enmod proxy_wstunnel
+$ sudo systemctl restart apache2
+````
+
+Start the ChatServer
+```bash
+php bin/console chat:start
+```
 ### Directory structure
 
 XXX TODO

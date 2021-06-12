@@ -154,7 +154,7 @@ final class ConstructionActionService
 
     public function getBuildingSpaceLeft(GameUnitType $gameUnitType, WorldRegion $worldRegion): int
     {
-        if ($gameUnitType->getId() != GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
+        if ($gameUnitType->getId() !== GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
             return 0;
         }
 
