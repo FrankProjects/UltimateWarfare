@@ -8,13 +8,13 @@ use FrankProjects\UltimateWarfare\Form\ConfirmPasswordType;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class SurrenderController extends BaseGameController
 {
     public function surrender(
         Request $request,
-        UserPasswordEncoderInterface $encoder,
+        UserPasswordHasherInterface $passwordHasher,
         PlayerRepository $playerRepository
     ): Response {
         $player = $this->getPlayer();
@@ -25,7 +25,7 @@ final class SurrenderController extends BaseGameController
         if ($confirmPasswordForm->isSubmitted() && $confirmPasswordForm->isValid()) {
             $plainPassword = $confirmPasswordForm->get('plainPassword')->getData();
 
-            if ($encoder->isPasswordValid($user, $plainPassword)) {
+            if ($passwordHasher->isPasswordValid($user, $plainPassword)) {
                 $playerRepository->remove($player);
                 $this->addFlash('success', "You have surrendered your empire...");
                 return $this->redirectToRoute('Game/Account');
