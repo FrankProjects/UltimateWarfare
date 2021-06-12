@@ -10,7 +10,7 @@ use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserController extends BaseGameController
 {
@@ -68,7 +68,7 @@ final class UserController extends BaseGameController
         );
     }
 
-    public function edit(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function edit(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $this->getGameUser();
         $changePasswordForm = $this->createForm(ChangePasswordType::class, $user);
@@ -78,11 +78,11 @@ final class UserController extends BaseGameController
             $oldPassword = $changePasswordForm->get('oldPassword')->getData();
             $plainPassword = $changePasswordForm->get('plainPassword')->getData();
 
-            if ($encoder->isPasswordValid($user, $oldPassword)) {
+            if ($passwordHasher->isPasswordValid($user, $oldPassword)) {
                 if ($plainPassword === null) {
                     $this->addFlash('error', 'New passwords do not match');
                 } else {
-                    $newEncodedPassword = $encoder->encodePassword($user, $plainPassword);
+                    $newEncodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                     $user->setPassword($newEncodedPassword);
                     $this->userRepository->save($user);
 

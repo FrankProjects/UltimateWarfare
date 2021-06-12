@@ -11,18 +11,18 @@
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.1",
         "doctrine/orm": "^2.9",
-        "symfony/asset": "^5.2",
-        "symfony/console": "^5.2",
+        "symfony/asset": "^5.3",
+        "symfony/console": "^5.3",
         "symfony/flex": "^1.13",
-        "symfony/form": "^5.2",
-        "symfony/framework-bundle": "^5.2",
+        "symfony/form": "^5.3",
+        "symfony/framework-bundle": "^5.3",
         "symfony/monolog-bundle": "^3.7",
-        "symfony/security-bundle": "^5.2",
+        "symfony/security-bundle": "^5.3",
         "symfony/swiftmailer-bundle": "^3.5",
-        "symfony/translation": "^5.2",
-        "symfony/twig-bundle": "^5.2",
-        "symfony/web-profiler-bundle": "^5.2",
-        "symfony/yaml": "^5.2",
+        "symfony/translation": "^5.3",
+        "symfony/twig-bundle": "^5.3",
+        "symfony/web-profiler-bundle": "^5.3",
+        "symfony/yaml": "^5.3",
         "twig/twig": "^3.3",
         "ext-json": "*"
     },
@@ -31,8 +31,8 @@
         "phpstan/phpstan-doctrine": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
         "squizlabs/php_codesniffer": "^3.6",
-        "symfony/dotenv": "^5.2",
-        "symfony/phpunit-bridge": "^5.2"
+        "symfony/dotenv": "^5.3",
+        "symfony/phpunit-bridge": "^5.3"
     },
     "config": {
         "preferred-install": {
@@ -70,7 +70,7 @@
         "symfony": {
             "id": "01C0SF16B9AEFHYZFFXCZJK7ZN",
             "allow-contrib": false,
-            "require": "5.2.*"
+            "require": "5.3.*"
         }
     }
 }

@@ -30,7 +30,7 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 

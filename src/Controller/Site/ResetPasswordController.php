@@ -12,22 +12,22 @@ use FrankProjects\UltimateWarfare\Util\TokenGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Throwable;
 
 final class ResetPasswordController extends AbstractController
 {
     private MailService $mailService;
-    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserPasswordHasherInterface $passwordHasher;
     private UserRepository $userRepository;
 
     public function __construct(
         MailService $mailService,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordHasher,
         UserRepository $userRepository
     ) {
         $this->mailService = $mailService;
-        $this->passwordEncoder = $passwordEncoder;
+        $this->passwordHasher = $passwordHasher;
         $this->userRepository = $userRepository;
     }
 
@@ -80,7 +80,7 @@ final class ResetPasswordController extends AbstractController
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
+                $password = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
                 $user->setPassword($password);
                 $user->setConfirmationToken(null);
                 $this->userRepository->save($user);

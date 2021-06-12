@@ -9,9 +9,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Serializable;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface, EquatableInterface, Serializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, Serializable
 {
     private const ROLE_DEFAULT = 'ROLE_USER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
@@ -353,5 +354,10 @@ class User implements UserInterface, EquatableInterface, Serializable
     public function setPostsEdited(Collection $postsEdited): void
     {
         $this->postsEdited = $postsEdited;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
     }
 }
