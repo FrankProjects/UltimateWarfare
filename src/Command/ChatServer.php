@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Command;
 
 use FrankProjects\UltimateWarfare\Service\ChatServer\ConnectionHandler;
+use Psr\Log\LoggerInterface;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 final class ChatServer extends Command
 {
@@ -20,14 +22,25 @@ final class ChatServer extends Command
             ->setDescription('Starts chat server');
     }
 
+    private ParameterBagInterface $parameterBag;
+    private LoggerInterface $logger;
+    private const PROTOCOL_WSS = 'wss';
+
+    public function __construct(ParameterBagInterface $parameterBag, LoggerInterface $logger)
+    {
+        $this->parameterBag = $parameterBag;
+        $this->logger = $logger;
+        parent::__construct();
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $port = 8080;
-        $address = '0.0.0.0';
+        $port = $this->parameterBag->get('app.uw_chat_service_port');
+        $address = $this->parameterBag->get('app.uw_chat_address');
 
         $output->writeln(
             [
-                "Starting chat server on {$address} port {$port}",
+                "Starting chat server on {$address}:{$port}",
                 '============',
             ]
         );
@@ -35,7 +48,7 @@ final class ChatServer extends Command
         $chatServer = IoServer::factory(
             new HttpServer(
                 new WsServer(
-                    new ConnectionHandler()
+                    new ConnectionHandler($this->logger)
                 )
             ),
             $port,

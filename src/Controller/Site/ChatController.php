@@ -21,9 +21,8 @@ final class ChatController extends BaseController
 
         return $this->render('site/chat.html.twig', [
             'userId' => $userId,
-            'token' => 'test',
-            'websocketServerHost' => 'localhost',
-            'websocketServerPort' => 8080
+            'websocketServerHost' => $this->getParameter('app.uw_chat_hostname'),
+            'websocketServerPort' => $this->getParameter('app.uw_chat_public_port'),
         ]);
     }
 }
