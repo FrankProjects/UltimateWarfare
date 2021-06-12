@@ -25,7 +25,7 @@ function updateStatus(status) {
 
 console.log('Ready');
 updateStatus('connecting');
-let socket = new WebSocket('ws://' + socketHost + ':' + socketPort);
+let socket = new WebSocket('wss://' + socketHost + ':' + socketPort);
 
 socket.onopen = function () {
     console.log('Connection successful');
@@ -51,22 +51,13 @@ socket.onmessage = function (event) {
     let message = document.createElement("div");
     let node = document.createTextNode(event.data);
     message.appendChild(node);
-    message.classList.add('comment');
-    let time = Date.now()
-    message.innerHTML = '<h2>' + data.name + '<br /><span class="time-ago" title="' + time + '">' + time + '</span></h2><p>' + data.message + '</p>';
-    //list.appendChild(message);
-
-
-    let message2 = document.createElement("div");
-    let node2 = document.createTextNode(event.data);
-    message2.appendChild(node2);
-    message2.classList.add('d-flex');
-    message2.classList.add('justify-content-start');
-    message2.classList.add('mb-4');
+    message.classList.add('d-flex');
+    message.classList.add('justify-content-start');
+    message.classList.add('mb-4');
     let date = new Date();
-    message2.innerHTML = '<div class="msg_cotainer">' + data.message + '<span class="msg_time">' + date.toLocaleString() + '</span></div>';
-    list.appendChild(message2);
-    message2.scrollIntoView();
+    message.innerHTML = '<div class="msg_container">' + data.message + '<span class="msg_time">' + date.toLocaleString() + '</span></div>';
+    list.appendChild(message);
+    message.scrollIntoView();
 };
 
 socket.onerror = function (error) {
@@ -86,22 +77,13 @@ function sendText() {
         let message = document.createElement("div");
         let node = document.createTextNode(text);
         message.appendChild(node);
-        message.classList.add('comment');
-        message.classList.add('mine');
-        let time = Date.now()
-        message.innerHTML = '<h2>Me<br /><span class="time-ago" title="' + time + '">' + time + '</span></h2><p>' + text + '</p>';
-        //list.appendChild(message);
-
-        let message2 = document.createElement("div");
-        let node2 = document.createTextNode(text);
-        message2.appendChild(node2);
-        message2.classList.add('d-flex');
-        message2.classList.add('justify-content-end');
-        message2.classList.add('mb-4');
+        message.classList.add('d-flex');
+        message.classList.add('justify-content-end');
+        message.classList.add('mb-4');
         let date = new Date();
-        message2.innerHTML = '<div class="msg_cotainer_send">' + text + '<span class="msg_time_send">' + date.toLocaleString() + '</span></div>';
-        list.appendChild(message2);
-        message2.scrollIntoView();
+        message.innerHTML = '<div class="msg_container_send">' + text + '<span class="msg_time_send">' + date.toLocaleString() + '</span></div>';
+        list.appendChild(message);
+        message.scrollIntoView();
 /**
         <div class="d-flex justify-content-end mb-4">
             <div class="msg_cotainer_send">
