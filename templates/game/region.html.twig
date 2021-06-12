@@ -4,9 +4,9 @@
 
 {% block content %}
     <table class="table text-center">
-        <tr>
+        <tr class="tabletop">
             {% if player.worldRegions|length > 1 and region.player.id is defined and region.player.id == player.id %}
-            <td class="tabletop" colspan="3">
+            <td colspan="3">
                 {% if previousRegion is not null %}
                     <a class="B" href="{{ path('Game/World/Region', {'regionId': previousRegion.id}) }}"><<</a>
                 {% endif %}
@@ -16,7 +16,7 @@
                 {% endif %}
             </td>
             {% else %}
-            <td class="tabletop" colspan="3"><b>Region</b></td>
+            <td colspan="3"><b>Region</b></td>
             {% endif %}
         </tr>
         <tr>
@@ -58,8 +58,8 @@
 
     {% for gameUnitType in gameUnitTypes %}
         <table class="table text-center">
-            <tr>
-                <td class="tabletop" colspan="2"><b>{{ gameUnitType.name }}</b></td>
+            <tr class="tabletop">
+                <td colspan="2"><b>{{ gameUnitType.name }}</b></td>
             </tr>
             {% set hasGameUnit = 0 %}
             {% for gameUnit in gameUnitType.gameUnits %}
@@ -87,8 +87,8 @@
 
         <br />
     <table width="350" class="table text-center">
-        <tr>
-            <td width="350" class="tabletop" colspan="2"><b>Other Actions</b></td>
+        <tr class="tabletop">
+            <td width="350" colspan="2"><b>Other Actions</b></td>
         </tr>
         <tr>
             <td colspan="2">

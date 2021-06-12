@@ -4,8 +4,8 @@
 
 {% block content %}
     <table class="table text-center">
-        <tr>
-            <td class="tabletop" colspan="3"><b>Federation bank deposit</b></td>
+        <tr class="tabletop">
+            <td colspan="3"><b>Federation bank deposit</b></td>
         </tr>
         <tr>
             <td colspan="3">
@@ -17,8 +17,8 @@
                 <br />
             </td>
         </tr>
-        <tr>
-            <td colspan="3" class="tabletop"><b>Cash and resources</b></td>
+        <tr class="tabletop">
+            <td colspan="3"><b>Cash and resources</b></td>
         </tr>
         <tr>
             <td width="200">Resources</td>
@@ -52,8 +52,8 @@
 
     <form method="post" action="{{ path('Game/Federation/Bank/Deposit') }}">
         <table class="table text-center">
-            <tr>
-                <td class="tabletop" colspan="2"><b>Deposit</b></td>
+            <tr class="tabletop">
+                <td colspan="2"><b>Deposit</b></td>
             </tr>
             <tr>
                 <td width="100">Resource: </td>
