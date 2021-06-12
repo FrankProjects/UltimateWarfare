@@ -5,12 +5,12 @@
     </p>
 
     <table class="table text-center">
-        <tr>
-            <td class="tabletop" colspan="2"><b>Army</b></td>
+        <tr class="tabletop">
+            <td colspan="2"><b>Army</b></td>
         </tr>
         {% for gameUnitType in gameUnitTypes %}
-            <tr>
-                <td colspan="2" class="tabletop"><b>{{ gameUnitType.name }}</b></td>
+            <tr class="tabletop">
+                <td colspan="2"><b>{{ gameUnitType.name }}</b></td>
             </tr>
 
             {% set gameUnitTypeExist = 0 %}
