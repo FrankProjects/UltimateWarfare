@@ -36,7 +36,7 @@ class BaseGameController extends BaseController
          * XXX TODO: Fix session expired page
          */
         $user = $this->getGameUser();
-        $playerId = $this->get('session')->get('playerId');
+        $playerId = $this->get('request_stack')->getSession()->get('playerId');
 
         if (!$playerId) {
             throw new AccessDeniedException('Player is not set');
