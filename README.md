@@ -23,18 +23,18 @@ I'm Frank Schreuder, a Software Engineer, Web and Game Developer and enjoy worki
 
 I started programming at around 2005. Ultimate Warfare was one of my first projects. I started working on Ultimate Warfare after years of playing [Imperial Conflict](https://imperialconflict.com). The joy of playing a game declined over time and the joy of finding out how a game works and how it's developed, started to gain my interest.
 
-After years of working on Ultimate Warfare I think it's time to share it with everybody. I don't have much time to work on it and I care about learning and sharing.
+After years of working on Ultimate Warfare I think it's time to share it with everybody. I don't have much time to work on it, and I care about learning and sharing.
 
 Over the years I saw a decrease in browser based strategy games. With open-sourcing this game code I hope to inspire other people to build awesome games like this.
 
 Most strategy games are 'tick' based, as so was the first version of Ultimate Warfare. Later the game engine of the game was rewritten to make it real time. I used this game as learning project, as I was looking for more technical challenges I decided to make it real time. This adds more complexity to the code to ensure a consistent game state.
 
 The old game code dates back to 2005-2012 and contains a lot of legacy PHP, for example:
-- Not object oriented
+- Not object-oriented
 - Html in PHP
 - PHP 5
 
-In 2017 I started porting the game code to Symfony 5 and twig templates. To learn the symfony framework but also with the idea in mind to publish to game code later.
+In 2017, I started porting the game code to Symfony 5 and twig templates. To learn the symfony framework but also with the idea in mind publishing the game code later.
 While porting the game code to symfony, I used more modern development techniques.
 The new codebase is PHP 8.0 compatible with PHP strict typ hinting.
 
