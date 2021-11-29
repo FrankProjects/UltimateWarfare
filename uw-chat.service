@@ -1,0 +1,16 @@
+[Unit]
+Description=Ultimate-Warfare Chat Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+RestartSec=10
+TimeoutSec=0
+ExecStart=/usr/bin/php /var/www/ultimate-warfare.com/bin/console chat:start
+KillMode=process
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

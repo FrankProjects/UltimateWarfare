@@ -3,20 +3,16 @@
 {% block title %}Ultimate Warfare - Register{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td><b>Register Ultimate Warfare Account</b></td>
-        </tr>
-        <tr>
-            <td>
-                {{ form_start(form) }}
-                {{ form_widget(form) }}
-                {{ form_end(form) }}
+    <div class="uw-div">
+        <div class="uw-div-top">
+            <h3 class="text-center">Register Account</h3>
+        </div>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
 
-                <p>
-                    An email with an activation code will be sent to the email address you register, so make sure you enter a correct address.
-                </p>
-            </td>
-        </tr>
-    </table>
+        <p>
+            An email with an activation code will be sent to the email address you register, so make sure you enter a correct address.
+        </p>
+    </div>
 {% endblock %}

@@ -27,7 +27,7 @@ final class LoginController extends BaseGameController
             return $this->redirectToRoute('Game/Story/Chapter1', ['page' => 1]);
         } else {
             $player = $players->first();
-            $this->get('session')->set('playerId', $player->getId());
+            $this->get('request_stack')->getSession()->set('playerId', $player->getId());
             return $this->redirectToRoute('Game/Headquarter');
         }
     }
@@ -51,7 +51,7 @@ final class LoginController extends BaseGameController
             return $this->redirectToRoute('Game/Login');
         }
 
-        $this->get('session')->set('playerId', $player->getId());
+        $this->get('request_stack')->getSession()->set('playerId', $player->getId());
         return $this->redirectToRoute('Game/Headquarter');
     }
 

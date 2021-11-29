@@ -11,37 +11,35 @@
         </div>
     {% endif %}
 
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td><b>Login Ultimate-Warfare Account</b></td>
-        </tr>
-        <tr>
-            <td>
-                <form class="general" method="post" action="{{ path("Site/LoginCheck") }}">
-                    <div>
-                        <label for="username">{{ 'label.username'|trans }}:</label>
-                        <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
-                    </div>
+    <div class="uw-div">
+        <div class="uw-div-top">
+            <h3 class="text-center">Login</h3>
+        </div>
 
-                    <div>
-                        <label for="password">{{ 'label.password'|trans }}:</label>
-                        <input autocomplete="off" type="password" id="password" name="_password" required="required" />
-                    </div>
+        <form class="form-horizontal" role="form" method="post" action="{{ path("Site/LoginCheck") }}">
+            <div class="mb-3">
+                <label for="username" class="form-label">{{ 'label.username'|trans }}</label>
+                <input type="text" id="username" name="_username" value="{{ last_username }}" required="required"
+                       class="form-control"/>
+            </div>
 
-                    <div>
-                        <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-                        <label for="remember_me">{{ 'label.remember_me'|trans }}</label>
-                    </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">{{ 'label.password'|trans }}</label>
+                <input autocomplete="off" type="password" id="password" name="_password" required="required"
+                       class="form-control"/>
+            </div>
+            <div class="mb-3">
+                <input class="form-check-input" type="checkbox" value="" id="remember_me"/>
+                <label class="form-check-label" for="remember_me">{{ 'label.remember_me'|trans }}</label>
+            </div>
 
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-                    <input class="btn btn-primary" type="submit" id="_submit" name="_submit" value="{{ 'label.login'|trans }}" />
-                </form>
-            </td>
-        </tr>
-    </table>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+            <button type="submit" class="btn btn-primary btn-block">{{ 'label.login'|trans }}</button>
+        </form>
+    </div>
 
-    <br />
-    <br />
+    <br/>
+    <br/>
 
     <p class="text-center">
         <a class="B" href="{{ url('Site/ResetPassword') }}">{{ 'label.lost_password'|trans({}, 'login') }}</a>
