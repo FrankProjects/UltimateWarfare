@@ -28,8 +28,8 @@ security:
             logout:       true
 
     access_control:
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/password, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$, role: PUBLIC_ACCESS }
+        - { path: ^/register, role: PUBLIC_ACCESS }
+        - { path: ^/password, role: PUBLIC_ACCESS }
         - { path: ^/game, roles: ROLE_USER }
         - { path: ^/admin, role: ROLE_ADMIN }
