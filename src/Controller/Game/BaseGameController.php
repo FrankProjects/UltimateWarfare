@@ -40,10 +40,6 @@ class BaseGameController extends BaseController
         $user = $this->getGameUser();
         $playerId = $this->getPlayerIdFromSession();
 
-        if (!$playerId) {
-            throw new AccessDeniedException('Player is not set');
-        }
-
         foreach ($user->getPlayers() as $player) {
             if ($player->getId() === $playerId) {
                 return $player;
@@ -53,12 +49,12 @@ class BaseGameController extends BaseController
         throw new AccessDeniedException('Player can not be found!');
     }
 
-    private function getPlayerIdFromSession(): ?int
+    private function getPlayerIdFromSession(): int
     {
         try {
             return $this->container->get('request_stack')->getSession()->get('playerId');
         } catch (NotFoundExceptionInterface | ContainerExceptionInterface) {
-            return null;
+            throw new AccessDeniedException('Player is not set');
         }
     }
 }
