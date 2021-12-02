@@ -24,7 +24,6 @@ final class ChatServer extends Command
 
     private ParameterBagInterface $parameterBag;
     private LoggerInterface $logger;
-    private const PROTOCOL_WSS = 'wss';
 
     public function __construct(ParameterBagInterface $parameterBag, LoggerInterface $logger)
     {

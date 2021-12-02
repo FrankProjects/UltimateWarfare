@@ -7,6 +7,8 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 use FrankProjects\UltimateWarfare\Controller\BaseController;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class BaseGameController extends BaseController
@@ -36,11 +38,7 @@ class BaseGameController extends BaseController
          * XXX TODO: Fix session expired page
          */
         $user = $this->getGameUser();
-        $playerId = $this->get('request_stack')->getSession()->get('playerId');
-
-        if (!$playerId) {
-            throw new AccessDeniedException('Player is not set');
-        }
+        $playerId = $this->getPlayerIdFromSession();
 
         foreach ($user->getPlayers() as $player) {
             if ($player->getId() === $playerId) {
@@ -49,5 +47,14 @@ class BaseGameController extends BaseController
         }
 
         throw new AccessDeniedException('Player can not be found!');
+    }
+
+    private function getPlayerIdFromSession(): int
+    {
+        try {
+            return $this->container->get('request_stack')->getSession()->get('playerId');
+        } catch (NotFoundExceptionInterface | ContainerExceptionInterface) {
+            throw new AccessDeniedException('Player is not set');
+        }
     }
 }
