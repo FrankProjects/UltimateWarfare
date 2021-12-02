@@ -26,12 +26,7 @@ final class ForumHelper
 
     public function ensureNoMassPost(User $user): void
     {
-        try {
-            $dateTime = new DateTime('- 10 seconds');
-        } catch (Exception $e) {
-            throw new RunTimeException("Spam protection exception: {$e->getMessage()}");
-        }
-
+        $dateTime = new DateTime('- 10 seconds');
         $lastTopic = $this->topicRepository->getLastTopicByUser($user);
         $lastPost = $this->postRepository->getLastPostByUser($user);
 
@@ -52,12 +47,6 @@ final class ForumHelper
 
     public function getCurrentDateTime(): DateTime
     {
-        try {
-            $dateTime = new DateTime();
-        } catch (Exception $e) {
-            throw new RunTimeException("DateTime exception: {$e->getMessage()}");
-        }
-
-        return $dateTime;
+        return new DateTime();
     }
 }
