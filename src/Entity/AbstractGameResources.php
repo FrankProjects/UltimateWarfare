@@ -90,7 +90,7 @@ abstract class AbstractGameResources
         try {
             $refProperty = $reflectionObject->getProperty($name);
         } catch (\ReflectionException $e) {
-            throw new \RunTimeException("Unknown resource {$name}");
+            throw new \RuntimeException("Unknown resource {$name}");
         }
         return $refProperty->getValue($this);
     }
@@ -101,7 +101,7 @@ abstract class AbstractGameResources
         try {
             $refProperty = $reflectionObject->getProperty($name);
         } catch (\ReflectionException $e) {
-            throw new \RunTimeException("Unknown resource {$name}");
+            throw new \RuntimeException("Unknown resource {$name}");
         }
         $refProperty->setValue($this, $value);
     }
