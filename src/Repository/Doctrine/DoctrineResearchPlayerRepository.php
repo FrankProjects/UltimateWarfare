@@ -5,19 +5,16 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 
 final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
 {
     private EntityManagerInterface $entityManager;
-    private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->repository = $this->entityManager->getRepository(ResearchPlayer::class);
     }
 
     /**
