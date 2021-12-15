@@ -54,7 +54,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function __construct()
     {
         $this->roles = [];
-        $this->enabled = false;
         $this->players = new ArrayCollection();
         $this->topics = new ArrayCollection();
         $this->topicsEdited = new ArrayCollection();
