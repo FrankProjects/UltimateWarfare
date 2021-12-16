@@ -8,8 +8,8 @@
     </p>
 
     <table class="table text-center">
-        <tr>
-            <td class="tabletop" colspan="3"><b>World list</b></td>
+        <tr class="tabletop">
+            <td colspan="3"><b>World list</b></td>
         </tr>
         {% for world in worlds %}
             <tr>
@@ -27,7 +27,7 @@
                         <img src="{{ asset('images/world/' ~ world.image) }}" alt="{{ world.name }}">
                     </div>
                 </td>
-                <td class="text-left" width="300">
+                <td class="text-start" width="300">
                     <p>
                         <b>Players:</b> {{ world.players|length }}/{{ world.maxplayers }}<br />
                     </p>
@@ -56,7 +56,7 @@
                         WorldRegions: {{ world.worldRegions|length }}
                     </p>
                 </td>
-                <td class="text-left" width="50">
+                <td class="text-start" width="50">
                     <p>
                         <a class="btn btn-primary" href="{{ path('Admin/World/Edit', {'worldId': world.id}) }}">Edit</a>
                     </p>

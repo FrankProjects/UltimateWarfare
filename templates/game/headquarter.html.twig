@@ -54,8 +54,8 @@
 
 {% endif %}
     <table class="table text-center">
-        <tr>
-            <td class="tabletop"><b>Headquarter</b></td>
+        <tr class="tabletop">
+            <td><b>Headquarter</b></td>
         </tr>
         <tr>
             <td>
@@ -73,8 +73,8 @@
     <br />
 
     <table class="table text-center">
-        <tr>
-            <td class="tabletop" colspan="3"><b>Status</b></td>
+        <tr class="tabletop">
+            <td colspan="3"><b>Status</b></td>
         </tr>
 
         <tr>
@@ -119,19 +119,19 @@
     <br />
 
     <table class="table text-center">
-        <tr>
-            <td class="tabletop" colspan="2"><b>Recent Reports (Last 10) </b></td>
+        <tr class="tabletop">
+            <td colspan="2"><b>Recent Reports (Last 10) </b></td>
         </tr>
         <tr>
             <td width="150"><b>Date</b></td>
-            <td class="text-left" width="550"><b>Report</b></td>
+            <td class="text-start" width="550"><b>Report</b></td>
         </tr>
         {% for report in reports %}
             <tr>
                 <td>
                     {{ report.timestamp|date }}
                 </td>
-                <td class="text-left">
+                <td class="text-start">
                     {{ report.report }}
                 </td>
             </tr>

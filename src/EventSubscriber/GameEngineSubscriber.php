@@ -8,7 +8,7 @@ use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -16,24 +16,24 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 final class GameEngineSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
     private GameEngine $gameEngine;
-    private SessionInterface $session;
+    private RequestStack $requestStack;
     private PlayerRepository $playerRepository;
 
     public function __construct(
         GameEngine $gameEngine,
-        SessionInterface $session,
+        RequestStack $requestStack,
         TokenStorageInterface $tokenStorage,
         PlayerRepository $playerRepository
     ) {
         parent::__construct($tokenStorage);
         $this->gameEngine = $gameEngine;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->playerRepository = $playerRepository;
     }
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
@@ -49,7 +49,7 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
 
     private function runGameEngine(User $user): void
     {
-        $playerId = $this->session->get('playerId');
+        $playerId = $this->requestStack->getSession()->get('playerId');
 
         if ($playerId === null) {
             return;

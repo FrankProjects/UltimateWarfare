@@ -4,15 +4,14 @@
 
 {% block content %}
     <table class="table text-center">
-        <tr>
-
-            <td class="tabletop" colspan="5"><b>{{ federation.name }}</b></td>
+        <tr class="tabletop">
+            <td colspan="4"><b>{{ federation.name }}</b></td>
         </tr>
-        <tr>
-            <td class="tabletop" width="240">Name</td>
-            <td class="tabletop" width="130">Rank</td>
-            <td class="tabletop" width="110">Regions</td>
-            <td class="tabletop" width="120">Networth</td>
+        <tr class="tabletop">
+            <td width="240">Name</td>
+            <td width="130">Rank</td>
+            <td width="110">Regions</td>
+            <td width="120">Networth</td>
         </tr>
 
         {% for federationPlayer in federation.players %}

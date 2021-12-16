@@ -11,7 +11,6 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Prerequisites](#prerequisites)
   - [Vision](#vision)
 - [How can I contribute?](#how-can-i-contribute)
-  - [Joining the community](#joining-the-community)
   - [Participating in the beta](#participating-in-the-beta)
   - [Reporting bugs](#reporting-bugs)
   - [Collaborating with development](#collaborating-with-development)
@@ -35,17 +34,13 @@ Collaboration and contributing will be primarily done through GitHub.
 
 ### Vision
 
-XXX TODO
+War game, economy, world map, strategy, free and fun!
  
 ## How can I contribute?
 
-### Joining the community
-
-XXX TODO
-
 ### Participating in the beta
 
-XXX TODO
+The source code of Ultimate Warfare is playable on [this beta server](https://beta.ultimate-warfare.com). Enjoy the game and please report all issues/suggestions in the [issue tracker](https://github.com/FrankProjects/UltimateWarfare/issues). 
 
 ### Reporting bugs
 
@@ -117,11 +112,65 @@ $ bin/console doctrine:schema:create
 $ bin/console doctrine:migrations:migrate
 ```
 
+#### Chat Server
+
+Add to your apache vhost file:
+```
+ProxyPass /wss/ ws://localhost:8080/
+ProxyPassReverse /wss/ ws://localhost:8080/
+```
+
+Enable mod_proxy and mod_proxy_wstunnel to handle secure websocket traffic
+```bash
+$ sudo a2enmod proxy
+$ sudo a2enmod proxy_wstunnel
+$ sudo systemctl restart apache2
+````
+
+Start the ChatServer
+```bash
+php bin/console chat:start
+```
+
+##### Run chat server as a service on Debian
+Copy uw-chat.service into /etc/systemd/system/uw-chat.service and enable/start the service
+```bash
+systemctl enable uw-chat
+systemctl start uw-chat
+systemctl status uw-chat
+```
 
 ### Directory structure
 
-XXX TODO
-
+```
+UltimateWarfare/
+├─ assets/
+├─ bin/
+│  └─ console
+├─ config/
+├─ public/
+│  └─ index.php
+├─ src/
+│  ├─ Kernel.php
+│  ├─ Command/
+│  ├─ Controller/
+│  ├─ DataFixtures/
+│  ├─ Entity/
+│  ├─ EventSubscriber/
+│  ├─ Form/
+│  ├─ Repository/
+│  ├─ Security/
+│  └─ Twig/
+├─ templates/
+├─ tests/
+├─ translations/
+├─ var/
+│  ├─ cache/
+│  ├─ log/
+│  └─ ...
+├─ vendor/
+└─ .env
+```
 
 ### How to run tests
 

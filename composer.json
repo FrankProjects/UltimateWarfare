@@ -1,36 +1,40 @@
 {
+    "name": "frankprojects/ultimatewarfare",
+    "description": "Ultimate Warfare is a free and open-source online multiplayer browser based strategy game",
     "type": "project",
     "license": "proprietary",
     "require": {
         "php": "^8.0",
         "ext-gd": "*",
-        "cboden/ratchet": "^0.4.3",
-        "doctrine/common": "^3.1",
-        "doctrine/doctrine-bundle": "^2.2",
-        "doctrine/doctrine-migrations-bundle": "^3.0",
-        "doctrine/orm": "^2.8",
-        "symfony/asset": "^5.2",
-        "symfony/console": "^5.2",
-        "symfony/flex": "^1.11",
-        "symfony/form": "^5.2",
-        "symfony/framework-bundle": "^5.2",
-        "symfony/monolog-bundle": "^3.6",
-        "symfony/security-bundle": "^5.2",
-        "symfony/swiftmailer-bundle": "^3.5",
-        "symfony/translation": "^5.2",
-        "symfony/twig-bundle": "^5.2",
-        "symfony/web-profiler-bundle": "^5.2",
-        "symfony/webpack-encore-bundle": "^1.8",
-        "symfony/yaml": "^5.2",
-        "twig/twig": "^3.1"
+        "ext-json": "*",
+        "cboden/ratchet": "^0.4",
+        "doctrine/common": "^3.2",
+        "doctrine/doctrine-bundle": "^2.5",
+        "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/orm": "^2.10",
+        "symfony/asset": "^6.0",
+        "symfony/console": "^6.0",
+        "symfony/flex": "^1.17",
+        "symfony/form": "^6.0",
+        "symfony/framework-bundle": "^6.0",
+        "symfony/mailer": "^6.0",
+        "symfony/monolog-bundle": "^3.7",
+        "symfony/runtime": "^6.0",
+        "symfony/security-bundle": "^6.0",
+        "symfony/translation": "^6.0",
+        "symfony/twig-bundle": "^6.0",
+        "symfony/web-profiler-bundle": "^6.0",
+        "symfony/webpack-encore-bundle": "^1.13",
+        "symfony/yaml": "^6.0",
+        "twig/twig": "^3.3"
     },
     "require-dev": {
-        "phpstan/phpstan": "^0.12.64",
-        "phpstan/phpstan-doctrine": "^0.12.26",
-        "phpstan/phpstan-strict-rules": "^0.12.7",
-        "squizlabs/php_codesniffer": "^3.5",
-        "symfony/dotenv": "^5.2",
-        "symfony/phpunit-bridge": "^5.2"
+        "phpstan/phpstan": "^1.2",
+        "phpstan/phpstan-doctrine": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.1",
+        "squizlabs/php_codesniffer": "^3.6",
+        "symfony/dotenv": "^6.0",
+        "symfony/phpunit-bridge": "^6.0"
     },
     "config": {
         "preferred-install": {
@@ -68,7 +72,7 @@
         "symfony": {
             "id": "01C0SF16B9AEFHYZFFXCZJK7ZN",
             "allow-contrib": false,
-            "require": "5.2.*"
+            "require": "6.0.*"
         }
     }
 }

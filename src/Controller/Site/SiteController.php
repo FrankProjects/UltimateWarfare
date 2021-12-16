@@ -14,18 +14,8 @@ final class SiteController extends BaseController
         return $this->render('site/about.html.twig');
     }
 
-    public function advertise(): Response
-    {
-        return $this->render('site/advertise.html.twig');
-    }
-
     public function community(): Response
     {
         return $this->render('site/community.html.twig');
-    }
-
-    public function donate(): Response
-    {
-        return $this->render('site/donate.html.twig');
     }
 }

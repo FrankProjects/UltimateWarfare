@@ -7,21 +7,22 @@ namespace FrankProjects\UltimateWarfare\Service;
 use Exception;
 use FrankProjects\UltimateWarfare\Entity\User;
 use RuntimeException;
-use Swift_Mailer;
 use Psr\Log\LoggerInterface;
-use Swift_Message;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Twig\Environment;
 
 final class MailService
 {
     private LoggerInterface $logger;
     private Environment $twig;
-    private Swift_Mailer $mailer;
+    private MailerInterface $mailer;
 
     public function __construct(
         LoggerInterface $logger,
         Environment $twig,
-        Swift_Mailer $mailer
+        MailerInterface $mailer
     ) {
         $this->logger = $logger;
         $this->twig = $twig;
@@ -35,17 +36,12 @@ final class MailService
             'token' => $user->getConfirmationToken()
         ];
 
-        $message = (new Swift_Message('Welcome to Ultimate-Warfare'))
-            ->setFrom('no-reply@ultimate-warfare.com')
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->generateMailBody('email/register.html.twig', $mailParameters),
-                'text/html'
-            )
-            ->addPart(
-                $this->generateMailBody('email/register.txt.twig', $mailParameters),
-                'text/plain'
-            );
+        $message = (new Email())
+            ->subject('Welcome to Ultimate-Warfare')
+            ->from('no-reply@ultimate-warfare.com')
+            ->to($user->getEmail())
+            ->html($this->generateMailBody('email/register.html.twig', $mailParameters))
+            ->text($this->generateMailBody('email/register.txt.twig', $mailParameters));
 
         $this->sendMail($message, $user->getEmail(), 'registration');
     }
@@ -58,13 +54,11 @@ final class MailService
             'ipAddress' => $ipAddress
         ];
 
-        $message = (new Swift_Message('Username & Password request'))
-            ->setFrom('no-reply@ultimate-warfare.com')
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->generateMailBody('email/passwordReset.html.twig', $mailParameters),
-                'text/html'
-            );
+        $message = (new Email())
+            ->subject('Username & Password request')
+            ->from('no-reply@ultimate-warfare.com')
+            ->to($user->getEmail())
+            ->html($this->generateMailBody('email/passwordReset.html.twig', $mailParameters));
 
         $this->sendMail($message, $user->getEmail(), 'password reset');
     }
@@ -78,15 +72,15 @@ final class MailService
         }
     }
 
-    private function sendMail(Swift_Message $message, string $email, string $type): void
+    private function sendMail(Email $message, string $email, string $type): void
     {
-        $messages = $this->mailer->send($message);
-        if ($messages == 0) {
+        try {
+            $this->mailer->send($message);
+            $this->logger->info("Send a {$type} email to {$email}");
+        } catch (TransportExceptionInterface $e) {
             $logMessage = "Send a {$type} email to {$email} failed";
             $this->logger->error($logMessage);
             throw new RunTimeException($logMessage);
         }
-
-        $this->logger->info("Send a {$type} email to {$email}");
     }
 }

@@ -8,19 +8,19 @@
     </p>
 
     <table class="table text-center">
-        <tr>
-            <td class="tabletop" colspan="4"><b>{{ rankingsTitle }}</b></td>
+        <tr class="tabletop">
+            <td colspan="4"><b>{{ rankingsTitle }}</b></td>
         </tr>
         <tr>
             <td width="100"><b>Rank</b></td>
-            <td class="text-left" width="300"><b>Player</b></td>
+            <td class="text-start" width="300"><b>Player</b></td>
             <td width="150"><b>Regions</b></td>
             <td width="150"><b>Networth</b></td>
         </tr>
         {% for playerRanking in players %}
             <tr>
                 <td width="50">{{ loop.index }}</td>
-                <td class="text-left" width="200">{{ playerRanking.name }}
+                <td class="text-start" width="200">{{ playerRanking.name }}
                     {% if playerRanking.federation != null %}
                         <i> ( {{ playerRanking.federation.name }} )</i>
                     {% endif %}

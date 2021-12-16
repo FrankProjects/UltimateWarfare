@@ -4,25 +4,17 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldSectorRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SectorController extends BaseGameController
 {
     private WorldSectorRepository $worldSectorRepository;
-    private WorldRegionRepository $worldRegionRepository;
-    private PlayerRepository $playerRepository;
 
     public function __construct(
         WorldSectorRepository $worldSectorRepository,
-        WorldRegionRepository $worldRegionRepository,
-        PlayerRepository $playerRepository
     ) {
         $this->worldSectorRepository = $worldSectorRepository;
-        $this->worldRegionRepository = $worldRegionRepository;
-        $this->playerRepository = $playerRepository;
     }
 
     public function sector(int $sectorId): Response

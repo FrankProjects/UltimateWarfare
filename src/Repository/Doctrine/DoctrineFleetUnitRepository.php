@@ -12,12 +12,10 @@ use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
 final class DoctrineFleetUnitRepository implements FleetUnitRepository
 {
     private EntityManagerInterface $entityManager;
-    private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->repository = $this->entityManager->getRepository(FleetUnit::class);
     }
 
     public function remove(FleetUnit $fleetUnit): void

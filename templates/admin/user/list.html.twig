@@ -4,8 +4,8 @@
 
 {% block content %}
     <table class="table text-center">
-        <tr>
-            <td class="tabletop" colspan="8"><b>User list</b></td>
+        <tr class="tabletop">
+            <td colspan="8"><b>User list</b></td>
         </tr>
         <tr>
             <td width="150">Username</td>
@@ -34,7 +34,9 @@
                     {{ user.signup|date("Y-m-d H:i:s") }}
                 </td>
                 <td>
-                    {{ user.lastLogin|date("Y-m-d H:i:s") }}
+                    {% if user.lastLogin is not null %}
+                        {{ user.lastLogin|date("Y-m-d H:i:s") }}
+                    {% endif %}
                 </td>
                 <td>
                     <a class="btn btn-primary" href="{{ path('Admin/User/Read', {'userId': user.id}) }}">View</a>

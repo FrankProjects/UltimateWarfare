@@ -10,8 +10,8 @@
 
     <form method="post" action="{{ path('Game/World/Region/Build', {'regionId': region.id, 'gameUnitTypeId': gameUnitType.id}) }}">
         <table class="table text-center">
-            <tr>
-                <td class="tabletop" colspan="4"><b>Units</b></td>
+            <tr class="tabletop">
+                <td colspan="4"><b>Units</b></td>
             </tr>
 
             {% if gameUnitType.id == 1 %}

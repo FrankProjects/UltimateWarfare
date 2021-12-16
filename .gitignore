@@ -4,7 +4,6 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/src/preload.php
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -19,7 +18,6 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
 ###> symfony/phpunit-bridge ###
-.phpunit
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###

@@ -1,4 +1,6 @@
-body { background: #ccbb99 !important; }
+body {
+    background: #ccbb99 !important;
+}
 
 .container { background: #f3e6c1;}
 
@@ -11,8 +13,6 @@ body { background: #ccbb99 !important; }
 .nav-link:hover{ background: #f4f4f4; color: #804000; }
 
 .navbar-collapse{ justify-content: flex-end;}
-
-.navbar-toggler{  background:#fff !important;}
 
 .border-primary {
     border-color: #804000 !important;
@@ -27,6 +27,12 @@ main {
     margin-bottom:5px;
 }
 
+.uw-div {
+    background-color:#F8F4E8;
+    padding:5px;
+    border:1px solid #cccc99;
+}
+
 .table td{
     padding:5px;
     border:1px solid #cccc99;
@@ -35,6 +41,11 @@ main {
 .tabletop {
     background-color:#EFE6C9;
     border:1px solid #804000;
+    padding:5px;
+}
+
+.uw-div-top {
+    background-color:#EFE6C9;
     padding:5px;
 }
 

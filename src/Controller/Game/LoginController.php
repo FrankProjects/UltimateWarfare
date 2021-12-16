@@ -8,11 +8,12 @@ use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Throwable;
 
 final class LoginController extends BaseGameController
 {
-    public function login(): RedirectResponse
+    public function login(RequestStack $requestStack): RedirectResponse
     {
         try {
             $user = $this->getLoginUser();
@@ -27,12 +28,12 @@ final class LoginController extends BaseGameController
             return $this->redirectToRoute('Game/Story/Chapter1', ['page' => 1]);
         } else {
             $player = $players->first();
-            $this->get('session')->set('playerId', $player->getId());
+            $requestStack->getSession()->set('playerId', $player->getId());
             return $this->redirectToRoute('Game/Headquarter');
         }
     }
 
-    public function loginForPlayer(int $playerId, PlayerRepository $playerRepository): RedirectResponse
+    public function loginForPlayer(RequestStack $requestStack, int $playerId, PlayerRepository $playerRepository): RedirectResponse
     {
         try {
             $user = $this->getLoginUser();
@@ -51,7 +52,7 @@ final class LoginController extends BaseGameController
             return $this->redirectToRoute('Game/Login');
         }
 
-        $this->get('session')->set('playerId', $player->getId());
+        $requestStack->getSession()->set('playerId', $player->getId());
         return $this->redirectToRoute('Game/Headquarter');
     }
 

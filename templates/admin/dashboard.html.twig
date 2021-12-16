@@ -4,16 +4,16 @@
 
 {% block content %}
     <table class="table text-center">
-        <tr>
-            <td class="tabletop" colspan="7"><b>Dashboard</b></td>
+        <tr class="tabletop">
+            <td colspan="7"><b>Dashboard</b></td>
         </tr>
         <tr>
             <td>
                 <p>
-                    Total users: <span class="badge badge-primary">{{ userCount }}</span>
+                    Total users: <span class="badge bg-primary">{{ userCount }}</span>
                 </p>
                 <p>
-                    Users active in last 24 hours: <span class="badge badge-primary">{{ loggedInCount }}</span>
+                    Users active in last 24 hours: <span class="badge bg-primary">{{ loggedInCount }}</span>
                 </p>
             </td>
         </tr>
