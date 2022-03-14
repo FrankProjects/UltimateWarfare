@@ -350,7 +350,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         $this->enabled = $data['enabled'];
         $this->email = $data['email'];
         $this->password = $data['password'];
-
     }
 
     /**
