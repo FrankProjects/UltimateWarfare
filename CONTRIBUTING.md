@@ -75,7 +75,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 ##### Languages, frameworks, libraries and tools
 
-Ultimate Warfare is built on the Symfony 5 framework, using modern PHP as language and twig as templating language.
+Ultimate Warfare is built on the Symfony framework, using modern PHP as language and twig as templating language.
 
 I'm developing Ultimate Warfare in PhpStorm myself, but you're of course free to use whatever you see fit.
 

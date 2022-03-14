@@ -15,7 +15,7 @@ Ultimate Warfare is a free and open-source online multiplayer browser based stra
 
 Grow powerful and nuke your enemies! Send sniper teams or special forces demolitions teams to wreak havoc! Watch your enemy with spy satellites and send a squadron of stealth bombers to knock out his key infrastructure! AND MUCH MORE!
 
-Ultimate Warfare is written in PHP on the [Symfony 5](https://symfony.com) framework.
+Ultimate Warfare is written in PHP on the [Symfony framework](https://symfony.com).
 
 ## History
 
@@ -34,7 +34,7 @@ The old game code dates back to 2005-2012 and contains a lot of legacy PHP, for 
 - Html in PHP
 - PHP 5
 
-In 2017, I started porting the game code to Symfony 5 and twig templates. To learn the symfony framework but also with the idea in mind publishing the game code later.
+In 2017, I started porting the game code to Symfony and twig templates. To learn the Symfony framework but also with the idea in mind publishing the game code later.
 While porting the game code to symfony, I used more modern development techniques.
 The new codebase is PHP 8.0 compatible with PHP strict typ hinting.
 
