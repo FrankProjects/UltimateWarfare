@@ -7,6 +7,8 @@ namespace FrankProjects\UltimateWarfare\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Exception;
+use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use Serializable;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -225,36 +227,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         $this->enabled = $enabled;
     }
 
-    /**
-     * @return string
-     */
-    public function serialize()
-    {
-        return serialize(
-            [
-                $this->id,
-                $this->username,
-                $this->enabled,
-                $this->email,
-                $this->password
-            ]
-        );
-    }
-
-    /**
-     * @param string $serialized
-     */
-    public function unserialize($serialized)
-    {
-        list(
-            $this->id,
-            $this->username,
-            $this->enabled,
-            $this->email,
-            $this->password
-            ) = unserialize($serialized);
-    }
-
     public function setSignup(DateTime $signup): void
     {
         $this->signup = $signup;
@@ -358,5 +330,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function getUserIdentifier(): string
     {
         return $this->username;
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'enabled' => $this->enabled,
+            'email' => $this->email,
+            'password' => $this->password,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->id = $data['id'];
+        $this->username = $data['username'];
+        $this->enabled = $data['enabled'];
+        $this->email = $data['email'];
+        $this->password = $data['password'];
+
+    }
+
+    /**
+     * @deprecated
+     */
+    public function serialize()
+    {
+        return serialize($this->__serialize());
+    }
+
+    /**
+     * @deprecated
+     */
+    public function unserialize(string $data)
+    {
+        $this->__unserialize(unserialize($data));
     }
 }
