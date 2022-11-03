@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
 use FrankProjects\UltimateWarfare\Entity\User;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
+#[AsCommand(name: 'game:maintenance:make:admin')]
 class MakeAdminCommand extends AbstractUserCommand
 {
-    protected static $defaultName = 'game:maintenance:make:admin';
-
     protected function configure(): void
     {
         $this->setDescription('Upgrade user to admin')

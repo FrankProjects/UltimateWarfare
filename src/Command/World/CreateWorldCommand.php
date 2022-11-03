@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Command\World;
 
 use FrankProjects\UltimateWarfare\Service\WorldGeneratorService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'game:world:create')]
 class CreateWorldCommand extends Command
 {
-    protected static $defaultName = 'game:world:create';
     private WorldGeneratorService $worldGeneratorService;
 
     public function __construct(

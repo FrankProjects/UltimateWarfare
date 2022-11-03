@@ -8,13 +8,14 @@ use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldSector;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Service\WorldImageGeneratorService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'game:maintenance:update:world-map-images')]
 class RegenerateWordMapImagesCommand extends Command
 {
-    protected static $defaultName = 'game:maintenance:update:world-map-images';
     private WorldRepository $worldRepository;
     private WorldImageGeneratorService $worldImageGeneratorService;
 

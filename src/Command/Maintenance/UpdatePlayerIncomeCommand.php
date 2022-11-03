@@ -9,14 +9,15 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Util\IncomeCalculator;
 use FrankProjects\UltimateWarfare\Util\UpkeepCalculator;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'game:maintenance:update:income')]
 class UpdatePlayerIncomeCommand extends Command
 {
-    protected static $defaultName = 'game:maintenance:update:income';
     private PlayerRepository $playerRepository;
     private WorldRepository $worldRepository;
     private IncomeCalculator $incomeCalculator;

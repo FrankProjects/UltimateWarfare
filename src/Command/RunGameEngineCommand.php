@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Command;
 
 use FrankProjects\UltimateWarfare\Service\GameEngine;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'game:engine:run')]
 class RunGameEngineCommand extends Command
 {
-    protected static $defaultName = 'game:engine:run';
     private GameEngine $gameEngine;
 
     public function __construct(GameEngine $gameEngine)
