@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FrankProjects\UltimateWarfare\Command\Maintenance;
+namespace FrankProjects\UltimateWarfare\Command\User;
 
 use FrankProjects\UltimateWarfare\Entity\User;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -12,13 +12,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
-#[AsCommand(name: 'game:maintenance:remove:admin')]
-class RemoveAdminCommand extends AbstractUserCommand
+#[AsCommand(name: 'game:maintenance:make:admin')]
+class MakeAdminCommand extends AbstractUserCommand
 {
     protected function configure(): void
     {
-        $this->setDescription('Downgrade user from admin')
-            ->setHelp('Remove the admin role from user')
+        $this->setDescription('Upgrade user to admin')
+            ->setHelp('Add admin role to user')
             ->addArgument('username', InputArgument::REQUIRED, 'The username');
     }
 
@@ -28,11 +28,11 @@ class RemoveAdminCommand extends AbstractUserCommand
 
         try {
             $user = $this->getUserByUsername($username);
-            $this->userActionService->removeRoleFromUser($user, User::ROLE_ADMIN);
-            $output->writeln("Removed admin role from {$username}");
+            $this->userActionService->addRoleToUser($user, User::ROLE_ADMIN);
+            $output->writeln("Added admin role to {$username}");
         } catch (Throwable $e) {
             $output->writeln($e->getMessage());
-            return Command::FAILURE;
+            return 1;
         }
 
         return Command::SUCCESS;
