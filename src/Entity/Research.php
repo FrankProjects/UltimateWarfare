@@ -26,11 +26,15 @@ class Research
     /** @var Collection<ResearchNeeds> */
     private Collection $requiredResearch;
 
+    /** @var Collection<Operation> */
+    private Collection $operations;
+
     public function __construct()
     {
         $this->researchPlayers = new ArrayCollection();
         $this->researchNeeds = new ArrayCollection();
         $this->requiredResearch = new ArrayCollection();
+        $this->operations = new ArrayCollection();
     }
 
     public function getId(): int
@@ -126,5 +130,15 @@ class Research
     public function setResearchPlayers(Collection $researchPlayers): void
     {
         $this->researchPlayers = $researchPlayers;
+    }
+
+    public function getOperations(): Collection
+    {
+        return $this->operations;
+    }
+
+    public function setOperations(Collection $operations): void
+    {
+        $this->operations = $operations;
     }
 }

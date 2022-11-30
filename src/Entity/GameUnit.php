@@ -31,6 +31,9 @@ class GameUnit
 
     /** @var Collection<FleetUnit> */
     private Collection $fleetUnits;
+
+    /** @var Collection<Operation> */
+    private Collection $operations;
     private BattleStats $battleStats;
     private Cost $cost;
     private Income $income;
@@ -41,6 +44,7 @@ class GameUnit
         $this->worldRegionUnits = new ArrayCollection();
         $this->constructions = new ArrayCollection();
         $this->fleetUnits = new ArrayCollection();
+        $this->operations = new ArrayCollection();
         $this->battleStats = new BattleStats();
         $this->cost = new Cost();
         $this->income = new Income();

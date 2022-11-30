@@ -46,6 +46,7 @@
     <one-to-many field="worldRegionUnits" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegionUnit" mapped-by="gameUnit"/>
     <one-to-many field="constructions" target-entity="FrankProjects\UltimateWarfare\Entity\Construction" mapped-by="gameUnit"/>
     <one-to-many field="fleetUnits" target-entity="FrankProjects\UltimateWarfare\Entity\FleetUnit" mapped-by="gameUnit"/>
+    <one-to-many field="operations" target-entity="FrankProjects\UltimateWarfare\Entity\Operation" mapped-by="gameUnit"/>
     <many-to-one field="gameUnitType" target-entity="FrankProjects\UltimateWarfare\Entity\GameUnitType" inversed-by="gameUnits">
       <join-columns>
         <join-column name="game_unit_type_id" nullable="false"/>

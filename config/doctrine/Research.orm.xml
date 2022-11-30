@@ -37,5 +37,6 @@
     <one-to-many field="researchPlayers" target-entity="FrankProjects\UltimateWarfare\Entity\ResearchPlayer" mapped-by="research"/>
     <one-to-many field="researchNeeds" target-entity="FrankProjects\UltimateWarfare\Entity\ResearchNeeds" mapped-by="research"/>
     <one-to-many field="requiredResearch" target-entity="FrankProjects\UltimateWarfare\Entity\ResearchNeeds" mapped-by="requiredResearch"/>
+    <one-to-many field="operations" target-entity="FrankProjects\UltimateWarfare\Entity\Operation" mapped-by="research"/>
   </entity>
 </doctrine-mapping>

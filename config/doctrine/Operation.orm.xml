@@ -4,11 +4,6 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="needs" type="integer" column="needs">
-      <options>
-        <option name="unsigned"/>
-      </options>
-    </field>
     <field name="name" column="name" length="100">
       <options>
         <option name="fixed"/>
@@ -19,17 +14,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="unitId" type="integer" column="unit_id">
-      <options>
-        <option name="unsigned">1</option>
-      </options>
-    </field>
     <field name="cost" type="integer" column="cost">
-      <options>
-        <option name="unsigned"/>
-      </options>
-    </field>
-    <field name="tick" type="integer" column="tick">
       <options>
         <option name="unsigned"/>
       </options>
@@ -54,5 +39,15 @@
         <option name="unsigned">1</option>
       </options>
     </field>
+    <many-to-one field="gameUnit" target-entity="FrankProjects\UltimateWarfare\Entity\GameUnit" inversed-by="operations">
+      <join-columns>
+        <join-column name="unit_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="research" target-entity="FrankProjects\UltimateWarfare\Entity\Research" inversed-by="operations">
+      <join-columns>
+        <join-column name="research_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
   </entity>
 </doctrine-mapping>
