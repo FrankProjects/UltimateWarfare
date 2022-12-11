@@ -55,30 +55,12 @@ final class DoctrineResearchRepository implements ResearchRepository
      * @param Player $player
      * @return Research[]
      */
-    public function findFinishedByPlayer(Player $player): array
-    {
-        return $this->entityManager->createQuery(
-            'SELECT r
-              FROM Game:ResearchPlayer rp
-              JOIN Game:Research r WITH rp.research = r
-              WHERE rp.player = :player AND rp.active = 1
-              ORDER BY rp.timestamp DESC'
-        )->setParameter(
-            'player',
-            $player
-        )->getResult();
-    }
-
-    /**
-     * @param Player $player
-     * @return Research[]
-     */
     public function findUnresearchedByPlayer(Player $player): array
     {
         return $this->entityManager->createQuery(
             'SELECT r
               FROM Game:Research r
-              WHERE r.active = 1 AND r.id NOT IN (SELECT rp.id FROM Game:ResearchPlayer rp WHERE rp.player = :player)'
+              WHERE r.active = 1 AND r.id NOT IN (SELECT r2.id FROM Game:ResearchPlayer rp JOIN rp.research r2 WHERE rp.player = :player)'
         )->setParameter(
             'player',
             $player

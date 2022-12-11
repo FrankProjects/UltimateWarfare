@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 
@@ -31,6 +32,23 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
         )->setParameter(
             'timestamp',
             $timestamp
+        )->getResult();
+    }
+
+    /**
+     * @param Player $player
+     * @return ResearchPlayer[]
+     */
+    public function findFinishedByPlayer(Player $player): array
+    {
+        return $this->entityManager->createQuery(
+            'SELECT rp
+              FROM Game:ResearchPlayer rp
+              WHERE rp.player = :player AND rp.active = 1
+              ORDER BY rp.timestamp DESC'
+        )->setParameter(
+            'player',
+            $player
         )->getResult();
     }
 
