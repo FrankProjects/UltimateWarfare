@@ -11,8 +11,9 @@ class Operation
     private string $image;
     private int $cost;
     private string $description;
-    private bool $active = true;
+    private bool $enabled = true;
     private float $difficulty = 0.5;
+    private string $subclass;
     private int $maxDistance;
     private Research $research;
     private GameUnit $gameUnit;
@@ -67,14 +68,14 @@ class Operation
         $this->description = $description;
     }
 
-    public function isActive(): bool
+    public function isEnabled(): bool
     {
-        return $this->active;
+        return $this->enabled;
     }
 
-    public function setActive(bool $active): void
+    public function setEnabled(bool $enabled): void
     {
-        $this->active = $active;
+        $this->enabled = $enabled;
     }
 
     public function getDifficulty(): float
@@ -115,5 +116,15 @@ class Operation
     public function setGameUnit(GameUnit $gameUnit): void
     {
         $this->gameUnit = $gameUnit;
+    }
+
+    public function getSubclass(): string
+    {
+        return $this->subclass;
+    }
+
+    public function setSubclass(string $subclass): void
+    {
+        $this->subclass = $subclass;
     }
 }

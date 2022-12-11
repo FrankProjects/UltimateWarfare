@@ -24,11 +24,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="active" type="boolean" column="active">
-      <options>
-        <option name="default">1</option>
-      </options>
-    </field>
+    <field name="enabled" type="boolean" column="enabled"/>
     <field name="difficulty" type="float" column="difficulty" precision="10" scale="0">
       <options>
         <option name="default">0.5</option>
@@ -37,6 +33,11 @@
     <field name="maxDistance" type="integer" column="max_distance">
       <options>
         <option name="unsigned">1</option>
+      </options>
+    </field>
+    <field name="subclass" column="subclass" length="100">
+      <options>
+        <option name="fixed"/>
       </options>
     </field>
     <many-to-one field="gameUnit" target-entity="FrankProjects\UltimateWarfare\Entity\GameUnit" inversed-by="operations">

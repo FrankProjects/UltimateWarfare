@@ -158,6 +158,9 @@ class Player
         return $this->notepad;
     }
 
+    /**
+     * @return Collection|Report[]
+     */
     public function getReports(): Collection
     {
         return $this->reports;
@@ -234,6 +237,9 @@ class Player
         $this->toMessages = $toMessages;
     }
 
+    /**
+     * @return Collection|ResearchPlayer[]
+     */
     public function getPlayerResearch(): Collection
     {
         return $this->playerResearch;
