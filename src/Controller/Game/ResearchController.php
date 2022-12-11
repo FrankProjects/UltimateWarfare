@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
 use FrankProjects\UltimateWarfare\Service\Action\ResearchActionService;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,13 +13,16 @@ use Throwable;
 final class ResearchController extends BaseGameController
 {
     private ResearchRepository $researchRepository;
+    private ResearchPlayerRepository $researchPlayerRepository;
     private ResearchActionService $researchActionService;
 
     public function __construct(
         ResearchRepository $researchRepository,
+        ResearchPlayerRepository $researchPlayerRepository,
         ResearchActionService $researchActionService
     ) {
         $this->researchRepository = $researchRepository;
+        $this->researchPlayerRepository = $researchPlayerRepository;
         $this->researchActionService = $researchActionService;
     }
 
@@ -31,7 +35,9 @@ final class ResearchController extends BaseGameController
         $researchDataArray = [];
         $researchPlayerArray = [];
         foreach ($researchPlayerRecords as $researchPlayer) {
-            $researchPlayerArray[] = $researchPlayer->getResearch()->getId();
+            if ($researchPlayer->getActive() == true) {
+                $researchPlayerArray[] = $researchPlayer->getResearch()->getId();
+            }
         }
 
         // XXX TODO: Make better code
@@ -46,6 +52,10 @@ final class ResearchController extends BaseGameController
                 } else {
                     $researchDataArray[$key]['needs']['notDone'][] = $researchNeed;
                 }
+            }
+
+            if (count($researchDataArray[$key]['needs']['notDone']) > 0) {
+                unset($researchDataArray[$key]);
             }
         }
 
@@ -62,7 +72,7 @@ final class ResearchController extends BaseGameController
     public function history(): Response
     {
         $player = $this->getPlayer();
-        $finishedResearch = $this->researchRepository->findFinishedByPlayer($player);
+        $finishedResearch = $this->researchPlayerRepository->findFinishedByPlayer($player);
 
         return $this->render(
             'game/researchHistory.html.twig',

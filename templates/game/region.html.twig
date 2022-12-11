@@ -110,6 +110,7 @@
         {% endif %}
     {% else %}
         <br /><br /><a class="B" href="{{ path('Game/World/Region/Attack', {'regionId': region.id}) }}">Attack</a>
+        <br /><br /><a class="B" href="{{ path('Game/Operation/SelectOperation', {'regionId': region.id}) }}">Launch Operation</a>
     {% endif %}
 
     <br />

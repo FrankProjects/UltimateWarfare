@@ -66,6 +66,33 @@ final class RegionActionService
         return $playerRegions;
     }
 
+    public function getOperationAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
+    {
+        if ($worldRegion->getPlayer() === null) {
+            throw new RunTimeException('Can not attack region without owner!');
+        }
+
+        if ($worldRegion->getPlayer()->getId() == $player->getId()) {
+            throw new RunTimeException('Can not attack your own region!');
+        }
+
+        $playerRegions = [];
+        foreach ($player->getWorldRegions() as $playerWorldRegion) {
+            $distance = $this->distanceCalculator->calculateDistance(
+                $playerWorldRegion->getX(),
+                $playerWorldRegion->getY(),
+                $worldRegion->getX(),
+                $worldRegion->getY()
+            );
+            $playerRegions[] = [
+                'region' => $playerWorldRegion,
+                'distance' => $distance
+            ];
+        }
+
+        return $playerRegions;
+    }
+
     /**
      * @param int $worldRegionId
      * @param Player $player

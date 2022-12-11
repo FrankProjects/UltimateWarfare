@@ -1,0 +1,70 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}Ultimate Warfare - Select Operation{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/World/Region', {'regionId': region.id}) }}">Back to Region</a>
+    <br />
+    <br />
+
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td colspan="3" align="center"><b>Target Region</b></td>
+        </tr>
+        <tr>
+            <td rowspan="3" width="120">
+                <img src="{{ asset('images/map/' ~ region.type ~ '.jpg') }}" alt="Region {{ region.id }}" width="120" height="100"><br />
+            </td>
+            <td width="300">Location:</td>
+            <td width="280">{{ region.x }}, {{ region.y }}</td>
+        </tr>
+        <tr>
+            <td width="300">Owner:</td>
+            {% if region.player is not null %}
+                <td width="280">
+                    <a class="B" href="{{ path('Game/Profile', {'playerName': region.player.name}) }}">{{ region.player.name }}</a>
+                </td>
+            {% else %}
+                <td width="280">Nobody</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td width="300">Space:</td>
+            <td width="280">
+                {{ region.space }}
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td colspan="2">
+                <b>Special Operations</b>
+            </td>
+        </tr>
+        {% for operation in operations %}
+            <tr>
+                <td colspan="2">
+                    <b>{{ operation.name }}</b>
+                </td>
+            </tr>
+            <tr>
+                <td width="150">
+                    <img src="{{ asset('images/operations/' ~ operation.image) }}" alt="{{ operation.name }}" width="150" height="130">
+                </td>
+                <td class="text-start" width="450">
+                    {{ operation.description }}
+                    <ul>
+                        <li>Cash: {{ operation.cost }}</li>
+                        <li>Difficulty: {{ operation.difficulty }}</li>
+                        <li>Max Distance: {{ operation.maxDistance }}</li>
+                    </ul>
+                    <a class="btn btn-primary" href="{{ path('Game/Operation/SelectWorldRegion', {'regionId': region.id, 'operationId': operation.id}) }}">Launch operation!</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

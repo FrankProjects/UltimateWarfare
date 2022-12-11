@@ -453,6 +453,35 @@ Game/Notepad:
     path:      /game/notepad
     controller: FrankProjects\UltimateWarfare\Controller\Game\NotepadController::notepad
 
+Game/Operation/ExecuteOperation:
+    path: /game/world/region/execute-operation/{regionId}/{operationId}/{playerRegionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::executeOperation
+    requirements:
+        regionId: '\d+'
+        operationId: '\d+'
+        playerRegionId: '\d+'
+
+Game/Operation/SelectGameUnit:
+    path: /game/world/region/select-operation-units/{regionId}/{operationId}/{playerRegionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::selectGameUnits
+    requirements:
+        regionId: '\d+'
+        operationId: '\d+'
+        playerRegionId: '\d+'
+
+Game/Operation/SelectOperation:
+    path: /game/world/region/select-operation/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::selectOperation
+    requirements:
+        regionId: '\d+'
+
+Game/Operation/SelectWorldRegion:
+    path: /game/world/region/select-operation-region/{regionId}/{operationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::selectWorldRegion
+    requirements:
+        regionId: '\d+'
+        operationId: '\d+'
+
 Game/Profile:
     path:      /game/profile/{playerName}
     controller: FrankProjects\UltimateWarfare\Controller\Game\ProfileController::profile
