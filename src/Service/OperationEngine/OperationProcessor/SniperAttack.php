@@ -19,8 +19,7 @@ final class SniperAttack extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $specialOps + $guards + 1;
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
@@ -41,7 +40,9 @@ final class SniperAttack extends OperationProcessor
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
                 if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SOLDIER_ID) {
                     $this->worldRegionUnitRepository->remove($worldRegionUnit);
-                    $this->addToOperationLog("You killed {$soldiers} {$worldRegionUnit->getGameUnit()->getNameMulti()}!");
+                    $this->addToOperationLog(
+                        "You killed {$soldiers} {$worldRegionUnit->getGameUnit()->getNameMulti()}!"
+                    );
                 }
             }
 
@@ -51,8 +52,7 @@ final class SniperAttack extends OperationProcessor
         } else {
             $soldiersKilled = $this->amount * self::SOLDIERS_KILLED_PER_SNIPER;
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId(
-                    ) == self::GAME_UNIT_SOLDIER_ID) {
+                if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SOLDIER_ID) {
                     $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $soldiersKilled);
                     $this->worldRegionUnitRepository->save($worldRegionUnit);
                     $this->addToOperationLog(
@@ -86,7 +86,9 @@ final class SniperAttack extends OperationProcessor
         $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to launch a Sniper attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
         $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
 
-        $this->addToOperationLog("We failed our Sniper attack and lost {$specialOpsLost} Special Ops and {$snipersLost} Snipers");
+        $this->addToOperationLog(
+            "We failed our Sniper attack and lost {$specialOpsLost} Special Ops and {$snipersLost} Snipers"
+        );
     }
 
     public function processPostOperation(): void

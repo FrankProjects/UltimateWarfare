@@ -105,8 +105,10 @@ final class OperationService
         }
 
         foreach ($playerRegion->getPlayer()->getPlayerResearch() as $playerResearch) {
-            if ($playerResearch->getResearch()->getId() === $operation->getResearch()->getId()
-                && $playerResearch->getResearch()->getActive() === true) {
+            if (
+                $playerResearch->getResearch()->getId() === $operation->getResearch()->getId() &&
+                $playerResearch->getResearch()->getActive() === true
+            ) {
                 return;
             }
         }

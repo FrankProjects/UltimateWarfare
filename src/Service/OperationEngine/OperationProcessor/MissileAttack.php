@@ -15,13 +15,12 @@ final class MissileAttack extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $specialOps + $guards + 1;
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
     {
-        foreach($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
+        foreach ($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
             if ($worldRegionUnit->getGameUnit()->getId() === $this->operation->getGameUnit()->getId()) {
                 $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $this->amount);
                 $this->worldRegionUnitRepository->save($worldRegionUnit);
@@ -43,7 +42,9 @@ final class MissileAttack extends OperationProcessor
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
                 if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() == GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
                     $this->worldRegionUnitRepository->remove($worldRegionUnit);
-                    $this->addToOperationLog("You destroyed all {$worldRegionUnit->getGameUnit()->getName()} buildings!");
+                    $this->addToOperationLog(
+                        "You destroyed all {$worldRegionUnit->getGameUnit()->getName()} buildings!"
+                    );
                 }
             }
 
@@ -57,7 +58,9 @@ final class MissileAttack extends OperationProcessor
                     $destroyed = intval($buildingsDestroyed * $percentage);
                     $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $destroyed);
                     $this->worldRegionUnitRepository->save($worldRegionUnit);
-                    $this->addToOperationLog("You destroyed {$destroyed} {$worldRegionUnit->getGameUnit()->getName()} buildings!");
+                    $this->addToOperationLog(
+                        "You destroyed {$destroyed} {$worldRegionUnit->getGameUnit()->getName()} buildings!"
+                    );
                 }
             }
 

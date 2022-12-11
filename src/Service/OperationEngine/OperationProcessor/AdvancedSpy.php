@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
-
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
@@ -17,8 +16,7 @@ final class AdvancedSpy extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $this->amount + $guards + 1;
 
-        return (3 * $this->amount / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $this->amount / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void

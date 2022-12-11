@@ -14,13 +14,12 @@ final class NuclearMissileAttack extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $specialOps + $guards + 1;
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
     {
-        foreach($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
+        foreach ($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
             if ($worldRegionUnit->getGameUnit()->getId() === $this->operation->getGameUnit()->getId()) {
                 $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $this->amount);
                 $this->worldRegionUnitRepository->save($worldRegionUnit);
@@ -45,7 +44,9 @@ final class NuclearMissileAttack extends OperationProcessor
         $reportText = "{$this->playerRegion->getPlayer()->getName()} launched a nuclear missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed everything.";
         $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
 
-        $this->addToOperationLog("The region is fully destroyed, a high amount of toxic radiation will make the region unliveable for an unknown amount of time!");
+        $this->addToOperationLog(
+            "The region is fully destroyed, a high amount of toxic radiation will make the region unliveable for an unknown amount of time!"
+        );
     }
 
     public function processFailed(): void

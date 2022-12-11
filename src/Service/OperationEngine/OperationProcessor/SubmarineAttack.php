@@ -18,8 +18,7 @@ final class SubmarineAttack extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $specialOps + $guards + 1;
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
@@ -50,8 +49,7 @@ final class SubmarineAttack extends OperationProcessor
         } else {
             $shipsDestroyed = $this->amount * self::SHIPS_KILLED_PER_SUBMARINE;
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId(
-                    ) == self::GAME_UNIT_SHIP_ID) {
+                if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SHIP_ID) {
                     $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $shipsDestroyed);
                     $this->worldRegionUnitRepository->save($worldRegionUnit);
                     $this->addToOperationLog(
@@ -85,7 +83,9 @@ final class SubmarineAttack extends OperationProcessor
         $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to launch a Submarine attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
         $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
 
-        $this->addToOperationLog("We failed our Submarine attack and lost {$specialOpsLost} Special Ops and {$submarinesLost} Submarines");
+        $this->addToOperationLog(
+            "We failed our Submarine attack and lost {$specialOpsLost} Special Ops and {$submarinesLost} Submarines"
+        );
     }
 
     public function processPostOperation(): void

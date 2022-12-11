@@ -53,7 +53,8 @@ final class DoctrineOperationRepository implements OperationRepository
             JOIN Game:Research r WITH o.research = r
             JOIN Game:ResearchPlayer rp WITH r = rp.research
             WHERE o.enabled = 1 AND rp.player = :player AND rp.active = 1'
-            )->setParameter('player', $player)
+        )
+            ->setParameter('player', $player)
             ->getArrayResult();
 
         //JOIN Game:ResearchPlayer rp WITH r = rp.research

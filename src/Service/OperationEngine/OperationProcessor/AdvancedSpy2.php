@@ -16,8 +16,7 @@ final class AdvancedSpy2 extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $this->amount + $guards + 1;
 
-        return (3 * $this->amount / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $this->amount / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
@@ -30,8 +29,8 @@ final class AdvancedSpy2 extends OperationProcessor
         $player = $this->region->getPlayer();
         $this->addToOperationLog("Searching for player reports...");
 
-        foreach($player->getReports() as $report) {
-            if($report->getTimestamp() < time() && $report->getTimestamp() > time() - 86400) {
+        foreach ($player->getReports() as $report) {
+            if ($report->getTimestamp() < time() && $report->getTimestamp() > time() - 86400) {
                 $this->addToOperationLog("Report - {$report->getTimestamp()}");
                 $this->addToOperationLog("{$report->getReport()}");
             }

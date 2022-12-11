@@ -21,8 +21,7 @@ final class DestroyCash extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $specialOps + $guards + 1;
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
@@ -33,23 +32,23 @@ final class DestroyCash extends OperationProcessor
     public function processSuccess(): void
     {
         $maxPercentage = 0;
-        if($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_1)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_1)) {
             $maxPercentage = 2;
         }
 
-        if($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_2)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_2)) {
             $maxPercentage = 4;
         }
 
-        if($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_3)) {
-            $maxPercentage =6;
+        if ($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_3)) {
+            $maxPercentage = 6;
         }
 
-        if($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_4)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_4)) {
             $maxPercentage = 8;
         }
 
-        if($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_5)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_CASH_LEVEL_5)) {
             $maxPercentage = 10;
         }
 

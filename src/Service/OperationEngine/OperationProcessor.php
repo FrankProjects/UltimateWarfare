@@ -153,12 +153,12 @@ abstract class OperationProcessor implements OperationInterface
 
     protected function hasResearched(int $researchId): bool
     {
-        foreach($this->playerRegion->getPlayer()->getPlayerResearch() as $playerResearch) {
+        foreach ($this->playerRegion->getPlayer()->getPlayerResearch() as $playerResearch) {
             if ($playerResearch->getActive() === false) {
                 continue;
             }
 
-            if($playerResearch->getResearch()->getId() === $researchId) {
+            if ($playerResearch->getResearch()->getId() === $researchId) {
                 return true;
             }
         }

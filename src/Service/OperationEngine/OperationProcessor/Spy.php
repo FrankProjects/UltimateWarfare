@@ -17,8 +17,7 @@ final class Spy extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $this->amount + $guards + 1;
 
-        return (3 * $this->amount / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $this->amount / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
@@ -31,14 +30,18 @@ final class Spy extends OperationProcessor
         $this->addToOperationLog("Searching for buildings...");
         foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
             if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() === GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
-                $this->addToOperationLog("- {$worldRegionUnit->getAmount()} {$worldRegionUnit->getGameUnit()->getNameMulti()}");
+                $this->addToOperationLog(
+                    "- {$worldRegionUnit->getAmount()} {$worldRegionUnit->getGameUnit()->getNameMulti()}"
+                );
             }
         }
 
         $this->addToOperationLog("Searching for units...");
         foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
             if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() === GameUnitType::GAME_UNIT_TYPE_UNITS) {
-                $this->addToOperationLog("- {$worldRegionUnit->getAmount()} {$worldRegionUnit->getGameUnit()->getNameMulti()}");
+                $this->addToOperationLog(
+                    "- {$worldRegionUnit->getAmount()} {$worldRegionUnit->getGameUnit()->getNameMulti()}"
+                );
             }
         }
     }

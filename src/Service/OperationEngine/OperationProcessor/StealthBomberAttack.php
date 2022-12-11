@@ -18,8 +18,7 @@ final class StealthBomberAttack extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $specialOps + $guards + 1;
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
@@ -40,7 +39,9 @@ final class StealthBomberAttack extends OperationProcessor
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
                 if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() == GameUnitType::GAME_UNIT_TYPE_SPECIAL_BUILDINGS) {
                     $this->worldRegionUnitRepository->remove($worldRegionUnit);
-                    $this->addToOperationLog("You destroyed all {$worldRegionUnit->getGameUnit()->getName()} buildings!");
+                    $this->addToOperationLog(
+                        "You destroyed all {$worldRegionUnit->getGameUnit()->getName()} buildings!"
+                    );
                 }
             }
 
@@ -50,8 +51,7 @@ final class StealthBomberAttack extends OperationProcessor
         } else {
             $buildingsDestroyed = $this->amount * self::BUILDINGS_DESTROYED_PER_BOMBER;
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId(
-                    ) == GameUnitType::GAME_UNIT_TYPE_SPECIAL_BUILDINGS) {
+                if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() == GameUnitType::GAME_UNIT_TYPE_SPECIAL_BUILDINGS) {
                     $percentage = $worldRegionUnit->getAmount() / $totalBuildings;
                     $destroyed = round($buildingsDestroyed * $percentage);
                     $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $destroyed);
@@ -87,7 +87,9 @@ final class StealthBomberAttack extends OperationProcessor
         $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to launch a Stealth Bomber attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
         $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
 
-        $this->addToOperationLog("We failed our Stealth Bomber attack and lost {$specialOpsLost} Special Ops and {$stealthBombersLost} Stealth Bombers");
+        $this->addToOperationLog(
+            "We failed our Stealth Bomber attack and lost {$specialOpsLost} Special Ops and {$stealthBombersLost} Stealth Bombers"
+        );
     }
 
     public function processPostOperation(): void

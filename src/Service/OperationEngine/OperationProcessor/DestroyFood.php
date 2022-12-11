@@ -20,8 +20,7 @@ final class DestroyFood extends OperationProcessor
         $guards = $this->getGuards();
         $total_units = $specialOps + $guards + 1;
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty(
-            ) + $this->getRandomChance();
+        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
     }
 
     public function processPreOperation(): void
@@ -32,23 +31,23 @@ final class DestroyFood extends OperationProcessor
     public function processSuccess(): void
     {
         $maxPercentage = 0;
-        if($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_1)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_1)) {
             $maxPercentage = 5;
         }
 
-        if($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_2)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_2)) {
             $maxPercentage = 10;
         }
 
-        if($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_3)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_3)) {
             $maxPercentage = 15;
         }
 
-        if($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_4)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_4)) {
             $maxPercentage = 20;
         }
 
-        if($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_5)) {
+        if ($this->hasResearched(self::RESEARCH_DESTROY_FOOD_LEVEL_5)) {
             $maxPercentage = 25;
         }
 
