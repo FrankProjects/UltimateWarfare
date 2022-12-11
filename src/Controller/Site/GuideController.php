@@ -62,7 +62,7 @@ final class GuideController extends BaseController
 
     public function listOperations(OperationRepository $operationRepository): Response
     {
-        $operations = $operationRepository->findAll();
+        $operations = $operationRepository->findEnabled();
 
         return $this->render(
             'site/guide/listOperations.html.twig',
