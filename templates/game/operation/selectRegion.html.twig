@@ -1,0 +1,100 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}Ultimate Warfare - Select Region{% endblock title %}
+
+{% block content %}
+    <a class="B" href="{{ path('Game/Operation/SelectOperation', {'regionId': region.id}) }}">Back to operation selection</a>
+
+    <br />
+    <br />
+
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td colspan="3"><b>Target region</b></td>
+        </tr>
+        <tr>
+            <td rowspan="3" width="120">
+                <img src="{{ asset('images/map/' ~ region.type ~ '.jpg') }}" alt="Region {{ region.id }}" width="120" height="100"><br />
+            </td>
+            <td width="300">Location:</td>
+            <td width="280">{{ region.x }}, {{ region.y }}</td>
+        </tr>
+        <tr>
+            <td width="300">Owner:</td>
+            {% if region.player is not null %}
+                <td width="280"><a class="B" href="{{ path('Game/Profile', {'playerName': region.player.name}) }}">{{ region.player.name }}</a></td>
+            {% else %}
+                <td width="280">Nobody</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td width="300">Space:</td>
+            <td width="280">
+                {{ region.space }}
+            </td>
+        </tr>
+        <tr>
+            <td class="tabletop" colspan="3"><b>Selected Operation</b></td>
+        </tr>
+        <tr>
+            <td rowspan="3" width="120">
+                <img src="{{ asset('images/operations/' ~ operation.image) }}" width="120" height="100">
+            </td>
+            <td width="300">Name:</td>
+            <td width="280">{{ operation.name }}</td>
+        </tr>
+        <tr>
+            <td width="300">Max Distance:</td>
+            <td width="280" align="center">{{ operation.maxDistance }}</td>
+        </tr>
+        <tr>
+            <td width="300" align="center">Unit required:</td>
+            <td width="280" align="center">{{ operation.gameUnit.name }}</td>
+        </tr>
+    </table>
+
+<br />
+<br />
+
+<table class="table text">
+    <tr>
+        <td class="tabletop" colspan="3" align="center"><b>Launch operation from which region?</b></td>
+    </tr>
+
+    {% for playerRegion in playerRegions %}
+        {% if playerRegion.distance <= operation.maxDistance %}
+        <tr>
+            <td width="120">
+                <img src="{{ asset('images/map/' ~ playerRegion.region.type ~ '.jpg') }}" alt="Region {{ playerRegion.region.id }}" width="120" height="100">
+            </td>
+            <td class="text-start" width="370">
+                <ul>
+                    <li>Position: {{ playerRegion.region.x }}, {{ playerRegion.region.y }}</li>
+                    <li>Distance to target: {{ playerRegion.distance }}</li>
+                    <li>
+                        <a class="B" href="{{ path('Game/Operation/SelectGameUnit', {'regionId': region.id, 'operationId': operation.id, 'playerRegionId': playerRegion.region.id}) }}">Launch operation</a> with this region.
+                    </li>
+                </ul>
+            </td>
+            <td class="text-start" width="210">
+                {% for regionUnit in playerRegion.region.worldRegionUnits %}
+                    {% if regionUnit.gameUnit.id == operation.gameUnit.id %}
+                        {% if regionUnit.amount > 1 %}
+                            {{ regionUnit.amount }} {{ regionUnit.gameUnit.nameMulti }}<br />
+                        {% else %}
+                            {{ regionUnit.amount }} {{ regionUnit.gameUnit.name }}<br />
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    No units stationed here!
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+    {% else %}
+        <tr>
+            <td colspan="3">No regions in range!</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

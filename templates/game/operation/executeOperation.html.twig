@@ -1,0 +1,18 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}Ultimate Warfare - Select Region{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td><b>Operation</b></td>
+        </tr>
+        <tr>
+            <td>
+                {% for line in operationResults %}
+                        <p>{{ line }}</p>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+{% endblock %}
