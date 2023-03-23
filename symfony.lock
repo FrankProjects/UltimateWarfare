@@ -88,14 +88,8 @@
     "evenement/evenement": {
         "version": "v3.0.1"
     },
-    "friendsofphp/proxy-manager-lts": {
-        "version": "v1.0.5"
-    },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
-    },
-    "laminas/laminas-code": {
-        "version": "3.4.1"
     },
     "monolog/monolog": {
         "version": "2.1.1"
