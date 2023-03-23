@@ -7,9 +7,6 @@
 {% endblock stylesheets %}
 
 {% block content %}
-    {% if userId == 0 %}
-        <a class="B" href="{{ path('Site/Login') }}">Click here to login</a> and use your username as chat name<br /><br />
-    {% endif %}
     Chat server status: <button id="chat-status" class="btn btn-inverse">Offline</button>
 
     <div class="container">
@@ -20,12 +17,17 @@
                 </div>
                 <form id="textbox">
                     <div class="row">
-                        <div class="col-lg-9 col-md-9 col-sm-9">
-                            <input id="message-box" class="form-control" placeholder="Type here..."/>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-3">
-                            <button id="send" type="button" class="btn btn-lg btn-block btn-primary">Send</button>
-                        </div>
+                        {% if userId == 0 %}
+                            <a class="B" href="{{ path('Site/Login') }}">Click here to login</a> You are only able to read chat as guest<br /><br />
+                        {% else %}
+                            <div class="col-lg-9 col-md-9 col-sm-9">
+                                <input id="message-box" class="form-control" placeholder="Type here..."/>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <button id="send" type="button" class="btn btn-lg btn-block btn-primary">Send</button>
+                            </div>
+                        {% endif %}
+
                     </div>
                 </form>
             </div>
