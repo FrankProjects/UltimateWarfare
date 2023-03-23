@@ -32,23 +32,6 @@
 
     <table class="table text">
         <tr class="tabletop">
-            <td class="text-center"><strong>Latest Announcements</strong></td>
-        </tr>
-        <tr>
-            <td>
-                {% for announcement in latestAnnouncements %}
-                    <div>
-                        <a class="B" href="{{ path('Forum/Topic', {'topicId': announcement.id}) }}">{{ announcement.title }}</a>
-                    </div>
-                {% endfor %}
-            </td>
-        </tr>
-    </table>
-
-    <br />
-
-    <table class="table text">
-        <tr class="tabletop">
             <td class="text-center"><strong>Game News</strong></td>
         </tr>
 
