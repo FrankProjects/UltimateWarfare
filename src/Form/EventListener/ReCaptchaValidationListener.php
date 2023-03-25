@@ -13,15 +13,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ReCaptchaValidationListener implements EventSubscriberInterface
 {
-    private $reCaptcha;
-    private $invalidMessage = 'The captcha is invalid.';
+    private ReCaptcha $reCaptcha;
+    private string $invalidMessage = 'The captcha is invalid.';
 
     public function __construct(ReCaptcha $reCaptcha)
     {
         $this->reCaptcha = $reCaptcha;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::POST_SUBMIT => 'onPostSubmit'
