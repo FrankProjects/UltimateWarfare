@@ -24,9 +24,6 @@ final class RegisterController extends AbstractController
 
     public function register(Request $request): Response
     {
-        /**
-         * XXX TODO: Add captcha
-         */
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
 
