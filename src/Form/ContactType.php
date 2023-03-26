@@ -47,6 +47,14 @@ class ContactType extends AbstractType
                 ]
             )
             ->add(
+                'captcha',
+                ReCaptchaType::class,
+                [
+                    'mapped' => false,
+                    'type' => 'checkbox' // (invisible, checkbox)
+                ]
+            )
+            ->add(
                 'submit',
                 SubmitType::class,
                 [

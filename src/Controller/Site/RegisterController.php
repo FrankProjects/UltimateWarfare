@@ -44,6 +44,7 @@ final class RegisterController extends AbstractController
             'site/register.html.twig',
             [
                 'form' => $form->createView(),
+                'gg_recaptcha_site_key' => $this->getParameter('app.gg_recaptcha_site_key')
             ]
         );
     }
