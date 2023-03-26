@@ -10,6 +10,7 @@
         <tr>
             <td width="150">Username</td>
             <td width="450">Email</td>
+            <td width="50">Enabled</td>
             <td width="450">Players</td>
             <td width="450">Signup</td>
             <td width="450">LastLogin</td>
@@ -22,6 +23,13 @@
                 </td>
                 <td>
                     {{ user.email }}
+                </td>
+                <td>
+                    {% if user.enabled == 1 %}
+                        <span class="good">Yes</span>
+                    {% else %}
+                        <span class="bad">No</span>
+                    {% endif %}
                 </td>
                 <td>
                     {% for player in user.players %}

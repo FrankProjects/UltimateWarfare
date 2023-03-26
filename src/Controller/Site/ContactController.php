@@ -23,9 +23,6 @@ final class ContactController extends AbstractController
 
     public function contact(Request $request): Response
     {
-        /**
-         * XXX TODO: Add captcha...
-         */
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
 
@@ -39,7 +36,8 @@ final class ContactController extends AbstractController
         return $this->render(
             'site/contact.html.twig',
             [
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'gg_recaptcha_site_key' => $this->getParameter('app.gg_recaptcha_site_key')
             ]
         );
     }

@@ -8,6 +8,7 @@ parameters:
     app.uw_chat_address: '%env(UW_CHAT_ADDRESS)%'
     app.uw_chat_service_port: '%env(UW_CHAT_SERVICE_PORT)%'
     app.uw_chat_public_port: '%env(UW_CHAT_PUBLIC_PORT)%'
+    app.gg_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:
     # default configuration for services in *this* file
