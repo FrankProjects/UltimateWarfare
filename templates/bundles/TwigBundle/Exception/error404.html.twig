@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <main class="col-sm-12 justify-content-center">
+        <table class="table text">
+            <tr class="tabletop">
+                <td class="text-center"><b>Page not found</b></td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                    The requested page couldn't be located. Checkout for any URL
+                    misspelling or <a class="B" href="{{ path('Site/Homepage') }}">return to the homepage</a>.
+                </td>
+            </tr>
+        </table>
+    </main>
+{% endblock %}
