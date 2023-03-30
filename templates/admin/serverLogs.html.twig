@@ -1,0 +1,23 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - Server Logs{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td colspan="3"><b>Server Logs</b></td>
+        </tr>
+        {% for logFile, logData in logs %}
+            <tr>
+                <td colspan="3">{{ logFile }}</td>
+            </tr>
+            {% for log in logData %}
+                <tr>
+                    <td>{{ log.date }}</td>
+                    <td>{{ log.level }}</td>
+                    <td>{{ log.message }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+{% endblock %}
