@@ -48,6 +48,10 @@ Admin/GameUnit/Edit:
     requirements:
         gameUnitId: '\d+'
 
+Admin/ServerLogs:
+    path:      /admin/server-logs
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\ServerLogsController::showLogs
+
 Admin/UnbanRequest/List:
     path:      /admin/unban-request/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::list
