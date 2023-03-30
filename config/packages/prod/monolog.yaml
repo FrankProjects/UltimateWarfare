@@ -19,3 +19,5 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/game.log"
             level: warning
+            excluded_http_codes: [404, 405]
+            buffer_size: 50
