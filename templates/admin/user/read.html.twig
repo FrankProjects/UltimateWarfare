@@ -48,16 +48,6 @@
             </td>
         </tr>
         <tr>
-            <td>Forum</td>
-            <td>
-                {% if user.forumBan == 1 %}
-                    <span class="bad">Banned/De-activated</span>
-                {% else %}
-                    <span class="good">Active</span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
             <td>Roles</td>
             <td>
                 {% for role in user.roles %}
@@ -72,13 +62,6 @@
                         <a class="btn btn-danger" href="{{ path('Admin/User/Ban', {'userId': user.id}) }}">Ban</a>
                     {% else %}
                         <a class="btn btn-danger" href="{{ path('Admin/User/Unban', {'userId': user.id}) }}">Unban</a>
-                    {% endif %}
-                </p>
-                <p>
-                    {% if user.forumBan == 1 %}
-                        <a class="btn btn-danger" href="{{ path('Admin/User/ForumUnban', {'userId': user.id}) }}">Forum unban</a>
-                    {% else %}
-                        <a class="btn btn-danger" href="{{ path('Admin/User/ForumBan', {'userId': user.id}) }}">Forum ban</a>
                     {% endif %}
                 </p>
                 {% if user.enabled == 0 %}
