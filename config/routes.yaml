@@ -627,17 +627,6 @@ Site/Contact:
     path:      /contact
     controller: FrankProjects\UltimateWarfare\Controller\Site\ContactController::contact
 
-Site/HallOfFame:
-    path:      /hall-of-fame
-    controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::hallOfFame
-
-Site/HallOfFameWorld:
-    path:      /hall-of-fame/{worldId}
-    controller: FrankProjects\UltimateWarfare\Controller\Site\HallOfFameController::world
-    requirements:
-        worldId: '\d+'
-        round: '\d+'
-
 Site/Homepage:
     path:      /
     controller: FrankProjects\UltimateWarfare\Controller\Site\IndexController::index
