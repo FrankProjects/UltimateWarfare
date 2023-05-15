@@ -709,10 +709,6 @@ Site/About:
     path:      /about
     controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::about
 
-Site/Chat:
-    path:      /chat
-    controller: FrankProjects\UltimateWarfare\Controller\Site\ChatController::chat
-
 Site/Community:
     path:      /community
     controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::community

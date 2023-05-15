@@ -1,7 +1,4 @@
 {
-    "cboden/ratchet": {
-        "version": "v0.4.3"
-    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -85,9 +82,6 @@
     "egulias/email-validator": {
         "version": "2.1.20"
     },
-    "evenement/evenement": {
-        "version": "v3.0.1"
-    },
     "google/recaptcha": {
         "version": "1.3",
         "recipe": {
@@ -96,9 +90,6 @@
             "version": "1.1",
             "ref": "e5a4aa21f2e98d7440ae9aab6b56e307f99dd084"
         }
-    },
-    "guzzlehttp/psr7": {
-        "version": "1.6.1"
     },
     "monolog/monolog": {
         "version": "2.1.1"
@@ -121,41 +112,8 @@
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },
-    "psr/http-factory": {
-        "version": "1.0.1"
-    },
-    "psr/http-message": {
-        "version": "1.0.1"
-    },
     "psr/log": {
         "version": "1.1.3"
-    },
-    "ralouphie/getallheaders": {
-        "version": "3.0.3"
-    },
-    "ratchet/rfc6455": {
-        "version": "v0.3"
-    },
-    "react/cache": {
-        "version": "v1.0.0"
-    },
-    "react/dns": {
-        "version": "v1.3.0"
-    },
-    "react/event-loop": {
-        "version": "v1.1.1"
-    },
-    "react/promise": {
-        "version": "v2.8.0"
-    },
-    "react/promise-timer": {
-        "version": "v1.6.0"
-    },
-    "react/socket": {
-        "version": "v1.6.0"
-    },
-    "react/stream": {
-        "version": "v1.1.1"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.6",
