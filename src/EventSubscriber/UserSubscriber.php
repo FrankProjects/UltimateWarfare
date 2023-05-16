@@ -52,10 +52,7 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
 
     private function checkBannedAndRedirect(RequestEvent $event): void
     {
-        if (
-            strpos($event->getRequest()->getRequestUri(), '/game') === false &&
-            strpos($event->getRequest()->getRequestUri(), '/forum') === false
-        ) {
+        if (strpos($event->getRequest()->getRequestUri(), '/game') === false) {
             return;
         }
 

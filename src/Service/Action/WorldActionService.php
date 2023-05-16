@@ -39,8 +39,6 @@ final class WorldActionService
     }
 
     /**
-     * XXX TODO: Update hall of fame
-     *
      * @param int $worldId
      */
     public function reset(int $worldId): void

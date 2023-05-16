@@ -34,7 +34,7 @@ class BaseGameController extends BaseController
     public function getPlayer(): Player
     {
         /**
-         * XXX TODO: Fix counter in chat/messages navigation bar
+         * XXX TODO: Fix counter in messages navigation bar
          * XXX TODO: Fix session expired page
          */
         $user = $this->getGameUser();
