@@ -17,13 +17,14 @@ final class ServerLogsController extends AbstractController
         $finder->name('*.log');
         $finder->sortByName();
 
-        $logRegex = '/\[(?P<date>.*)\] (?P<channel>\w+).(?P<level>\w+): (?P<message>[^\[\{].*[\]\}])/';
         $logs = [];
         foreach ($finder as $file) {
             $logLines = file($file->getRealPath());
             foreach ($logLines as $logLine) {
-                preg_match($logRegex, $logLine, $logData);
-                $logs[$file->getFilename()][] = $logData;
+                $logData = json_decode($logLine, true);
+                if ($logData !== null) {
+                    $logs[$file->getFilename()][] = $logData;
+                }
             }
         }
 
