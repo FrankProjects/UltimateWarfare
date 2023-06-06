@@ -187,7 +187,7 @@ final class OperationController extends BaseGameController
         }
 
         return $this->render(
-            'game/operation/ExecuteOperation.html.twig',
+            'game/operation/executeOperation.html.twig',
             [
                 'region' => $worldRegion,
                 'player' => $player,

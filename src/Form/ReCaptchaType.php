@@ -17,7 +17,7 @@ class ReCaptchaType extends AbstractType
     /**
      * @var ReCaptcha
      */
-    private $reCaptcha;
+    private ReCaptcha $reCaptcha;
 
     /**
      * ReCaptchaType constructor.
@@ -32,7 +32,7 @@ class ReCaptchaType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $subscriber = new ReCaptchaValidationListener($this->reCaptcha);
         $subscriber->setInvalidMessage($options['invalid_message']);
@@ -42,7 +42,7 @@ class ReCaptchaType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['type'] = $options['type'];
     }
@@ -50,7 +50,7 @@ class ReCaptchaType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('type', 'invisible')
