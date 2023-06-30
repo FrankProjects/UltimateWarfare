@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Form\Admin;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 abstract class AbstractGameResourcesType extends AbstractType
 {
@@ -15,28 +15,28 @@ abstract class AbstractGameResourcesType extends AbstractType
         $builder
             ->add(
                 'cash',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.cash'
                 ]
             )
             ->add(
                 'food',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.food'
                 ]
             )
             ->add(
                 'wood',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.wood'
                 ]
             )
             ->add(
                 'steel',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.steel'
                 ]

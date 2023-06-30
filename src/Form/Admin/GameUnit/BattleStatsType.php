@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Form\Admin\GameUnit\BattleStats\AirBattleStats
 use FrankProjects\UltimateWarfare\Form\Admin\GameUnit\BattleStats\GroundBattleStatsType;
 use FrankProjects\UltimateWarfare\Form\Admin\GameUnit\BattleStats\SeaBattleStatsType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,21 +21,21 @@ class BattleStatsType extends AbstractType
         $builder
             ->add(
                 'health',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.health'
                 ]
             )
             ->add(
                 'armor',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.armor'
                 ]
             )
             ->add(
                 'travelSpeed',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.travelSpeed'
                 ]

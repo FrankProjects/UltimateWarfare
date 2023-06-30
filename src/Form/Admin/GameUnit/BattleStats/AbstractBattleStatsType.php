@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Form\Admin\GameUnit\BattleStats;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 abstract class AbstractBattleStatsType extends AbstractType
 {
@@ -15,28 +15,28 @@ abstract class AbstractBattleStatsType extends AbstractType
         $builder
             ->add(
                 'attack',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.attack'
                 ]
             )
             ->add(
                 'attackSpeed',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.attackSpeed'
                 ]
             )
             ->add(
                 'defence',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.defence'
                 ]
             )
             ->add(
                 'defenceSpeed',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.defenceSpeed'
                 ]

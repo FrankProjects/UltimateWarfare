@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Form\Admin\World\ResourcesType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -57,7 +58,7 @@ class WorldType extends AbstractType
             )
             ->add(
                 'maxPlayers',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.maxPlayers'
                 ]
@@ -80,7 +81,7 @@ class WorldType extends AbstractType
             )
             ->add(
                 'federationLimit',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.federationLimit'
                 ]
