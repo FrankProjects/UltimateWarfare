@@ -10,6 +10,7 @@ use FrankProjects\UltimateWarfare\Form\Admin\GameUnit\CostType;
 use FrankProjects\UltimateWarfare\Form\Admin\GameUnit\IncomeType;
 use FrankProjects\UltimateWarfare\Form\Admin\GameUnit\UpkeepType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,14 +37,14 @@ class GameUnitType extends AbstractType
             )
             ->add(
                 'networth',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.networth'
                 ]
             )
             ->add(
                 'timestamp',
-                TextType::class,
+                NumberType::class,
                 [
                     'label' => 'label.timestamp'
                 ]
