@@ -11,6 +11,11 @@ class FleetUnit
     private Fleet $fleet;
     private GameUnit $gameUnit;
 
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getId(): int
     {
         return $this->id;
@@ -24,6 +29,11 @@ class FleetUnit
     public function setAmount(int $amount): void
     {
         $this->amount = $amount;
+    }
+
+    public function getFleet(): Fleet
+    {
+        return $this->fleet;
     }
 
     public function setFleet(Fleet $fleet): void

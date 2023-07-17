@@ -18,10 +18,12 @@ class GameNews
 
     public function __construct()
     {
-        try {
-            $this->createDateTime = new DateTime();
-        } catch (Exception $e) {
-        }
+        $this->createDateTime = new DateTime();
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getId(): int

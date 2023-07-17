@@ -56,17 +56,6 @@ final class DoctrineOperationRepository implements OperationRepository
         )
             ->setParameter('player', $player)
             ->getArrayResult();
-
-        //JOIN Game:ResearchPlayer rp WITH r = rp.research
-        //AND rp.player = :player AND rp.active = 1
-        //->setParameter('player', $player)
-        $operations = [];
-        foreach ($results as $result) {
-            $operations[$result['id']] = $result['name'];
-        }
-
-        return $operations;
-        // "SELECT o.id, o.name FROM operations o LEFT JOIN research_player rp ON o.needs = rp.research_id WHERE (o.race_id = ".$player['race_id']." OR o.race_id = 0) AND o.active = 1 AND rp.player_id = $player_id");
     }
 
     public function remove(Operation $operation): void
