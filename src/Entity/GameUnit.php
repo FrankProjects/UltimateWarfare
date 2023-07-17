@@ -51,6 +51,11 @@ class GameUnit
         $this->upkeep = new Upkeep();
     }
 
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getId(): int
     {
         return $this->id;
@@ -126,11 +131,6 @@ class GameUnit
         return $this->description;
     }
 
-    public function getGameUnitType(): GameUnitType
-    {
-        return $this->gameUnitType;
-    }
-
     public function getBattleStats(): BattleStats
     {
         return $this->battleStats;
@@ -149,5 +149,55 @@ class GameUnit
     public function getUpkeep(): Upkeep
     {
         return $this->upkeep;
+    }
+
+    public function getGameUnitType(): GameUnitType
+    {
+        return $this->gameUnitType;
+    }
+
+    public function setGameUnitType(GameUnitType $gameUnitType): void
+    {
+        $this->gameUnitType = $gameUnitType;
+    }
+
+    public function getWorldRegionUnits(): Collection
+    {
+        return $this->worldRegionUnits;
+    }
+
+    public function setWorldRegionUnits(Collection $worldRegionUnits): void
+    {
+        $this->worldRegionUnits = $worldRegionUnits;
+    }
+
+    public function getConstructions(): Collection
+    {
+        return $this->constructions;
+    }
+
+    public function setConstructions(Collection $constructions): void
+    {
+        $this->constructions = $constructions;
+    }
+
+    public function getFleetUnits(): Collection
+    {
+        return $this->fleetUnits;
+    }
+
+    public function setFleetUnits(Collection $fleetUnits): void
+    {
+        $this->fleetUnits = $fleetUnits;
+    }
+
+    public function getOperations(): Collection
+    {
+        return $this->operations;
+    }
+
+    public function setOperations(Collection $operations): void
+    {
+        $this->operations = $operations;
     }
 }
