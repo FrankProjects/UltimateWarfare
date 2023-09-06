@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Util;
 
-use FrankProjects\UltimateWarfare\Entity\AbstractGameResources;
 use FrankProjects\UltimateWarfare\Entity\Player;
 
+/**
+ * @property Player\Upkeep $abstractGameResources
+ */
 final class UpkeepCalculator extends AbstractPlayerCalculator
 {
-    public function calculateUpkeepForPlayer(Player $player): AbstractGameResources
+    public function calculateUpkeepForPlayer(Player $player): Player\Upkeep
     {
         $this->abstractGameResources = new Player\Upkeep();
 

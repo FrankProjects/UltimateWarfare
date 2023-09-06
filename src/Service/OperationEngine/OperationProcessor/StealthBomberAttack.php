@@ -54,7 +54,7 @@ final class StealthBomberAttack extends OperationProcessor
                 if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() == GameUnitType::GAME_UNIT_TYPE_SPECIAL_BUILDINGS) {
                     $percentage = $worldRegionUnit->getAmount() / $totalBuildings;
                     $destroyed = round($buildingsDestroyed * $percentage);
-                    $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $destroyed);
+                    $worldRegionUnit->setAmount((int) ($worldRegionUnit->getAmount() - $destroyed));
                     $this->worldRegionUnitRepository->save($worldRegionUnit);
                     $this->addToOperationLog(
                         "You destroyed {$destroyed} {$worldRegionUnit->getGameUnit()->getName()} buildings!"

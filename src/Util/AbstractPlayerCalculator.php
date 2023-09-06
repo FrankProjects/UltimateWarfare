@@ -11,6 +11,9 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use RuntimeException;
 
+/**
+ * @property AbstractGameResources $abstractGameResources
+ */
 abstract class AbstractPlayerCalculator
 {
     protected const ABSTRACT_GAME_RESOURCES_UPKEEP = 'upkeep';

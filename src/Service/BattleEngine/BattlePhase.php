@@ -10,6 +10,9 @@ use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\AbstractBattleStat
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use RuntimeException;
 
+/**
+ * @property array $attackerGameUnits
+ */
 abstract class BattlePhase implements IBattlePhase
 {
     public const AIR_PHASE = 'air';
@@ -18,9 +21,6 @@ abstract class BattlePhase implements IBattlePhase
 
     protected string $name;
 
-    /**
-     * @var FleetUnit[]
-     */
     protected array $attackerGameUnits;
 
     /**
@@ -67,9 +67,6 @@ abstract class BattlePhase implements IBattlePhase
         return $this->name;
     }
 
-    /**
-     * @return FleetUnit[]
-     */
     public function getAttackerGameUnits(): array
     {
         return $this->attackerGameUnits;
@@ -160,14 +157,14 @@ abstract class BattlePhase implements IBattlePhase
         return intval($power / $health);
     }
 
-    private function getBattlePhaseBattleStats(GameUnit $gameUnit): AbstractBattleStats
+    private function getBattlePhaseBattleStats(WorldRegionUnit $gameUnit): AbstractBattleStats
     {
         if ($this->name === BattlePhase::AIR_PHASE) {
-            return $gameUnit->getBattleStats()->getAirBattleStats();
+            return $gameUnit->getGameUnit()->getBattleStats()->getAirBattleStats();
         } elseif ($this->name === BattlePhase::SEA_PHASE) {
-            return $gameUnit->getBattleStats()->getSeaBattleStats();
+            return $gameUnit->getGameUnit()->getBattleStats()->getSeaBattleStats();
         } elseif ($this->name === BattlePhase::GROUND_PHASE) {
-            return $gameUnit->getBattleStats()->getGroundBattleStats();
+            return $gameUnit->getGameUnit()->getBattleStats()->getGroundBattleStats();
         }
 
         throw new RunTimeException("Invalid BattleStats for {$this->name}");
