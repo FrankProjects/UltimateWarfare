@@ -33,6 +33,9 @@ final class BattleResult
     {
         $battlePhases = $this->getBattlePhases();
         $battlePhase = end($battlePhases);
+        if ($battlePhase instanceof BattlePhase === false) {
+            return false;
+        }
         if ($battlePhase->getDefensePower() === 0 && $battlePhase->getAttackPower() > 0) {
             return true;
         }

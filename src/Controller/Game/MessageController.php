@@ -162,7 +162,7 @@ final class MessageController extends BaseGameController
                     $player,
                     $request->get('subject'),
                     $request->get('message'),
-                    $playerName,
+                    (string) $playerName,
                     $adminMessage
                 );
 

@@ -59,7 +59,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
 
     /**
      * @param WorldRegion $worldRegion
-     * @return array<int, int>
+     * @return array<int|string, mixed>
      */
     public function getWorldGameUnitSumByWorldRegion(WorldRegion $worldRegion): array
     {

@@ -33,8 +33,8 @@ final class ResetPasswordController extends AbstractController
 
     public function requestPasswordReset(Request $request): Response
     {
-        $email = $request->request->get('email');
-        if ($email !== null) {
+        $email = (string) $request->request->get('email');
+        if ($email !== '') {
             $user = $this->userRepository->findByEmail($email);
 
             if ($user !== null) {

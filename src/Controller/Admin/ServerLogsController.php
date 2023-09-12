@@ -20,6 +20,9 @@ final class ServerLogsController extends AbstractController
         $logs = [];
         foreach ($finder as $file) {
             $logLines = file($file->getRealPath());
+            if ($logLines === false) {
+                continue;
+            }
             foreach ($logLines as $logLine) {
                 $logData = json_decode($logLine, true);
                 if ($logData !== null) {
