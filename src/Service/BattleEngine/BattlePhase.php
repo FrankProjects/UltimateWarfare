@@ -177,7 +177,7 @@ abstract class BattlePhase implements IBattlePhase
     {
         $power = 0;
         foreach ($this->getAttackerGameUnits() as $gameUnit) {
-            $power += $this->getBattlePhaseBattleStats($gameUnit)->getAttack() * $gameUnit->getAmount();
+            $power += $this->getBattlePhaseBattleStats($gameUnit->getGameUnit())->getAttack() * $gameUnit->getAmount();
         }
 
         return $power;
@@ -187,7 +187,7 @@ abstract class BattlePhase implements IBattlePhase
     {
         $power = 0;
         foreach ($this->getDefenderGameUnits() as $gameUnit) {
-            $power += $this->getBattlePhaseBattleStats($gameUnit)->getDefence() * $gameUnit->getAmount();
+            $power += $this->getBattlePhaseBattleStats($gameUnit->getGameUnit())->getDefence() * $gameUnit->getAmount();
         }
 
         return $power;

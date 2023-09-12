@@ -9,6 +9,8 @@
 ###< symfony/framework-bundle ###
 
 .idea
+/config/secrets/dev/
+.ddev/
 
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
