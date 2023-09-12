@@ -38,6 +38,9 @@ final class ConstructionActionService
         $this->networthUpdaterService = $networthUpdaterService;
     }
 
+    /**
+     * @param array<int, string> $constructionData
+     */
     public function constructGameUnits(
         WorldRegion $region,
         Player $player,
@@ -110,6 +113,9 @@ final class ConstructionActionService
         }
     }
 
+    /**
+     * @param array<int, string> $destroyData
+     */
     public function removeGameUnits(
         WorldRegion $region,
         Player $player,

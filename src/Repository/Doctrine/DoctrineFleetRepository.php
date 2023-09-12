@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 final class DoctrineFleetRepository implements FleetRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Fleet>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

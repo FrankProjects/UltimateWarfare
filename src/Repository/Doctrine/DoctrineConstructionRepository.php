@@ -15,6 +15,10 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 final class DoctrineConstructionRepository implements ConstructionRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Construction>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

@@ -14,6 +14,10 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <WorldRegionUnit>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -29,7 +33,7 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
 
     /**
      * @param Player $player
-     * @return array
+     * @return array<int, array<string, int>>
      */
     public function findAmountAndNetworthByPlayer(Player $player): array
     {
@@ -48,7 +52,7 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
     /**
      * @param Player $player
      * @param GameUnitType[] $gameUnitTypes
-     * @return array
+     * @return array<int, int>
      */
     public function getGameUnitSumByPlayerAndGameUnitTypes(Player $player, array $gameUnitTypes): array
     {

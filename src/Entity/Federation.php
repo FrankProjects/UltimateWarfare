@@ -18,13 +18,13 @@ class Federation
     private int $networth = 0;
     private World $world;
 
-    /** @var Collection<Player> */
+    /** @var Collection<int, Player> */
     private Collection $players;
 
-    /** @var Collection<FederationApplication> */
+    /** @var Collection<int, FederationApplication> */
     private Collection $federationApplications;
 
-    /** @var Collection<FederationNews> */
+    /** @var Collection<int, FederationNews> */
     private Collection $federationNews;
     private Resources $resources;
 
@@ -107,7 +107,7 @@ class Federation
     }
 
     /**
-     * @return Collection|FederationApplication[]
+     * @return Collection<int, FederationApplication>
      */
     public function getFederationApplications(): Collection
     {
@@ -115,7 +115,7 @@ class Federation
     }
 
     /**
-     * @return Collection|Player[]
+     * @return Collection<int, Player>
      */
     public function getPlayers(): Collection
     {
@@ -123,7 +123,7 @@ class Federation
     }
 
     /**
-     * @return Collection|FederationNews[]
+     * @return Collection<int, FederationNews>
      */
     public function getFederationNews(): Collection
     {

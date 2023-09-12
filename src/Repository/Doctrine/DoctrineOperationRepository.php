@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\OperationRepository;
 final class DoctrineOperationRepository implements OperationRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Operation>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

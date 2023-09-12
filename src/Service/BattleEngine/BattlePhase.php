@@ -27,6 +27,10 @@ abstract class BattlePhase implements IBattlePhase
      * @var WorldRegionUnit[]
      */
     protected array $defenderGameUnits;
+
+    /**
+     * @var array <string>
+     */
     protected array $battleLog = [];
 
     /**
@@ -83,6 +87,9 @@ abstract class BattlePhase implements IBattlePhase
         return $this->defenderGameUnits;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getBattleLog(): array
     {
         return $this->battleLog;

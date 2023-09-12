@@ -29,22 +29,22 @@ class World
     private bool $federation = true;
     private int $federationLimit = 0;
 
-    /** @var Collection<WorldRegion> */
+    /** @var Collection<int, WorldRegion> */
     private Collection $worldRegions;
 
-    /** @var Collection<WorldSector> */
+    /** @var Collection<int, WorldSector> */
     private Collection $worldSectors;
 
-    /** @var Collection<Player> */
+    /** @var Collection<int, Player> */
     private Collection $players;
 
-    /** @var Collection<MarketItem> */
+    /** @var Collection<int, MarketItem> */
     private Collection $marketItems;
 
-    /** @var Collection<Message> */
+    /** @var Collection<int, Message> */
     private Collection $messages;
 
-    /** @var Collection<Federation> */
+    /** @var Collection<int, Federation> */
     private Collection $federations;
     private Resources $resources;
     private MapConfiguration $mapConfiguration;
@@ -106,6 +106,9 @@ class World
         return in_array($status, self::getAllStatusOptions(), true);
     }
 
+    /**
+     * @return array<int, int>
+     */
     public static function getAllStatusOptions(): array
     {
         return [
@@ -200,7 +203,7 @@ class World
     }
 
     /**
-     * @return Collection|WorldRegion[]
+     * @return Collection<int, WorldRegion>
      */
     public function getWorldRegions(): Collection
     {
@@ -208,61 +211,88 @@ class World
     }
 
     /**
-     * @param Collection|WorldRegion[] $worldRegions
+     * @param Collection<int, WorldRegion> $worldRegions
      */
-    public function setWorldRegions($worldRegions): void
+    public function setWorldRegions(Collection $worldRegions): void
     {
         $this->worldRegions = $worldRegions;
     }
 
     /**
-     * @return Collection|WorldSector[]
+     * @return Collection<int, WorldSector>
      */
     public function getWorldSectors(): Collection
     {
         return $this->worldSectors;
     }
 
+    /**
+     * @param Collection<int, WorldSector> $worldSectors
+     */
     public function setWorldSectors(Collection $worldSectors): void
     {
         $this->worldSectors = $worldSectors;
     }
 
+    /**
+     * @return Collection<int, Player>
+     */
     public function getPlayers(): Collection
     {
         return $this->players;
     }
 
+    /**
+     * @param Collection<int, Player> $players
+     */
     public function setPlayers(Collection $players): void
     {
         $this->players = $players;
     }
 
+    /**
+     * @return Collection<int, MarketItem>
+     */
     public function getMarketItems(): Collection
     {
         return $this->marketItems;
     }
 
+    /**
+     * @param Collection<int, MarketItem> $marketItems
+     */
     public function setMarketItems(Collection $marketItems): void
     {
         $this->marketItems = $marketItems;
     }
 
+    /**
+     * @return Collection<int, Message>
+     */
     public function getMessages(): Collection
     {
         return $this->messages;
     }
 
+    /**
+     * @param Collection<int, Message> $messages
+     */
     public function setMessages(Collection $messages): void
     {
         $this->messages = $messages;
     }
 
+    /**
+     * @return Collection<int, Federation>
+     */
     public function getFederations(): Collection
     {
         return $this->federations;
     }
 
+    /**
+     * @param Collection<int, Federation> $federations
+     */
     public function setFederations(Collection $federations): void
     {
         $this->federations = $federations;

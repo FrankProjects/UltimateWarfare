@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\FederationApplicationRepository;
 final class DoctrineFederationApplicationRepository implements FederationApplicationRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <FederationApplication>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

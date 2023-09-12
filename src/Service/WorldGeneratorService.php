@@ -60,6 +60,9 @@ final class WorldGeneratorService
         $this->worldRepository->save($world);
     }
 
+    /**
+     * @return array<int, array<int, float>>
+     */
     public function generate(World $world, bool $save, int $sector): array
     {
         $mapConfiguration = $world->getMapConfiguration();
@@ -76,6 +79,9 @@ final class WorldGeneratorService
         return $map;
     }
 
+    /**
+     * @param array<int, array<int, float>> $map
+     */
     private function generateWorldSectors(
         World $world,
         array $map,
@@ -104,6 +110,9 @@ final class WorldGeneratorService
         }
     }
 
+    /**
+     * @param array<int, array<int, float>> $map
+     */
     private function generateWorldRegions(
         WorldSector $worldSector,
         array $map,

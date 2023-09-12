@@ -12,6 +12,10 @@ use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 final class DoctrineGameUnitTypeRepository implements GameUnitTypeRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <GameUnitType>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

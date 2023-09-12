@@ -44,31 +44,31 @@ class Player
     private World $world;
     private ?Federation $federation;
 
-    /** @var Collection<Report> */
+    /** @var Collection<int, Report> */
     private Collection $reports;
 
-    /** @var Collection<Construction> */
+    /** @var Collection<int, Construction> */
     private Collection $constructions;
 
-    /** @var Collection<WorldRegion> */
+    /** @var Collection<int, WorldRegion> */
     private Collection $worldRegions;
 
-    /** @var Collection<Fleet> */
+    /** @var Collection<int, Fleet> */
     private Collection $fleets;
 
-    /** @var Collection<MarketItem> */
+    /** @var Collection<int, MarketItem> */
     private Collection $marketItems;
 
-    /** @var Collection<Message> */
+    /** @var Collection<int, Message> */
     private Collection $fromMessages;
 
-    /** @var Collection<Message> */
+    /** @var Collection<int, Message> */
     private Collection $toMessages;
 
-    /** @var Collection<ResearchPlayer> */
+    /** @var Collection<int, ResearchPlayer> */
     private Collection $playerResearch;
 
-    /** @var Collection<FederationApplication> */
+    /** @var Collection<int, FederationApplication> */
     private Collection $federationApplications;
 
     private Income $income;
@@ -164,20 +164,23 @@ class Player
     }
 
     /**
-     * @return Collection|Report[]
+     * @return Collection<int, Report>
      */
     public function getReports(): Collection
     {
         return $this->reports;
     }
 
+    /**
+     * @return Collection<int, Construction>
+     */
     public function getConstructions(): Collection
     {
         return $this->constructions;
     }
 
     /**
-     * @return Collection|WorldRegion[]
+     * @return Collection<int, WorldRegion>
      */
     public function getWorldRegions(): Collection
     {
@@ -185,7 +188,7 @@ class Player
     }
 
     /**
-     * @return Collection|Fleet[]
+     * @return Collection<int, Fleet>
      */
     public function getFleets(): Collection
     {
@@ -222,54 +225,81 @@ class Player
         $this->federation = $federation;
     }
 
+    /**
+     * @return Collection<int, Message>
+     */
     public function getFromMessages(): Collection
     {
         return $this->fromMessages;
     }
 
+    /**
+     * @param Collection<int, Message> $fromMessages
+     */
     public function setFromMessages(Collection $fromMessages): void
     {
         $this->fromMessages = $fromMessages;
     }
 
+    /**
+     * @return Collection<int, Message>
+     */
     public function getToMessages(): Collection
     {
         return $this->toMessages;
     }
 
+    /**
+     * @param Collection<int, Message> $toMessages
+     */
     public function setToMessages(Collection $toMessages): void
     {
         $this->toMessages = $toMessages;
     }
 
     /**
-     * @return Collection|ResearchPlayer[]
+     * @return Collection<int, ResearchPlayer>
      */
     public function getPlayerResearch(): Collection
     {
         return $this->playerResearch;
     }
 
+    /**
+     * @param Collection<int, ResearchPlayer> $playerResearch
+     */
     public function setPlayerResearches(Collection $playerResearch): void
     {
         $this->playerResearch = $playerResearch;
     }
 
+    /**
+     * @return Collection<int, FederationApplication>
+     */
     public function getFederationApplications(): Collection
     {
         return $this->federationApplications;
     }
 
+    /**
+     * @param Collection<int, FederationApplication> $federationApplications
+     */
     public function setFederationApplications(Collection $federationApplications): void
     {
         $this->federationApplications = $federationApplications;
     }
 
+    /**
+     * @return Collection<int, MarketItem>
+     */
     public function getMarketItems(): Collection
     {
         return $this->marketItems;
     }
 
+    /**
+     * @param Collection<int, MarketItem> $marketItems
+     */
     public function setMarketItems(Collection $marketItems): void
     {
         $this->marketItems = $marketItems;

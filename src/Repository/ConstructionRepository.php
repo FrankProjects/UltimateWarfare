@@ -19,8 +19,14 @@ interface ConstructionRepository
      */
     public function findByPlayer(Player $player): array;
 
+    /**
+     * @return array<int, int>
+     */
     public function getGameUnitConstructionSumByWorldRegion(WorldRegion $worldRegion): array;
 
+    /**
+     * @return array<int, int>
+     */
     public function getGameUnitConstructionSumByPlayer(Player $player): array;
 
     /**

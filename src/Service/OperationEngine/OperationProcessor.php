@@ -26,6 +26,9 @@ abstract class OperationProcessor implements OperationInterface
     protected WorldRegionUnitRepository $worldRegionUnitRepository;
     protected WorldRegionRepository $worldRegionRepository;
     protected ConstructionRepository $constructionRepository;
+    /**
+     * @var array <int, string>
+     */
     protected array $operationLog = [];
 
     /**
@@ -106,6 +109,9 @@ abstract class OperationProcessor implements OperationInterface
         );
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function execute(): array
     {
         $this->addToOperationLog("Launching operation {$this->operation->getName()}!");
@@ -166,6 +172,9 @@ abstract class OperationProcessor implements OperationInterface
         return false;
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getOperationLog(): array
     {
         return $this->operationLog;

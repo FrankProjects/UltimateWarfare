@@ -146,7 +146,7 @@ final class MessageController extends BaseGameController
         return $this->redirectToRoute('Game/Message/Outbox');
     }
 
-    public function newMessage(Request $request, $playerName = ''): Response
+    public function newMessage(Request $request, string $playerName = ''): Response
     {
         $player = $this->getPlayer();
 
@@ -183,6 +183,9 @@ final class MessageController extends BaseGameController
         );
     }
 
+    /**
+     * @return array<int>
+     */
     private function getSelectedMessagesFromRequest(Request $request): array
     {
         $selectedMessages = [];

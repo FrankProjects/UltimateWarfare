@@ -27,12 +27,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     /** Random string sent to the user email address in order to verify it */
     private ?string $confirmationToken = null;
     private ?DateTime $passwordRequestedAt = null;
+
+    /**
+     * @var array<int, string>
+     */
     private array $roles;
     private DateTime $signup;
     private bool $active = true;
     private bool $adviser = false;
 
-    /** @var Collection<Player> */
+    /** @var Collection<int, Player> */
     private Collection $players;
 
     public function __construct()
@@ -52,6 +56,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         return array_unique($roles);
     }
 
+    /**
+     * @param array<int, string> $roles
+     */
     public function setRoles(array $roles): void
     {
         $this->roles = $roles;
@@ -234,11 +241,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         return $this->adviser;
     }
 
+    /**
+     * @return Collection<int, Player>
+     */
     public function getPlayers(): Collection
     {
         return $this->players;
     }
 
+    /**
+     * @param Collection<int, Player> $players
+     */
     public function setPlayers(Collection $players): void
     {
         $this->players = $players;
@@ -260,6 +273,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         ];
     }
 
+    /**
+     * @param array<string|int|bool> $data
+     */
     public function __unserialize(array $data): void
     {
         $this->id = $data['id'];

@@ -8,8 +8,14 @@ use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 
 class PerlinNoiseGenerator implements Generator
 {
+    /**
+     * @var array <int, array<int, float>>
+     */
     private array $world;
 
+    /**
+     * @return array <int, array<int, float>>
+     */
     public function generate(MapConfiguration $mapConfiguration): array
     {
         $this->initWorld($mapConfiguration);

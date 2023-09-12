@@ -11,6 +11,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class LocaleSubscriber implements EventSubscriberInterface
 {
     private string $defaultLocale;
+    /**
+     * @var array<int, string>
+     */
     private array $validLocales = [
         'en',
         'nl'

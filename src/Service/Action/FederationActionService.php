@@ -55,6 +55,9 @@ final class FederationActionService
         $this->playerRepository->save($player);
     }
 
+    /**
+     * @param array<string, string> $resources
+     */
     public function sendAid(Player $player, int $playerId, array $resources): void
     {
         $this->ensureFederationEnabled($player);

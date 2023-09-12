@@ -63,6 +63,9 @@ final class MailService
         $this->sendMail($message, $user->getEmail(), 'password reset');
     }
 
+    /**
+     * @param array<string, string> $parameters
+     */
     private function generateMailBody(string $templateName, array $parameters): string
     {
         try {

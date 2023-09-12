@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\BattleEngine;
 
 use FrankProjects\UltimateWarfare\Entity\Fleet;
+use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
@@ -34,7 +35,7 @@ final class BattleUpdaterService
      * XXX TODO: Set player notifications
      *
      * @param Fleet $fleet
-     * @param array $attackerGameUnits
+     * @param array<int, FleetUnit> $attackerGameUnits
      */
     public function updateBattleWon(Fleet $fleet, array $attackerGameUnits): void
     {
@@ -62,8 +63,8 @@ final class BattleUpdaterService
      * XXX TODO: Set player notifications
      *
      * @param Fleet $fleet
-     * @param array $attackerGameUnits
-     * @param array $defenderGameUnits
+     * @param array<int, FleetUnit> $attackerGameUnits
+     * @param array<int, WorldRegionUnit> $defenderGameUnits
      */
     public function updateBattleLost(Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
     {

@@ -12,6 +12,10 @@ use FrankProjects\UltimateWarfare\Repository\ContactRepository;
 final class DoctrineContactRepository implements ContactRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Contact>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

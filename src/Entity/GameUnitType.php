@@ -19,7 +19,7 @@ class GameUnitType
     private string $name;
     private string $imageDir;
 
-    /** @var Collection<GameUnit> */
+    /** @var Collection<int, GameUnit> */
     private Collection $gameUnits;
 
     public function __construct()
@@ -57,11 +57,17 @@ class GameUnitType
         return $this->imageDir;
     }
 
+    /**
+     * @return Collection<int, GameUnit>
+     */
     public function getGameUnits(): Collection
     {
         return $this->gameUnits;
     }
 
+    /**
+     * @param Collection<int, GameUnit> $gameUnits
+     */
     public function setGameUnits(Collection $gameUnits): void
     {
         $this->gameUnits = $gameUnits;

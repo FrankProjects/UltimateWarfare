@@ -40,6 +40,10 @@ abstract class AbstractImageBuilder
         return $color;
     }
 
+
+    /**
+     * @return array<string, array<string, int>>
+     */
     protected function getTypeImageColors(): array
     {
         return [

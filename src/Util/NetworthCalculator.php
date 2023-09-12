@@ -33,10 +33,10 @@ final class NetworthCalculator
     private function getNetworthFromWorldRegionUnits(Player $player): int
     {
         $networth = 0;
-
         foreach ($this->worldRegionUnitRepository->findAmountAndNetworthByPlayer($player) as $data) {
             $networth += $data['networth'] * $data['amount'];
         }
+
 
         return $networth;
     }

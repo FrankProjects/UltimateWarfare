@@ -28,14 +28,14 @@ class ReCaptchaValidationListener implements EventSubscriberInterface
         ];
     }
 
-    public function setInvalidMessage($message)
+    public function setInvalidMessage(string $message): self
     {
         $this->invalidMessage = $message;
 
         return $this;
     }
 
-    public function onPostSubmit(FormEvent $event)
+    public function onPostSubmit(FormEvent $event): void
     {
         $request = Request::createFromGlobals();
 
