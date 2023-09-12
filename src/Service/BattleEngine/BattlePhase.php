@@ -10,9 +10,6 @@ use FrankProjects\UltimateWarfare\Entity\GameUnit\BattleStats\AbstractBattleStat
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use RuntimeException;
 
-/**
- * @property array $attackerGameUnits
- */
 abstract class BattlePhase implements IBattlePhase
 {
     public const AIR_PHASE = 'air';
@@ -21,6 +18,9 @@ abstract class BattlePhase implements IBattlePhase
 
     protected string $name;
 
+    /**
+     * @var FleetUnit[]
+     */
     protected array $attackerGameUnits;
 
     /**
@@ -67,6 +67,9 @@ abstract class BattlePhase implements IBattlePhase
         return $this->name;
     }
 
+    /**
+     * @return FleetUnit[]
+     */
     public function getAttackerGameUnits(): array
     {
         return $this->attackerGameUnits;
@@ -157,14 +160,14 @@ abstract class BattlePhase implements IBattlePhase
         return intval($power / $health);
     }
 
-    private function getBattlePhaseBattleStats(WorldRegionUnit $gameUnit): AbstractBattleStats
+    private function getBattlePhaseBattleStats(GameUnit $gameUnit): AbstractBattleStats
     {
         if ($this->name === BattlePhase::AIR_PHASE) {
-            return $gameUnit->getGameUnit()->getBattleStats()->getAirBattleStats();
+            return $gameUnit->getBattleStats()->getAirBattleStats();
         } elseif ($this->name === BattlePhase::SEA_PHASE) {
-            return $gameUnit->getGameUnit()->getBattleStats()->getSeaBattleStats();
+            return $gameUnit->getBattleStats()->getSeaBattleStats();
         } elseif ($this->name === BattlePhase::GROUND_PHASE) {
-            return $gameUnit->getGameUnit()->getBattleStats()->getGroundBattleStats();
+            return $gameUnit->getBattleStats()->getGroundBattleStats();
         }
 
         throw new RunTimeException("Invalid BattleStats for {$this->name}");
@@ -174,7 +177,7 @@ abstract class BattlePhase implements IBattlePhase
     {
         $power = 0;
         foreach ($this->getAttackerGameUnits() as $gameUnit) {
-            $power += $this->getBattlePhaseBattleStats($gameUnit)->getAttack() * $gameUnit->getAmount();
+            $power += $this->getBattlePhaseBattleStats($gameUnit->getGameUnit())->getAttack() * $gameUnit->getAmount();
         }
 
         return $power;
@@ -184,7 +187,7 @@ abstract class BattlePhase implements IBattlePhase
     {
         $power = 0;
         foreach ($this->getDefenderGameUnits() as $gameUnit) {
-            $power += $this->getBattlePhaseBattleStats($gameUnit)->getDefence() * $gameUnit->getAmount();
+            $power += $this->getBattlePhaseBattleStats($gameUnit->getGameUnit())->getDefence() * $gameUnit->getAmount();
         }
 
         return $power;
