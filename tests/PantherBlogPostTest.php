@@ -11,6 +11,6 @@ class PantherBlogPostTest extends PantherTestCase
         $client = static::createPantherClient();
         $crawler = $client->request('GET', '/');
 
-        $this->assertSelectorTextContains('td', 'Welcome to Ultimate Warfare');
+        $this->assertSelectorTextContains('h1', 'Welcome to Ultimate Warfare');
     }
 }
