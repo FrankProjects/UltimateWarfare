@@ -55,7 +55,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## Links
 
-- [Old game](https://ultimate-warfare.com)
+- [Live Game](https://ultimate-warfare.com)
 - [Issue tracker](https://github.com/FrankProjects/UltimateWarfare/issues)
 
 
