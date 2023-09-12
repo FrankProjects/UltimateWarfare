@@ -9,7 +9,6 @@ use FrankProjects\UltimateWarfare\Exception\GameUnitTypeNotFoundException;
 
 interface GameUnitTypeRepository
 {
-
     /**
      * @throws GameUnitTypeNotFoundException
      */

@@ -32,7 +32,7 @@ final class DoctrineGameUnitTypeRepository implements GameUnitTypeRepository
     {
         $gameUnitType = $this->repository->find($id);
         if ($gameUnitType === null) {
-            throw new GameUnitTypeNotFoundException;
+            throw new GameUnitTypeNotFoundException();
         }
         return $gameUnitType;
     }
