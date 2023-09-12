@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Exception\GameUnitTypeNotFoundException;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -85,12 +87,11 @@ final class FleetController extends BaseGameController
 
         try {
             $worldRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($regionId, $player);
-        } catch (WorldRegionNotFoundException $e) {
+            $gameUnitType = $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_UNITS);
+        } catch (WorldRegionNotFoundException|GameUnitTypeNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }
-
-        $gameUnitType = $this->gameUnitTypeRepository->find(4);
 
         if ($request->isMethod(Request::METHOD_POST)) {
             $targetRegionId = intval($request->request->get('target', 0));

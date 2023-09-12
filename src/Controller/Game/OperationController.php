@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\GameUnitType;
+use FrankProjects\UltimateWarfare\Exception\GameUnitTypeNotFoundException;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\OperationRepository;
@@ -121,7 +123,8 @@ final class OperationController extends BaseGameController
 
         try {
             $worldRegion = $this->regionActionService->getWorldRegionByIdAndWorld($regionId, $player->getWorld());
-        } catch (WorldRegionNotFoundException $e) {
+            $gameUnitType = $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_UNITS);
+        } catch (WorldRegionNotFoundException|GameUnitTypeNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }
@@ -135,8 +138,6 @@ final class OperationController extends BaseGameController
             $this->addFlash('error', "Can not attack your own region!");
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
-
-        $gameUnitType = $this->gameUnitTypeRepository->find(4);
 
         $operations = $this->operationRepository->findAvailableForPlayer($player);
 
