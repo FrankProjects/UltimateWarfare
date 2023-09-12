@@ -71,6 +71,15 @@ final class FederationController extends BaseGameController
     public function federationNews(): Response
     {
         $player = $this->getPlayer();
+        if ($player->getFederation() == null) {
+            return $this->render(
+                'game/federation/noFederation.html.twig',
+                [
+                    'player' => $this->getPlayer()
+                ]
+            );
+        }
+
         $federationNews = $this->federationNewsRepository->findByFederationSortedByTimestamp($player->getFederation());
 
         return $this->render(
@@ -84,11 +93,7 @@ final class FederationController extends BaseGameController
 
     public function createFederation(Request $request): Response
     {
-        $federationName = $request->get('name');
-
-        if ($federationName !== null) {
-            $federationName = trim($federationName);
-        }
+        $federationName = trim((string) $request->get('name'));
 
         try {
             if ($request->isMethod(Request::METHOD_POST)) {

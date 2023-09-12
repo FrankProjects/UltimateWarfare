@@ -39,7 +39,7 @@ final class RegionActionService
     }
 
     /**
-     * @return array<int, array<string, int|string>>
+     * @return array<int<0, max>, array<string, WorldRegion|string>>
      */
     public function getAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
     {
@@ -70,7 +70,7 @@ final class RegionActionService
     }
 
     /**
-     * @return array<int, array<string, int|string>>
+     * @return array<int<0, max>, array<string, WorldRegion|int>>
      */
     public function getOperationAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
     {

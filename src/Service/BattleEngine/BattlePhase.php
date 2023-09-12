@@ -59,7 +59,7 @@ abstract class BattlePhase implements IBattlePhase
         array $defenderGameUnits
     ): BattlePhase {
         $className = "FrankProjects\\UltimateWarfare\\Service\\BattleEngine\\BattlePhase\\" . ucfirst($battlePhaseName);
-        if (!class_exists($className)) {
+        if (!class_exists($className) || is_subclass_of($className, __CLASS__) === false) {
             throw new RunTimeException("Unknown BattlePhase {$battlePhaseName}");
         }
 
@@ -127,10 +127,9 @@ abstract class BattlePhase implements IBattlePhase
     }
 
     /**
-     * @param int $power
      * @param FleetUnit[]|WorldRegionUnit[] $gameUnits
-     * @param string $action
-     * @return FleetUnit[]|WorldRegionUnit[]
+     *
+     * @return ($action is 'defending' ? WorldRegionUnit[] : FleetUnit[])
      */
     private function processBattlePhase(int $power, array $gameUnits, string $action): array
     {

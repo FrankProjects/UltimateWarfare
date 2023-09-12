@@ -9,7 +9,7 @@ use Exception;
 final class TokenGenerator
 {
     /**
-     * @param int $length
+     * @param int<1, max> $length
      * @return string
      * @throws Exception
      */

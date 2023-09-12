@@ -30,7 +30,7 @@ interface WorldRegionRepository
     public function findByWorldXY(World $world, int $x, int $y): ?WorldRegion;
 
     /**
-     * @return array<int, int>
+     * @return array<int|string, mixed>
      */
     public function getWorldGameUnitSumByWorldRegion(WorldRegion $worldRegion): array;
 

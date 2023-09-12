@@ -278,11 +278,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
      */
     public function __unserialize(array $data): void
     {
-        $this->id = $data['id'];
-        $this->username = $data['username'];
-        $this->enabled = $data['enabled'];
-        $this->email = $data['email'];
-        $this->password = $data['password'];
+        $this->id = (int) $data['id'];
+        $this->username = (string) $data['username'];
+        $this->enabled = (bool) $data['enabled'];
+        $this->email = (string) $data['email'];
+        $this->password = (string) $data['password'];
     }
 
     /**

@@ -20,7 +20,7 @@ interface WorldRegionUnitRepository
     /**
      * @param Player $player
      * @param GameUnitType[] $gameUnitTypes
-     * @return array<int, int>
+     * @return array<int|string, mixed>
      */
     public function getGameUnitSumByPlayerAndGameUnitTypes(Player $player, array $gameUnitTypes): array;
 

@@ -50,7 +50,7 @@ final class UserController extends BaseGameController
         }
 
         if ($request->isMethod(Request::METHOD_POST)) {
-            $unbanReason = trim($request->request->get('post'));
+            $unbanReason = trim((string) $request->request->get('post'));
 
             $unbanRequest->setPost($unbanReason);
             $unbanRequest->setUser($user);

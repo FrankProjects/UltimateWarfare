@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
+use FrankProjects\UltimateWarfare\Exception\GameUnitTypeNotFoundException;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -98,7 +99,11 @@ final class RegionController extends BaseGameController
         $player = $this->getPlayer();
         $regions = $player->getWorldRegions();
         $regionList = [];
-        $gameUnitType = $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_BUILDINGS);
+        try {
+            $gameUnitType = $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_BUILDINGS);
+        } catch (GameUnitTypeNotFoundException) {
+            return $this->redirectToRoute('Game/Region', [], 302);
+        }
 
         foreach ($regions as $region) {
             $buildingsInConstruction = $this->constructionActionService->getCountGameUnitsInConstruction(

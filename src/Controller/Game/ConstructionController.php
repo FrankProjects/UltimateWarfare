@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
+use FrankProjects\UltimateWarfare\Exception\GameUnitTypeNotFoundException;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
@@ -40,10 +41,10 @@ final class ConstructionController extends BaseGameController
 
     public function construction(int $type): Response
     {
-        $gameUnitType = $this->gameUnitTypeRepository->find($type);
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
-
-        if ($gameUnitType === null) {
+        try {
+            $gameUnitType = $this->gameUnitTypeRepository->find($type);
+        } catch (GameUnitTypeNotFoundException $e) {
             $constructionData = $this->constructionRepository->getGameUnitConstructionSumByPlayer($this->getPlayer());
             return $this->render(
                 'game/constructionSummary.html.twig',
@@ -81,9 +82,9 @@ final class ConstructionController extends BaseGameController
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }
 
-        $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
-
-        if ($gameUnitType === null) {
+        try {
+            $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
+        } catch (GameUnitTypeNotFoundException $e) {
             $this->addFlash('error', 'Unknown GameUnitType!');
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
@@ -139,8 +140,9 @@ final class ConstructionController extends BaseGameController
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }
 
-        $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
-        if ($gameUnitType === null) {
+        try {
+            $gameUnitType = $this->gameUnitTypeRepository->find($gameUnitTypeId);
+        } catch (GameUnitTypeNotFoundException) {
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 

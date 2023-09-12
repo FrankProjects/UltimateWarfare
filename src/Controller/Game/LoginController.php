@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use RuntimeException;
@@ -24,13 +25,12 @@ final class LoginController extends BaseGameController
 
         $players = $user->getPlayers();
 
-        if (count($players) == 0) {
+        if ($players->count() === 0 || ($players->first() instanceof Player) === false) {
             return $this->redirectToRoute('Game/Story/Chapter1', ['page' => 1]);
-        } else {
-            $player = $players->first();
-            $requestStack->getSession()->set('playerId', $player->getId());
-            return $this->redirectToRoute('Game/Headquarter');
         }
+        $player = $players->first();
+        $requestStack->getSession()->set('playerId', $player->getId());
+        return $this->redirectToRoute('Game/Headquarter');
     }
 
     public function loginForPlayer(RequestStack $requestStack, int $playerId, PlayerRepository $playerRepository): RedirectResponse

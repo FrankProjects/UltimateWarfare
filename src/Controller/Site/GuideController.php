@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
+use FrankProjects\UltimateWarfare\Exception\GameUnitTypeNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
 use FrankProjects\UltimateWarfare\Repository\OperationRepository;
@@ -86,9 +87,9 @@ final class GuideController extends BaseController
 
     public function listUnits(int $gameUnitTypeId, GameUnitTypeRepository $gameUnitTypeRepository): Response
     {
-        $gameUnitType = $gameUnitTypeRepository->find($gameUnitTypeId);
-
-        if ($gameUnitType === null) {
+        try {
+            $gameUnitType = $gameUnitTypeRepository->find($gameUnitTypeId);
+        } catch (GameUnitTypeNotFoundException) {
             $gameUnitTypes = $gameUnitTypeRepository->findAll();
 
             return $this->render(

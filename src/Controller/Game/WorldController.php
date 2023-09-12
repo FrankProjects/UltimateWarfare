@@ -78,7 +78,7 @@ final class WorldController extends BaseGameController
 
     public function start(Request $request, int $worldId): Response
     {
-        $name = $request->request->get('name', null);
+        $name = (string) $request->request->get('name');
 
         $user = $this->getGameUser();
         $world = $this->worldRepository->find($worldId);
@@ -152,7 +152,7 @@ final class WorldController extends BaseGameController
 
     public function searchPlayer(Request $request): Response
     {
-        $playerName = $request->request->get('playerName');
+        $playerName = (string) $request->request->get('playerName');
         $player = $this->getPlayer();
         $world = $player->getWorld();
 
