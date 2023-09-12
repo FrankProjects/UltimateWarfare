@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\UserRepository;
 final class DoctrineUserRepository implements UserRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <User>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

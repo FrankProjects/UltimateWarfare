@@ -17,7 +17,7 @@ class Fleet
     private WorldRegion $worldRegion;
     private WorldRegion $targetWorldRegion;
 
-    /** @var Collection<FleetUnit> */
+    /** @var Collection<int, FleetUnit> */
     private Collection $fleetUnits;
 
     public function __construct()
@@ -86,7 +86,7 @@ class Fleet
     }
 
     /**
-     * @return Collection|FleetUnit[]
+     * @return Collection<int, FleetUnit>
      */
     public function getFleetUnits(): Collection
     {

@@ -12,6 +12,10 @@ use FrankProjects\UltimateWarfare\Repository\GameNewsRepository;
 final class DoctrineGameNewsRepository implements GameNewsRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <GameNews>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

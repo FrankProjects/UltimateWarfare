@@ -17,16 +17,16 @@ class Research
     private string $description;
     private bool $active = false;
 
-    /** @var Collection<ResearchPlayer> */
+    /** @var Collection<int, ResearchPlayer> */
     private Collection $researchPlayers;
 
-    /** @var Collection<ResearchNeeds> */
+    /** @var Collection<int, ResearchNeeds> */
     private Collection $researchNeeds;
 
-    /** @var Collection<ResearchNeeds> */
+    /** @var Collection<int, ResearchNeeds> */
     private Collection $requiredResearch;
 
-    /** @var Collection<Operation> */
+    /** @var Collection<int, Operation> */
     private Collection $operations;
 
     public function __construct()
@@ -107,41 +107,65 @@ class Research
         return $this->active;
     }
 
+    /**
+     * @return Collection<int, ResearchNeeds>
+     */
     public function getResearchNeeds(): Collection
     {
         return $this->researchNeeds;
     }
 
+    /**
+     * @param Collection<int, ResearchNeeds> $researchNeeds
+     */
     public function setResearchNeeds(Collection $researchNeeds): void
     {
         $this->researchNeeds = $researchNeeds;
     }
 
+    /**
+     * @return Collection<int, ResearchNeeds>
+     */
     public function getRequiredResearch(): Collection
     {
         return $this->requiredResearch;
     }
 
+    /**
+     * @param Collection<int, ResearchNeeds> $requiredResearch
+     */
     public function setRequiredResearch(Collection $requiredResearch): void
     {
         $this->requiredResearch = $requiredResearch;
     }
 
+    /**
+     * @return Collection<int, ResearchPlayer>
+     */
     public function getResearchPlayers(): Collection
     {
         return $this->researchPlayers;
     }
 
+    /**
+     * @param Collection<int, ResearchPlayer> $researchPlayers
+     */
     public function setResearchPlayers(Collection $researchPlayers): void
     {
         $this->researchPlayers = $researchPlayers;
     }
 
+    /**
+     * @return Collection<int, Operation>
+     */
     public function getOperations(): Collection
     {
         return $this->operations;
     }
 
+    /**
+     * @param Collection<int, Operation> $operations
+     */
     public function setOperations(Collection $operations): void
     {
         $this->operations = $operations;

@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 final class DoctrineReportRepository implements ReportRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Report>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

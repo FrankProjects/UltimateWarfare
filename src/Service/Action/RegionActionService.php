@@ -38,6 +38,9 @@ final class RegionActionService
         $this->timeCalculator = $timeCalculator;
     }
 
+    /**
+     * @return array<int, array<string, int|string>>
+     */
     public function getAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
     {
         if ($worldRegion->getPlayer() === null) {
@@ -66,6 +69,9 @@ final class RegionActionService
         return $playerRegions;
     }
 
+    /**
+     * @return array<int, array<string, int|string>>
+     */
     public function getOperationAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
     {
         if ($worldRegion->getPlayer() === null) {

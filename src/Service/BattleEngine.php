@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service;
 
 use FrankProjects\UltimateWarfare\Entity\Fleet;
+use FrankProjects\UltimateWarfare\Entity\FleetUnit;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattlePhase;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleReportCreator;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleResult;
@@ -63,6 +65,9 @@ final class BattleEngine
         return $battleResults;
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getBattlePhases(): array
     {
         return [
@@ -96,6 +101,10 @@ final class BattleEngine
         }
     }
 
+    /**
+     * @param array<int, FleetUnit> $attackerGameUnits
+     * @param array<int, WorldRegionUnit> $defenderGameUnits
+     */
     private function processResults(
         BattleResult $battleResults,
         Fleet $fleet,

@@ -16,7 +16,7 @@ class WorldSector
     private World $world;
     private int $regionCount;
 
-    /** @var Collection<WorldRegion> */
+    /** @var Collection<int, WorldRegion> */
     private Collection $worldRegions;
 
     public function __construct()
@@ -74,11 +74,17 @@ class WorldSector
         $this->world = $world;
     }
 
+    /**
+     * @return Collection<int, WorldRegion>
+     */
     public function getWorldRegions(): Collection
     {
         return $this->worldRegions;
     }
 
+    /**
+     * @param Collection<int, WorldRegion> $worldRegions
+     */
     public function setWorldRegions(Collection $worldRegions): void
     {
         $this->worldRegions = $worldRegions;

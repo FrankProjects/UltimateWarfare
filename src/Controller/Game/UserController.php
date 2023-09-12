@@ -125,7 +125,7 @@ final class UserController extends BaseGameController
         return 'Guest';
     }
 
-    private function changeSettings(Request $request)
+    private function changeSettings(Request $request): void
     {
         $user = $this->getGameUser();
 

@@ -28,6 +28,9 @@ final class FederationBankActionService
         $this->playerRepository = $playerRepository;
     }
 
+    /**
+     * @param array<string, string> $resources
+     */
     public function deposit(Player $player, array $resources): void
     {
         $this->ensureFederationEnabled($player);
@@ -68,6 +71,9 @@ final class FederationBankActionService
         }
     }
 
+    /**
+     * @param array<string, string> $resources
+     */
     public function withdraw(Player $player, array $resources): void
     {
         $this->ensureFederationEnabled($player);

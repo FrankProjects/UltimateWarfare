@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <UnbanRequest>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

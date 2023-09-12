@@ -62,6 +62,9 @@ final class FleetActionService
         return true;
     }
 
+    /**
+     * @param array<int, string> $unitData
+     */
     public function sendGameUnits(
         WorldRegion $region,
         WorldRegion $targetRegion,

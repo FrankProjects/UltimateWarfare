@@ -15,6 +15,10 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 final class DoctrineWorldRegionRepository implements WorldRegionRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <WorldRegion>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -55,7 +59,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
 
     /**
      * @param WorldRegion $worldRegion
-     * @return array
+     * @return array<int, int>
      */
     public function getWorldGameUnitSumByWorldRegion(WorldRegion $worldRegion): array
     {

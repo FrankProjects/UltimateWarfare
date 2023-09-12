@@ -42,6 +42,9 @@ final class OperationService
         $this->constructionRepository = $constructionRepository;
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function executeOperation(
         WorldRegion $region,
         Operation $operation,

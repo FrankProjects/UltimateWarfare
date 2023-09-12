@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 final class DoctrineMarketItemRepository implements MarketItemRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <MarketItem>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

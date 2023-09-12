@@ -67,7 +67,7 @@ class BattleDetails
         return $this->battleLog;
     }
 
-    public function setType(bool $type)
+    public function setType(bool $type): void
     {
         $this->type = $type;
     }

@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\WorldSectorRepository;
 final class DoctrineWorldSectorRepository implements WorldSectorRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <WorldSector>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\MessageRepository;
 final class DoctrineMessageRepository implements MessageRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Message>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

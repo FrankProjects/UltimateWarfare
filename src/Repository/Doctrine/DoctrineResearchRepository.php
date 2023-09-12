@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
 final class DoctrineResearchRepository implements ResearchRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Research>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

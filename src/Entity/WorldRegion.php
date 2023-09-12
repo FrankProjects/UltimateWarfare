@@ -29,22 +29,22 @@ class WorldRegion
     private ?Player $player;
 
     /**
-     * @var Collection<WorldRegionUnit>
+     * @var Collection<int, WorldRegionUnit>
      */
     private Collection $worldRegionUnits;
 
     /**
-     * @var Collection<Construction>
+     * @var Collection<int, Construction>
      */
     private Collection $constructions;
 
     /**
-     * @var Collection<Fleet>
+     * @var Collection<int, Fleet>
      */
     private Collection $fleets;
 
     /**
-     * @var Collection<Fleet>
+     * @var Collection<int, Fleet>
      */
     private Collection $targetFleets;
 
@@ -101,6 +101,9 @@ class WorldRegion
         return in_array($type, self::getAllTypes(), true);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public static function getAllTypes(): array
     {
         return [
@@ -166,13 +169,16 @@ class WorldRegion
     }
 
     /**
-     * @return Collection<WorldRegionUnit>
+     * @return Collection<int, WorldRegionUnit>
      */
     public function getWorldRegionUnits(): Collection
     {
         return $this->worldRegionUnits;
     }
 
+    /**
+     * @param Collection<int, WorldRegionUnit> $worldRegionUnits
+     */
     public function setWorldRegionUnits(Collection $worldRegionUnits): void
     {
         $this->worldRegionUnits = $worldRegionUnits;
@@ -198,11 +204,17 @@ class WorldRegion
         $this->player = $player;
     }
 
+    /**
+     * @return Collection<int, Fleet>
+     */
     public function getFleets(): Collection
     {
         return $this->fleets;
     }
 
+    /**
+     * @param Collection<int, Fleet> $fleets
+     */
     public function setFleets(Collection $fleets): void
     {
         $this->fleets = $fleets;
@@ -218,11 +230,17 @@ class WorldRegion
         $this->worldSector = $worldSector;
     }
 
+    /**
+     * @return Collection<int, Fleet>
+     */
     public function getTargetFleets(): Collection
     {
         return $this->targetFleets;
     }
 
+    /**
+     * @return Collection<int, Construction>
+     */
     public function getConstructions(): Collection
     {
         return $this->constructions;

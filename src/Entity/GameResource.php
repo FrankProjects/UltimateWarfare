@@ -16,6 +16,9 @@ class GameResource
         return in_array($gameResource, self::getAll(), true);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public static function getAll(): array
     {
         return [

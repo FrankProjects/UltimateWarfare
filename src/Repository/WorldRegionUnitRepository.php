@@ -12,12 +12,15 @@ interface WorldRegionUnitRepository
 {
     public function find(int $id): ?WorldRegionUnit;
 
+    /**
+     * @return array<int, array<string, int>>
+     */
     public function findAmountAndNetworthByPlayer(Player $player): array;
 
     /**
      * @param Player $player
      * @param GameUnitType[] $gameUnitTypes
-     * @return array
+     * @return array<int, int>
      */
     public function getGameUnitSumByPlayerAndGameUnitTypes(Player $player, array $gameUnitTypes): array;
 

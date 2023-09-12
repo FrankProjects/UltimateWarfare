@@ -12,6 +12,10 @@ use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 final class DoctrineWorldRepository implements WorldRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <World>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)
