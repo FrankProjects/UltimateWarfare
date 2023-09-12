@@ -124,7 +124,7 @@ final class OperationController extends BaseGameController
         try {
             $worldRegion = $this->regionActionService->getWorldRegionByIdAndWorld($regionId, $player->getWorld());
             $gameUnitType = $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_UNITS);
-        } catch (WorldRegionNotFoundException|GameUnitTypeNotFoundException $e) {
+        } catch (WorldRegionNotFoundException | GameUnitTypeNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }

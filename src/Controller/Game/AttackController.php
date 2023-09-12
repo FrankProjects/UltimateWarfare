@@ -84,7 +84,7 @@ final class AttackController extends BaseGameController
         try {
             $playerRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($playerRegionId, $player);
             $gameUnitType = $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_UNITS);
-        } catch (WorldRegionNotFoundException|GameUnitTypeNotFoundException $e) {
+        } catch (WorldRegionNotFoundException | GameUnitTypeNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }
