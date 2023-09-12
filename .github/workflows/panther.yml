@@ -1,0 +1,17 @@
+name: Run Panther tests
+
+on: [ push, pull_request ]
+
+jobs:
+  tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Run test suite
+        run: bin/phpunit
