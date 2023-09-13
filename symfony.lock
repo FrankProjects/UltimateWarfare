@@ -241,15 +241,6 @@
             "config/packages/mailer.yaml"
         ]
     },
-    "symfony/maker-bundle": {
-        "version": "1.50",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "1.0",
-            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
-        }
-    },
     "symfony/mime": {
         "version": "v5.3.11"
     },
@@ -273,15 +264,6 @@
     },
     "symfony/options-resolver": {
         "version": "v5.1.5"
-    },
-    "symfony/panther": {
-        "version": "2.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "1.0",
-            "ref": "292a3236e81f55b545b09b9954ab097248972ab3"
-        }
     },
     "symfony/password-hasher": {
         "version": "v5.3.0"
