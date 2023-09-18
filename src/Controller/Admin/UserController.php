@@ -79,6 +79,16 @@ final class UserController extends AbstractController
         );
     }
 
+    public function disabledOrBanned(): Response
+    {
+        return $this->render(
+            'admin/user/disabledOrBanned.html.twig',
+            [
+                'users' => $this->userRepository->findAllDisabledOrBanned()
+            ]
+        );
+    }
+
     public function makeAdmin(int $userId): RedirectResponse
     {
         try {

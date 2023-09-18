@@ -90,6 +90,10 @@ Admin/User/List:
     path:      /admin/user/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::list
 
+Admin/User/DisabledOrBanned:
+    path:      /admin/user/disabledOrBanned
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::disabledOrBanned
+
 Admin/User/MakeAdmin:
     path:      /admin/user/make-admin/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::makeAdmin
