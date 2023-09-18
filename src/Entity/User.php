@@ -20,6 +20,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     private ?int $id;
     private string $username = '';
     private string $email = '';
+    private string $avatar = '';
     private bool $enabled = false;
     private string $password = '';
     private string $plainPassword = '';
@@ -174,6 +175,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    public function getAvatar(): string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(string $avatar): void
+    {
+        $this->avatar = $avatar;
     }
 
     public function getLastLogin(): ?DateTime

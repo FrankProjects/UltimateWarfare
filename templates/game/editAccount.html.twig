@@ -53,8 +53,16 @@
             <td colspan="2"><b>Avatar Upload </b></td>
         </tr>
         <tr>
-            <td colspan="2">
-                Not implemented yet!
+            {% if user.avatar != '' %}
+                <td colspan="1">
+                    <img src="{{ asset('uploads/avatars/' ~ user.avatar) }}"/>
+                </td>
+            {% endif %}
+            <td colspan="{{ user.avatar != '' ? '1' : '2' }}">
+                {{ form_start(uploadAvatar) }}
+                {{ form_errors(uploadAvatar) }}
+                {{ form_row(uploadAvatar.avatar) }}
+                {{ form_end(uploadAvatar) }}
             </td>
         </tr>
         <tr class="tabletop">

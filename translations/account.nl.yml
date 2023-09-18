@@ -3,4 +3,5 @@ label:
   password: Wachtwoord
   password_repeat: Wachtwoord herhalen
   change_password: Wachtwoord aanpassen
-
+  avatar: Avatar
+  upload: Upload

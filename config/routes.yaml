@@ -90,10 +90,6 @@ Admin/User/List:
     path:      /admin/user/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::list
 
-Admin/User/DisabledOrBanned:
-    path:      /admin/user/disabledOrBanned
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::disabledOrBanned
-
 Admin/User/MakeAdmin:
     path:      /admin/user/make-admin/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::makeAdmin
@@ -161,6 +157,10 @@ Game/Account:
 Game/Account/Edit:
     path:      /game/account/edit
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::edit
+
+Game/Account/UploadAvatar:
+    path:      /game/account/upload_avatar
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::uploadAvatar
 
 Game/Banned:
     path:      /game/banned
