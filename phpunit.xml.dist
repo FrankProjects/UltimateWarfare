@@ -34,6 +34,8 @@
     </listeners>
 
     <!-- Run `composer require symfony/panther` before enabling this extension -->
+    <!--
     <extensions>
     </extensions>
+    -->
 </phpunit>
