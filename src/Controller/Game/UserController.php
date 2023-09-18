@@ -150,7 +150,6 @@ final class UserController extends BaseGameController
                     $this->userRepository->save($user);
 
                     $this->addFlash('success', 'Avatar uploaded successfully!');
-
                 } catch (\Exception $e) {
                     $this->addFlash('error', 'Could not upload avatar');
                 }
