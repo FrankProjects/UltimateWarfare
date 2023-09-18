@@ -8,8 +8,17 @@
             <td colspan="2"><b>Player</b></td>
         </tr>
         <tr>
-            <td width="150">Name:</td>
-            <td width="350">{{ profilePlayer.name }}</td>
+            <td width="150" valign="middle">Name:</td>
+            <td width="350">
+                <table class="table text-center">
+                    <tr>
+                        <td style="border:0" valign="middle">{{ profilePlayer.name }}</td>
+                        {% if profilePlayer.getUser.avatar != '' %}
+                            <td style="border:0" align="right"><img src="{{ asset('uploads/avatars/' ~ profilePlayer.getUser.avatar) }}"/></td>
+                        {% endif %}
+                    </tr>
+                </table>
+            </td>
         </tr>
         <tr>
             <td width="150">Join date:</td>
