@@ -26,7 +26,7 @@ final class UnbanRequestController extends AbstractController
     public function list(): Response
     {
         return $this->render(
-            'admin/unbanrequest/list.html.twig',
+            'admin/unbanRequest/list.html.twig',
             [
                 'unbanRequests' => $this->unbanRequestRepository->findAll()
             ]
