@@ -72,17 +72,11 @@ final class UserController extends AbstractController
 
     public function list(Request $request): Response
     {
-        switch ($request->get('filter')) {
-            case 'banned':
-                $user = $this->userRepository->findAllBanned();
-                break;
-            case 'inactive':
-                $user = $this->userRepository->findAllDisabled();
-                break;
-            default:
-                $user = $this->userRepository->findAll();
-
-        }
+        $user = match ($request->get('filter')) {
+            'banned' => $this->userRepository->findAllBanned(),
+            'disabled' => $this->userRepository->findAllDisabled(),
+            default => $this->userRepository->findAll(),
+        };
 
         return $this->render(
             'admin/user/list.html.twig',
