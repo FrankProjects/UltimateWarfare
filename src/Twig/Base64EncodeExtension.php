@@ -20,7 +20,7 @@ class Base64EncodeExtension extends AbstractExtension
 
     public function base64Encode(mixed $string, string $modifier = ''): string
     {
-        $content = match($modifier) {
+        $content = match ($modifier) {
             self::GET_CONTENT_FROM_STREAM => stream_get_contents($string),
             default => (string) $string,
         };
