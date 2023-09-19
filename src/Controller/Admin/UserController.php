@@ -10,6 +10,7 @@ use FrankProjects\UltimateWarfare\Service\Action\UserActionService;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -69,12 +70,18 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
     }
 
-    public function list(): Response
+    public function list(Request $request): Response
     {
+        $user = match ($request->get('filter')) {
+            'banned' => $this->userRepository->findAllBanned(),
+            'disabled' => $this->userRepository->findAllDisabled(),
+            default => $this->userRepository->findAll(),
+        };
+
         return $this->render(
             'admin/user/list.html.twig',
             [
-                'users' => $this->userRepository->findAll()
+                'users' => $user
             ]
         );
     }

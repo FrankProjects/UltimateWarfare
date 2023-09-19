@@ -16,6 +16,16 @@ interface UserRepository
      */
     public function findAll(): array;
 
+    /**
+     * @return User[]
+     */
+    public function findAllDisabled(): array;
+
+    /**
+     * @return User[]
+     */
+    public function findAllBanned(): array;
+
     public function findByConfirmationToken(string $confirmationToken): ?User;
 
     public function findByEmail(string $email): ?User;
