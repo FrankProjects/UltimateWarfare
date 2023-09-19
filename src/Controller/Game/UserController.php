@@ -129,24 +129,16 @@ final class UserController extends BaseGameController
                         $uploadedFile
                     );
 
-                    $pngFileName = $user->getId() . '-' . uniqid('', true) . '.png';
-
                     $image = new \Imagick($this->getParameter('app.avatars_directory') . '/' . $uploadedFile);
                     $image->setImageFormat('png');
                     $image->setImageBackgroundColor('transparent');
                     $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE);
                     $image->cropThumbnailImage(200, 200);
                     $image->roundCornersImage(100, 100);
-                    $image->writeImage($this->getParameter('app.avatars_directory') . '/' . $pngFileName);
-
-                    // Delete existing avatar
-                    if ($user->getAvatar() != '' && file_exists($this->getParameter('app.avatars_directory') . '/' . $user->getAvatar())) {
-                        unlink($this->getParameter('app.avatars_directory') . '/' . $user->getAvatar());
-                    }
 
                     unlink($this->getParameter('app.avatars_directory') . '/' . $uploadedFile);
 
-                    $user->setAvatar($pngFileName);
+                    $user->setAvatar($image->getImageBlob());
                     $this->userRepository->save($user);
 
                     $this->addFlash('success', 'Avatar uploaded successfully!');
@@ -167,6 +159,16 @@ final class UserController extends BaseGameController
                 'uploadAvatar' => $form->createView()
             ]
         );
+    }
+
+    public function deleteAvatar(): Response
+    {
+        $user = $this->getGameUser();
+        $user->setAvatar('');
+        $this->userRepository->save($user);
+
+        $this->addFlash('success', 'Avatar successfully deleted!');
+        return $this->redirectToRoute('Game/Account/Edit');
     }
 
     private function getAccountType(): string

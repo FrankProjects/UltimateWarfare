@@ -6,7 +6,7 @@
     </id>
     <field name="username" column="username" length="180" unique="true"/>
     <field name="email" column="email" length="180" unique="true"/>
-    <field name="avatar" column="avatar" length="255" />
+    <field name="avatar" column="avatar" type="blob" />
     <field name="enabled" type="boolean" column="enabled">
       <options>
         <option name="default">0</option>
