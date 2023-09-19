@@ -38,6 +38,22 @@ final class DoctrineUserRepository implements UserRepository
         return $this->repository->findAll();
     }
 
+    /**
+     * @return User[]
+     */
+    public function findAllDisabled(): array
+    {
+        return $this->repository->findBy(['enabled' => 0]);
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAllBanned(): array
+    {
+        return $this->repository->findBy(['active' => 0]);
+    }
+
     public function findByConfirmationToken(string $confirmationToken): ?User
     {
         return $this->repository->findOneBy(['confirmationToken' => $confirmationToken]);
