@@ -3,6 +3,11 @@
 {% block title %}ADMIN - User list{% endblock title %}
 
 {% block content %}
+    <p class="text-center btn-group">
+        <a href="{{ path('Admin/User/List') }}" class="btn btn-primary {{ app.request.get('filter') == '' ? 'active' : '' }}">All</a>
+        <a href="{{ path('Admin/User/List', {'filter': 'inactive'}) }}" class="btn btn-primary {{ app.request.get('filter') == 'inactive' ? 'active' : '' }}">Inactive</a>
+        <a href="{{ path('Admin/User/List', {'filter': 'banned'}) }}" class="btn btn-primary {{ app.request.get('filter') == 'banned' ? 'active' : '' }}">Banned</a>
+    </p>
     <table class="table text-center">
         <tr class="tabletop">
             <td colspan="8"><b>User list</b></td>

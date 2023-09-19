@@ -87,12 +87,10 @@ Admin/User/Enable:
         userId: '\d+'
 
 Admin/User/List:
-    path:      /admin/user/list
+    path:      /admin/user/list/{filter}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::list
-
-Admin/User/DisabledOrBanned:
-    path:      /admin/user/disabledOrBanned
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::disabledOrBanned
+    defaults:
+        filter: ''
 
 Admin/User/MakeAdmin:
     path:      /admin/user/make-admin/{userId}

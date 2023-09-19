@@ -41,12 +41,17 @@ final class DoctrineUserRepository implements UserRepository
     /**
      * @return User[]
      */
-    public function findAllDisabledOrBanned(): array
+    public function findAllDisabled(): array
     {
-        return $this->repository->createQueryBuilder('u')
-            ->where('u.enabled = 0 OR u.active = 0')
-            ->getQuery()
-            ->getResult();
+        return $this->repository->findBy(['enabled' => 0]);
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAllBanned(): array
+    {
+        return $this->repository->findBy(['active' => 0]);
     }
 
     public function findByConfirmationToken(string $confirmationToken): ?User
