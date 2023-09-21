@@ -191,7 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     {
         $stats = fstat($this->avatar);
         if ($stats !== false) {
-            return $stats[7] > 0;
+            return $stats['size'] > 0;
         }
         return false;
     }

@@ -13,8 +13,10 @@
                 <table class="table text-center">
                     <tr>
                         <td style="border:0" valign="middle">{{ profilePlayer.name }}</td>
-                        {% if profilePlayer.getUser.avatar != '' %}
-                            <td style="border:0" align="right"><img src="{{ asset('uploads/avatars/' ~ profilePlayer.getUser.avatar) }}"/></td>
+                        {% if profilePlayer.getUser.hasAvatar %}
+                            <td style="border:0" align="right">
+                                <img alt="{{ profilePlayer.getUser.username }} Avatar" src="data:image/jpeg;base64,{{ profilePlayer.getUser.avatar|base64_encode(constant('FrankProjects\\UltimateWarfare\\Twig\\Base64EncodeExtension::GET_CONTENT_FROM_STREAM')) }}" />
+                            </td>
                         {% endif %}
                     </tr>
                 </table>
