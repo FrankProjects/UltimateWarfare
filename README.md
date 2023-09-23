@@ -39,15 +39,6 @@ While porting the game code to symfony, I used more modern development technique
 The new codebase is PHP 8.0 compatible with PHP strict typ hinting.
 
 
-## Missing features
-
-Missing features compared to old game code:
-- Avatar system
-- Federations
-    - Chat
-    - Forum
-
-
 ## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
