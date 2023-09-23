@@ -3,6 +3,8 @@ twig:
     form_themes:
         - 'form/custom_types.html.twig'
         - 'bootstrap_5_layout.html.twig'
+    globals:
+        uw_forum_enabled: '%env(bool:UW_FORUM_ENABLED)%'
 
 when@test:
     twig:

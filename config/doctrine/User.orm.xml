@@ -32,6 +32,15 @@
         <option name="default">1</option>
       </options>
     </field>
+    <field name="forumBan" type="boolean" column="forum_ban">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
     <one-to-many field="players" target-entity="FrankProjects\UltimateWarfare\Entity\Player" mapped-by="user"/>
+    <one-to-many field="topics" target-entity="FrankProjects\UltimateWarfare\Entity\Topic" mapped-by="user"/>
+    <one-to-many field="topicsEdited" target-entity="FrankProjects\UltimateWarfare\Entity\Topic" mapped-by="editUser"/>
+    <one-to-many field="posts" target-entity="FrankProjects\UltimateWarfare\Entity\Post" mapped-by="user"/>
+    <one-to-many field="postsEdited" target-entity="FrankProjects\UltimateWarfare\Entity\Post" mapped-by="editUser"/>
   </entity>
 </doctrine-mapping>

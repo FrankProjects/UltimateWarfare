@@ -1,0 +1,28 @@
+<table class="table text-center">
+    <tr>
+        <td width="200">Name: {{ post.user.username }}<br/>
+            <b>Forum Moderator</b>
+        </td>
+        <td rowspan="3" width="700">{{ post.content|nl2br }}
+            <br/>
+            {% if post.edited == true %}
+                <br/><br/><i> Last edited by: {{ post.editedBy }}</i>
+            {% endif %}
+
+            {% if user != null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}
+                <br/>
+                <br/>
+                <a class="btn btn-primary" href="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" title="Delete">Delete</a>
+                - <a class="btn btn-primary" href="{{ path('Forum/Post/Edit', {'postId': post.id}) }}" title="Edit">Edit</a>
+            {% endif %}
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Date/Time:<br/>
+            {{ post.createDateTime|date("Y-m-d H:i:s") }}
+        </td>
+    </tr>
+</table>
+<br/>

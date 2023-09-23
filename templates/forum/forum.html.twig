@@ -1,0 +1,28 @@
+{% extends 'forumBase.html.twig' %}
+
+{% block title %}Ultimate Warfare - Forum{% endblock title %}
+
+{% block content %}
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td width="20"><strong>#</strong></td>
+            <td class="text-start" width="480"><strong>The Forums</strong></td>
+            <td width="100"><strong>Topics</strong></td>
+            <td class="text-start" width="300"><strong>Last topic</strong></td>
+        </tr>
+
+        {% for category in categories %}
+            {% set lastTopic = category.topics|last %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td class="text-start"><a class="B" href="{{ path('Forum/Category', {'categoryId': category.id}) }}">{{ category.title }}</a></td>
+                <td>{{ category.topics|length }}</td>
+                {% if lastTopic == null %}
+                    <td class="text-start">No topics yet</td>
+                {% else %}
+                    <td class="text-start">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.user.username }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

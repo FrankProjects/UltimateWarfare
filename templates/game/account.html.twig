@@ -28,6 +28,9 @@
                 <br />
                 <a href="{{ path('Game/SelectWorld') }}"><img src="{{ asset('images/button/b_a_join.jpg') }}" alt="Click here to join another world." height="150" width="150" /></a>
                 <a href="{{ path('Game/Story/Chapter1', {'page': 1}) }}"><img src="{{ asset('images/button/b_a_story.jpg') }}" alt="Click here to view The Story." height="150" width="150" /></a>
+                {% if uw_forum_enabled == true %}
+                    <a href="{{ path('Forum') }}"><img src="{{ asset('images/button/b_a_forum.jpg') }}" alt="Talk with other members about the game, and share your tactics here." height="150" width="150" /></a>
+                {% endif %}
 
                 <br />
                 <a href="{{ path('Game/Account/Edit') }}"><img src="{{ asset('images/button/b_settings.jpg') }}" alt="You can edit your preferences here." height="150" width="150" /></a>
