@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
 use FrankProjects\UltimateWarfare\Form\ChangePasswordType;
+use FrankProjects\UltimateWarfare\Form\UploadAvatarType;
 use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,9 +105,70 @@ final class UserController extends BaseGameController
             [
                 'user' => $this->getGameUser(),
                 'userType' => $this->getAccountType(),
-                'changePasswordForm' => $changePasswordForm->createView()
+                'changePasswordForm' => $changePasswordForm->createView(),
+                'uploadAvatar' => $this->createForm(UploadAvatarType::class)->createView()
             ]
         );
+    }
+
+    public function uploadAvatar(Request $request): Response
+    {
+        $user = $this->getGameUser();
+        $form = $this->createForm(UploadAvatarType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $avatar = $form->get('avatar')->getData();
+
+            if ($avatar !== null) {
+                $uploadedFile = $user->getId() . '-' . uniqid('', true) . '.' . $avatar->guessExtension();
+
+                try {
+                    $avatar->move(
+                        $this->getParameter('app.avatars_directory'),
+                        $uploadedFile
+                    );
+
+                    $image = new \Imagick($this->getParameter('app.avatars_directory') . '/' . $uploadedFile);
+                    $image->setImageFormat('png');
+                    $image->setImageBackgroundColor('transparent');
+                    $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE);
+                    $image->cropThumbnailImage(200, 200);
+                    $image->roundCornersImage(100, 100);
+
+                    unlink($this->getParameter('app.avatars_directory') . '/' . $uploadedFile);
+
+                    $user->setAvatar($image->getImageBlob());
+                    $this->userRepository->save($user);
+
+                    $this->addFlash('success', 'Avatar uploaded successfully!');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Could not upload avatar');
+                }
+
+                return $this->redirectToRoute('Game/Account/Edit');
+            }
+        }
+
+        return $this->render(
+            'game/editAccount.html.twig',
+            [
+                'user' => $this->getGameUser(),
+                'userType' => $this->getAccountType(),
+                'changePasswordForm' => $this->createForm(ChangePasswordType::class)->createView(),
+                'uploadAvatar' => $form->createView()
+            ]
+        );
+    }
+
+    public function deleteAvatar(): Response
+    {
+        $user = $this->getGameUser();
+        $user->setAvatar('');
+        $this->userRepository->save($user);
+
+        $this->addFlash('success', 'Avatar successfully deleted!');
+        return $this->redirectToRoute('Game/Account/Edit');
     }
 
     private function getAccountType(): string

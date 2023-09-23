@@ -160,6 +160,14 @@ Game/Account/Edit:
     path:      /game/account/edit
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::edit
 
+Game/Account/UploadAvatar:
+    path:      /game/account/upload_avatar
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::uploadAvatar
+
+Game/Account/DeleteAvatar:
+    path:      /game/account/delete_avatar
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::deleteAvatar
+
 Game/Banned:
     path:      /game/banned
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::banned

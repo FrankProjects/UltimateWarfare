@@ -53,8 +53,17 @@
             <td colspan="2"><b>Avatar Upload </b></td>
         </tr>
         <tr>
-            <td colspan="2">
-                Not implemented yet!
+            {% if user.hasAvatar %}
+                <td colspan="1">
+                    <p><img alt="{{ user.username }} Avatar" src="data:image/jpeg;base64,{{ user.avatar|base64_encode(constant('FrankProjects\\UltimateWarfare\\Twig\\Base64EncodeExtension::GET_CONTENT_FROM_STREAM')) }}" /></p>
+                    <p><a href="{{ path('Game/Account/DeleteAvatar') }}" class="btn-danger btn">Remove avatar</a></p>
+                </td>
+            {% endif %}
+            <td colspan="{{ user.hasAvatar ? '1' : '2' }}">
+                {{ form_start(uploadAvatar) }}
+                {{ form_errors(uploadAvatar) }}
+                {{ form_row(uploadAvatar.avatar) }}
+                {{ form_end(uploadAvatar) }}
             </td>
         </tr>
         <tr class="tabletop">

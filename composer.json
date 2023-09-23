@@ -6,8 +6,9 @@
     "require": {
         "php": "^8.1",
         "ext-gd": "*",
-        "ext-json": "*",
         "ext-intl": "*",
+        "ext-json": "*",
+        "ext-imagick": "*",
         "doctrine/common": "^3.4",
         "doctrine/doctrine-bundle": "^2.9",
         "doctrine/doctrine-migrations-bundle": "^3.2",
@@ -25,6 +26,7 @@
         "symfony/security-bundle": "^6.3",
         "symfony/translation": "^6.3",
         "symfony/twig-bundle": "^6.3",
+        "symfony/validator": "6.3.*",
         "symfony/yaml": "^6.3",
         "twig/twig": "^3.6"
     },
