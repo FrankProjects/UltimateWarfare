@@ -177,9 +177,26 @@ class TopicController extends BaseForumController
     {
         $this->ensureForumEnabled();
 
-        /**
-         * XXX TODO: Implement sticky topic
-         */
+        $topic = $this->topicRepository->find($topicId);
+
+        if ($topic === null) {
+            $this->addFlash('error', 'No such topic!');
+            return $this->redirectToRoute('Forum');
+        }
+
+        $user = $this->getGameUser();
+        if ($user == null) {
+            $this->addFlash('error', 'Not logged in!');
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+        }
+
+        try {
+            $this->topicActionService->sticky($topic, $this->getGameUser());
+            $this->addFlash('success', 'Successfully changed topic to sticky');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
         return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId], 302);
     }
 
@@ -187,9 +204,26 @@ class TopicController extends BaseForumController
     {
         $this->ensureForumEnabled();
 
-        /**
-         * XXX TODO: Implement unsticky topic
-         */
+        $topic = $this->topicRepository->find($topicId);
+
+        if ($topic === null) {
+            $this->addFlash('error', 'No such topic!');
+            return $this->redirectToRoute('Forum');
+        }
+
+        $user = $this->getGameUser();
+        if ($user == null) {
+            $this->addFlash('error', 'Not logged in!');
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+        }
+
+        try {
+            $this->topicActionService->unsticky($topic, $this->getGameUser());
+            $this->addFlash('success', 'Successfully changed topic to unsticky');
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
         return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId], 302);
     }
 }

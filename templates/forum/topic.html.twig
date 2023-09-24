@@ -9,19 +9,34 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         {% if topic.sticky %}
-            - <a class="btn btn-primary" href="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}">{{ 'action.topic.sticky'|trans }}</a>
+            <a class="btn btn-primary" href="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}">{{ 'action.topic.unsticky'|trans }}</a>
         {% else %}
-            - <a class="btn btn-primary" href="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}">{{ 'action.topic.unsticky'|trans }}</a>
+            <a class="btn btn-primary" href="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}">{{ 'action.topic.sticky'|trans }}</a>
         {% endif %}
     {% endif %}
 
     <table class="table text-center">
         <tr class="tabletop">
-            <td colspan="2"><b>{{ topic.title }}</b></td>
+            <td colspan="2">
+                <b>
+                    {% if topic.sticky == 1 %}
+                        <span style="color:#CC0000">Sticky </span>{{ topic.title }}
+                    {% else %}
+                        {{ topic.title }}
+                    {% endif %}
+                </b>
+            </td>
         </tr>
         <tr>
             <td width="200">{{ 'label.name'|trans }}: {{ topic.user.username }}
-                <b>Forum Moderator</b>
+                {% if 'ROLE_ADMIN' in topic.user.roles  %}
+                    <p>
+                        <b>Forum Moderator</b>
+                    </p>
+                {% endif %}
+                {% if topic.user.hasAvatar %}
+                    <img alt="{{ topic.user.username }} Avatar" src="data:image/jpeg;base64,{{ topic.user.avatar|base64_encode(constant('FrankProjects\\UltimateWarfare\\Twig\\Base64EncodeExtension::GET_CONTENT_FROM_STREAM')) }}" />
+                {% endif %}
             </td>
             <td rowspan="3" width="700">
                 {{ topic.content|nl2br }}

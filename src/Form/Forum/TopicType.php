@@ -27,24 +27,6 @@ class TopicType extends AbstractType
                 ]
             )
             ->add(
-                'sticky',
-                CheckboxType::class,
-                [
-                    "translation_domain" => "forum",
-                    "label" => "action.topic.sticky",
-                    'required' => false
-                ]
-            )
-            ->add(
-                'closed',
-                CheckboxType::class,
-                [
-                    "translation_domain" => "forum",
-                    "label" => "action.topic.close",
-                    'required' => false
-                ]
-            )
-            ->add(
                 'submit',
                 SubmitType::class,
                 [

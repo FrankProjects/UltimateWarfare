@@ -64,6 +64,32 @@ final class TopicActionService
         $this->topicRepository->remove($topic);
     }
 
+    public function sticky(Topic $topic, User $user): void
+    {
+        $this->forumHelper->ensureNotBanned($user);
+        $this->ensureTopicPermissions($user, $topic);
+
+        if (!$user->hasRole('ROLE_ADMIN')) {
+            throw new RuntimeException('Not enough permissions!');
+        }
+
+        $topic->setSticky(true);
+        $this->topicRepository->save($topic);
+    }
+
+    public function unsticky(Topic $topic, User $user): void
+    {
+        $this->forumHelper->ensureNotBanned($user);
+        $this->ensureTopicPermissions($user, $topic);
+
+        if (!$user->hasRole('ROLE_ADMIN')) {
+            throw new RuntimeException('Not enough permissions!');
+        }
+
+        $topic->setSticky(false);
+        $this->topicRepository->save($topic);
+    }
+
     private function ensureTopicPermissions(User $user, Topic $topic): void
     {
         if ($user->getId() != $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
