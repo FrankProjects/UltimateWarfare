@@ -103,6 +103,7 @@ final class UserController extends AbstractController
         $user = match ($request->get('filter')) {
             'banned' => $this->userRepository->findAllBanned(),
             'disabled' => $this->userRepository->findAllDisabled(),
+            'active' => $this->userRepository->findAllActive(),
             default => $this->userRepository->findAll(),
         };
 

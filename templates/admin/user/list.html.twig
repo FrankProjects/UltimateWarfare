@@ -5,6 +5,7 @@
 {% block content %}
     <p class="text-center btn-group">
         <a href="{{ path('Admin/User/List') }}" class="btn btn-primary {{ app.request.get('filter') == '' ? 'active' : '' }}">All</a>
+        <a href="{{ path('Admin/User/List', {'filter': 'active'}) }}" class="btn btn-primary {{ app.request.get('filter') == 'active' ? 'active' : '' }}">Active</a>
         <a href="{{ path('Admin/User/List', {'filter': 'disabled'}) }}" class="btn btn-primary {{ app.request.get('filter') == 'disabled' ? 'active' : '' }}">Disabled</a>
         <a href="{{ path('Admin/User/List', {'filter': 'banned'}) }}" class="btn btn-primary {{ app.request.get('filter') == 'banned' ? 'active' : '' }}">Banned</a>
     </p>
