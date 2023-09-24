@@ -21,12 +21,17 @@ class Topic
     private User $user;
     private ?User $editUser;
 
-    /** @var Collection<Post> */
+    /** @var Collection<int, Post> */
     private Collection $posts;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getId(): int
@@ -124,11 +129,17 @@ class Topic
         $this->createDateTime = $createDateTime;
     }
 
+    /**
+     * @return Collection<int, Post>
+     */
     public function getPosts(): Collection
     {
         return $this->posts;
     }
 
+    /**
+     * @param Collection<int, Post> $posts
+     */
     public function setPosts(Collection $posts): void
     {
         $this->posts = $posts;

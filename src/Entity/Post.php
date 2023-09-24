@@ -17,6 +17,11 @@ class Post
     private User $user;
     private ?User $editUser;
 
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getId(): int
     {
         return $this->id;
@@ -25,6 +30,11 @@ class Post
     public function setPosterIp(string $posterIp): void
     {
         $this->posterIp = $posterIp;
+    }
+
+    public function getPosterIp(): string
+    {
+        return $this->posterIp;
     }
 
     public function setContent(string $content): void

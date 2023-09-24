@@ -85,20 +85,20 @@ final class ConstructionActionService
             $totalSpace = $region->getSpace() - $regionBuildings - $buildingsInConstruction;
 
             if ($totalBuild > $totalSpace) {
-                throw new RunTimeException('You do not have that much building space.');
+                throw new RuntimeException('You do not have that much building space.');
             }
         }
 
         $resources = $player->getResources();
 
         if ($priceCash > $resources->getCash()) {
-            throw new RunTimeException("You don't have enough cash to build that.");
+            throw new RuntimeException("You don't have enough cash to build that.");
         }
         if ($priceWood > $resources->getWood()) {
-            throw new RunTimeException("You don't have enough wood to build that.");
+            throw new RuntimeException("You don't have enough wood to build that.");
         }
         if ($priceSteel > $resources->getSteel()) {
-            throw new RunTimeException("You don't have enough steel to build that.");
+            throw new RuntimeException("You don't have enough steel to build that.");
         }
 
         $resources->setCash($resources->getCash() - $priceCash);
@@ -148,11 +148,11 @@ final class ConstructionActionService
         $construction = $this->constructionRepository->find($constructionId);
 
         if ($construction === null) {
-            throw new RunTimeException('This construction queue does not exist!');
+            throw new RuntimeException('This construction queue does not exist!');
         }
 
         if ($construction->getPlayer()->getId() != $player->getId()) {
-            throw new RunTimeException('This is not your construction queue!');
+            throw new RuntimeException('This is not your construction queue!');
         }
 
         $this->constructionRepository->remove($construction);
@@ -202,7 +202,7 @@ final class ConstructionActionService
             }
 
             if ($amount > $worldRegionUnit->getAmount()) {
-                throw new RunTimeException('You do not have that many ' . $gameUnit->getName() . "s!");
+                throw new RuntimeException('You do not have that many ' . $gameUnit->getName() . "s!");
             }
 
             $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $amount);

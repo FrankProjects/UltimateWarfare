@@ -50,10 +50,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     /** @var Collection<int, Topic> */
     private Collection $topicsLastPost;
 
-    /** @var Collection<int, Topic> */
+    /** @var Collection<int, Post> */
     private Collection $posts;
 
-    /** @var Collection<int, Topic> */
+    /** @var Collection<int, Post> */
     private Collection $postsEdited;
 
     public function __construct()
@@ -308,51 +308,81 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         $this->players = $players;
     }
 
+    /**
+     * @return Collection<int, Topic>
+     */
     public function getTopics(): Collection
     {
         return $this->topics;
     }
 
+    /**
+     * @param Collection<int, Topic> $topics
+     */
     public function setTopics(Collection $topics): void
     {
         $this->topics = $topics;
     }
 
+    /**
+     * @return Collection<int, Topic>
+     */
     public function getTopicsEdited(): Collection
     {
         return $this->topicsEdited;
     }
 
+    /**
+     * @param Collection<int, Topic> $topicsEdited
+     */
     public function setTopicsEdited(Collection $topicsEdited): void
     {
         $this->topicsEdited = $topicsEdited;
     }
 
+    /**
+     * @return Collection<int, Topic>
+     */
     public function getTopicsLastPost(): Collection
     {
         return $this->topicsLastPost;
     }
 
+    /**
+     * @param Collection<int, Topic> $topicsLastPost
+     */
     public function setTopicsLastPost(Collection $topicsLastPost): void
     {
         $this->topicsLastPost = $topicsLastPost;
     }
 
+    /**
+     * @return Collection<int, Post>
+     */
     public function getPosts(): Collection
     {
         return $this->posts;
     }
 
+    /**
+     * @param Collection<int, Post> $posts
+     */
     public function setPosts(Collection $posts): void
     {
         $this->posts = $posts;
     }
 
+    /**
+     * @return Collection<int, Post>
+     */
     public function getPostsEdited(): Collection
     {
         return $this->postsEdited;
     }
 
+    /**
+     * @param Collection<int, Post> $postsEdited
+     */
     public function setPostsEdited(Collection $postsEdited): void
     {
         $this->postsEdited = $postsEdited;

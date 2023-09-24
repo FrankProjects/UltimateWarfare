@@ -52,7 +52,7 @@ final class PostActionService
         $this->forumHelper->ensureNotBanned($user);
 
         if ($user === null) {
-            throw new RunTimeException('You are not logged in!');
+            throw new RuntimeException('You are not logged in!');
         }
 
         $this->ensurePostPermissions($user, $post);
@@ -62,7 +62,7 @@ final class PostActionService
     private function ensurePostPermissions(User $user, Post $post): void
     {
         if ($user->getId() != $post->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
-            throw new RunTimeException('Not enough permissions!');
+            throw new RuntimeException('Not enough permissions!');
         }
     }
 }

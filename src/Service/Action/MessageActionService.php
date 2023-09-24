@@ -29,7 +29,7 @@ final class MessageActionService
         $message = $this->getMessage($messageId);
 
         if ($message->getToPlayer()->getId() !== $player->getId()) {
-            throw new RunTimeException('This is not your message!');
+            throw new RuntimeException('This is not your message!');
         }
 
         $message->setToDelete(true);
@@ -41,7 +41,7 @@ final class MessageActionService
         $message = $this->getMessage($messageId);
 
         if ($message->getFromPlayer()->getId() !== $player->getId()) {
-            throw new RunTimeException('This is not your message!');
+            throw new RuntimeException('This is not your message!');
         }
 
         $message->setFromDelete(true);
@@ -56,17 +56,17 @@ final class MessageActionService
         bool $adminMessage
     ): void {
         if ($subject == '') {
-            throw new RunTimeException('Please type a subject');
+            throw new RuntimeException('Please type a subject');
         }
 
         if ($message == '') {
-            throw new RunTimeException('Please type a message');
+            throw new RuntimeException('Please type a message');
         }
 
         $toPlayer = $this->playerRepository->findByNameAndWorld($toPlayerName, $player->getWorld());
 
         if ($toPlayer === null) {
-            throw new RunTimeException('No such player');
+            throw new RuntimeException('No such player');
         }
 
         if (!$player->getUser()->hasRole(User::ROLE_ADMIN)) {
@@ -87,7 +87,7 @@ final class MessageActionService
         $message = $this->messageRepository->find($messageId);
 
         if ($message === null) {
-            throw new RunTimeException('No such message!');
+            throw new RuntimeException('No such message!');
         }
 
         return $message;
@@ -98,7 +98,7 @@ final class MessageActionService
         $message = $this->getMessage($messageId);
 
         if ($message->getToPlayer()->getId() !== $player->getId()) {
-            throw new RunTimeException('This is not your message!');
+            throw new RuntimeException('This is not your message!');
         }
 
         return $message;
@@ -109,7 +109,7 @@ final class MessageActionService
         $message = $this->getMessage($messageId);
 
         if ($message->getFromPlayer()->getId() !== $player->getId()) {
-            throw new RunTimeException('This is not your message!');
+            throw new RuntimeException('This is not your message!');
         }
 
         return $message;

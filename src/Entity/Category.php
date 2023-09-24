@@ -12,9 +12,9 @@ class Category
     private string $title;
 
     /**
-     * @var Collection|Topic[]
+     * @var Collection<int, Topic>
      */
-    private $topics;
+    private Collection $topics;
 
     public function getId(): int
     {
@@ -36,11 +36,17 @@ class Category
         return $this->title;
     }
 
+    /**
+     * @return Collection<int, Topic>
+     */
     public function getTopics(): Collection
     {
         return $this->topics;
     }
 
+    /**
+     * @param Collection<int, Topic> $topics
+     */
     public function setTopics(Collection $topics): void
     {
         $this->topics = $topics;

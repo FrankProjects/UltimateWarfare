@@ -12,6 +12,10 @@ use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
 final class DoctrineCategoryRepository implements CategoryRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Category>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

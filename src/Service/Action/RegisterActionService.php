@@ -34,7 +34,7 @@ final class RegisterActionService
         $user = $this->userRepository->findByConfirmationToken($token);
 
         if ($user === null) {
-            throw new RunTimeException("User with this token does not exist");
+            throw new RuntimeException("User with this token does not exist");
         }
 
         $user->setConfirmationToken(null);
@@ -57,18 +57,18 @@ final class RegisterActionService
             $generator = new TokenGenerator();
             $token = $generator->generateToken(40);
         } catch (Exception $exception) {
-            throw new RunTimeException('TokenGenerator failed!');
+            throw new RuntimeException('TokenGenerator failed!');
         }
 
         $user->setSignup(new DateTime());
         $user->setConfirmationToken($token);
 
         if ($this->userRepository->findByEmail($user->getEmail()) !== null) {
-            throw new RunTimeException('User with this email already exist!');
+            throw new RuntimeException('User with this email already exist!');
         }
 
         if ($this->userRepository->findByUsername($user->getUsername()) !== null) {
-            throw new RunTimeException('User with this username already exist!');
+            throw new RuntimeException('User with this username already exist!');
         }
 
         $this->userRepository->save($user);

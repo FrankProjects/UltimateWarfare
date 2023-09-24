@@ -13,6 +13,10 @@ use FrankProjects\UltimateWarfare\Repository\PostRepository;
 final class DoctrinePostRepository implements PostRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Post>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

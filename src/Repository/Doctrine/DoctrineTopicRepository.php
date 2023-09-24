@@ -14,6 +14,10 @@ use FrankProjects\UltimateWarfare\Repository\TopicRepository;
 final class DoctrineTopicRepository implements TopicRepository
 {
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var EntityRepository <Topic>
+     */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $entityManager)

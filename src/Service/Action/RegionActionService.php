@@ -44,11 +44,11 @@ final class RegionActionService
     public function getAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
     {
         if ($worldRegion->getPlayer() === null) {
-            throw new RunTimeException('Can not attack region without owner!');
+            throw new RuntimeException('Can not attack region without owner!');
         }
 
         if ($worldRegion->getPlayer()->getId() == $player->getId()) {
-            throw new RunTimeException('Can not attack your own region!');
+            throw new RuntimeException('Can not attack your own region!');
         }
 
         $playerRegions = [];
@@ -75,11 +75,11 @@ final class RegionActionService
     public function getOperationAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
     {
         if ($worldRegion->getPlayer() === null) {
-            throw new RunTimeException('Can not attack region without owner!');
+            throw new RuntimeException('Can not attack region without owner!');
         }
 
         if ($worldRegion->getPlayer()->getId() == $player->getId()) {
-            throw new RunTimeException('Can not attack your own region!');
+            throw new RuntimeException('Can not attack your own region!');
         }
 
         $playerRegions = [];
@@ -110,11 +110,11 @@ final class RegionActionService
         $resources = $player->getResources();
 
         if ($worldRegion->getPlayer() !== null) {
-            throw new RunTimeException('Region is already owned by somebody!');
+            throw new RuntimeException('Region is already owned by somebody!');
         }
 
         if ($resources->getCash() < $player->getRegionPrice()) {
-            throw new RunTimeException('You do not have enough money!');
+            throw new RuntimeException('You do not have enough money!');
         }
 
         $resources->setCash($resources->getCash() - $player->getRegionPrice());
@@ -151,7 +151,7 @@ final class RegionActionService
         }
 
         if ($worldRegion->getWorld()->getId() != $world->getId()) {
-            throw new RunTimeException('World region is not part for your game world!');
+            throw new RuntimeException('World region is not part for your game world!');
         }
 
         return $worldRegion;
@@ -168,11 +168,11 @@ final class RegionActionService
         $worldRegion = $this->getWorldRegionByIdAndWorld($worldRegionId, $player->getWorld());
 
         if ($worldRegion->getPlayer() === null) {
-            throw new RunTimeException('World region has no owner!');
+            throw new RuntimeException('World region has no owner!');
         }
 
         if ($worldRegion->getPlayer()->getId() != $player->getId()) {
-            throw new RunTimeException('World region is not yours!');
+            throw new RuntimeException('World region is not yours!');
         }
 
 

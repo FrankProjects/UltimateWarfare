@@ -67,6 +67,6 @@ abstract class AbstractPlayerCalculator
             return $gameUnit->getIncome();
         }
 
-        throw new RunTimeException("Invalid AbstractGameResource type {$type}");
+        throw new RuntimeException("Invalid AbstractGameResource type {$type}");
     }
 }

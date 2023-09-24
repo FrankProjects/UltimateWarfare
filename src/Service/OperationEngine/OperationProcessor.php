@@ -93,7 +93,7 @@ abstract class OperationProcessor implements OperationInterface
     ): OperationInterface {
         $className = "FrankProjects\\UltimateWarfare\\Service\\OperationEngine\\OperationProcessor\\" . $subclass;
         if (!class_exists($className) || is_subclass_of($className, OperationInterface::class) === false) {
-            throw new RunTimeException("Unknown Operation {$subclass}");
+            throw new RuntimeException("Unknown Operation {$subclass}");
         }
 
         return new $className(

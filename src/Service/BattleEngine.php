@@ -80,24 +80,24 @@ final class BattleEngine
     private function ensureCanAttack(Fleet $fleet): void
     {
         if ($fleet->getTimestampArrive() > time()) {
-            throw new RunTimeException("Fleet not arrived yet");
+            throw new RuntimeException("Fleet not arrived yet");
         }
 
         $targetPlayer = $fleet->getTargetWorldRegion()->getPlayer();
         if ($targetPlayer === null) {
-            throw new RunTimeException("Target region has no owner");
+            throw new RuntimeException("Target region has no owner");
         }
 
         if ($fleet->getPlayer()->getId() === $targetPlayer->getId()) {
-            throw new RunTimeException("You can not attack yourself");
+            throw new RuntimeException("You can not attack yourself");
         }
 
         if (count($targetPlayer->getWorldRegions()) === 1) {
-            throw new RunTimeException("Target player has only 1 region left");
+            throw new RuntimeException("Target player has only 1 region left");
         }
 
         if ($targetPlayer->getTimestampJoined() + 172800 > time()) {
-            throw new RunTimeException("You can not attack this player in the first 48 hours");
+            throw new RuntimeException("You can not attack this player in the first 48 hours");
         }
     }
 

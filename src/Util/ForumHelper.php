@@ -34,14 +34,14 @@ final class ForumHelper
             $lastTopic !== null && $lastTopic->getCreateDateTime() > $dateTime ||
             $lastPost !== null && $lastPost->getCreateDateTime() > $dateTime
         ) {
-            throw new RunTimeException('You can not mass post within 10 seconds!(Spam protection)');
+            throw new RuntimeException('You can not mass post within 10 seconds!(Spam protection)');
         }
     }
 
     public function ensureNotBanned(User $user): void
     {
         if ($user->getForumBan()) {
-            throw new RunTimeException('You are forum banned!');
+            throw new RuntimeException('You are forum banned!');
         }
     }
 

@@ -71,7 +71,7 @@ final class MailService
         try {
             return $this->twig->render($templateName, $parameters);
         } catch (Exception $exception) {
-            throw new RunTimeException('Rendering mail failed!');
+            throw new RuntimeException('Rendering mail failed!');
         }
     }
 
@@ -83,7 +83,7 @@ final class MailService
         } catch (TransportExceptionInterface $e) {
             $logMessage = "Send a {$type} email to {$email} failed";
             $this->logger->error($logMessage);
-            throw new RunTimeException($logMessage);
+            throw new RuntimeException($logMessage);
         }
     }
 }

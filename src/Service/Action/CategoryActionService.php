@@ -52,7 +52,7 @@ final class CategoryActionService
     private function ensureCategoryPermissions(User $user): void
     {
         if (!$user->hasRole('ROLE_ADMIN')) {
-            throw new RunTimeException('Not enough permissions!');
+            throw new RuntimeException('Not enough permissions!');
         }
     }
 }
