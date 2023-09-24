@@ -2,12 +2,12 @@
     <td class="tile" width="125" height="125" background="{{ asset('images/world/sector/' ~ tileData.image) }}">
         {% if tileData.regionCount > 0 %}
             {% if settings.searchPlayerName and settings.searchFound %}
-                <a href="{{ path('Game/World/Sector/Search/Player', {'sectorId': tileData.id, 'playerName': settings.playerName}) }}">
+                <a href="{{ path('Game/World/Search/Player', {'sectorId': tileData.id, 'playerName': settings.playerName}) }}">
                     <img src="{{ asset('images/player.gif') }}" alt="Sector {{ tileData.id }}" width="125" height="125" border="0" />
                 </a>
             {% elseif settings.searchFree %}
                 <div class="worldmaptext">{{ tileData.regionCount }} free regions</div>
-                <a href="{{ path('Game/World/Sector/Search/Free', {'sectorId': tileData.id}) }}">
+                <a href="{{ path('Game/World/Search/Free', {'sectorId': tileData.id}) }}">
                     <img src="{{ asset('images/you.png') }}" alt="Sector {{ tileData.id }}" width="125" height="125" border="0" />
                 </a>
             {% else %}
