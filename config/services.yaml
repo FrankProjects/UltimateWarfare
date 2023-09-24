@@ -6,6 +6,7 @@
 parameters:
     app.gg_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     app.avatars_directory: '%kernel.project_dir%/var/uploads/avatars'
+    app.uw_forum_enabled: '%env(bool:UW_FORUM_ENABLED)%'
 
 services:
     # default configuration for services in *this* file

@@ -1,0 +1,89 @@
+{% extends 'forumBase.html.twig' %}
+{% block content %}
+    {% trans_default_domain 'forum' %}
+
+    <div class="text-center">
+        <a class="B" href="{{ path('Forum') }}">{{ 'label.forum'|trans }}</a> -
+        <a class="B" href="{{ path('Forum/Category', {'categoryId': topic.category.id}) }}">{{ 'label.topics'|trans }}</a>
+    </div>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        {% if topic.sticky %}
+            <a class="btn btn-primary" href="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}">{{ 'action.topic.unsticky'|trans }}</a>
+        {% else %}
+            <a class="btn btn-primary" href="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}">{{ 'action.topic.sticky'|trans }}</a>
+        {% endif %}
+    {% endif %}
+
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td colspan="2">
+                <b>
+                    {% if topic.sticky == 1 %}
+                        <span style="color:#CC0000">Sticky </span>{{ topic.title }}
+                    {% else %}
+                        {{ topic.title }}
+                    {% endif %}
+                </b>
+            </td>
+        </tr>
+        <tr>
+            <td width="200">{{ 'label.name'|trans }}: {{ topic.user.username }}
+                {% if 'ROLE_ADMIN' in topic.user.roles  %}
+                    <p>
+                        <b>Forum Moderator</b>
+                    </p>
+                {% endif %}
+                {% if topic.user.hasAvatar %}
+                    <img alt="{{ topic.user.username }} Avatar" src="data:image/jpeg;base64,{{ topic.user.avatar|base64_encode(constant('FrankProjects\\UltimateWarfare\\Twig\\Base64EncodeExtension::GET_CONTENT_FROM_STREAM')) }}" />
+                {% endif %}
+            </td>
+            <td rowspan="3" width="700">
+                {{ topic.content|nl2br }}
+
+                {% if topic.editUser != null %}
+                    <br/><br/><i> Last edited by: {{ topic.editUser.username }}</i>
+                {% endif %}
+
+                {% if user != null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}
+                    <br />
+                    <br />
+                    <a class="btn btn-primary" href="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}">{{ 'action.topic.delete'|trans }}</a> -
+                    <a class="btn btn-primary" href="{{ path('Forum/Topic/Edit', {'topicId': topic.id}) }}">{{ 'action.topic.edit'|trans }}</a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'label.date'|trans }}:<br />
+                {{ topic.createDateTime|date("Y-m-d H:i:s") }}
+            </td>
+        </tr>
+    </table>
+
+    <br />
+
+    {% for post in topic.posts %}
+        {% include 'forum/post.html.twig' %}
+    {% endfor %}
+
+    {% if user != null %}
+        {{ form_start(form) }}
+        <table class="table text-center">
+            <tr class="tabletop">
+                <td><b>{{ 'label.add_reaction'|trans }}</b></td>
+            </tr>
+            <tr>
+                <td>
+                    {{ form_widget(form.content) }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ form_row(form.submit) }}
+                </td>
+            </tr>
+        </table>
+        {{ form_end(form) }}
+    {% endif %}
+{% endblock %}

@@ -36,14 +36,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     private DateTime $signup;
     private bool $active = true;
     private bool $adviser = false;
+    private bool $forumBan = false;
 
     /** @var Collection<int, Player> */
     private Collection $players;
+
+    /** @var Collection<int, Topic> */
+    private Collection $topics;
+
+    /** @var Collection<int, Topic> */
+    private Collection $topicsEdited;
+
+    /** @var Collection<int, Topic> */
+    private Collection $topicsLastPost;
+
+    /** @var Collection<int, Post> */
+    private Collection $posts;
+
+    /** @var Collection<int, Post> */
+    private Collection $postsEdited;
 
     public function __construct()
     {
         $this->roles = [];
         $this->players = new ArrayCollection();
+        $this->topics = new ArrayCollection();
+        $this->topicsEdited = new ArrayCollection();
+        $this->topicsLastPost = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        $this->postsEdited = new ArrayCollection();
     }
 
     /**
@@ -261,6 +282,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         return $this->adviser;
     }
 
+    public function setForumBan(bool $forumBan): void
+    {
+        $this->forumBan = $forumBan;
+    }
+
+    public function getForumBan(): bool
+    {
+        return $this->forumBan;
+    }
+
     /**
      * @return Collection<int, Player>
      */
@@ -275,6 +306,86 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function setPlayers(Collection $players): void
     {
         $this->players = $players;
+    }
+
+    /**
+     * @return Collection<int, Topic>
+     */
+    public function getTopics(): Collection
+    {
+        return $this->topics;
+    }
+
+    /**
+     * @param Collection<int, Topic> $topics
+     */
+    public function setTopics(Collection $topics): void
+    {
+        $this->topics = $topics;
+    }
+
+    /**
+     * @return Collection<int, Topic>
+     */
+    public function getTopicsEdited(): Collection
+    {
+        return $this->topicsEdited;
+    }
+
+    /**
+     * @param Collection<int, Topic> $topicsEdited
+     */
+    public function setTopicsEdited(Collection $topicsEdited): void
+    {
+        $this->topicsEdited = $topicsEdited;
+    }
+
+    /**
+     * @return Collection<int, Topic>
+     */
+    public function getTopicsLastPost(): Collection
+    {
+        return $this->topicsLastPost;
+    }
+
+    /**
+     * @param Collection<int, Topic> $topicsLastPost
+     */
+    public function setTopicsLastPost(Collection $topicsLastPost): void
+    {
+        $this->topicsLastPost = $topicsLastPost;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param Collection<int, Post> $posts
+     */
+    public function setPosts(Collection $posts): void
+    {
+        $this->posts = $posts;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPostsEdited(): Collection
+    {
+        return $this->postsEdited;
+    }
+
+    /**
+     * @param Collection<int, Post> $postsEdited
+     */
+    public function setPostsEdited(Collection $postsEdited): void
+    {
+        $this->postsEdited = $postsEdited;
     }
 
     public function getUserIdentifier(): string

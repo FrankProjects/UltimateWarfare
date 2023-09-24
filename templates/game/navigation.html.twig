@@ -32,6 +32,11 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ path('Game/Notepad') }}">Notepad</a>
     </li>
+    {% if uw_forum_enabled == true %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('Forum') }}">Forum</a>
+        </li>
+    {% endif %}
     <li class="nav-item">
         <a class="nav-link" href="{{ path('Game/Rankings') }}">Rankings</a>
     </li>

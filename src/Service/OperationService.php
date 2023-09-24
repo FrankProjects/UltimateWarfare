@@ -88,23 +88,23 @@ final class OperationService
         int $amount
     ): void {
         if (!$operation->isEnabled()) {
-            throw new RunTimeException("Operation not enabled");
+            throw new RuntimeException("Operation not enabled");
         }
 
         if ($region->getWorld()->getId() !== $playerRegion->getWorld()->getId()) {
-            throw new RunTimeException("Regions not in same world");
+            throw new RuntimeException("Regions not in same world");
         }
 
         if ($region->getPlayer() === null) {
-            throw new RunTimeException("Target region has no owner");
+            throw new RuntimeException("Target region has no owner");
         }
 
         if ($region->getPlayer()->getId() === $playerRegion->getPlayer()->getId()) {
-            throw new RunTimeException("You can not attack yourself");
+            throw new RuntimeException("You can not attack yourself");
         }
 
         if ($playerRegion->getPlayer()->getResources()->getCash() < $operation->getCost() * $amount) {
-            throw new RunTimeException("You do not have enough cash");
+            throw new RuntimeException("You do not have enough cash");
         }
 
         foreach ($playerRegion->getPlayer()->getPlayerResearch() as $playerResearch) {
@@ -115,13 +115,13 @@ final class OperationService
                 return;
             }
         }
-        throw new RunTimeException("You do not have all requirements to perform this operation");
+        throw new RuntimeException("You do not have all requirements to perform this operation");
     }
 
     private function hasWorldRegionGameUnitAmount(WorldRegion $region, Operation $operation, int $amount): void
     {
         if ($amount < 1) {
-            throw new RunTimeException("Can not send negative game units");
+            throw new RuntimeException("Can not send negative game units");
         }
 
         foreach ($region->getWorldRegionUnits() as $regionUnit) {
@@ -131,6 +131,6 @@ final class OperationService
                 }
             }
         }
-        throw new RunTimeException("Not enough game units");
+        throw new RuntimeException("Not enough game units");
     }
 }

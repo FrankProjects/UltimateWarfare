@@ -44,11 +44,11 @@ final class FederationApplicationActionService
 
         $federationApplication = $this->getFederationApplication($player, $applicationId);
         if ($federationApplication->getPlayer()->getFederation() !== null) {
-            throw new RunTimeException("Player is already in another Federation!");
+            throw new RuntimeException("Player is already in another Federation!");
         }
 
         if (count($player->getFederation()->getPlayers()) >= $player->getWorld()->getFederationLimit()) {
-            throw new RunTimeException("Federation members world limit reached!");
+            throw new RuntimeException("Federation members world limit reached!");
         }
 
         $news = "{$federationApplication->getPlayer()->getName()} has has been accepted into the Federation by {$player->getName()}";
@@ -109,11 +109,11 @@ final class FederationApplicationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getFederation() !== null) {
-            throw new RunTimeException("You are already in a Federation");
+            throw new RuntimeException("You are already in a Federation");
         }
 
         if ($federation->getWorld()->getId() !== $player->getWorld()->getId()) {
-            throw new RunTimeException("Federation is not in your world!");
+            throw new RuntimeException("Federation is not in your world!");
         }
 
         $federationApplication = FederationApplication::createForFederation($federation, $player, $application);
@@ -124,7 +124,7 @@ final class FederationApplicationActionService
     {
         $world = $player->getWorld();
         if (!$world->getFederation()) {
-            throw new RunTimeException("Federations not enabled!");
+            throw new RuntimeException("Federations not enabled!");
         }
     }
 
@@ -136,15 +136,15 @@ final class FederationApplicationActionService
         );
 
         if ($federationApplication === null) {
-            throw new RunTimeException('FederationApplication does not exist!');
+            throw new RuntimeException('FederationApplication does not exist!');
         }
 
         if ($player->getFederation() === null) {
-            throw new RunTimeException('You are not in a Federation!');
+            throw new RuntimeException('You are not in a Federation!');
         }
 
         if ($player->getFederation()->getId() !== $federationApplication->getFederation()->getId()) {
-            throw new RunTimeException('FederationApplication does not belong to your Federation!');
+            throw new RuntimeException('FederationApplication does not belong to your Federation!');
         }
 
         return $federationApplication;

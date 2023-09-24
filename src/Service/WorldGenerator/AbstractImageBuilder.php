@@ -18,7 +18,7 @@ abstract class AbstractImageBuilder
 
         $image = imagecreatetruecolor($sizeX, $sizeY);
         if ($image === false) {
-            throw new RunTimeException("imagecreatetruecolor failed for size {$sizeX}/{$sizeY}");
+            throw new RuntimeException("imagecreatetruecolor failed for size {$sizeX}/{$sizeY}");
         }
 
         $this->image = $image;
@@ -34,7 +34,7 @@ abstract class AbstractImageBuilder
         );
 
         if ($color === false) {
-            throw new RunTimeException("imagecolorallocate failed for WorldRegion {$worldRegion->getId()}");
+            throw new RuntimeException("imagecolorallocate failed for WorldRegion {$worldRegion->getId()}");
         }
 
         return $color;
@@ -62,7 +62,7 @@ abstract class AbstractImageBuilder
     protected function ensureGD(): void
     {
         if (extension_loaded('gd') === false) {
-            throw new RunTimeException("GD not installed!");
+            throw new RuntimeException("GD not installed!");
         }
     }
 }

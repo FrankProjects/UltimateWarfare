@@ -1,0 +1,34 @@
+<table class="table text-center">
+    <tr>
+        <td width="200">Name: {{ post.user.username }}
+            {% if 'ROLE_ADMIN' in post.user.roles  %}
+                <p>
+                    <b>Forum Moderator</b>
+                </p>
+            {% endif %}
+            {% if post.user.hasAvatar %}
+                <img alt="{{ post.user.username }} Avatar" src="data:image/jpeg;base64,{{ post.user.avatar|base64_encode(constant('FrankProjects\\UltimateWarfare\\Twig\\Base64EncodeExtension::GET_CONTENT_FROM_STREAM')) }}" />
+            {% endif %}
+        </td>
+        <td rowspan="3" width="700">{{ post.content|nl2br }}
+            <br/>
+            {% if post.editUser %}
+                <br/><br/><i> Last edited by: {{ post.editUser.username }}</i>
+            {% endif %}
+
+            {% if user != null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}
+                <br/>
+                <br/>
+                <a class="btn btn-primary" href="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" title="Delete">Delete</a>
+                - <a class="btn btn-primary" href="{{ path('Forum/Post/Edit', {'postId': post.id}) }}" title="Edit">Edit</a>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Date/Time:<br/>
+            {{ post.createDateTime|date("Y-m-d H:i:s") }}
+        </td>
+    </tr>
+</table>
+<br/>

@@ -41,7 +41,7 @@ final class FleetActionService
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
 
         if ($fleet->getWorldRegion()->getPlayer()->getId() != $player->getId()) {
-            throw new RunTimeException('You are not the owner of this region!');
+            throw new RuntimeException('You are not the owner of this region!');
         }
 
         $this->addFleetUnitsToWorldRegion($fleet, $fleet->getWorldRegion());
@@ -54,7 +54,7 @@ final class FleetActionService
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
 
         if ($fleet->getTargetWorldRegion()->getPlayer()->getId() != $player->getId()) {
-            throw new RunTimeException('You are not the owner of this region!');
+            throw new RuntimeException('You are not the owner of this region!');
         }
 
         $this->addFleetUnitsToWorldRegion($fleet, $fleet->getTargetWorldRegion());
@@ -73,11 +73,11 @@ final class FleetActionService
         array $unitData
     ): void {
         if ($targetRegion->getWorld()->getId() != $player->getWorld()->getId()) {
-            throw new RunTimeException('Target region does not exist!');
+            throw new RuntimeException('Target region does not exist!');
         }
 
         if ($region->getPlayer()->getId() != $player->getId()) {
-            throw new RunTimeException('Region is not owned by you.');
+            throw new RuntimeException('Region is not owned by you.');
         }
 
         $fleet = Fleet::createForPlayer($player, $region, $targetRegion);
@@ -107,7 +107,7 @@ final class FleetActionService
         $fleet = $this->fleetRepository->findByIdAndPlayer($fleetId, $player);
 
         if ($fleet === null) {
-            throw new RunTimeException('Fleet does not exist!');
+            throw new RuntimeException('Fleet does not exist!');
         }
 
         return $fleet;
@@ -151,7 +151,7 @@ final class FleetActionService
             if ($regionUnit->getGameUnit()->getId() == $gameUnit->getId()) {
                 $hasUnit = true;
                 if ($amount > $regionUnit->getAmount()) {
-                    throw new RunTimeException("You don't have that many " . $gameUnit->getName() . "s!");
+                    throw new RuntimeException("You don't have that many " . $gameUnit->getName() . "s!");
                 }
 
                 $regionUnit->setAmount($regionUnit->getAmount() - $amount);
@@ -169,7 +169,7 @@ final class FleetActionService
         }
 
         if ($hasUnit !== true) {
-            throw new RunTimeException("You don't have that many " . $gameUnit->getName() . "s!");
+            throw new RuntimeException("You don't have that many " . $gameUnit->getName() . "s!");
         }
     }
 }

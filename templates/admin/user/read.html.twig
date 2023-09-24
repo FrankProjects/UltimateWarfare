@@ -47,6 +47,18 @@
                 {% endif %}
             </td>
         </tr>
+        {% if uw_forum_enabled == true %}
+            <tr>
+                <td>Forum</td>
+                <td>
+                    {% if user.forumBan == 1 %}
+                        <span class="bad">Banned</span>
+                    {% else %}
+                        <span class="good">Active</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
         <tr>
             <td>Roles</td>
             <td>
@@ -64,6 +76,15 @@
                         <a class="btn btn-danger" href="{{ path('Admin/User/Unban', {'userId': user.id}) }}">Unban</a>
                     {% endif %}
                 </p>
+                {% if uw_forum_enabled == true %}
+                    <p>
+                        {% if user.forumBan == 1 %}
+                            <a class="btn btn-danger" href="{{ path('Admin/User/ForumUnban', {'userId': user.id}) }}">Forum unban</a>
+                        {% else %}
+                            <a class="btn btn-danger" href="{{ path('Admin/User/ForumBan', {'userId': user.id}) }}">Forum ban</a>
+                        {% endif %}
+                    </p>
+                {% endif %}
                 {% if user.enabled == 0 %}
                     <p>
                         <a class="btn btn-danger" href="{{ path('Admin/User/Enable', {'userId': user.id}) }}">Enable account</a>

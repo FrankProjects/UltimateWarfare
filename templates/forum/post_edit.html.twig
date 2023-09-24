@@ -1,0 +1,27 @@
+{% extends 'forumBase.html.twig' %}
+{% block content %}
+    {% trans_default_domain 'forum' %}
+
+    <div class="text-center">
+        <a class="B" href="{{ path('Forum') }}">{{ 'label.forum'|trans }}</a> -
+        <a class="B" href="{{ path('Forum/Category', {'categoryId': topic.category.id}) }}">{{ 'label.topics'|trans }}</a>
+    </div>
+
+    {{ form_start(form) }}
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td><b>{{ 'action.post.edit'|trans }}</b></td>
+        </tr>
+        <tr>
+            <td>
+                {{ form_widget(form.content) }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ form_row(form.submit) }}
+            </td>
+        </tr>
+    </table>
+    {{ form_end(form) }}
+{% endblock %}

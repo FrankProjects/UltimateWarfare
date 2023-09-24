@@ -58,7 +58,7 @@ final class ResearchActionService
             }
 
             if ($playerResearch->getActive()) {
-                throw new RunTimeException('Research project is already completed!');
+                throw new RuntimeException('Research project is already completed!');
             }
 
             $this->researchPlayerRepository->remove($playerResearch);
@@ -70,11 +70,11 @@ final class ResearchActionService
         $research = $this->researchRepository->find($researchId);
 
         if ($research === null) {
-            throw new RunTimeException('This technology does not exist!');
+            throw new RuntimeException('This technology does not exist!');
         }
 
         if (!$research->getActive()) {
-            throw new RunTimeException('This technology is disabled!');
+            throw new RuntimeException('This technology is disabled!');
         }
 
         return $research;
@@ -87,11 +87,11 @@ final class ResearchActionService
         /** @var ResearchPlayer $playerResearch */
         foreach ($player->getPlayerResearch() as $playerResearch) {
             if (!$playerResearch->getActive()) {
-                throw new RunTimeException('You can only research 1 technology at a time!');
+                throw new RuntimeException('You can only research 1 technology at a time!');
             }
 
             if ($playerResearch->getResearch()->getId() === $research->getId()) {
-                throw new RunTimeException('This technology has already been researched!');
+                throw new RuntimeException('This technology has already been researched!');
             }
 
             $researchArray[$playerResearch->getResearch()->getId()] = $playerResearch->getResearch();
@@ -99,12 +99,12 @@ final class ResearchActionService
 
         foreach ($research->getResearchNeeds() as $researchNeed) {
             if (!isset($researchArray[$researchNeed->getRequiredResearch()->getId()])) {
-                throw new RunTimeException('You do not have all required technologies!');
+                throw new RuntimeException('You do not have all required technologies!');
             }
         }
 
         if ($research->getCost() > $player->getResources()->getCash()) {
-            throw new RunTimeException('You can not afford that!');
+            throw new RuntimeException('You can not afford that!');
         }
     }
 }

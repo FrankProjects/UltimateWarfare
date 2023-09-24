@@ -39,11 +39,11 @@ final class FederationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getFederation() !== null) {
-            throw new RunTimeException("You are already in a Federation!");
+            throw new RuntimeException("You are already in a Federation!");
         }
 
         if ($this->federationRepository->findByNameAndWorld($federationName, $player->getWorld()) !== null) {
-            throw new RunTimeException("Federation with this name already exist!");
+            throw new RuntimeException("Federation with this name already exist!");
         }
 
         $federation = Federation::createForPlayer($player, $federationName);
@@ -63,12 +63,12 @@ final class FederationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getId() === $playerId) {
-            throw new RunTimeException("You can't send to yourself!");
+            throw new RuntimeException("You can't send to yourself!");
         }
 
         $aidPlayer = $this->playerRepository->find($playerId);
         if ($aidPlayer === null || $aidPlayer->getFederation()->getId() !== $player->getFederation()->getId()) {
-            throw new RunTimeException("Player is not in your Federation!");
+            throw new RuntimeException("Player is not in your Federation!");
         }
 
         $resourceString = '';
@@ -84,7 +84,7 @@ final class FederationActionService
 
             $resourceAmount = $player->getResources()->getValueByName($resourceName);
             if ($amount > $resourceAmount) {
-                throw new RunTimeException("You don't have enough {$resourceName}!");
+                throw new RuntimeException("You don't have enough {$resourceName}!");
             }
 
             $player->getResources()->setValueByName($resourceName, $resourceAmount - $amount);
@@ -123,7 +123,7 @@ final class FederationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_GENERAL) {
-            throw new RunTimeException("You don't have permission to remove the Federation!");
+            throw new RuntimeException("You don't have permission to remove the Federation!");
         }
 
         $this->federationRepository->remove($player->getFederation());
@@ -134,11 +134,11 @@ final class FederationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_GENERAL) {
-            throw new RunTimeException("You don't have permission to change the Federation name!");
+            throw new RuntimeException("You don't have permission to change the Federation name!");
         }
 
         if ($this->federationRepository->findByNameAndWorld($federationName, $player->getWorld()) !== null) {
-            throw new RunTimeException("Federation name already exist!");
+            throw new RuntimeException("Federation name already exist!");
         }
 
         $federation = $player->getFederation();
@@ -151,7 +151,7 @@ final class FederationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getFederationHierarchy() < 1 || $player->getFederationHierarchy() == 10) {
-            throw new RunTimeException("You are not allowed to leave the Federation with this rank!");
+            throw new RuntimeException("You are not allowed to leave the Federation with this rank!");
         }
 
         $federation = $player->getFederation();
@@ -173,16 +173,16 @@ final class FederationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_GENERAL) {
-            throw new RunTimeException("You don't have permission to kick a player!");
+            throw new RuntimeException("You don't have permission to kick a player!");
         }
 
         if ($player->getId() === $playerId) {
-            throw new RunTimeException("You can't kick yourself!");
+            throw new RuntimeException("You can't kick yourself!");
         }
 
         $kickPlayer = $this->playerRepository->find($playerId);
         if ($kickPlayer === null || $kickPlayer->getFederation()->getId() !== $player->getFederation()->getId()) {
-            throw new RunTimeException("Player is not in your Federation!");
+            throw new RuntimeException("Player is not in your Federation!");
         }
 
         $kickPlayer->setFederation(null);
@@ -208,7 +208,7 @@ final class FederationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_GENERAL) {
-            throw new RunTimeException("You don't have permission to update the leadership message!");
+            throw new RuntimeException("You don't have permission to update the leadership message!");
         }
 
         $federation = $player->getFederation();
@@ -221,16 +221,16 @@ final class FederationActionService
         $this->ensureFederationEnabled($player);
 
         if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_GENERAL) {
-            throw new RunTimeException("You don't have permission to change ranks!");
+            throw new RuntimeException("You don't have permission to change ranks!");
         }
 
         $changePlayer = $this->playerRepository->find($playerId);
         if ($changePlayer === null || $changePlayer->getFederation()->getId() !== $player->getFederation()->getId()) {
-            throw new RunTimeException("Player is not in your Federation!");
+            throw new RuntimeException("Player is not in your Federation!");
         }
 
         if ($role < 1 || $role > 10) {
-            throw new RunTimeException("Invalid role!");
+            throw new RuntimeException("Invalid role!");
         }
 
         $changePlayer->setFederationHierarchy($role);
@@ -263,7 +263,7 @@ final class FederationActionService
     {
         $world = $player->getWorld();
         if (!$world->getFederation()) {
-            throw new RunTimeException("Federations not enabled!");
+            throw new RuntimeException("Federations not enabled!");
         }
     }
 }

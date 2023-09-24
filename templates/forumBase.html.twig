@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <main class="col-sm-12 justify-content-center">
+        {% if user is not defined or user == null %}
+            <b>Welcome to the Ultimate-Warfare forums!</b>
+            <br />
+            You are currently not logged in, you can only view the forums now. <a class="B" href="{{ path('Site/Login') }}">Click here to login!</a>
+        {% else %}
+            You are logged in as <b>{{ user.username }}</b>. Back to <a class="B" href="{{ path('Game/Headquarter') }}">Game</a>?
+        {% endif %}
+
+        <br />
+        <br />
+
+        {% include 'flashes.html.twig' %}
+
+        {% block content %}{% endblock %}
+    </main>
+{% endblock %}

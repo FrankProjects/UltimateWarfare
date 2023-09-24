@@ -1,0 +1,41 @@
+{% extends 'forumBase.html.twig' %}
+{% block content %}
+    <div class="text-center">
+        <a class="B" href="{{ path('Forum') }}">Forum</a> - <a class="B" href="{{ path('Forum/Category', {'categoryId': category.id}) }}">Topics</a>
+    </div>
+
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td class="text-start" width="400"><strong>Topic</strong></td>
+            <td width="120"><strong>Creator</strong></td>
+            <td width="80"><strong>Reactions</strong></td>
+            <td class="text-start" width="300"><strong>Last reply</strong></td>
+        </tr>
+
+        {% for topic in topics %}
+            <tr>
+                {% if topic.sticky == 1 %}
+                    <td class="text-start"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}"><b><span style="color:#CC0000">Sticky </span></b>{{ topic.title }}</a></td>
+                {% else %}
+                    <td class="text-start"><a class="B" href="{{ path('Forum/Topic', {'topicId': topic.id}) }}">{{ topic.title }}</a></td>
+                {% endif %}
+                <td>{{ topic.user.username }}</td>
+                <td>{{ topic.posts|length }}</td>
+                {% set lastPost = topic.posts|last %}
+                {% if lastPost == null %}
+                    <td class="text-start">{{ topic.createDateTime|date("Y-m-d H:i:s") }} by {{ topic.user.username }}</td>
+                {% else %}
+                    <td class="text-start">{{ lastPost.createDateTime|date("Y-m-d H:i:s") }} by {{ lastPost.user.username }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+        {% if user != null and category.id > 1 or is_granted('ROLE_ADMIN') %}
+            <tr>
+                <td class="text-right" colspan="5">
+                    <a class="btn btn-primary" href="{{ path('Forum/Topic/Create', {'categoryId': category.id}) }}">Make a new Topic</a>
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+{% endblock %}

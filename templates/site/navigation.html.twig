@@ -8,6 +8,11 @@
         <li class="nav-item">
                 <a class="nav-link" href="{{ path('Site/Register') }}" title="Ultimate Warfare - Register free account">{{ 'label.register'|trans({}, 'navigation') }}</a>
         </li>
+        {% if uw_forum_enabled == true %}
+                <li class="nav-item">
+                        <a class="nav-link" href="{{ path('Forum') }}" title="Ultimate Warfare - Forum">{{ 'label.forum'|trans({}, 'navigation') }}</a>
+                </li>
+        {% endif %}
         <li class="nav-item">
                 <a class="nav-link" href="{{ path('Guide') }}" title="Ultimate Warfare - Guide/FAQ">{{ 'label.guide'|trans({}, 'navigation') }}</a>
         </li>

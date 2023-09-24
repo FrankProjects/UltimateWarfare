@@ -37,14 +37,14 @@ final class MarketActionService
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
         if ($marketItem->getType() != MarketItem::TYPE_SELL) {
-            throw new RunTimeException('Market order is not a buy order!');
+            throw new RuntimeException('Market order is not a buy order!');
         }
 
         $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
 
         $resources = $player->getResources();
         if ($marketItem->getPrice() > $resources->getCash()) {
-            throw new RunTimeException('You do not have enough cash!');
+            throw new RuntimeException('You do not have enough cash!');
         }
 
         $resources->setCash($resources->getCash() - $marketItem->getPrice());
@@ -84,7 +84,7 @@ final class MarketActionService
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
         if ($marketItem->getPlayer()->getId() != $player->getId()) {
-            throw new RunTimeException('You can not cancel orders that do not belong to you!\'');
+            throw new RuntimeException('You can not cancel orders that do not belong to you!\'');
         }
 
         $resources = $player->getResources();
@@ -106,7 +106,7 @@ final class MarketActionService
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
         if ($marketItem->getType() != MarketItem::TYPE_BUY) {
-            throw new RunTimeException('Market order is not a sell order!');
+            throw new RuntimeException('Market order is not a sell order!');
         }
 
         $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
@@ -146,21 +146,21 @@ final class MarketActionService
         $this->ensureValidGameResource($gameResource);
 
         if ($price < 1 || $amount < 1) {
-            throw new RunTimeException("Invalid input!");
+            throw new RuntimeException("Invalid input!");
         }
 
         $resources = $player->getResources();
 
         if ($action == MarketItem::TYPE_BUY) {
             if ($price > $resources->getCash()) {
-                throw new RunTimeException("You do not have enough cash!");
+                throw new RuntimeException("You do not have enough cash!");
             }
 
             $resources->setCash($resources->getCash() - $price);
         } elseif ($action == MarketItem::TYPE_SELL) {
             $resources = $this->substractAndValidateGameResources($gameResource, $resources, $amount);
         } else {
-            throw new RunTimeException("Invalid option!");
+            throw new RuntimeException("Invalid option!");
         }
 
         $player->setResources($resources);
@@ -173,21 +173,21 @@ final class MarketActionService
     {
         $world = $player->getWorld();
         if (!$world->getMarket()) {
-            throw new RunTimeException("Market not enabled!");
+            throw new RuntimeException("Market not enabled!");
         }
     }
 
     private function ensureMarketItemNotOwnedByPlayer(MarketItem $marketItem, Player $player): void
     {
         if ($marketItem->getPlayer()->getId() === $player->getId()) {
-            throw new RunTimeException('Can not buy or sell to yourself!');
+            throw new RuntimeException('Can not buy or sell to yourself!');
         }
     }
 
     private function ensureValidGameResource(string $gameResource): void
     {
         if (!GameResource::isValid($gameResource)) {
-            throw new RunTimeException("Invalid resource!");
+            throw new RuntimeException("Invalid resource!");
         }
     }
 
@@ -196,11 +196,11 @@ final class MarketActionService
         $marketItem = $this->marketItemRepository->find($marketItemId);
 
         if ($marketItem === null) {
-            throw new RunTimeException('Market order does not exist!');
+            throw new RuntimeException('Market order does not exist!');
         }
 
         if ($marketItem->getWorld()->getId() != $player->getWorld()->getId()) {
-            throw new RunTimeException('Wrong game world!');
+            throw new RuntimeException('Wrong game world!');
         }
 
         return $marketItem;
@@ -219,7 +219,7 @@ final class MarketActionService
                 $resources->setSteel($resources->getSteel() + $marketItem->getAmount());
                 break;
             default:
-                throw new RunTimeException('Unknown resource type!');
+                throw new RuntimeException('Unknown resource type!');
         }
 
         return $resources;
@@ -238,7 +238,7 @@ final class MarketActionService
                 $resources->setSteel($resources->getSteel() - $marketItem->getAmount());
                 break;
             default:
-                throw new RunTimeException('Unknown resource type!');
+                throw new RuntimeException('Unknown resource type!');
         }
 
         return $resources;
@@ -263,7 +263,7 @@ final class MarketActionService
                 $resources->setSteel($resources->getSteel() - $amount);
                 break;
             default:
-                throw new RunTimeException("Unknown resource type!");
+                throw new RuntimeException("Unknown resource type!");
         }
 
         return $resources;
@@ -272,7 +272,7 @@ final class MarketActionService
     private function ensureEnoughResources(int $amount, int $resourceAmount, string $resourceName): void
     {
         if ($amount > $resourceAmount) {
-            throw new RunTimeException("You do not have enough {$resourceName}!");
+            throw new RuntimeException("You do not have enough {$resourceName}!");
         }
     }
 
