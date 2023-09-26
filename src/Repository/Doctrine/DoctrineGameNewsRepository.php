@@ -43,7 +43,7 @@ final class DoctrineGameNewsRepository implements GameNewsRepository
     public function findActiveMainPageNews(): array
     {
         return $this->entityManager->createQuery(
-            'SELECT gn.title, gn.message, gn.createDateTime FROM Game:GameNews gn WHERE gn.mainpage = 1 AND gn.enabled = 1 ORDER BY gn.createDateTime DESC'
+            'SELECT gn.title, gn.message, gn.createDateTime FROM ' . GameNews::class . ' gn WHERE gn.mainpage = 1 AND gn.enabled = 1 ORDER BY gn.createDateTime DESC'
         )
             ->getResult();
     }

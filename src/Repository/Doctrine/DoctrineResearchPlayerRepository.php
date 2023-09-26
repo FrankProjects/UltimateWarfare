@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\Research;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 
@@ -26,8 +27,8 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
     {
         return $this->entityManager->createQuery(
             'SELECT rp
-              FROM Game:ResearchPlayer rp
-              JOIN Game:Research r WITH rp.research = r
+              FROM ' . ResearchPlayer::class . ' rp
+              JOIN ' . Research::class . ' r WITH rp.research = r
               WHERE rp.active = 0 AND (rp.timestamp + r.timestamp) < :timestamp'
         )->setParameter(
             'timestamp',
@@ -43,7 +44,7 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
     {
         return $this->entityManager->createQuery(
             'SELECT rp
-              FROM Game:ResearchPlayer rp
+              FROM ' . ResearchPlayer::class . ' rp
               WHERE rp.player = :player AND rp.active = 1
               ORDER BY rp.timestamp DESC'
         )->setParameter(

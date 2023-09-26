@@ -6,9 +6,11 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\GameUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldSector;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 
@@ -66,8 +68,8 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         $results = $this->entityManager
             ->createQuery(
                 'SELECT gu.id, sum(wru.amount) as total
-              FROM Game:WorldRegionUnit wru
-              JOIN Game:GameUnit gu WITH wru.gameUnit = gu
+              FROM ' . WorldRegionUnit::class . ' wru
+              JOIN ' . GameUnit::class . ' gu WITH wru.gameUnit = gu
               WHERE wru.worldRegion = :worldRegion
               GROUP BY gu.id'
             )->setParameter('worldRegion', $worldRegion)
@@ -86,7 +88,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         return $this->entityManager
             ->createQuery(
                 'SELECT wr
-              FROM Game:WorldRegion wr
+              FROM ' . WorldRegion::class . ' wr
               WHERE wr.id < :id AND wr.player = :player
               ORDER BY wr.id DESC'
             )->setParameter('id', $id)
@@ -101,7 +103,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         return $this->entityManager
             ->createQuery(
                 'SELECT wr
-              FROM Game:WorldRegion wr
+              FROM ' . WorldRegion::class . ' wr
               WHERE wr.id > :id AND wr.player = :player
               ORDER BY wr.id ASC'
             )->setParameter('id', $id)
