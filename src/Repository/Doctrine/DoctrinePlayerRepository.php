@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
+use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 
 final class DoctrinePlayerRepository implements PlayerRepository
@@ -45,8 +46,8 @@ final class DoctrinePlayerRepository implements PlayerRepository
         return $this->entityManager
             ->createQuery(
                 'SELECT p
-              FROM Game:Player p
-              JOIN Game:WorldRegion wr WITH wr.player = p
+              FROM ' . Player::class . ' p
+              JOIN ' . WorldRegion::class . ' wr WITH wr.player = p
               GROUP BY p.id
               HAVING p.world = :world
               ORDER BY COUNT(wr.player) DESC'
@@ -67,7 +68,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
         return $this->entityManager
             ->createQuery(
                 'SELECT p
-              FROM Game:Player p
+              FROM ' . Player::class . ' p
               WHERE p.world = :world
               ORDER BY p.networth DESC'
             )->setParameter(

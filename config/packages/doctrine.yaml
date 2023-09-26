@@ -13,4 +13,3 @@ doctrine:
                 type: xml
                 dir: '%kernel.project_dir%/config/doctrine'
                 prefix: 'FrankProjects\UltimateWarfare\Entity'
-                alias: Game

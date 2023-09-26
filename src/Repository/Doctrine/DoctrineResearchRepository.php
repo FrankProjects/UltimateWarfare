@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Research;
+use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
 
 final class DoctrineResearchRepository implements ResearchRepository
@@ -46,8 +47,8 @@ final class DoctrineResearchRepository implements ResearchRepository
     {
         return $this->entityManager->createQuery(
             'SELECT rp
-              FROM Game:ResearchPlayer rp
-              JOIN Game:Research r WITH rp.research = r
+              FROM ' . ResearchPlayer::class . ' rp
+              JOIN ' . Research::class . ' r WITH rp.research = r
               WHERE rp.player = :player AND rp.active = 0'
         )->setParameter(
             'player',
@@ -63,8 +64,8 @@ final class DoctrineResearchRepository implements ResearchRepository
     {
         return $this->entityManager->createQuery(
             'SELECT r
-              FROM Game:Research r
-              WHERE r.active = 1 AND r.id NOT IN (SELECT r2.id FROM Game:ResearchPlayer rp JOIN rp.research r2 WHERE rp.player = :player)'
+              FROM ' . Research::class . ' r
+              WHERE r.active = 1 AND r.id NOT IN (SELECT r2.id FROM ' . ResearchPlayer::class . ' rp JOIN rp.research r2 WHERE rp.player = :player)'
         )->setParameter(
             'player',
             $player

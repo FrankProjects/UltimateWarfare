@@ -6,8 +6,10 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\GameUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 
@@ -39,9 +41,9 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
     {
         return $this->entityManager->createQuery(
             'SELECT wru.amount, gu.networth
-              FROM Game:WorldRegionUnit wru
-              JOIN Game:WorldRegion wr WITH wru.worldRegion = wr
-              JOIN Game:GameUnit gu WITH wru.gameUnit = gu
+              FROM ' . WorldRegionUnit::class . ' wru
+              JOIN ' . WorldRegion::class . ' wr WITH wru.worldRegion = wr
+              JOIN ' . GameUnit::class . ' gu WITH wru.gameUnit = gu
               WHERE wr.player = :player'
         )->setParameter(
             'player',
@@ -59,9 +61,9 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
         $results = $this->entityManager
             ->createQuery(
                 'SELECT gu.id, sum(wru.amount) as total
-              FROM Game:WorldRegionUnit wru
-              JOIN Game:WorldRegion wr WITH wru.worldRegion = wr
-              JOIN Game:GameUnit gu WITH wru.gameUnit = gu
+              FROM ' . WorldRegionUnit::class . ' wru
+              JOIN ' . WorldRegion::class . ' wr WITH wru.worldRegion = wr
+              JOIN ' . GameUnit::class . ' gu WITH wru.gameUnit = gu
               WHERE wr.player = :player AND gu.gameUnitType IN (:gameUnitTypes)
               GROUP BY gu.id'
             )->setParameter('player', $player)

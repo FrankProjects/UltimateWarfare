@@ -48,7 +48,7 @@ final class DoctrineReportRepository implements ReportRepository
     {
         return $this->entityManager->createQuery(
             'SELECT r
-              FROM Game:Report r
+              FROM ' . Report::class . ' r
               WHERE r.player = :player AND r.type = :type AND r.timestamp < :timestamp
               ORDER BY r.timestamp DESC'
         )->setParameter(
@@ -73,7 +73,7 @@ final class DoctrineReportRepository implements ReportRepository
     {
         return $this->entityManager->createQuery(
             'SELECT r
-              FROM Game:Report r
+              FROM ' . Report::class . ' r
               WHERE r.player = :player AND r.timestamp < :timestamp
               ORDER BY r.timestamp DESC'
         )->setParameter(

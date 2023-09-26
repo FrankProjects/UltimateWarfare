@@ -39,7 +39,7 @@ final class DoctrineMessageRepository implements MessageRepository
     {
         return $this->entityManager->createQuery(
             'SELECT m
-              FROM Game:Message m
+              FROM ' . Message::class . ' m
               WHERE m.toPlayer = :player AND m.toDelete = false
               ORDER BY m.timestamp DESC'
         )->setParameter(
@@ -58,7 +58,7 @@ final class DoctrineMessageRepository implements MessageRepository
     {
         return $this->entityManager->createQuery(
             'SELECT m
-              FROM Game:Message m
+              FROM ' . Message::class . ' m
               WHERE m.fromPlayer = :player AND m.fromDelete = false
               ORDER BY m.timestamp DESC'
         )->setParameter(

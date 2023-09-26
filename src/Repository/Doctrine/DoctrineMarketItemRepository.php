@@ -47,7 +47,7 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
     {
         return $this->entityManager->createQuery(
             'SELECT m
-              FROM Game:MarketItem m
+              FROM ' . MarketItem::class . ' m
               WHERE m.world = :world AND m.type = :type
               ORDER BY m.id DESC'
         )->setParameter(
