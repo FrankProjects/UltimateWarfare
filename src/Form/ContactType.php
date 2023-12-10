@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 class ContactType extends AbstractType
 {
@@ -22,13 +23,17 @@ class ContactType extends AbstractType
                 'name',
                 TextType::class,
                 [
-                    'label' => 'label.name'
+                    'required' => true,
+                    'label' => 'label.name',
+                    'constraints' => [new Length(['min' => 1])],
+                    'empty_data' => ''
                 ]
             )
             ->add(
                 'email',
                 EmailType::class,
                 [
+                    'required' => true,
                     'label' => 'label.email'
                 ]
             )
@@ -36,14 +41,20 @@ class ContactType extends AbstractType
                 'subject',
                 TextType::class,
                 [
-                    'label' => 'label.subject'
+                    'required' => true,
+                    'label' => 'label.subject',
+                    'constraints' => [new Length(['min' => 5])],
+                    'empty_data' => ''
                 ]
             )
             ->add(
                 'message',
                 TextareaType::class,
                 [
-                    'label' => 'label.message'
+                    'required' => true,
+                    'label' => 'label.message',
+                    'constraints' => [new Length(['min' => 10])],
+                    'empty_data' => ''
                 ]
             )
             ->add(
