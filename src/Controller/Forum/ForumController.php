@@ -11,7 +11,11 @@ class ForumController extends BaseForumController
 {
     public function index(CategoryRepository $categoryRepository): Response
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (\Exception $exception) {
+            return $this->render('forum/forum_disabled.html.twig');
+        }
 
         $categories = $categoryRepository->findAll();
 
