@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
 use FrankProjects\UltimateWarfare\Entity\Category;
+use FrankProjects\UltimateWarfare\Exception\ForumDisabledException;
 use FrankProjects\UltimateWarfare\Form\Forum\CategoryType;
 use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
 use FrankProjects\UltimateWarfare\Repository\TopicRepository;
@@ -32,7 +33,11 @@ class CategoryController extends BaseForumController
 
     public function category(int $categoryId): Response
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->render('forum/forum_disabled.html.twig');
+        }
 
         $category = $this->categoryRepository->find($categoryId);
         $topics = $this->topicRepository->getByCategorySortedByStickyAndDate($category);
@@ -49,7 +54,11 @@ class CategoryController extends BaseForumController
 
     public function create(Request $request): Response
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->render('forum/forum_disabled.html.twig');
+        }
 
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
@@ -77,7 +86,11 @@ class CategoryController extends BaseForumController
 
     public function edit(Request $request, int $categoryId): Response
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->render('forum/forum_disabled.html.twig');
+        }
 
         $category = $this->categoryRepository->find($categoryId);
 
@@ -111,7 +124,11 @@ class CategoryController extends BaseForumController
 
     public function remove(int $categoryId): RedirectResponse
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->redirectToRoute('Forum');
+        }
 
         $category = $this->categoryRepository->find($categoryId);
 
