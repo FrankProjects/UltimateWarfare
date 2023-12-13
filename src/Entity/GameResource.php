@@ -6,10 +6,10 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class GameResource
 {
-    public const GAME_RESOURCE_CASH = 'cash';
-    public const GAME_RESOURCE_FOOD = 'food';
-    public const GAME_RESOURCE_WOOD = 'wood';
-    public const GAME_RESOURCE_STEEL = 'steel';
+    public const string GAME_RESOURCE_CASH = 'cash';
+    public const string GAME_RESOURCE_FOOD = 'food';
+    public const string GAME_RESOURCE_WOOD = 'wood';
+    public const string GAME_RESOURCE_STEEL = 'steel';
 
     public static function isValid(string $gameResource): bool
     {

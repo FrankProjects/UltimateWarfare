@@ -12,9 +12,9 @@ use RuntimeException;
 
 class World
 {
-    private const STATUS_CREATED = 0;
-    private const STATUS_RUNNING = 1;
-    private const STATUS_FINISHED = 2;
+    private const int STATUS_CREATED = 0;
+    private const int STATUS_RUNNING = 1;
+    private const int STATUS_FINISHED = 2;
 
     private ?int $id;
     private string $name = '';

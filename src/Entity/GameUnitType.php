@@ -9,11 +9,11 @@ use Doctrine\Common\Collections\Collection;
 
 class GameUnitType
 {
-    public const GAME_UNIT_TYPE_BUILDINGS = 1;
-    public const GAME_UNIT_TYPE_DEFENCE_BUILDINGS = 2;
-    public const GAME_UNIT_TYPE_SPECIAL_BUILDINGS = 3;
-    public const GAME_UNIT_TYPE_UNITS = 4;
-    public const GAME_UNIT_TYPE_SPECIAL_UNITS = 5;
+    public const int GAME_UNIT_TYPE_BUILDINGS = 1;
+    public const int GAME_UNIT_TYPE_DEFENCE_BUILDINGS = 2;
+    public const int GAME_UNIT_TYPE_SPECIAL_BUILDINGS = 3;
+    public const int GAME_UNIT_TYPE_UNITS = 4;
+    public const int GAME_UNIT_TYPE_SPECIAL_UNITS = 5;
 
     private ?int $id;
     private string $name;

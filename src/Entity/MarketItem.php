@@ -8,15 +8,8 @@ use InvalidArgumentException;
 
 class MarketItem
 {
-    /**
-     * @var string
-     */
-    public const TYPE_BUY = 'buy';
-
-    /**
-     * @var string
-     */
-    public const TYPE_SELL = 'sell';
+    public const string TYPE_BUY = 'buy';
+    public const string TYPE_SELL = 'sell';
 
     private ?int $id;
     private int $amount;

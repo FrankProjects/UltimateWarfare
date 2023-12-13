@@ -14,8 +14,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, Serializable
 {
-    private const ROLE_DEFAULT = 'ROLE_USER';
-    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    private const string ROLE_DEFAULT = 'ROLE_USER';
+    public const string ROLE_ADMIN = 'ROLE_ADMIN';
 
     private ?int $id;
     private string $username = '';

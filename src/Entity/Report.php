@@ -6,10 +6,10 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class Report
 {
-    public const TYPE_ATTACKED = 1;
-    public const TYPE_GENERAL = 2;
-    public const TYPE_MARKET = 4;
-    public const TYPE_AID = 5;
+    public const int TYPE_ATTACKED = 1;
+    public const int TYPE_GENERAL = 2;
+    public const int TYPE_MARKET = 4;
+    public const int TYPE_AID = 5;
 
     private ?int $id;
     private int $type;
