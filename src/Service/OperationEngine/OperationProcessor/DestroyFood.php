@@ -8,11 +8,11 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class DestroyFood extends OperationProcessor
 {
-    protected const RESEARCH_DESTROY_FOOD_LEVEL_1 = 605;
-    protected const RESEARCH_DESTROY_FOOD_LEVEL_2 = 606;
-    protected const RESEARCH_DESTROY_FOOD_LEVEL_3 = 607;
-    protected const RESEARCH_DESTROY_FOOD_LEVEL_4 = 608;
-    protected const RESEARCH_DESTROY_FOOD_LEVEL_5 = 609;
+    protected const int RESEARCH_DESTROY_FOOD_LEVEL_1 = 605;
+    protected const int RESEARCH_DESTROY_FOOD_LEVEL_2 = 606;
+    protected const int RESEARCH_DESTROY_FOOD_LEVEL_3 = 607;
+    protected const int RESEARCH_DESTROY_FOOD_LEVEL_4 = 608;
+    protected const int RESEARCH_DESTROY_FOOD_LEVEL_5 = 609;
 
     public function getFormula(): float
     {

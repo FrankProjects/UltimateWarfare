@@ -9,8 +9,8 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class StealthBomberAttack extends OperationProcessor
 {
-    protected const BUILDINGS_DESTROYED_PER_BOMBER = 5;
-    protected const GAME_UNIT_STEALTH_BOMBER_ID = 404;
+    protected const int BUILDINGS_DESTROYED_PER_BOMBER = 5;
+    protected const int GAME_UNIT_STEALTH_BOMBER_ID = 404;
 
     public function getFormula(): float
     {

@@ -8,11 +8,11 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class DestroyCash extends OperationProcessor
 {
-    protected const RESEARCH_DESTROY_CASH_LEVEL_1 = 600;
-    protected const RESEARCH_DESTROY_CASH_LEVEL_2 = 601;
-    protected const RESEARCH_DESTROY_CASH_LEVEL_3 = 602;
-    protected const RESEARCH_DESTROY_CASH_LEVEL_4 = 603;
-    protected const RESEARCH_DESTROY_CASH_LEVEL_5 = 604;
+    protected const int RESEARCH_DESTROY_CASH_LEVEL_1 = 600;
+    protected const int RESEARCH_DESTROY_CASH_LEVEL_2 = 601;
+    protected const int RESEARCH_DESTROY_CASH_LEVEL_3 = 602;
+    protected const int RESEARCH_DESTROY_CASH_LEVEL_4 = 603;
+    protected const int RESEARCH_DESTROY_CASH_LEVEL_5 = 604;
 
 
     public function getFormula(): float
