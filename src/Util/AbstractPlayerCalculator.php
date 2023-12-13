@@ -16,8 +16,8 @@ use RuntimeException;
  */
 abstract class AbstractPlayerCalculator
 {
-    protected const ABSTRACT_GAME_RESOURCES_UPKEEP = 'upkeep';
-    protected const ABSTRACT_GAME_RESOURCES_INCOME = 'income';
+    protected const string ABSTRACT_GAME_RESOURCES_UPKEEP = 'upkeep';
+    protected const string ABSTRACT_GAME_RESOURCES_INCOME = 'income';
 
     protected AbstractGameResources $abstractGameResources;
 

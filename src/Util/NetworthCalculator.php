@@ -10,7 +10,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 
 final class NetworthCalculator
 {
-    public const NETWORTH_CALCULATOR_REGION = 1000;
+    public const int NETWORTH_CALCULATOR_REGION = 1000;
 
     private WorldRegionUnitRepository $worldRegionUnitRepository;
 

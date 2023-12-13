@@ -12,9 +12,9 @@ use RuntimeException;
 
 abstract class BattlePhase implements IBattlePhase
 {
-    public const AIR_PHASE = 'air';
-    public const SEA_PHASE = 'sea';
-    public const GROUND_PHASE = 'ground';
+    public const string AIR_PHASE = 'air';
+    public const string SEA_PHASE = 'sea';
+    public const string GROUND_PHASE = 'ground';
 
     protected string $name;
 
