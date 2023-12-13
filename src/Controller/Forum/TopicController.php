@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
 use FrankProjects\UltimateWarfare\Entity\Topic;
 use FrankProjects\UltimateWarfare\Entity\Post;
+use FrankProjects\UltimateWarfare\Exception\ForumDisabledException;
 use FrankProjects\UltimateWarfare\Form\Forum\PostType;
 use FrankProjects\UltimateWarfare\Form\Forum\TopicType;
 use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
@@ -38,7 +39,11 @@ class TopicController extends BaseForumController
 
     public function topic(Request $request, int $topicId): Response
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->render('forum/forum_disabled.html.twig');
+        }
 
         $topic = $this->topicRepository->find($topicId);
 
@@ -71,7 +76,11 @@ class TopicController extends BaseForumController
 
     public function create(Request $request, int $categoryId): Response
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->render('forum/forum_disabled.html.twig');
+        }
 
         $category = $this->categoryRepository->find($categoryId);
 
@@ -92,7 +101,7 @@ class TopicController extends BaseForumController
                 $this->addFlash('error', $e->getMessage());
             }
 
-            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }
 
         return $this->render(
@@ -107,7 +116,11 @@ class TopicController extends BaseForumController
 
     public function remove(int $topicId): RedirectResponse
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->redirectToRoute('Forum');
+        }
 
         $topic = $this->topicRepository->find($topicId);
 
@@ -130,12 +143,16 @@ class TopicController extends BaseForumController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('Forum/Category', ['categoryId' => $category->getId()], 302);
+        return $this->redirectToRoute('Forum/Category', ['categoryId' => $category->getId()]);
     }
 
     public function edit(Request $request, int $topicId): Response
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->render('forum/forum_disabled.html.twig');
+        }
 
         $topic = $this->topicRepository->find($topicId);
 
@@ -147,7 +164,7 @@ class TopicController extends BaseForumController
         $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
-            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }
 
         $form = $this->createForm(TopicType::class, $topic);
@@ -160,7 +177,7 @@ class TopicController extends BaseForumController
                 $this->addFlash('error', $e->getMessage());
             }
 
-            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }
 
         return $this->render(
@@ -173,9 +190,13 @@ class TopicController extends BaseForumController
         );
     }
 
-    public function sticky(Request $request, int $topicId): RedirectResponse
+    public function sticky(int $topicId): RedirectResponse
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->redirectToRoute('Forum');
+        }
 
         $topic = $this->topicRepository->find($topicId);
 
@@ -187,7 +208,7 @@ class TopicController extends BaseForumController
         $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
-            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }
 
         try {
@@ -197,12 +218,16 @@ class TopicController extends BaseForumController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId], 302);
+        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId]);
     }
 
-    public function unsticky(Request $request, int $topicId): RedirectResponse
+    public function unsticky(int $topicId): RedirectResponse
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->redirectToRoute('Forum');
+        }
 
         $topic = $this->topicRepository->find($topicId);
 
@@ -214,7 +239,7 @@ class TopicController extends BaseForumController
         $user = $this->getGameUser();
         if ($user == null) {
             $this->addFlash('error', 'Not logged in!');
-            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }
 
         try {
@@ -224,6 +249,6 @@ class TopicController extends BaseForumController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId], 302);
+        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topicId]);
     }
 }

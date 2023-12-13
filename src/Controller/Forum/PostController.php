@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
+use FrankProjects\UltimateWarfare\Exception\ForumDisabledException;
 use FrankProjects\UltimateWarfare\Form\Forum\PostType;
 use FrankProjects\UltimateWarfare\Repository\PostRepository;
 use FrankProjects\UltimateWarfare\Service\Action\PostActionService;
@@ -27,7 +28,11 @@ class PostController extends BaseForumController
 
     public function remove(int $postId): RedirectResponse
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->redirectToRoute('Forum');
+        }
 
         $post = $this->postRepository->find($postId);
 
@@ -45,12 +50,16 @@ class PostController extends BaseForumController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+        return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
     }
 
     public function edit(Request $request, int $postId): Response
     {
-        $this->ensureForumEnabled();
+        try {
+            $this->ensureForumEnabled();
+        } catch (ForumDisabledException) {
+            return $this->render('forum/forum_disabled.html.twig');
+        }
 
         $post = $this->postRepository->find($postId);
 
@@ -70,7 +79,7 @@ class PostController extends BaseForumController
                 $this->addFlash('error', $e->getMessage());
             }
 
-            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()], 302);
+            return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }
 
         return $this->render(

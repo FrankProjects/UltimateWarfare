@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
+use FrankProjects\UltimateWarfare\Exception\ForumDisabledException;
 use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,7 +14,7 @@ class ForumController extends BaseForumController
     {
         try {
             $this->ensureForumEnabled();
-        } catch (\Exception $exception) {
+        } catch (ForumDisabledException) {
             return $this->render('forum/forum_disabled.html.twig');
         }
 
