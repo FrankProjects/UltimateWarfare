@@ -15,8 +15,8 @@ use RuntimeException;
 
 abstract class OperationProcessor implements OperationInterface
 {
-    protected const GAME_UNIT_SPECIAL_OPS_ID = 401;
-    protected const GAME_UNIT_GUARD_ID = 400;
+    protected const int GAME_UNIT_SPECIAL_OPS_ID = 401;
+    protected const int GAME_UNIT_GUARD_ID = 400;
     protected WorldRegion $region;
     protected Operation $operation;
     protected WorldRegion $playerRegion;

@@ -6,8 +6,8 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class Message
 {
-    public const MESSAGE_STATUS_NEW = 0;
-    public const MESSAGE_STATUS_READ = 1;
+    public const int MESSAGE_STATUS_NEW = 0;
+    public const int MESSAGE_STATUS_READ = 1;
 
     private ?int $id;
     private Player $fromPlayer;

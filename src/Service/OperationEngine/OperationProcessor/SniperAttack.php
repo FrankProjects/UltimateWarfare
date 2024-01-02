@@ -8,10 +8,10 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class SniperAttack extends OperationProcessor
 {
-    protected const GAME_UNIT_SOLDIER_ID = 300;
-    protected const GAME_UNIT_SNIPER_ID = 402;
+    protected const int GAME_UNIT_SOLDIER_ID = 300;
+    protected const int GAME_UNIT_SNIPER_ID = 402;
 
-    protected const SOLDIERS_KILLED_PER_SNIPER = 5;
+    protected const int SOLDIERS_KILLED_PER_SNIPER = 5;
 
     public function getFormula(): float
     {

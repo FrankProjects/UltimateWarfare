@@ -8,9 +8,9 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class SubmarineAttack extends OperationProcessor
 {
-    protected const GAME_UNIT_SUBMARINE_ID = 403;
-    protected const GAME_UNIT_SHIP_ID = 303;
-    protected const SHIPS_KILLED_PER_SUBMARINE = 1;
+    protected const int GAME_UNIT_SUBMARINE_ID = 403;
+    protected const int GAME_UNIT_SHIP_ID = 303;
+    protected const int SHIPS_KILLED_PER_SUBMARINE = 1;
 
     public function getFormula(): float
     {

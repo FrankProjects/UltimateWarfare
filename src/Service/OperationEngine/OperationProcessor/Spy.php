@@ -10,7 +10,7 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class Spy extends OperationProcessor
 {
-    protected const GAME_UNIT_SPY_ID = 407;
+    protected const int GAME_UNIT_SPY_ID = 407;
 
     public function getFormula(): float
     {

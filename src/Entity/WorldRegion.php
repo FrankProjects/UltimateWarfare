@@ -10,10 +10,10 @@ use RuntimeException;
 
 class WorldRegion
 {
-    public const TYPE_WATER = 'water';
-    public const TYPE_BEACH = 'beach';
-    public const TYPE_FORREST = 'forrest';
-    public const TYPE_MOUNTAIN = 'mountain';
+    public const string TYPE_WATER = 'water';
+    public const string TYPE_BEACH = 'beach';
+    public const string TYPE_FORREST = 'forrest';
+    public const string TYPE_MOUNTAIN = 'mountain';
 
     private ?int $id;
     private int $x;

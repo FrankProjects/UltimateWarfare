@@ -13,25 +13,10 @@ use FrankProjects\UltimateWarfare\Entity\Player\Upkeep;
 
 class Player
 {
-    /**
-     * @var int
-     */
-    private const PRICE_PER_REGION = 10000;
-
-    /**
-     * @var int
-     */
-    public const FEDERATION_HIERARCHY_RECRUIT = 1;
-
-    /**
-     * @var int
-     */
-    public const FEDERATION_HIERARCHY_CAPTAIN = 3;
-
-    /**
-     * @var int
-     */
-    public const FEDERATION_HIERARCHY_GENERAL = 10;
+    private const int PRICE_PER_REGION = 10000;
+    public const int FEDERATION_HIERARCHY_RECRUIT = 1;
+    public const int FEDERATION_HIERARCHY_CAPTAIN = 3;
+    public const int FEDERATION_HIERARCHY_GENERAL = 10;
 
     private ?int $id;
     private string $name;

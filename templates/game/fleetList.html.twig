@@ -25,7 +25,7 @@
                     {{ fleet.worldRegion.x }}, {{ fleet.worldRegion.y }}
                 </td>
                 <td>
-                    {{ fleet.targetWorldRegion.x }}, {{ fleet.targetWorldRegion.y }}: {{ fleet.targetWorldRegion.region }}
+                    {{ fleet.targetWorldRegion.x }}, {{ fleet.targetWorldRegion.y }}
                 </td>
                 <td>
                     {% if player.federation != null and player.federation.id == fleet.targetWorldRegion.player.federation.id %}
@@ -51,7 +51,7 @@
                 {% if timestampLeft == 0 %}
                     <td><b>Arrived!</b></td>
                 {% else %}
-                    <td><span class="timer">{{ timestampLeft|date('H:i:s', '+00:00 GMT') }}</span></td>
+                    <td><span class="timer">{{ timestampLeft|date('H:i:s') }}</span></td>
                 {% endif %}
 
                 <td>
