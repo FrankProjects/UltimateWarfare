@@ -10,7 +10,7 @@ use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 
 class Fleet
 {
-    private ?int $id;
+    private int $id;
     private int $timestamp;
     private int $timestampArrive;
     private Player $player;
@@ -25,7 +25,7 @@ class Fleet
         $this->fleetUnits = new ArrayCollection();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

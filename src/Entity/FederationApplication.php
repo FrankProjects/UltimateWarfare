@@ -6,12 +6,12 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class FederationApplication
 {
-    private ?int $id;
+    private int $id;
     private string $application;
     private Federation $federation;
     private Player $player;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

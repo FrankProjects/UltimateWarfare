@@ -45,7 +45,7 @@ final class SubmarineAttack extends OperationProcessor
 
             $this->addToOperationLog("You sunk all ships!");
             $reportText = "Somebody launched a Submarine attack against region {$this->region->getX()}, {$this->region->getY()} and sunk all ships.";
-            $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+            $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         } else {
             $shipsDestroyed = $this->amount * self::SHIPS_KILLED_PER_SUBMARINE;
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
@@ -59,7 +59,7 @@ final class SubmarineAttack extends OperationProcessor
             }
 
             $reportText = "Somebody launched a Submarine attack against region {$this->region->getX()}, {$this->region->getY()} and sunk {$shipsDestroyed} ships.";
-            $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+            $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         }
     }
 
@@ -80,8 +80,8 @@ final class SubmarineAttack extends OperationProcessor
             }
         }
 
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to launch a Submarine attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a Submarine attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
         $this->addToOperationLog(
             "We failed our Submarine attack and lost {$specialOpsLost} Special Ops and {$submarinesLost} Submarines"
@@ -90,7 +90,7 @@ final class SubmarineAttack extends OperationProcessor
 
     public function processPostOperation(): void
     {
-        $player = $this->region->getPlayer();
+        $player = $this->getTargetRegionPlayer();
         $player->getNotifications()->setAttacked(true);
         $this->playerRepository->save($player);
     }

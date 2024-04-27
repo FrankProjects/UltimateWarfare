@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 
 class WorldSector
 {
-    private ?int $id;
+    private int $id;
     private int $x;
     private int $y;
     private string $image;
@@ -24,7 +24,7 @@ class WorldSector
         $this->worldRegions = new ArrayCollection();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

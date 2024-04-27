@@ -9,7 +9,7 @@ use Exception;
 
 class GameNews
 {
-    private ?int $id;
+    private int $id;
     private string $title = '';
     private string $message = '';
     private DateTime $createDateTime;
@@ -21,7 +21,7 @@ class GameNews
         $this->createDateTime = new DateTime();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

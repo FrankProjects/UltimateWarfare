@@ -112,6 +112,10 @@ final class BattleEngine
         array $defenderGameUnits
     ): void {
         $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
+        if ($defendingPlayer === null) {
+            throw new RuntimeException("Target region has no owner");
+        }
+
         $timestamp = time();
 
         if ($battleResults->hasWon()) {

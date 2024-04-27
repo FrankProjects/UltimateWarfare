@@ -6,13 +6,13 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class ResearchPlayer
 {
-    private ?int $id;
+    private int $id;
     private int $timestamp;
     private bool $active = false;
     private Player $player;
     private Research $research;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

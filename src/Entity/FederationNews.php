@@ -6,12 +6,12 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class FederationNews
 {
-    private ?int $id;
+    private int $id;
     private int $timestamp;
     private string $news;
     private Federation $federation;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

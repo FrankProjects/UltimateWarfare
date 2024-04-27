@@ -55,6 +55,10 @@ final class OperationService
         $this->hasWorldRegionGameUnitAmount($playerRegion, $operation, $amount);
 
         $player = $playerRegion->getPlayer();
+        if ($player === null) {
+            throw new RuntimeException("Region has no owner");
+        }
+
         $player->getResources()->addCash(-($operation->getCost() * $amount));
         $this->playerRepository->save($player);
 
@@ -72,11 +76,14 @@ final class OperationService
         );
         $operationResults = $operationProcessor->execute();
 
-        $this->networthUpdaterService->updateNetworthForPlayer($region->getPlayer());
-        $this->networthUpdaterService->updateNetworthForPlayer($playerRegion->getPlayer());
+        $regionPlayer = $region->getPlayer();
+        if ($regionPlayer !== null) {
+            $this->networthUpdaterService->updateNetworthForPlayer($regionPlayer);
+            $this->incomeUpdaterService->updateIncomeForPlayer($regionPlayer);
+        }
 
-        $this->incomeUpdaterService->updateIncomeForPlayer($region->getPlayer());
-        $this->incomeUpdaterService->updateIncomeForPlayer($playerRegion->getPlayer());
+        $this->networthUpdaterService->updateNetworthForPlayer($player);
+        $this->incomeUpdaterService->updateIncomeForPlayer($player);
 
         return $operationResults;
     }
@@ -97,6 +104,10 @@ final class OperationService
 
         if ($region->getPlayer() === null) {
             throw new RuntimeException("Target region has no owner");
+        }
+
+        if ($playerRegion->getPlayer() === null) {
+            throw new RuntimeException("Region has no owner");
         }
 
         if ($region->getPlayer()->getId() === $playerRegion->getPlayer()->getId()) {

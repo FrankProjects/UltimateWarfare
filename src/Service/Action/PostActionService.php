@@ -47,13 +47,9 @@ final class PostActionService
         $this->postRepository->save($post);
     }
 
-    public function remove(Post $post, ?User $user): void
+    public function remove(Post $post, User $user): void
     {
         $this->forumHelper->ensureNotBanned($user);
-
-        if ($user === null) {
-            throw new RuntimeException('You are not logged in!');
-        }
 
         $this->ensurePostPermissions($user, $post);
         $this->postRepository->remove($post);

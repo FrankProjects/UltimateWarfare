@@ -9,7 +9,7 @@ use Exception;
 
 class Contact
 {
-    private ?int $id;
+    private int $id;
     private string $name = '';
     private string $email = '';
     private string $subject = '';
@@ -21,7 +21,7 @@ class Contact
         $this->createDateTime = new DateTime();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

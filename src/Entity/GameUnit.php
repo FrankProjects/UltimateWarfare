@@ -13,7 +13,7 @@ use FrankProjects\UltimateWarfare\Entity\GameUnit\Upkeep;
 
 class GameUnit
 {
-    private ?int $id;
+    private int $id;
     private string $name;
     private string $nameMulti;
     private string $rowName;
@@ -51,7 +51,7 @@ class GameUnit
         $this->upkeep = new Upkeep();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

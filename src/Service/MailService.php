@@ -31,9 +31,14 @@ final class MailService
 
     public function sendRegistrationMail(User $user): void
     {
+        $confirmationToken = $user->getConfirmationToken();
+        if ($confirmationToken === null) {
+            throw new RuntimeException("Invalid confirmation token");
+        }
+
         $mailParameters = [
             'username' => $user->getUsername(),
-            'token' => $user->getConfirmationToken()
+            'token' => $confirmationToken
         ];
 
         $message = (new Email())
@@ -48,9 +53,14 @@ final class MailService
 
     public function sendPasswordResetMail(User $user, string $ipAddress): void
     {
+        $confirmationToken = $user->getConfirmationToken();
+        if ($confirmationToken === null) {
+            throw new RuntimeException("Invalid confirmation token");
+        }
+
         $mailParameters = [
             'username' => $user->getUsername(),
-            'token' => $user->getConfirmationToken(),
+            'token' => $confirmationToken,
             'ipAddress' => $ipAddress
         ];
 

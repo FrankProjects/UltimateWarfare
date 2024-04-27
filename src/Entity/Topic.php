@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Collection;
 
 class Topic
 {
-    private ?int $id;
+    private int $id;
     private string $title = '';
     private string $posterIp;
     private string $content = '';
@@ -29,7 +29,7 @@ class Topic
         $this->posts = new ArrayCollection();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

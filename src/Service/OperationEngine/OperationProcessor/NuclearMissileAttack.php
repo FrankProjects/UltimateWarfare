@@ -41,8 +41,8 @@ final class NuclearMissileAttack extends OperationProcessor
         $this->region->setPlayer(null);
         $this->worldRegionRepository->save($this->region);
 
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} launched a nuclear missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed everything.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} launched a nuclear missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed everything.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
         $this->addToOperationLog(
             "The region is fully destroyed, a high amount of toxic radiation will make the region unliveable for an unknown amount of time!"
@@ -60,15 +60,15 @@ final class NuclearMissileAttack extends OperationProcessor
             }
         }
 
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to launch a nuclear missile attack on region {$this->region->getX()}, {$this->region->getY()} but failed.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a nuclear missile attack on region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
         $this->addToOperationLog("We failed to our nuclear missile attack and lost {$specialOpsLost} Special Ops");
     }
 
     public function processPostOperation(): void
     {
-        $player = $this->region->getPlayer();
+        $player = $this->getTargetRegionPlayer();
         $player->getNotifications()->setAttacked(true);
         $this->playerRepository->save($player);
     }

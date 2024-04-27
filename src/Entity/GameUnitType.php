@@ -15,7 +15,7 @@ class GameUnitType
     public const int GAME_UNIT_TYPE_UNITS = 4;
     public const int GAME_UNIT_TYPE_SPECIAL_UNITS = 5;
 
-    private ?int $id;
+    private int $id;
     private string $name;
     private string $imageDir;
 
@@ -27,7 +27,7 @@ class GameUnitType
         $this->gameUnits = new ArrayCollection();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

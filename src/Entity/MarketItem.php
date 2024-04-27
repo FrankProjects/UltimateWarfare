@@ -11,7 +11,7 @@ class MarketItem
     public const string TYPE_BUY = 'buy';
     public const string TYPE_SELL = 'sell';
 
-    private ?int $id;
+    private int $id;
     private int $amount;
     private int $price;
     private World $world;
@@ -19,7 +19,7 @@ class MarketItem
     private string $gameResource;
     private string $type;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

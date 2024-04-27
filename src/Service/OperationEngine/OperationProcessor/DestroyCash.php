@@ -54,14 +54,14 @@ final class DestroyCash extends OperationProcessor
 
         $random = mt_rand(1, $maxPercentage);
         $percentageDestroyed = round($random / 100);
-        $player = $this->region->getPlayer();
+        $player = $this->getTargetRegionPlayer();
         $cashDestroyed = intval($player->getResources()->getCash() * $percentageDestroyed);
         $player->getResources()->addCash(-$cashDestroyed);
         $this->playerRepository->save($player);
 
         $this->addToOperationLog("You destroyed {$percentageDestroyed}% of the cash, {$cashDestroyed} in total!");
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} destroyed {$cashDestroyed} cash on region {$this->region->getX()}, {$this->region->getY()}.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} destroyed {$cashDestroyed} cash on region {$this->region->getX()}, {$this->region->getY()}.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
     }
 
     public function processFailed(): void
@@ -75,15 +75,15 @@ final class DestroyCash extends OperationProcessor
             }
         }
 
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to destroy cash on region {$this->region->getX()}, {$this->region->getY()} but failed.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to destroy cash on region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
         $this->addToOperationLog("We failed to destroy cash and lost {$specialOpsLost} Special Ops");
     }
 
     public function processPostOperation(): void
     {
-        $player = $this->region->getPlayer();
+        $player = $this->getTargetRegionPlayer();
         $player->getNotifications()->setAttacked(true);
         $this->playerRepository->save($player);
     }

@@ -40,7 +40,8 @@ final class FleetActionService
     {
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
 
-        if ($fleet->getWorldRegion()->getPlayer()->getId() != $player->getId()) {
+        $targetPlayer = $fleet->getWorldRegion()->getPlayer();
+        if ($targetPlayer === null || $targetPlayer->getId() != $player->getId()) {
             throw new RuntimeException('You are not the owner of this region!');
         }
 
@@ -53,7 +54,9 @@ final class FleetActionService
     {
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
 
-        if ($fleet->getTargetWorldRegion()->getPlayer()->getId() != $player->getId()) {
+        $targetPlayer = $fleet->getTargetWorldRegion()->getPlayer();
+
+        if ($targetPlayer === null || $targetPlayer->getId() != $player->getId()) {
             throw new RuntimeException('You are not the owner of this region!');
         }
 
@@ -76,7 +79,7 @@ final class FleetActionService
             throw new RuntimeException('Target region does not exist!');
         }
 
-        if ($region->getPlayer()->getId() != $player->getId()) {
+        if ($region->getPlayer() === null || $region->getPlayer()->getId() != $player->getId()) {
             throw new RuntimeException('Region is not owned by you.');
         }
 

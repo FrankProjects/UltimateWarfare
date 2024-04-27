@@ -11,13 +11,13 @@ class Report
     public const int TYPE_MARKET = 4;
     public const int TYPE_AID = 5;
 
-    private ?int $id;
+    private int $id;
     private int $type;
     private int $timestamp;
     private string $report;
     private Player $player;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

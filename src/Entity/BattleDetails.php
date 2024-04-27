@@ -9,7 +9,7 @@ namespace FrankProjects\UltimateWarfare\Entity;
  */
 class BattleDetails
 {
-    private ?int $id;
+    private int $id;
     private int $worldId;
     private int $attacker;
     private int $defender;
@@ -17,7 +17,7 @@ class BattleDetails
     private bool $type;
     private int $timestamp;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

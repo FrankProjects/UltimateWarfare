@@ -6,12 +6,12 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class FleetUnit
 {
-    private ?int $id;
+    private int $id;
     private int $amount;
     private Fleet $fleet;
     private GameUnit $gameUnit;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

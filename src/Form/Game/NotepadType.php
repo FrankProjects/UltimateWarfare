@@ -21,7 +21,6 @@ class NotepadType extends AbstractType
                 TextareaType::class,
                 [
                     'label' => false,
-                    'translation_domain' => 'notepad',
                     'attr' => [
                         'rows' => 15,
                         'cols' => 80
@@ -32,7 +31,7 @@ class NotepadType extends AbstractType
                 'submit',
                 SubmitType::class,
                 [
-                    'label' => 'Update'
+                    'label' => 'label.update'
                 ]
             );
     }
@@ -42,6 +41,7 @@ class NotepadType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => Player::class,
+                'translation_domain' => 'notepad'
             )
         );
     }
