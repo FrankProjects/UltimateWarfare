@@ -62,6 +62,10 @@ final class OperationController extends BaseGameController
         }
 
         $operation = $this->operationRepository->find($operationId);
+        if ($operation === null) {
+            $this->addFlash('error', 'Unknown operation selected!');
+            return $this->redirectToRoute('Game/RegionList', [], 302);
+        }
 
         return $this->render(
             'game/operation/selectRegion.html.twig',
@@ -165,6 +169,10 @@ final class OperationController extends BaseGameController
         }
 
         $operation = $this->operationRepository->find($operationId);
+        if ($operation === null) {
+            $this->addFlash('error', 'Unknown operation selected!');
+            return $this->redirectToRoute('Game/RegionList', [], 302);
+        }
 
         try {
             $playerRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($playerRegionId, $player);
