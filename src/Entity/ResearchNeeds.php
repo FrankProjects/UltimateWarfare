@@ -6,11 +6,11 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class ResearchNeeds
 {
-    private ?int $id;
+    private int $id;
     private Research $research;
     private Research $requiredResearch;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

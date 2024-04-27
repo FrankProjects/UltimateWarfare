@@ -18,7 +18,7 @@ class Player
     public const int FEDERATION_HIERARCHY_CAPTAIN = 3;
     public const int FEDERATION_HIERARCHY_GENERAL = 10;
 
-    private ?int $id;
+    private int $id;
     private string $name;
     private int $timestampJoined;
     private int $timestampUpdate;
@@ -78,7 +78,7 @@ class Player
         $this->upkeep = new Upkeep();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

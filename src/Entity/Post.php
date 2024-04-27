@@ -8,7 +8,7 @@ use DateTime;
 
 class Post
 {
-    private ?int $id;
+    private int $id;
     private string $posterIp;
     private string $content = '';
     private DateTime $createDateTime;
@@ -17,7 +17,7 @@ class Post
     private User $user;
     private ?User $editUser;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

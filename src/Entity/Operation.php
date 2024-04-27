@@ -6,7 +6,7 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class Operation
 {
-    private ?int $id;
+    private int $id;
     private string $name;
     private string $image;
     private int $cost;
@@ -18,7 +18,7 @@ class Operation
     private Research $research;
     private GameUnit $gameUnit;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

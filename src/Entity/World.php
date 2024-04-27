@@ -16,7 +16,7 @@ class World
     private const int STATUS_RUNNING = 1;
     private const int STATUS_FINISHED = 2;
 
-    private ?int $id;
+    private int $id;
     private string $name = '';
     private string $image = '';
     private string $description = '';
@@ -61,7 +61,7 @@ class World
         $this->mapConfiguration = new MapConfiguration();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

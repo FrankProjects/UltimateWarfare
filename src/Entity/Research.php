@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 
 class Research
 {
-    private ?int $id;
+    private int $id;
     private string $name;
     private string $image;
     private int $cost;
@@ -37,7 +37,7 @@ class Research
         $this->operations = new ArrayCollection();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

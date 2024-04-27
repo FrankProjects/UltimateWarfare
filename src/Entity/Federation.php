@@ -10,7 +10,7 @@ use FrankProjects\UltimateWarfare\Entity\Federation\Resources;
 
 class Federation
 {
-    private ?int $id;
+    private int $id;
     private string $name = '';
     private Player $founder;
     private string $leaderMessage = '';
@@ -36,7 +36,7 @@ class Federation
         $this->resources = new Resources();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

@@ -15,7 +15,7 @@ class WorldRegion
     public const string TYPE_FORREST = 'forrest';
     public const string TYPE_MOUNTAIN = 'mountain';
 
-    private ?int $id;
+    private int $id;
     private int $x;
     private int $y;
     private int $z;
@@ -56,7 +56,7 @@ class WorldRegion
         $this->targetFleets = new ArrayCollection();
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -138,12 +138,12 @@ class WorldRegion
         return $this->state;
     }
 
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }

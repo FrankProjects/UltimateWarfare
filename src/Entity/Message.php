@@ -9,7 +9,7 @@ class Message
     public const int MESSAGE_STATUS_NEW = 0;
     public const int MESSAGE_STATUS_READ = 1;
 
-    private ?int $id;
+    private int $id;
     private Player $fromPlayer;
     private bool $fromDelete = false;
     private Player $toPlayer;
@@ -21,7 +21,7 @@ class Message
     private string $message;
     private World $world;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

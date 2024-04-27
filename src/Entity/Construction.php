@@ -6,14 +6,14 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class Construction
 {
-    private ?int $id;
+    private int $id;
     private int $number;
     private int $timestamp;
     private Player $player;
     private WorldRegion $worldRegion;
     private GameUnit $gameUnit;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

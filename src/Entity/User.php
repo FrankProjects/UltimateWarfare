@@ -17,7 +17,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     private const string ROLE_DEFAULT = 'ROLE_USER';
     public const string ROLE_ADMIN = 'ROLE_ADMIN';
 
-    private ?int $id;
+    private int $id;
     private string $username = '';
     private string $email = '';
     private mixed $avatar = '';

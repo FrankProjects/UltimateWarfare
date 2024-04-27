@@ -6,12 +6,12 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 class UnbanRequest
 {
-    private ?int $id;
+    private int $id;
     private User $user;
     private string $post = '';
     private int $status = 0;
 
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
