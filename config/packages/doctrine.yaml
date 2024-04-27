@@ -14,3 +14,5 @@ doctrine:
                 type: xml
                 dir: '%kernel.project_dir%/config/doctrine'
                 prefix: 'FrankProjects\UltimateWarfare\Entity'
+        controller_resolver:
+            auto_mapping: false
