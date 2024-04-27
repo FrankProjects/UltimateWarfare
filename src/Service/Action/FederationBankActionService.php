@@ -63,7 +63,7 @@ final class FederationBankActionService
 
         if ($resourceString !== '') {
             $news = "{$player->getName()} deposited {$resourceString} to the Federation Bank";
-            $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+            $federationNews = FederationNews::createForFederation($federation, $news);
             $this->federationNewsRepository->save($federationNews);
 
             $this->playerRepository->save($player);
@@ -112,7 +112,7 @@ final class FederationBankActionService
 
         if ($resourceString !== '') {
             $news = "{$player->getName()} withdrew {$resourceString} from the Federation Bank";
-            $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+            $federationNews = FederationNews::createForFederation($federation, $news);
             $this->federationNewsRepository->save($federationNews);
 
             $this->playerRepository->save($player);
