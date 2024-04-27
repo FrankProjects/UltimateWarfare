@@ -48,8 +48,8 @@ final class MissileAttack extends OperationProcessor
                 }
             }
 
-            $reportText = "{$this->playerRegion->getPlayer()->getName()} launched a missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed all buildings.";
-            $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+            $reportText = "{$this->getPlayerRegionPlayer()->getName()} launched a missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed all buildings.";
+            $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         } else {
             $buildingsDestroyed = intval($this->amount / 2);
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
@@ -64,8 +64,8 @@ final class MissileAttack extends OperationProcessor
                 }
             }
 
-            $reportText = "{$this->playerRegion->getPlayer()->getName()} launched a missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed {$buildingsDestroyed} buildings.";
-            $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+            $reportText = "{$this->getPlayerRegionPlayer()->getName()} launched a missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed {$buildingsDestroyed} buildings.";
+            $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         }
 
         $this->addToOperationLog("You destroyed {$buildingsDestroyed} buildings!");
@@ -82,15 +82,15 @@ final class MissileAttack extends OperationProcessor
             }
         }
 
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to launch a missile attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a missile attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
         $this->addToOperationLog("We failed our Missile Attack and lost {$troopsLost} Special Ops");
     }
 
     public function processPostOperation(): void
     {
-        $player = $this->region->getPlayer();
+        $player = $this->getTargetRegionPlayer();
         $player->getNotifications()->setAttacked(true);
         $this->playerRepository->save($player);
     }

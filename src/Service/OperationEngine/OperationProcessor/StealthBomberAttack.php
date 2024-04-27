@@ -47,7 +47,7 @@ final class StealthBomberAttack extends OperationProcessor
 
             $this->addToOperationLog("You destroyed all special buildings!");
             $reportText = "Somebody launched a Stealth Bomber attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed all special buildings.";
-            $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+            $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         } else {
             $buildingsDestroyed = $this->amount * self::BUILDINGS_DESTROYED_PER_BOMBER;
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
@@ -63,7 +63,7 @@ final class StealthBomberAttack extends OperationProcessor
             }
 
             $reportText = "Somebody launched a Stealth Bomber attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed {$buildingsDestroyed} buildings.";
-            $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+            $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         }
     }
 
@@ -84,8 +84,8 @@ final class StealthBomberAttack extends OperationProcessor
             }
         }
 
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to launch a Stealth Bomber attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a Stealth Bomber attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
         $this->addToOperationLog(
             "We failed our Stealth Bomber attack and lost {$specialOpsLost} Special Ops and {$stealthBombersLost} Stealth Bombers"
@@ -94,7 +94,7 @@ final class StealthBomberAttack extends OperationProcessor
 
     public function processPostOperation(): void
     {
-        $player = $this->region->getPlayer();
+        $player = $this->getTargetRegionPlayer();
         $player->getNotifications()->setAttacked(true);
         $this->playerRepository->save($player);
     }

@@ -48,7 +48,7 @@ final class SniperAttack extends OperationProcessor
 
             $this->addToOperationLog("You killed all soldiers!");
             $reportText = "Somebody launched a Sniper attack against region {$this->region->getX()}, {$this->region->getY()} and killed all soldiers.";
-            $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+            $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         } else {
             $soldiersKilled = $this->amount * self::SOLDIERS_KILLED_PER_SNIPER;
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
@@ -62,7 +62,7 @@ final class SniperAttack extends OperationProcessor
             }
 
             $reportText = "Somebody launched a Sniper attack against region {$this->region->getX()}, {$this->region->getY()} and killed {$soldiersKilled} soldiers.";
-            $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+            $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         }
     }
 
@@ -83,8 +83,8 @@ final class SniperAttack extends OperationProcessor
             }
         }
 
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to launch a Sniper attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a Sniper attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
         $this->addToOperationLog(
             "We failed our Sniper attack and lost {$specialOpsLost} Special Ops and {$snipersLost} Snipers"
@@ -93,7 +93,7 @@ final class SniperAttack extends OperationProcessor
 
     public function processPostOperation(): void
     {
-        $player = $this->region->getPlayer();
+        $player = $this->getTargetRegionPlayer();
         $player->getNotifications()->setAttacked(true);
         $this->playerRepository->save($player);
     }

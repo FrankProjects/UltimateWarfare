@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\OperationEngine;
 
 use FrankProjects\UltimateWarfare\Entity\Operation;
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
@@ -159,7 +160,7 @@ abstract class OperationProcessor implements OperationInterface
 
     protected function hasResearched(int $researchId): bool
     {
-        foreach ($this->playerRegion->getPlayer()->getPlayerResearch() as $playerResearch) {
+        foreach ($this->getPlayerRegionPlayer()->getPlayerResearch() as $playerResearch) {
             if ($playerResearch->getActive() === false) {
                 continue;
             }
@@ -183,5 +184,25 @@ abstract class OperationProcessor implements OperationInterface
     protected function addToOperationLog(string $log): void
     {
         $this->operationLog[] = $log;
+    }
+
+    protected function getTargetRegionPlayer(): Player
+    {
+        return $this->getWorldRegionPlayer($this->region);
+    }
+
+    protected function getPlayerRegionPlayer(): Player
+    {
+        return $this->getWorldRegionPlayer($this->playerRegion);
+    }
+
+    private function getWorldRegionPlayer(WorldRegion $worldRegion): Player
+    {
+        $player = $worldRegion->getPlayer();
+        if ($player === null) {
+            throw new RuntimeException("Region has no owner");
+        }
+
+        return $player;
     }
 }

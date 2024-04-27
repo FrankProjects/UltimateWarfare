@@ -57,15 +57,15 @@ final class Spy extends OperationProcessor
             }
         }
 
-        $reportText = "{$this->playerRegion->getPlayer()->getName()} tried to spy on region {$this->region->getX()}, {$this->region->getY()} but failed.";
-        $this->reportCreator->createReport($this->region->getPlayer(), time(), $reportText, Report::TYPE_GENERAL);
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to spy on region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText, Report::TYPE_GENERAL);
 
         $this->addToOperationLog("We failed to spy and lost {$spiesLost} spies");
     }
 
     public function processPostOperation(): void
     {
-        $player = $this->region->getPlayer();
+        $player = $this->getTargetRegionPlayer();
         $player->getNotifications()->setGeneral(true);
         $this->playerRepository->save($player);
     }
