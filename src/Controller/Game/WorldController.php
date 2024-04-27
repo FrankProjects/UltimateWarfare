@@ -82,6 +82,9 @@ final class WorldController extends BaseGameController
 
         $user = $this->getGameUser();
         $world = $this->worldRepository->find($worldId);
+        if ($world === null) {
+            return $this->redirectToRoute('Game/SelectWorld', [], 302);
+        }
 
         foreach ($user->getPlayers() as $player) {
             if ($player->getWorld()->getId() == $worldId) {
