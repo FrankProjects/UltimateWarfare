@@ -40,6 +40,11 @@ class CategoryController extends BaseForumController
         }
 
         $category = $this->categoryRepository->find($categoryId);
+        if ($category === null) {
+            $this->addFlash('error', 'Category not found!');
+            return $this->redirectToRoute('Forum');
+        }
+
         $topics = $this->topicRepository->getByCategorySortedByStickyAndDate($category);
 
         return $this->render(
@@ -99,11 +104,17 @@ class CategoryController extends BaseForumController
             return $this->redirectToRoute('Forum');
         }
 
+        $user = $this->getGameUser();
+        if ($user == null) {
+            $this->addFlash('error', 'Not logged in!');
+            return $this->redirectToRoute('Forum');
+        }
+
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->categoryActionService->edit($category, $this->getGameUser());
+                $this->categoryActionService->edit($category, $user);
                 $this->addFlash('success', 'Successfully edited category');
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
@@ -137,8 +148,14 @@ class CategoryController extends BaseForumController
             return $this->redirectToRoute('Forum');
         }
 
+        $user = $this->getGameUser();
+        if ($user == null) {
+            $this->addFlash('error', 'Not logged in!');
+            return $this->redirectToRoute('Forum');
+        }
+
         try {
-            $this->categoryActionService->remove($category, $this->getGameUser());
+            $this->categoryActionService->remove($category, $user);
             $this->addFlash('success', 'Category removed');
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
