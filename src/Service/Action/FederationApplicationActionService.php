@@ -41,21 +41,29 @@ final class FederationApplicationActionService
     public function acceptFederationApplication(Player $player, int $applicationId): void
     {
         $this->ensureFederationEnabled($player);
+        $federation = $player->getFederation();
+        if ($federation === null) {
+            throw new RuntimeException("Player is not in Federation!");
+        }
 
         $federationApplication = $this->getFederationApplication($player, $applicationId);
         if ($federationApplication->getPlayer()->getFederation() !== null) {
             throw new RuntimeException("Player is already in another Federation!");
         }
 
-        if (count($player->getFederation()->getPlayers()) >= $player->getWorld()->getFederationLimit()) {
+        if ($federationApplication->getFederation()->getId() !== $federation->getId()) {
+            throw new RuntimeException("FederationApplication does not belong to your Federation!");
+        }
+
+        if (count($federation->getPlayers()) >= $player->getWorld()->getFederationLimit()) {
             throw new RuntimeException("Federation members world limit reached!");
         }
 
         $news = "{$federationApplication->getPlayer()->getName()} has has been accepted into the Federation by {$player->getName()}";
-        $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+        $federationNews = FederationNews::createForFederation($federation, $news);
         $this->federationNewsRepository->save($federationNews);
 
-        $reportString = "You have been accepted in the Federation {$player->getFederation()->getName()}";
+        $reportString = "You have been accepted in the Federation {$federation->getName()}";
         $report = Report::createForPlayer(
             $federationApplication->getPlayer(),
             time(),
@@ -65,14 +73,13 @@ final class FederationApplicationActionService
         $this->reportRepository->save($report);
 
         $applicationPlayer = $federationApplication->getPlayer();
-        $applicationPlayer->setFederation($federationApplication->getFederation());
+        $applicationPlayer->setFederation($federation);
         $applicationPlayer->setFederationHierarchy(Player::FEDERATION_HIERARCHY_RECRUIT);
         $applicationPlayerNotifications = $applicationPlayer->getNotifications();
         $applicationPlayerNotifications->setGeneral(true);
         $applicationPlayer->setNotifications($applicationPlayerNotifications);
         $this->playerRepository->save($applicationPlayer);
 
-        $federation = $federationApplication->getFederation();
         $federation->setNetworth($federation->getNetworth() + $federationApplication->getPlayer()->getNetworth());
         $federation->setRegions(
             $federation->getRegions() + count($federationApplication->getPlayer()->getWorldRegions())
@@ -85,14 +92,21 @@ final class FederationApplicationActionService
     public function rejectFederationApplication(Player $player, int $applicationId): void
     {
         $this->ensureFederationEnabled($player);
+        $federation = $player->getFederation();
+        if ($federation === null) {
+            throw new RuntimeException("Player is not in Federation!");
+        }
 
         $federationApplication = $this->getFederationApplication($player, $applicationId);
+        if ($federationApplication->getFederation()->getId() !== $federation->getId()) {
+            throw new RuntimeException("FederationApplication does not belong to your Federation!");
+        }
 
         $news = "{$federationApplication->getPlayer()->getName()} has has been rejected to join the Federation by {$player->getName()}";
-        $federationNews = FederationNews::createForFederation($player->getFederation(), $news);
+        $federationNews = FederationNews::createForFederation($federation, $news);
         $this->federationNewsRepository->save($federationNews);
 
-        $reportString = "You have been rejected by the Federation {$player->getFederation()->getName()}";
+        $reportString = "You have been rejected by the Federation {$federation->getName()}";
         $report = Report::createForPlayer(
             $federationApplication->getPlayer(),
             time(),
