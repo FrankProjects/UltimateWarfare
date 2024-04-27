@@ -39,6 +39,9 @@ class BaseGameController extends BaseController
          */
         $user = $this->getGameUser();
         $playerId = $this->getPlayerIdFromSession();
+        if ($playerId === null) {
+            throw new AccessDeniedException('Player can not be found!');
+        }
 
         foreach ($user->getPlayers() as $player) {
             if ($player->getId() === $playerId) {
@@ -49,7 +52,7 @@ class BaseGameController extends BaseController
         throw new AccessDeniedException('Player can not be found!');
     }
 
-    private function getPlayerIdFromSession(): int
+    private function getPlayerIdFromSession(): ?int
     {
         try {
             return $this->container->get('request_stack')->getSession()->get('playerId');
