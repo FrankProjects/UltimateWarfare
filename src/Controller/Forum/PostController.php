@@ -36,6 +36,12 @@ class PostController extends BaseForumController
 
         $post = $this->postRepository->find($postId);
 
+        $user = $this->getGameUser();
+        if ($user === null) {
+            $this->addFlash('error', 'You are not logged in!');
+            return $this->redirectToRoute('Forum');
+        }
+
         if ($post === null) {
             $this->addFlash('error', 'No such post!');
             return $this->redirectToRoute('Forum');
@@ -44,7 +50,7 @@ class PostController extends BaseForumController
         $topic = $post->getTopic();
 
         try {
-            $this->postActionService->remove($post, $this->getGameUser());
+            $this->postActionService->remove($post, $user);
             $this->addFlash('success', 'Post removed');
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
