@@ -44,7 +44,10 @@ final class ConstructionProcessor implements Processor
         foreach ($constructions as $construction) {
             $worldRegion = $construction->getWorldRegion();
 
-            if ($worldRegion->getPlayer()->getId() !== $construction->getPlayer()->getId()) {
+            if (
+                $worldRegion->getPlayer() === null
+                || $worldRegion->getPlayer()->getId() !== $construction->getPlayer()->getId()
+            ) {
                 // Never process construction queue items for a region that no longer belongs to this player
                 $this->constructionRepository->remove($construction);
                 continue;
