@@ -52,7 +52,7 @@ final class ResetPasswordController extends AbstractController
                     $this->userRepository->save($user);
 
                     try {
-                        $this->mailService->sendPasswordResetMail($user, $request->getClientIp());
+                        $this->mailService->sendPasswordResetMail($user, (string) $request->getClientIp());
                         $this->addFlash(
                             'success',
                             "An e-mail has been sent to {$user->getEmail()} with your recovery instructions... Check your Spam mail if you didn't receive an email"
