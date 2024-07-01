@@ -31,9 +31,15 @@ final class WorldController extends BaseGameController
 
     public function create(WorldGeneratorService $worldGeneratorService): Response
     {
+        $validWorlds = [];
         $worlds = $this->worldRepository->findByPublic(true);
+        foreach ($worlds as $world) {
+            if ($world->isJoinableForUser($this->getGameUser())) {
+                $validWorlds[] = $world;
+            }
+        }
 
-        if (count($worlds) !== 0) {
+        if (count($validWorlds) > 0) {
             $this->addFlash('error', 'There are active worlds, no need to create a new one at this moment');
             return $this->redirectToRoute('Game/SelectWorld', [], 302);
         }
