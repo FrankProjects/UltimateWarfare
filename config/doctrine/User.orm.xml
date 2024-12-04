@@ -16,7 +16,7 @@
     <field name="lastLogin" type="datetime" column="last_login" nullable="true"/>
     <field name="confirmationToken" column="confirmation_token" length="180" unique="true" nullable="true"/>
     <field name="passwordRequestedAt" type="datetime" column="password_requested_at" nullable="true"/>
-    <field name="roles" type="array" column="roles">
+    <field name="roles" type="json" column="roles">
       <options>
         <option name="fixed"/>
       </options>
