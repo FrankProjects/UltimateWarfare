@@ -150,7 +150,7 @@ final class MessageController extends BaseGameController
     {
         $player = $this->getPlayer();
 
-        if ($playerName == '') {
+        if ($playerName === '') {
             $playerName = $request->request->get('toPlayerName');
         }
 

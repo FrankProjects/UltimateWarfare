@@ -31,14 +31,14 @@ final class SniperAttack extends OperationProcessor
     {
         $soldiers = 0;
         foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SOLDIER_ID) {
+            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SOLDIER_ID) {
                 $soldiers = $soldiers + $worldRegionUnit->getAmount();
             }
         }
 
         if (($this->amount * self::SOLDIERS_KILLED_PER_SNIPER) > $soldiers) {
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SOLDIER_ID) {
+                if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SOLDIER_ID) {
                     $this->worldRegionUnitRepository->remove($worldRegionUnit);
                     $this->addToOperationLog(
                         "You killed {$soldiers} {$worldRegionUnit->getGameUnit()->getNameMulti()}!"
@@ -52,7 +52,7 @@ final class SniperAttack extends OperationProcessor
         } else {
             $soldiersKilled = $this->amount * self::SOLDIERS_KILLED_PER_SNIPER;
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SOLDIER_ID) {
+                if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SOLDIER_ID) {
                     $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $soldiersKilled);
                     $this->worldRegionUnitRepository->save($worldRegionUnit);
                     $this->addToOperationLog(

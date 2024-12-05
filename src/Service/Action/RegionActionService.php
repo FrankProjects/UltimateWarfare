@@ -47,7 +47,7 @@ final class RegionActionService
             throw new RuntimeException('Can not attack region without owner!');
         }
 
-        if ($worldRegion->getPlayer()->getId() == $player->getId()) {
+        if ($worldRegion->getPlayer()->getId() === $player->getId()) {
             throw new RuntimeException('Can not attack your own region!');
         }
 
@@ -78,7 +78,7 @@ final class RegionActionService
             throw new RuntimeException('Can not attack region without owner!');
         }
 
-        if ($worldRegion->getPlayer()->getId() == $player->getId()) {
+        if ($worldRegion->getPlayer()->getId() === $player->getId()) {
             throw new RuntimeException('Can not attack your own region!');
         }
 
@@ -126,7 +126,7 @@ final class RegionActionService
 
         $federation = $player->getFederation();
 
-        if ($federation != null) {
+        if ($federation !== null) {
             $federation->setRegions($federation->getRegions() + 1);
             $federation->setNetworth($federation->getNetworth() + NetworthCalculator::NETWORTH_CALCULATOR_REGION);
             $this->federationRepository->save($federation);
@@ -150,7 +150,7 @@ final class RegionActionService
             throw new WorldRegionNotFoundException();
         }
 
-        if ($worldRegion->getWorld()->getId() != $world->getId()) {
+        if ($worldRegion->getWorld()->getId() !== $world->getId()) {
             throw new RuntimeException('World region is not part for your game world!');
         }
 
@@ -171,7 +171,7 @@ final class RegionActionService
             throw new RuntimeException('World region has no owner!');
         }
 
-        if ($worldRegion->getPlayer()->getId() != $player->getId()) {
+        if ($worldRegion->getPlayer()->getId() !== $player->getId()) {
             throw new RuntimeException('World region is not yours!');
         }
 

@@ -30,14 +30,14 @@ final class SubmarineAttack extends OperationProcessor
     {
         $ships = 0;
         foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SHIP_ID) {
+            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SHIP_ID) {
                 $ships = $ships + $worldRegionUnit->getAmount();
             }
         }
 
         if (($this->amount * self::SHIPS_KILLED_PER_SUBMARINE) > $ships) {
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SHIP_ID) {
+                if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SHIP_ID) {
                     $this->worldRegionUnitRepository->remove($worldRegionUnit);
                     $this->addToOperationLog("You sunk {$ships} {$worldRegionUnit->getGameUnit()->getNameMulti()}!");
                 }
@@ -49,7 +49,7 @@ final class SubmarineAttack extends OperationProcessor
         } else {
             $shipsDestroyed = $this->amount * self::SHIPS_KILLED_PER_SUBMARINE;
             foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId() == self::GAME_UNIT_SHIP_ID) {
+                if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SHIP_ID) {
                     $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $shipsDestroyed);
                     $this->worldRegionUnitRepository->save($worldRegionUnit);
                     $this->addToOperationLog(

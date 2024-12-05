@@ -36,7 +36,7 @@ final class MarketActionService
 
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
-        if ($marketItem->getType() != MarketItem::TYPE_SELL) {
+        if ($marketItem->getType() !== MarketItem::TYPE_SELL) {
             throw new RuntimeException('Market order is not a buy order!');
         }
 
@@ -83,12 +83,12 @@ final class MarketActionService
 
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
-        if ($marketItem->getPlayer()->getId() != $player->getId()) {
+        if ($marketItem->getPlayer()->getId() !== $player->getId()) {
             throw new RuntimeException('You can not cancel orders that do not belong to you!\'');
         }
 
         $resources = $player->getResources();
-        if ($marketItem->getType() == MarketItem::TYPE_BUY) {
+        if ($marketItem->getType() === MarketItem::TYPE_BUY) {
             $resources->setCash($resources->getCash() + $marketItem->getPrice());
         } else {
             $resources = $this->addGameResources($marketItem, $resources);
@@ -105,7 +105,7 @@ final class MarketActionService
 
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
-        if ($marketItem->getType() != MarketItem::TYPE_BUY) {
+        if ($marketItem->getType() !== MarketItem::TYPE_BUY) {
             throw new RuntimeException('Market order is not a sell order!');
         }
 
@@ -151,13 +151,13 @@ final class MarketActionService
 
         $resources = $player->getResources();
 
-        if ($action == MarketItem::TYPE_BUY) {
+        if ($action === MarketItem::TYPE_BUY) {
             if ($price > $resources->getCash()) {
                 throw new RuntimeException("You do not have enough cash!");
             }
 
             $resources->setCash($resources->getCash() - $price);
-        } elseif ($action == MarketItem::TYPE_SELL) {
+        } elseif ($action === MarketItem::TYPE_SELL) {
             $resources = $this->substractAndValidateGameResources($gameResource, $resources, $amount);
         } else {
             throw new RuntimeException("Invalid option!");
@@ -199,7 +199,7 @@ final class MarketActionService
             throw new RuntimeException('Market order does not exist!');
         }
 
-        if ($marketItem->getWorld()->getId() != $player->getWorld()->getId()) {
+        if ($marketItem->getWorld()->getId() !== $player->getWorld()->getId()) {
             throw new RuntimeException('Wrong game world!');
         }
 

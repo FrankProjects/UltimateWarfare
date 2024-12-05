@@ -336,11 +336,11 @@ class World
             }
         }
 
-        if (count($this->getWorldSectors()) != 25) {
+        if (count($this->getWorldSectors()) !== 25) {
             return false;
         }
 
-        if (count($this->getWorldRegions()) != 625) {
+        if (count($this->getWorldRegions()) !== 625) {
             return false;
         }
 

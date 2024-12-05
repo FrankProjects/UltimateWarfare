@@ -105,7 +105,7 @@ class CategoryController extends BaseForumController
         }
 
         $user = $this->getGameUser();
-        if ($user == null) {
+        if ($user === null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirectToRoute('Forum');
         }
@@ -149,7 +149,7 @@ class CategoryController extends BaseForumController
         }
 
         $user = $this->getGameUser();
-        if ($user == null) {
+        if ($user === null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirectToRoute('Forum');
         }

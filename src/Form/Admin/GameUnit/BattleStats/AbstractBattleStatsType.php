@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/** @phpstan-ignore missingType.generics */
 abstract class AbstractBattleStatsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

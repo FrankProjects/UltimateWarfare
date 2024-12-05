@@ -192,14 +192,14 @@ final class UserController extends BaseGameController
         $user = $this->getGameUser();
 
         if ($request->request->get('adviser') !== null) {
-            if ($user->getAdviser() == 0) {
+            if ($user->getAdviser() === false) {
                 $user->setAdviser(true);
                 $this->userRepository->save($user);
 
                 $this->addFlash('success', 'Successfully changed settings!');
             }
         } else {
-            if ($user->getAdviser() == 1) {
+            if ($user->getAdviser()) {
                 $user->setAdviser(false);
                 $this->userRepository->save($user);
 

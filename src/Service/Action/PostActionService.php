@@ -57,7 +57,7 @@ final class PostActionService
 
     private function ensurePostPermissions(User $user, Post $post): void
     {
-        if ($user->getId() != $post->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
+        if ($user->getId() !== $post->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
             throw new RuntimeException('Not enough permissions!');
         }
     }
