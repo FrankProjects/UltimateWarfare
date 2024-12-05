@@ -31,10 +31,10 @@
         "twig/twig": "^3.16"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.12",
-        "phpstan/phpstan-doctrine": "^1.5",
-        "phpstan/phpstan-strict-rules": "^1.6",
-        "phpstan/phpstan-symfony": "^1.4",
+        "phpstan/phpstan": "^2",
+        "phpstan/phpstan-doctrine": "^2",
+        "phpstan/phpstan-strict-rules": "^2",
+        "phpstan/phpstan-symfony": "^2",
         "squizlabs/php_codesniffer": "^3.11",
         "symfony/phpunit-bridge": "^7.2",
         "symfony/web-profiler-bundle": "^7.2"
