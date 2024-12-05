@@ -76,7 +76,7 @@ final class AttackController extends BaseGameController
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }
 
-        if ($worldRegion->getPlayer()->getId() == $player->getId()) {
+        if ($worldRegion->getPlayer()->getId() === $player->getId()) {
             $this->addFlash('error', "Can not attack your own region!");
             return $this->redirectToRoute('Game/World/Region', ['regionId' => $worldRegion->getId()], 302);
         }

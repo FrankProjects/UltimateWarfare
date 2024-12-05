@@ -88,7 +88,7 @@ final class WorldGeneratorService
         MapConfiguration $mapConfiguration,
         int $sector
     ): void {
-        if ($mapConfiguration->getSize() != 25) {
+        if ($mapConfiguration->getSize() !== 25) {
             throw new RuntimeException("MapGenerator only supports size 25!");
         }
 

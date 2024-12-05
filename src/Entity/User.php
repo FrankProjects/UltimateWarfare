@@ -24,7 +24,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     private bool $enabled = false;
     private string $password = '';
     private string $plainPassword = '';
-    private ?DateTime $lastLogin;
+    private ?DateTime $lastLogin = null;
     /** Random string sent to the user email address in order to verify it */
     private ?string $confirmationToken = null;
     private ?DateTime $passwordRequestedAt = null;

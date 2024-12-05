@@ -13,7 +13,7 @@ final class RankingController extends BaseGameController
     {
         $player = $this->getPlayer();
 
-        if ($sortBy == 'region') {
+        if ($sortBy === 'region') {
             $rankingsTitle = "Rankings by Regions (Top 10)";
             $players = $playerRepository->findByWorldAndRegions($player->getWorld());
         } else {

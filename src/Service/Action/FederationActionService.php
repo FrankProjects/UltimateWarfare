@@ -170,7 +170,7 @@ final class FederationActionService
             throw new RuntimeException("Player is not in Federation!");
         }
 
-        if ($player->getFederationHierarchy() < 1 || $player->getFederationHierarchy() == 10) {
+        if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_RECRUIT || $player->getFederationHierarchy() === Player::FEDERATION_HIERARCHY_GENERAL) {
             throw new RuntimeException("You are not allowed to leave the Federation with this rank!");
         }
 

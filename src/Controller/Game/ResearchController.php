@@ -35,7 +35,7 @@ final class ResearchController extends BaseGameController
         $researchDataArray = [];
         $researchPlayerArray = [];
         foreach ($researchPlayerRecords as $researchPlayer) {
-            if ($researchPlayer->getActive() == true) {
+            if ($researchPlayer->getActive()) {
                 $researchPlayerArray[] = $researchPlayer->getResearch()->getId();
             }
         }

@@ -41,7 +41,7 @@ final class FleetActionService
         $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
 
         $targetPlayer = $fleet->getWorldRegion()->getPlayer();
-        if ($targetPlayer === null || $targetPlayer->getId() != $player->getId()) {
+        if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
             throw new RuntimeException('You are not the owner of this region!');
         }
 
@@ -56,7 +56,7 @@ final class FleetActionService
 
         $targetPlayer = $fleet->getTargetWorldRegion()->getPlayer();
 
-        if ($targetPlayer === null || $targetPlayer->getId() != $player->getId()) {
+        if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
             throw new RuntimeException('You are not the owner of this region!');
         }
 
@@ -75,11 +75,11 @@ final class FleetActionService
         GameUnitType $gameUnitType,
         array $unitData
     ): void {
-        if ($targetRegion->getWorld()->getId() != $player->getWorld()->getId()) {
+        if ($targetRegion->getWorld()->getId() !== $player->getWorld()->getId()) {
             throw new RuntimeException('Target region does not exist!');
         }
 
-        if ($region->getPlayer() === null || $region->getPlayer()->getId() != $player->getId()) {
+        if ($region->getPlayer() === null || $region->getPlayer()->getId() !== $player->getId()) {
             throw new RuntimeException('Region is not owned by you.');
         }
 
@@ -151,7 +151,7 @@ final class FleetActionService
     {
         $hasUnit = false;
         foreach ($region->getWorldRegionUnits() as $regionUnit) {
-            if ($regionUnit->getGameUnit()->getId() == $gameUnit->getId()) {
+            if ($regionUnit->getGameUnit()->getId() === $gameUnit->getId()) {
                 $hasUnit = true;
                 if ($amount > $regionUnit->getAmount()) {
                     throw new RuntimeException("You don't have that many " . $gameUnit->getName() . "s!");

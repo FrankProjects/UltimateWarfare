@@ -30,7 +30,7 @@ final class FederationController extends BaseGameController
     public function federation(): Response
     {
         $player = $this->getPlayer();
-        if ($player->getFederation() == null) {
+        if ($player->getFederation() === null) {
             return $this->render(
                 'game/federation/noFederation.html.twig',
                 [
@@ -50,7 +50,7 @@ final class FederationController extends BaseGameController
     public function showFederation(int $federationId): Response
     {
         $federation = $this->federationRepository->findByIdAndWorld($federationId, $this->getPlayer()->getWorld());
-        if ($federation == null) {
+        if ($federation === null) {
             return $this->render(
                 'game/federation/noFederation.html.twig',
                 [
@@ -71,7 +71,7 @@ final class FederationController extends BaseGameController
     public function federationNews(): Response
     {
         $player = $this->getPlayer();
-        if ($player->getFederation() == null) {
+        if ($player->getFederation() === null) {
             return $this->render(
                 'game/federation/noFederation.html.twig',
                 [

@@ -131,7 +131,7 @@ class TopicController extends BaseForumController
 
         $category = $topic->getCategory();
         $user = $this->getGameUser();
-        if ($user == null) {
+        if ($user === null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirectToRoute('Forum');
         }
@@ -162,7 +162,7 @@ class TopicController extends BaseForumController
         }
 
         $user = $this->getGameUser();
-        if ($user == null) {
+        if ($user === null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }
@@ -206,7 +206,7 @@ class TopicController extends BaseForumController
         }
 
         $user = $this->getGameUser();
-        if ($user == null) {
+        if ($user === null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }
@@ -237,7 +237,7 @@ class TopicController extends BaseForumController
         }
 
         $user = $this->getGameUser();
-        if ($user == null) {
+        if ($user === null) {
             $this->addFlash('error', 'Not logged in!');
             return $this->redirectToRoute('Forum/Topic', ['topicId' => $topic->getId()]);
         }

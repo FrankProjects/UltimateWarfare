@@ -55,11 +55,11 @@ final class MessageActionService
         string $toPlayerName,
         bool $adminMessage
     ): void {
-        if ($subject == '') {
+        if ($subject === '') {
             throw new RuntimeException('Please type a subject');
         }
 
-        if ($message == '') {
+        if ($message === '') {
             throw new RuntimeException('Please type a message');
         }
 

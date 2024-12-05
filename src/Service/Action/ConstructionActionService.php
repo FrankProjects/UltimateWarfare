@@ -72,14 +72,14 @@ final class ConstructionActionService
             $priceWood = $priceWood + ($amount * $gameUnit->getCost()->getWood());
             $priceSteel = $priceSteel + ($amount * $gameUnit->getCost()->getSteel());
 
-            if ($gameUnitType->getId() == GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
+            if ($gameUnitType->getId() === GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
                 $totalBuild = $totalBuild + $amount;
             }
 
             $constructions[] = Construction::create($region, $player, $gameUnit, $amount);
         }
 
-        if ($gameUnitType->getId() == GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
+        if ($gameUnitType->getId() === GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
             $buildingsInConstruction = $this->getCountGameUnitsInConstruction($region, $gameUnitType);
             $regionBuildings = $this->getCountGameUnitsInWorldRegion($region, $gameUnitType);
             $totalSpace = $region->getSpace() - $regionBuildings - $buildingsInConstruction;
@@ -151,7 +151,7 @@ final class ConstructionActionService
             throw new RuntimeException('This construction queue does not exist!');
         }
 
-        if ($construction->getPlayer()->getId() != $player->getId()) {
+        if ($construction->getPlayer()->getId() !== $player->getId()) {
             throw new RuntimeException('This is not your construction queue!');
         }
 
@@ -174,7 +174,7 @@ final class ConstructionActionService
     {
         $buildingsInConstruction = 0;
         foreach ($worldRegion->getConstructions() as $regionConstruction) {
-            if ($regionConstruction->getGameUnit()->getGameUnitType()->getId() == $gameUnitType->getId()) {
+            if ($regionConstruction->getGameUnit()->getGameUnitType()->getId() === $gameUnitType->getId()) {
                 $buildingsInConstruction += $regionConstruction->getNumber();
             }
         }
@@ -186,7 +186,7 @@ final class ConstructionActionService
     {
         $regionBuildings = 0;
         foreach ($worldRegion->getWorldRegionUnits() as $regionUnit) {
-            if ($regionUnit->getGameUnit()->getGameUnitType()->getId() == $gameUnitType->getId()) {
+            if ($regionUnit->getGameUnit()->getGameUnitType()->getId() === $gameUnitType->getId()) {
                 $regionBuildings += $regionUnit->getAmount();
             }
         }

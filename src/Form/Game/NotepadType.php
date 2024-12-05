@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/** @phpstan-ignore missingType.generics */
 class NotepadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

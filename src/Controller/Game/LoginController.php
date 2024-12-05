@@ -48,7 +48,7 @@ final class LoginController extends BaseGameController
             return $this->redirectToRoute('Game/Login');
         }
 
-        if ($player->getUser()->getId() != $user->getId()) {
+        if ($player->getUser()->getId() !== $user->getId()) {
             return $this->redirectToRoute('Game/Login');
         }
 

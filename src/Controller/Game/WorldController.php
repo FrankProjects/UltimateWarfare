@@ -93,7 +93,7 @@ final class WorldController extends BaseGameController
         }
 
         foreach ($user->getPlayers() as $player) {
-            if ($player->getWorld()->getId() == $worldId) {
+            if ($player->getWorld()->getId() === $worldId) {
                 $this->addFlash('error', 'You are already playing in this world!');
                 return $this->redirectToRoute('Game/SelectName', ['worldId' => $worldId], 302);
             }

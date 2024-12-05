@@ -121,7 +121,7 @@ abstract class BattlePhase implements IBattlePhase
             $this->defenderGameUnits = $this->processBattlePhase($attackPower, $this->defenderGameUnits, 'defending');
         }
 
-        if ($defensePower == 0 && $attackPower == 0) {
+        if ($defensePower === 0 && $attackPower === 0) {
             $this->addToBattleLog("No resistance in this battle phase...");
         }
     }

@@ -80,19 +80,19 @@ class Report
 
     public static function getReportSubject(int $type): string
     {
-        if ($type == self::TYPE_ATTACKED) {
+        if ($type === self::TYPE_ATTACKED) {
             return 'Battle reports';
         }
 
-        if ($type == self::TYPE_GENERAL) {
+        if ($type === self::TYPE_GENERAL) {
             return 'General reports';
         }
 
-        if ($type == self::TYPE_MARKET) {
+        if ($type === self::TYPE_MARKET) {
             return 'Market reports';
         }
 
-        if ($type == self::TYPE_AID) {
+        if ($type === self::TYPE_AID) {
             return 'Aid reports';
         }
 

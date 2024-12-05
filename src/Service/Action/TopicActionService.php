@@ -92,7 +92,7 @@ final class TopicActionService
 
     private function ensureTopicPermissions(User $user, Topic $topic): void
     {
-        if ($user->getId() != $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
+        if ($user->getId() !== $topic->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
             throw new RuntimeException('Not enough permissions!');
         }
     }

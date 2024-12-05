@@ -19,7 +19,7 @@ class Topic
     private bool $closed = false;
     private Category $category;
     private User $user;
-    private ?User $editUser;
+    private ?User $editUser = null;
 
     /** @var Collection<int, Post> */
     private Collection $posts;
