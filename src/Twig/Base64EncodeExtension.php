@@ -9,8 +9,6 @@ use Twig\TwigFilter;
 
 class Base64EncodeExtension extends AbstractExtension
 {
-    public const GET_CONTENT_FROM_STREAM = 'stream';
-
     public function getFilters(): array
     {
         return [
@@ -18,12 +16,12 @@ class Base64EncodeExtension extends AbstractExtension
         ];
     }
 
-    public function base64Encode(mixed $string, string $modifier = ''): string
+    public function base64Encode(mixed $stream): string
     {
-        $content = match ($modifier) {
-            self::GET_CONTENT_FROM_STREAM => stream_get_contents($string),
-            default => (string) $string,
-        };
-        return base64_encode((string) $content);
+        if (!is_resource($stream)) {
+            return '';
+        }
+
+        return base64_encode((string) stream_get_contents($stream));
     }
 }

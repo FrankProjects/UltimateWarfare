@@ -35,7 +35,7 @@
                     </p>
                 {% endif %}
                 {% if topic.user.hasAvatar %}
-                    <img alt="{{ topic.user.username }} Avatar" src="data:image/jpeg;base64,{{ topic.user.avatar|base64_encode(constant('FrankProjects\\UltimateWarfare\\Twig\\Base64EncodeExtension::GET_CONTENT_FROM_STREAM')) }}" />
+                    <img alt="{{ topic.user.username }} Avatar" src="data:image/jpeg;base64,{{ topic.user.avatar|base64_encode() }}" />
                 {% endif %}
             </td>
             <td rowspan="3" width="700">
