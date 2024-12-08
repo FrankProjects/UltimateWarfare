@@ -27,6 +27,7 @@
                 {{ form_widget(form.content) }}
             </td>
         </tr>
+        {% if is_granted('ROLE_MODERATOR') %}
         <tr>
             <td>
                 {{ form_label(form.sticky) }}
@@ -43,6 +44,7 @@
                 {{ form_widget(form.closed) }}
             </td>
         </tr>
+        {% endif %}
         <tr>
             <td colspan="2">
                 {{ form_row(form.submit) }}

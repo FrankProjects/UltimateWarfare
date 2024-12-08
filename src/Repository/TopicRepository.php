@@ -15,12 +15,6 @@ interface TopicRepository
     public function getLastTopicByUser(User $user): ?Topic;
 
     /**
-     * @param int $limit
-     * @return Topic[]
-     */
-    public function findLastAnnouncements(int $limit): array;
-
-    /**
      * @param Category $category
      * @return Topic[]
      */

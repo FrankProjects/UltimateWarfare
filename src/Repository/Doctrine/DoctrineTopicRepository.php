@@ -43,20 +43,6 @@ final class DoctrineTopicRepository implements TopicRepository
     }
 
     /**
-     * @param int $limit
-     * @return Topic[]
-     */
-    public function findLastAnnouncements(int $limit): array
-    {
-        return $this->entityManager->createQuery(
-            'SELECT t.id, t.title FROM ' . Topic::class . ' t WHERE t.category = :category ORDER BY t.createDateTime DESC'
-        )
-            ->setParameter('category', 1)
-            ->setMaxResults(intval($limit))
-            ->getResult();
-    }
-
-    /**
      * @param Category $category
      * @return Topic[]
      */
