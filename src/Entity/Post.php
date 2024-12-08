@@ -10,12 +10,12 @@ class Post
 {
     private int $id;
     private string $posterIp;
-    private string $content = '';
+    private string $content;
     private DateTime $createDateTime;
     private bool $edited = false;
     private Topic $topic;
     private User $user;
-    private ?User $editUser;
+    private ?User $editUser = null;
 
     public function setId(int $id): void
     {

@@ -144,10 +144,7 @@ final class FederationApplicationActionService
 
     private function getFederationApplication(Player $player, int $federationApplicationId): FederationApplication
     {
-        $federationApplication = $this->federationApplicationRepository->findByIdAndWorld(
-            $federationApplicationId,
-            $player->getWorld()
-        );
+        $federationApplication = $this->federationApplicationRepository->find($federationApplicationId);
 
         if ($federationApplication === null) {
             throw new RuntimeException('FederationApplication does not exist!');

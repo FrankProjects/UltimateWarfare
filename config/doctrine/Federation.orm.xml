@@ -9,7 +9,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="leaderMessage" type="text" column="leader_message" length="65535" nullable="true">
+    <field name="leaderMessage" type="text" column="leader_message" length="65535">
       <options>
         <option name="fixed"/>
       </options>

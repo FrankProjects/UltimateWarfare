@@ -54,7 +54,7 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
     /**
      * @param Player $player
      * @param GameUnitType[] $gameUnitTypes
-     * @return array<int|string, mixed>
+     * @return array<int|string, int>
      */
     public function getGameUnitSumByPlayerAndGameUnitTypes(Player $player, array $gameUnitTypes): array
     {
