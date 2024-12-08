@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\GameUnit;
@@ -95,7 +96,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->setParameter('player', $player)
             ->setFirstResult(0)
             ->setMaxResults(1)
-            ->getOneOrNullResult();
+            ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
     public function getNextWorldRegionForPlayer(int $id, Player $player): ?WorldRegion
@@ -110,7 +111,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->setParameter('player', $player)
             ->setFirstResult(0)
             ->setMaxResults(1)
-            ->getOneOrNullResult();
+            ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
     public function save(WorldRegion $worldRegion): void
