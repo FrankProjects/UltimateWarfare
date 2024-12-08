@@ -8,22 +8,22 @@ use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
-use FrankProjects\UltimateWarfare\Service\NetworthUpdaterService;
+use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 
 final class ResearchProcessor implements Processor
 {
     private ResearchPlayerRepository $researchPlayerRepository;
     private ReportRepository $reportRepository;
-    private NetworthUpdaterService $networthUpdaterService;
+    private NetWorthUpdaterService $netWorthUpdaterService;
 
     public function __construct(
         ResearchPlayerRepository $researchPlayerRepository,
         ReportRepository $reportRepository,
-        NetworthUpdaterService $networthUpdaterService
+        NetWorthUpdaterService $netWorthUpdaterService
     ) {
         $this->researchPlayerRepository = $researchPlayerRepository;
         $this->reportRepository = $reportRepository;
-        $this->networthUpdaterService = $networthUpdaterService;
+        $this->netWorthUpdaterService = $netWorthUpdaterService;
     }
 
     public function run(int $timestamp): void
@@ -43,7 +43,7 @@ final class ResearchProcessor implements Processor
             $this->reportRepository->save($report);
             $this->researchPlayerRepository->save($researchPlayer);
 
-            $this->networthUpdaterService->updateNetworthForPlayer($player);
+            $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
         }
     }
 }

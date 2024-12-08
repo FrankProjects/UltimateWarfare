@@ -19,7 +19,7 @@
         <option name="unsigned"/>
       </options>
     </field>
-    <field name="networth" type="integer" column="networth">
+    <field name="netWorth" type="integer" column="net_worth">
       <options>
         <option name="unsigned"/>
       </options>

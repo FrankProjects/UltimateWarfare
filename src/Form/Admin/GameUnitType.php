@@ -37,10 +37,10 @@ class GameUnitType extends AbstractType
                 ]
             )
             ->add(
-                'networth',
+                'netWorth',
                 NumberType::class,
                 [
-                    'label' => 'label.networth'
+                    'label' => 'label.netWorth'
                 ]
             )
             ->add(

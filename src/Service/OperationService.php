@@ -17,7 +17,7 @@ use RuntimeException;
 final class OperationService
 {
     private ReportCreator $reportCreator;
-    private NetworthUpdaterService $networthUpdaterService;
+    private NetWorthUpdaterService $netWorthUpdaterService;
     private IncomeUpdaterService $incomeUpdaterService;
     private PlayerRepository $playerRepository;
     private WorldRegionUnitRepository $worldRegionUnitRepository;
@@ -26,7 +26,7 @@ final class OperationService
 
     public function __construct(
         ReportCreator $reportCreator,
-        NetworthUpdaterService $networthUpdaterService,
+        NetWorthUpdaterService $netWorthUpdaterService,
         IncomeUpdaterService $incomeUpdaterService,
         PlayerRepository $playerRepository,
         WorldRegionUnitRepository $worldRegionUnitRepository,
@@ -34,7 +34,7 @@ final class OperationService
         ConstructionRepository $constructionRepository
     ) {
         $this->reportCreator = $reportCreator;
-        $this->networthUpdaterService = $networthUpdaterService;
+        $this->netWorthUpdaterService = $netWorthUpdaterService;
         $this->incomeUpdaterService = $incomeUpdaterService;
         $this->playerRepository = $playerRepository;
         $this->worldRegionUnitRepository = $worldRegionUnitRepository;
@@ -78,11 +78,11 @@ final class OperationService
 
         $regionPlayer = $region->getPlayer();
         if ($regionPlayer !== null) {
-            $this->networthUpdaterService->updateNetworthForPlayer($regionPlayer);
+            $this->netWorthUpdaterService->updateNetWorthForPlayer($regionPlayer);
             $this->incomeUpdaterService->updateIncomeForPlayer($regionPlayer);
         }
 
-        $this->networthUpdaterService->updateNetworthForPlayer($player);
+        $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
         $this->incomeUpdaterService->updateIncomeForPlayer($player);
 
         return $operationResults;

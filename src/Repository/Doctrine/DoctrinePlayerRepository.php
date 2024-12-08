@@ -63,14 +63,14 @@ final class DoctrinePlayerRepository implements PlayerRepository
      * @param integer $limit
      * @return Player[]
      */
-    public function findByWorldAndNetworth(World $world, $limit = 10): array
+    public function findByWorldAndNetWorth(World $world, $limit = 10): array
     {
         return $this->entityManager
             ->createQuery(
                 'SELECT p
               FROM ' . Player::class . ' p
               WHERE p.world = :world
-              ORDER BY p.networth DESC'
+              ORDER BY p.netWorth DESC'
             )->setParameter(
                 'world',
                 $world
@@ -87,7 +87,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
         $federation = $player->getFederation();
         if ($federation !== null) {
             // XXX TODO: Delete Federation if you are owner
-            $federation->setNetworth($federation->getNetworth() - $player->getNetworth());
+            $federation->setNetWorth($federation->getNetWorth() - $player->getNetWorth());
             $federation->setRegions($federation->getRegions() - count($player->getWorldRegions()));
             $this->entityManager->persist($federation);
         }

@@ -4,7 +4,7 @@
 
 {% block content %}
     <p class="text-center">
-        Rankings by: <a class="B" href="{{ path('Game/Rankings', {'sortBy': 'networth'}) }}">Networth</a> - <a class="B" href="{{ path('Game/Rankings') }}">Regions</a>
+        Rankings by: <a class="B" href="{{ path('Game/Rankings', {'sortBy': 'netWorth'}) }}">NetWorth</a> - <a class="B" href="{{ path('Game/Rankings') }}">Regions</a>
     </p>
 
     <table class="table text-center">
@@ -15,7 +15,7 @@
             <td width="100"><b>Rank</b></td>
             <td class="text-start" width="300"><b>Player</b></td>
             <td width="150"><b>Regions</b></td>
-            <td width="150"><b>Networth</b></td>
+            <td width="150"><b>NetWorth</b></td>
         </tr>
         {% for playerRanking in players %}
             <tr>
@@ -26,7 +26,7 @@
                     {% endif %}
                 </td>
                 <td>{{ playerRanking.worldRegions|length }}</td>
-                <td>{{ playerRanking.networth }}</td>
+                <td>{{ playerRanking.netWorth }}</td>
             </tr>
         {% endfor %}
     </table>

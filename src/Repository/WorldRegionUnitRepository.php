@@ -15,7 +15,7 @@ interface WorldRegionUnitRepository
     /**
      * @return array<int, array<string, int>>
      */
-    public function findAmountAndNetworthByPlayer(Player $player): array;
+    public function findAmountAndNetWorthByPlayer(Player $player): array;
 
     /**
      * @param Player $player

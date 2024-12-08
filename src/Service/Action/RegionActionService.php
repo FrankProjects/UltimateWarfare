@@ -12,7 +12,7 @@ use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
-use FrankProjects\UltimateWarfare\Util\NetworthCalculator;
+use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use FrankProjects\UltimateWarfare\Util\TimeCalculator;
 use RuntimeException;
 
@@ -120,7 +120,7 @@ final class RegionActionService
         $resources->setCash($resources->getCash() - $player->getRegionPrice());
 
         $player->setResources($resources);
-        $player->setNetworth($player->getNetworth() + NetworthCalculator::NETWORTH_CALCULATOR_REGION);
+        $player->setNetWorth($player->getNetWorth() + NetWorthCalculator::NET_WORTH_CALCULATOR_REGION);
 
         $worldRegion->setPlayer($player);
 
@@ -128,7 +128,7 @@ final class RegionActionService
 
         if ($federation !== null) {
             $federation->setRegions($federation->getRegions() + 1);
-            $federation->setNetworth($federation->getNetworth() + NetworthCalculator::NETWORTH_CALCULATOR_REGION);
+            $federation->setNetWorth($federation->getNetWorth() + NetWorthCalculator::NET_WORTH_CALCULATOR_REGION);
             $this->federationRepository->save($federation);
         }
 

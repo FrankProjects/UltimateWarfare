@@ -182,7 +182,7 @@ final class FederationActionService
         $player->setFederationHierarchy(0);
         $this->playerRepository->save($player);
 
-        $federation->setNetworth($federation->getNetworth() - $player->getNetworth());
+        $federation->setNetWorth($federation->getNetWorth() - $player->getNetWorth());
         $federation->setRegions($federation->getRegions() - count($player->getWorldRegions()));
         $this->federationRepository->save($federation);
     }
@@ -221,7 +221,7 @@ final class FederationActionService
         $federationNews = FederationNews::createForFederation($federation, $news);
         $this->federationNewsRepository->save($federationNews);
 
-        $federation->setNetworth($federation->getNetworth() - $kickPlayer->getNetworth());
+        $federation->setNetWorth($federation->getNetWorth() - $kickPlayer->getNetWorth());
         $federation->setRegions($federation->getRegions() - count($kickPlayer->getWorldRegions()));
         $this->federationRepository->save($federation);
 

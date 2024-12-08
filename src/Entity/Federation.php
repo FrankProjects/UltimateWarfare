@@ -15,7 +15,7 @@ class Federation
     private Player $founder;
     private string $leaderMessage = '';
     private int $regions = 0;
-    private int $networth = 0;
+    private int $netWorth = 0;
     private World $world;
 
     /** @var Collection<int, Player> */
@@ -86,14 +86,14 @@ class Federation
         return $this->regions;
     }
 
-    public function setNetworth(int $networth): void
+    public function setNetWorth(int $netWorth): void
     {
-        $this->networth = $networth;
+        $this->netWorth = $netWorth;
     }
 
-    public function getNetworth(): int
+    public function getNetWorth(): int
     {
-        return $this->networth;
+        return $this->netWorth;
     }
 
     public function getWorld(): World
@@ -147,7 +147,7 @@ class Federation
         $federation->setFounder($player);
         $federation->setWorld($player->getWorld());
         $federation->setRegions(count($player->getWorldRegions()));
-        $federation->setNetworth($player->getNetworth());
+        $federation->setNetWorth($player->getNetWorth());
 
         return $federation;
     }

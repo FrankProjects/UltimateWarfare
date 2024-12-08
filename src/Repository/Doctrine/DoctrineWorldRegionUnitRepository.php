@@ -18,7 +18,7 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
     private EntityManagerInterface $entityManager;
 
     /**
-     * @var EntityRepository <WorldRegionUnit>
+     * @var EntityRepository<WorldRegionUnit>
      */
     private EntityRepository $repository;
 
@@ -37,10 +37,10 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
      * @param Player $player
      * @return array<int, array<string, int>>
      */
-    public function findAmountAndNetworthByPlayer(Player $player): array
+    public function findAmountAndNetWorthByPlayer(Player $player): array
     {
         return $this->entityManager->createQuery(
-            'SELECT wru.amount, gu.networth
+            'SELECT wru.amount, gu.netWorth
               FROM ' . WorldRegionUnit::class . ' wru
               JOIN ' . WorldRegion::class . ' wr WITH wru.worldRegion = wr
               JOIN ' . GameUnit::class . ' gu WITH wru.gameUnit = gu

@@ -22,7 +22,7 @@ class Player
     private string $name;
     private int $timestampJoined;
     private int $timestampUpdate;
-    private int $networth = 0;
+    private int $netWorth = 0;
     private int $federationHierarchy = 0;
     private string $notepad = '';
     private User $user;
@@ -118,14 +118,14 @@ class Player
         return $this->timestampUpdate;
     }
 
-    public function setNetworth(int $networth): void
+    public function setNetWorth(int $netWorth): void
     {
-        $this->networth = $networth;
+        $this->netWorth = $netWorth;
     }
 
-    public function getNetworth(): int
+    public function getNetWorth(): int
     {
-        return $this->networth;
+        return $this->netWorth;
     }
 
     public function setFederationHierarchy(int $federationHierarchy): void

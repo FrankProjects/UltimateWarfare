@@ -7,40 +7,40 @@ namespace FrankProjects\UltimateWarfare\Service;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
-use FrankProjects\UltimateWarfare\Util\NetworthCalculator;
+use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 
-final class NetworthUpdaterService
+final class NetWorthUpdaterService
 {
     private FederationRepository $federationRepository;
     private PlayerRepository $playerRepository;
-    private NetworthCalculator $networthCalculator;
+    private NetWorthCalculator $netWorthCalculator;
 
     public function __construct(
         FederationRepository $federationRepository,
         PlayerRepository $playerRepository,
-        NetworthCalculator $networthCalculator
+        NetWorthCalculator $netWorthCalculator
     ) {
         $this->federationRepository = $federationRepository;
         $this->playerRepository = $playerRepository;
-        $this->networthCalculator = $networthCalculator;
+        $this->netWorthCalculator = $netWorthCalculator;
     }
 
-    public function updateNetworthForPlayer(Player $player): void
+    public function updateNetWorthForPlayer(Player $player): void
     {
-        $networth = $this->networthCalculator->calculateNetworthForPlayer($player);
-        $player->setNetworth($networth);
+        $netWorth = $this->netWorthCalculator->calculateNetWorthForPlayer($player);
+        $player->setNetWorth($netWorth);
 
         if ($player->getFederation() !== null) {
             $federation = $player->getFederation();
-            $federationNetworth = 0;
+            $federationNetWorth = 0;
             $federationRegions = 0;
 
             foreach ($federation->getPlayers() as $federationPlayer) {
-                $federationNetworth += $this->networthCalculator->calculateNetworthForPlayer($federationPlayer);
+                $federationNetWorth += $this->netWorthCalculator->calculateNetWorthForPlayer($federationPlayer);
                 $federationRegions += count($federationPlayer->getWorldRegions());
             }
 
-            $federation->setNetworth($federationNetworth);
+            $federation->setNetWorth($federationNetWorth);
             $federation->setRegions($federationRegions);
             $this->federationRepository->save($federation);
         }

@@ -18,7 +18,7 @@ class GameUnit
     private string $nameMulti;
     private string $rowName;
     private string $image;
-    private int $networth;
+    private int $netWorth;
     private int $timestamp;
     private string $description;
     private GameUnitType $gameUnitType;
@@ -101,14 +101,14 @@ class GameUnit
         return $this->image;
     }
 
-    public function setNetworth(int $networth): void
+    public function setNetWorth(int $netWorth): void
     {
-        $this->networth = $networth;
+        $this->netWorth = $netWorth;
     }
 
-    public function getNetworth(): int
+    public function getNetWorth(): int
     {
-        return $this->networth;
+        return $this->netWorth;
     }
 
     public function setTimestamp(int $timestamp): void

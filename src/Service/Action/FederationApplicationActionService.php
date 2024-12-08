@@ -80,7 +80,7 @@ final class FederationApplicationActionService
         $applicationPlayer->setNotifications($applicationPlayerNotifications);
         $this->playerRepository->save($applicationPlayer);
 
-        $federation->setNetworth($federation->getNetworth() + $federationApplication->getPlayer()->getNetworth());
+        $federation->setNetWorth($federation->getNetWorth() + $federationApplication->getPlayer()->getNetWorth());
         $federation->setRegions(
             $federation->getRegions() + count($federationApplication->getPlayer()->getWorldRegions())
         );

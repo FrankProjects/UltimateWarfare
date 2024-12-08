@@ -13,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
-use FrankProjects\UltimateWarfare\Service\NetworthUpdaterService;
+use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 use RuntimeException;
 
 final class ConstructionActionService
@@ -22,20 +22,20 @@ final class ConstructionActionService
     private GameUnitRepository $gameUnitRepository;
     private PlayerRepository $playerRepository;
     private WorldRegionUnitRepository $worldRegionUnitRepository;
-    private NetworthUpdaterService $networthUpdaterService;
+    private NetWorthUpdaterService $netWorthUpdaterService;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
         GameUnitRepository $gameUnitRepository,
         PlayerRepository $playerRepository,
         WorldRegionUnitRepository $worldRegionUnitRepository,
-        NetworthUpdaterService $networthUpdaterService
+        NetWorthUpdaterService $netWorthUpdaterService
     ) {
         $this->constructionRepository = $constructionRepository;
         $this->gameUnitRepository = $gameUnitRepository;
         $this->playerRepository = $playerRepository;
         $this->worldRegionUnitRepository = $worldRegionUnitRepository;
-        $this->networthUpdaterService = $networthUpdaterService;
+        $this->netWorthUpdaterService = $netWorthUpdaterService;
     }
 
     /**
@@ -140,7 +140,7 @@ final class ConstructionActionService
             $this->removeGameUnitsFromWorldRegion($region, $gameUnit, $amount);
         }
 
-        $this->networthUpdaterService->updateNetworthForPlayer($player);
+        $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
     }
 
     public function cancelConstruction(Player $player, int $constructionId): void
