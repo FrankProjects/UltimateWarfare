@@ -210,7 +210,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
 
     public function hasAvatar(): bool
     {
-        if(is_resource($this->avatar)) {
+        if (is_resource($this->avatar)) {
             $stats = fstat($this->avatar);
             if ($stats !== false) {
                 return $stats['size'] > 0;
