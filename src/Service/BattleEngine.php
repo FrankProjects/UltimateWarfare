@@ -17,18 +17,18 @@ final class BattleEngine
 {
     private BattleUpdaterService $battleUpdaterService;
     private BattleReportCreator $battleReportCreator;
-    private NetworthUpdaterService $networthUpdaterService;
+    private NetWorthUpdaterService $netWorthUpdaterService;
     private IncomeUpdaterService $incomeUpdaterService;
 
     public function __construct(
         BattleUpdaterService $battleUpdaterService,
         BattleReportCreator $battleReportCreator,
-        NetworthUpdaterService $networthUpdaterService,
+        NetWorthUpdaterService $netWorthUpdaterService,
         IncomeUpdaterService $incomeUpdaterService
     ) {
         $this->battleUpdaterService = $battleUpdaterService;
         $this->battleReportCreator = $battleReportCreator;
-        $this->networthUpdaterService = $networthUpdaterService;
+        $this->netWorthUpdaterService = $netWorthUpdaterService;
         $this->incomeUpdaterService = $incomeUpdaterService;
     }
 
@@ -102,8 +102,8 @@ final class BattleEngine
     }
 
     /**
-     * @param array<int, FleetUnit> $attackerGameUnits
-     * @param array<int, WorldRegionUnit> $defenderGameUnits
+     * @param array<FleetUnit> $attackerGameUnits
+     * @param array<WorldRegionUnit> $defenderGameUnits
      */
     private function processResults(
         BattleResult $battleResults,
@@ -126,8 +126,8 @@ final class BattleEngine
             $this->battleReportCreator->createBattleLostReports($fleet, $timestamp);
         }
 
-        $this->networthUpdaterService->updateNetworthForPlayer($fleet->getPlayer());
-        $this->networthUpdaterService->updateNetworthForPlayer($defendingPlayer);
+        $this->netWorthUpdaterService->updateNetWorthForPlayer($fleet->getPlayer());
+        $this->netWorthUpdaterService->updateNetWorthForPlayer($defendingPlayer);
 
         $this->incomeUpdaterService->updateIncomeForPlayer($fleet->getPlayer());
         $this->incomeUpdaterService->updateIncomeForPlayer($defendingPlayer);

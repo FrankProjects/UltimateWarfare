@@ -15,7 +15,7 @@
                         <td style="border:0" valign="middle">{{ profilePlayer.name }}</td>
                         {% if profilePlayer.getUser.hasAvatar %}
                             <td style="border:0" align="right">
-                                <img alt="{{ profilePlayer.getUser.username }} Avatar" src="data:image/jpeg;base64,{{ profilePlayer.getUser.avatar|base64_encode(constant('FrankProjects\\UltimateWarfare\\Twig\\Base64EncodeExtension::GET_CONTENT_FROM_STREAM')) }}" />
+                                <img alt="{{ profilePlayer.getUser.username }} Avatar" src="data:image/jpeg;base64,{{ profilePlayer.getUser.avatar|base64_encode() }}" />
                             </td>
                         {% endif %}
                     </tr>
@@ -34,8 +34,8 @@
             <td width="350">{{ profilePlayer.worldRegions|length }}</td>
         </tr>
         <tr>
-            <td width="150">Networth:</td>
-            <td width="350">{{ profilePlayer.networth }}</td>
+            <td width="150">Net worth:</td>
+            <td width="350">{{ profilePlayer.netWorth }}</td>
         </tr>
         {% if profilePlayer.federation is not null %}
             <tr>

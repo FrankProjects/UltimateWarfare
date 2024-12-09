@@ -49,7 +49,7 @@ final class RegionController extends BaseGameController
             }
         } catch (WorldRegionNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('Game/RegionList', [], 302);
+            return $this->redirectToRoute('Game/RegionList');
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -72,7 +72,7 @@ final class RegionController extends BaseGameController
             $worldRegion = $this->regionActionService->getWorldRegionByIdAndWorld($regionId, $player->getWorld());
         } catch (WorldRegionNotFoundException $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('Game/RegionList', [], 302);
+            return $this->redirectToRoute('Game/RegionList');
         }
 
         $gameUnitTypes = $this->gameUnitTypeRepository->findAll();
@@ -102,7 +102,7 @@ final class RegionController extends BaseGameController
         try {
             $gameUnitType = $this->gameUnitTypeRepository->find(GameUnitType::GAME_UNIT_TYPE_BUILDINGS);
         } catch (GameUnitTypeNotFoundException) {
-            return $this->redirectToRoute('Game/Region', [], 302);
+            return $this->redirectToRoute('Game/Region');
         }
 
         foreach ($regions as $region) {

@@ -152,10 +152,10 @@ final class MarketController extends BaseGameController
         }
 
         if ($request->isMethod(Request::METHOD_POST)) {
-            $price = intval($request->get('price'));
-            $amount = intval($request->get('amount'));
-            $resource = $request->get('resource');
-            $option = $request->get('option');
+            $price = $request->request->getInt('price');
+            $amount = $request->request->getInt('amount');
+            $resource = $request->request->getString('resource');
+            $option = $request->request->getString('option');
 
             try {
                 $this->marketActionService->placeOffer($player, $resource, $price, $amount, $option);

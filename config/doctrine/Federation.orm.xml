@@ -9,7 +9,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="leaderMessage" type="text" column="leader_message" length="65535" nullable="true">
+    <field name="leaderMessage" type="text" column="leader_message" length="65535">
       <options>
         <option name="fixed"/>
       </options>
@@ -19,7 +19,7 @@
         <option name="unsigned"/>
       </options>
     </field>
-    <field name="networth" type="integer" column="networth">
+    <field name="netWorth" type="integer" column="net_worth">
       <options>
         <option name="unsigned"/>
       </options>

@@ -51,6 +51,10 @@ final class DoctrineOperationRepository implements OperationRepository
             ->getResult();
     }
 
+    /**
+     * @param Player $player
+     * @return Operation[]
+     */
     public function findAvailableForPlayer(Player $player): array
     {
         return $this->entityManager->createQuery(
@@ -61,7 +65,7 @@ final class DoctrineOperationRepository implements OperationRepository
             WHERE o.enabled = 1 AND rp.player = :player AND rp.active = 1'
         )
             ->setParameter('player', $player)
-            ->getArrayResult();
+            ->getResult();
     }
 
     public function remove(Operation $operation): void

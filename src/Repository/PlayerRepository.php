@@ -25,7 +25,7 @@ interface PlayerRepository
      * @param int $limit
      * @return Player[]
      */
-    public function findByWorldAndNetworth(World $world, $limit = 10): array;
+    public function findByWorldAndNetWorth(World $world, $limit = 10): array;
 
     public function remove(Player $player): void;
 

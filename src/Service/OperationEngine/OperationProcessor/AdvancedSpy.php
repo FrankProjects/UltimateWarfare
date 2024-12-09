@@ -44,7 +44,7 @@ final class AdvancedSpy extends OperationProcessor
 
         $this->addToOperationLog("Population: {$population}");
         $this->addToOperationLog("Regions: {$regionCount}");
-        $this->addToOperationLog("Networth: {$player->getNetworth()}");
+        $this->addToOperationLog("NetWorth: {$player->getNetWorth()}");
     }
 
     public function processFailed(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Category;
@@ -39,21 +40,7 @@ final class DoctrineTopicRepository implements TopicRepository
         )
             ->setParameter('user', $user->getId())
             ->setMaxResults(1)
-            ->getOneOrNullResult();
-    }
-
-    /**
-     * @param int $limit
-     * @return Topic[]
-     */
-    public function findLastAnnouncements(int $limit): array
-    {
-        return $this->entityManager->createQuery(
-            'SELECT t.id, t.title FROM ' . Topic::class . ' t WHERE t.category = :category ORDER BY t.createDateTime DESC'
-        )
-            ->setParameter('category', 1)
-            ->setMaxResults(intval($limit))
-            ->getResult();
+            ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
     /**

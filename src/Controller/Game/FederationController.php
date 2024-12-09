@@ -93,7 +93,7 @@ final class FederationController extends BaseGameController
 
     public function createFederation(Request $request): Response
     {
-        $federationName = trim((string) $request->get('name'));
+        $federationName = trim($request->request->getString('name'));
 
         try {
             if ($request->isMethod(Request::METHOD_POST)) {
@@ -145,8 +145,10 @@ final class FederationController extends BaseGameController
     {
         try {
             if ($request->isMethod(Request::METHOD_POST) && $request->get('player') !== null) {
-                $aidPlayerId = intval($request->get('player'));
-                $this->federationActionService->sendAid($this->getPlayer(), $aidPlayerId, $request->get('resources'));
+                $aidPlayerId = $request->request->getInt('player');
+                /** @var array<string, string> $resources */
+                $resources = $request->get('resources');
+                $this->federationActionService->sendAid($this->getPlayer(), $aidPlayerId, $resources);
                 $this->addFlash('success', "You have send aid!");
 
                 return $this->redirectToRoute('Game/Federation');
@@ -188,7 +190,8 @@ final class FederationController extends BaseGameController
     {
         try {
             if ($request->isMethod(Request::METHOD_POST)) {
-                $this->federationActionService->changeFederationName($this->getPlayer(), $request->get('name'));
+                $name = $request->request->getString('name');
+                $this->federationActionService->changeFederationName($this->getPlayer(), $name);
                 $this->addFlash('success', "You successfully changed the Federation name!");
 
                 return $this->redirectToRoute('Game/Federation');
@@ -242,7 +245,8 @@ final class FederationController extends BaseGameController
     {
         try {
             if ($request->isMethod(Request::METHOD_POST) && $request->get('message') !== null) {
-                $this->federationActionService->updateLeadershipMessage($this->getPlayer(), $request->get('message'));
+                $message = $request->request->getString('message');
+                $this->federationActionService->updateLeadershipMessage($this->getPlayer(), $message);
                 $this->addFlash('success', "You successfully updated the leadership message");
 
                 return $this->redirectToRoute('Game/Federation');
@@ -269,8 +273,8 @@ final class FederationController extends BaseGameController
             ) {
                 $this->federationActionService->changePlayerHierarchy(
                     $this->getPlayer(),
-                    $request->get('playerId'),
-                    $request->get('role')
+                    $request->request->getInt('playerId'),
+                    $request->request->getInt('role')
                 );
                 $this->addFlash('success', "You successfully updated a player rank");
             }

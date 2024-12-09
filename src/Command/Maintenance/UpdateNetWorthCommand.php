@@ -8,36 +8,36 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
-use FrankProjects\UltimateWarfare\Util\NetworthCalculator;
+use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'game:maintenance:update:networth')]
-class UpdateNetworthCommand extends Command
+#[AsCommand(name: 'game:maintenance:update:netWorth')]
+class UpdateNetWorthCommand extends Command
 {
     private PlayerRepository $playerRepository;
     private WorldRepository $worldRepository;
-    private NetworthCalculator $networthCalculator;
+    private NetWorthCalculator $netWorthCalculator;
 
     public function __construct(
         PlayerRepository $playerRepository,
         WorldRepository $worldRepository,
-        NetworthCalculator $networthCalculator
+        NetWorthCalculator $netWorthCalculator
     ) {
         $this->playerRepository = $playerRepository;
         $this->worldRepository = $worldRepository;
-        $this->networthCalculator = $networthCalculator;
+        $this->netWorthCalculator = $netWorthCalculator;
 
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->setDescription('Update networth of all players')
-            ->setHelp('Fix inconsistencies by updating networth of all players...')
+        $this->setDescription('Update netWorth of all players')
+            ->setHelp('Fix inconsistencies by updating netWorth of all players...')
             ->addOption(
                 'commit',
                 null,
@@ -51,7 +51,7 @@ class UpdateNetworthCommand extends Command
     {
         $output->writeln(
             [
-                'Updating networth of all players',
+                'Updating netWorth of all players',
                 '============',
                 '',
             ]
@@ -86,10 +86,10 @@ class UpdateNetworthCommand extends Command
     {
         $output->writeln("Processing Player: {$player->getName()}");
 
-        $networth = $this->networthCalculator->calculateNetworthForPlayer($player);
-        if ($player->getNetworth() !== $networth) {
-            $output->writeln("Mismatch found: {$player->getName()} {$player->getNetworth()} => {$networth}");
-            $player->setNetworth($networth);
+        $netWorth = $this->netWorthCalculator->calculateNetWorthForPlayer($player);
+        if ($player->getNetWorth() !== $netWorth) {
+            $output->writeln("Mismatch found: {$player->getName()} {$player->getNetWorth()} => {$netWorth}");
+            $player->setNetWorth($netWorth);
 
             if ($commit) {
                 $this->playerRepository->save($player);

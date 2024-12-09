@@ -8,29 +8,29 @@
             <td colspan="2"><b>Account Settings</b> </td>
         </tr>
         <tr>
-            <td width="150">Username: </td>
-            <td width="450"><b>{{ user.username }}</b></td>
+            <td>Username:</td>
+            <td><b>{{ user.username }}</b></td>
         </tr>
         <tr>
-            <td width="150">Email: </td>
-            <td width="450"><b>{{ user.email }}</b></td>
+            <td>Email:</td>
+            <td><b>{{ user.email }}</b></td>
         </tr>
         <tr>
-            <td width="150">Signup date: </td>
-            <td width="450"><b>{{ user.signup|date("Y-m-d H:i:s") }}</b></td>
+            <td>Signup date:</td>
+            <td><b>{{ user.signup|date("Y-m-d H:i:s") }}</b></td>
         </tr>
         <tr>
-            <td width="150">Account Type: </td>
-            <td width="450"><b>{{ userType }}</b></td>
+            <td>Account Type:</td>
+            <td><b>{{ userType }}</b></td>
         </tr>
         <tr>
-            <td width="150">Account Status: </td>
-            <td width="450">
+            <td>Account Status:</td>
+            <td>
                 <b>
                     {% if user.active == 1 %}
-                        <span class="good">Activated</span>
+                        <span class="good">Active</span>
                     {% else %}
-                        <span class="bad">Banned/De-activated</span>
+                        <span class="bad">Banned/Disabled</span>
                     {% endif %}
                 </b>
             </td>
@@ -50,12 +50,12 @@
             </td>
         </tr>
         <tr class="tabletop">
-            <td colspan="2"><b>Avatar Upload </b></td>
+            <td colspan="2"><b>Avatar Upload</b></td>
         </tr>
         <tr>
             {% if user.hasAvatar %}
                 <td colspan="1">
-                    <p><img alt="{{ user.username }} Avatar" src="data:image/jpeg;base64,{{ user.avatar|base64_encode(constant('FrankProjects\\UltimateWarfare\\Twig\\Base64EncodeExtension::GET_CONTENT_FROM_STREAM')) }}" /></p>
+                    <p><img alt="{{ user.username }} Avatar" src="data:image/jpeg;base64,{{ user.avatar|base64_encode() }}" /></p>
                     <p><a href="{{ path('Game/Account/DeleteAvatar') }}" class="btn-danger btn">Remove avatar</a></p>
                 </td>
             {% endif %}

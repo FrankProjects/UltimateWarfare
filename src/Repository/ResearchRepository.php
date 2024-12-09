@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Repository;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Research;
+use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 
 interface ResearchRepository
 {
@@ -18,7 +19,7 @@ interface ResearchRepository
 
     /**
      * @param Player $player
-     * @return Research[]
+     * @return ResearchPlayer[]
      */
     public function findOngoingByPlayer(Player $player): array;
 

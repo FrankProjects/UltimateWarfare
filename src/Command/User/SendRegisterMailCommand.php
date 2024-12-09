@@ -24,8 +24,8 @@ class SendRegisterMailCommand extends AbstractUserCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var string $username */
         $username = $input->getArgument('username');
-
         try {
             $user = $this->getUserByUsername($username);
             $this->mailService->sendRegistrationMail($user);

@@ -76,43 +76,42 @@
         <tr class="tabletop">
             <td colspan="3"><b>Status</b></td>
         </tr>
-
         <tr>
-            <td width="150">Cash:</td>
-            <td width="250">$ {{ player.resources.cash|number_format }}</td>
-            <td width="300" rowspan="8">
-                <b>Ingame Announcements:</b>
+            <td class="w-25">Cash:</td>
+            <td class="w-25">$ {{ player.resources.cash|number_format }}</td>
+            <td class="w-50" rowspan="8">
+                <b>Game Announcements:</b>
                 <br />
                 No news for now...
             </td>
         </tr>
         <tr>
-            <td width="150">Wood:</td>
-            <td width="250">{{ player.resources.wood|number_format }}</td>
+            <td>Wood:</td>
+            <td>{{ player.resources.wood|number_format }}</td>
         </tr>
         <tr>
-            <td width="150">Steel:</td>
-            <td width="250">{{ player.resources.steel|number_format }}</td>
+            <td>Steel:</td>
+            <td>{{ player.resources.steel|number_format }}</td>
         </tr>
         <tr>
-            <td width="150">Food:</td>
-            <td width="250">{{ player.resources.food|number_format }}</td>
+            <td>Food:</td>
+            <td>{{ player.resources.food|number_format }}</td>
         </tr>
         <tr>
-            <td width="150">Population:</td>
-            <td width="250">-</td>
+            <td>Population:</td>
+            <td>-</td>
         </tr>
         <tr>
-            <td width="150">Regions:</td>
-            <td width="250">{{ player.worldRegions|length }}</td>
+            <td>Regions:</td>
+            <td>{{ player.worldRegions|length }}</td>
         </tr>
         <tr>
-            <td width="150">Networth:</td>
-            <td width="250">{{ player.networth|number_format }}</td>
+            <td>Net worth:</td>
+            <td>{{ player.netWorth|number_format }}</td>
         </tr>
         <tr>
-            <td width="150">Server time:</td>
-            <td width="250">{{ "now"|date("Y-m-d H:i:s") }}</td>
+            <td>Server time:</td>
+            <td>{{ "now"|date("Y-m-d H:i:s") }}</td>
         </tr>
     </table>
     <br />
@@ -123,13 +122,13 @@
             <td colspan="2"><b>Recent Reports (Last 10) </b></td>
         </tr>
         <tr>
-            <td width="150"><b>Date</b></td>
-            <td class="text-start" width="550"><b>Report</b></td>
+            <td class="w-25"><b>Date</b></td>
+            <td class="w-75 text-start"><b>Report</b></td>
         </tr>
         {% for report in reports %}
             <tr>
                 <td>
-                    {{ report.timestamp|date }}
+                    {{ report.timestamp|date("Y-m-d H:i:s") }}
                 </td>
                 <td class="text-start">
                     {{ report.report }}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use DateTime;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\User;
@@ -98,7 +99,7 @@ final class DoctrineUserRepository implements UserRepository
             ->where('u.username = :username')
             ->setParameter('username', $username)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
     public function save(User $user): void

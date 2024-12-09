@@ -106,12 +106,14 @@ final class FleetController extends BaseGameController
             }
 
             try {
+                /** @var array<int, string> $units */
+                $units = $request->get('units');
                 $this->fleetActionService->sendGameUnits(
                     $worldRegion,
                     $targetRegion,
                     $player,
                     $gameUnitType,
-                    $request->get('units')
+                    $units
                 );
                 $this->addFlash('success', 'You successfully send units!');
             } catch (Throwable $e) {

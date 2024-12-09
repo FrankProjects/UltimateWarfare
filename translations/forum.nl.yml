@@ -1,9 +1,11 @@
 label:
   add_reaction: Reactie toevoegen
   close: Sluiten
+  closed: Gesloten
   date: Datum/Tijd
   forum: Forum
   name: Naam
+  sticky: Sticky
   title: Titel
   topics: Onderwerpen
   post: Bericht

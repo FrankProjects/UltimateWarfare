@@ -210,10 +210,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
 
     public function hasAvatar(): bool
     {
-        $stats = fstat($this->avatar);
-        if ($stats !== false) {
-            return $stats['size'] > 0;
+        if (is_resource($this->avatar)) {
+            $stats = fstat($this->avatar);
+            if ($stats !== false) {
+                return $stats['size'] > 0;
+            }
         }
+
         return false;
     }
 
@@ -429,6 +432,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
      */
     public function unserialize(string $data)
     {
-        $this->__unserialize(unserialize($data));
+        /** @var array{
+         *     'id': int,
+         *     'username': string,
+         *     'enabled': boolean,
+         *     'email': string,
+         *     'password': string
+         * } $dataArray
+         */
+        $dataArray = unserialize($data);
+        $this->__unserialize($dataArray);
     }
 }

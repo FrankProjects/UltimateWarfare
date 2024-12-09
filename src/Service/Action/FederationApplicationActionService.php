@@ -80,7 +80,7 @@ final class FederationApplicationActionService
         $applicationPlayer->setNotifications($applicationPlayerNotifications);
         $this->playerRepository->save($applicationPlayer);
 
-        $federation->setNetworth($federation->getNetworth() + $federationApplication->getPlayer()->getNetworth());
+        $federation->setNetWorth($federation->getNetWorth() + $federationApplication->getPlayer()->getNetWorth());
         $federation->setRegions(
             $federation->getRegions() + count($federationApplication->getPlayer()->getWorldRegions())
         );
@@ -144,10 +144,7 @@ final class FederationApplicationActionService
 
     private function getFederationApplication(Player $player, int $federationApplicationId): FederationApplication
     {
-        $federationApplication = $this->federationApplicationRepository->findByIdAndWorld(
-            $federationApplicationId,
-            $player->getWorld()
-        );
+        $federationApplication = $this->federationApplicationRepository->find($federationApplicationId);
 
         if ($federationApplication === null) {
             throw new RuntimeException('FederationApplication does not exist!');

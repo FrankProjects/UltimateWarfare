@@ -92,7 +92,10 @@ abstract class AbstractGameResources
         } catch (\ReflectionException $e) {
             throw new \RuntimeException("Unknown resource {$name}");
         }
-        return $refProperty->getValue($this);
+
+        /** @var int $value */
+        $value = $refProperty->getValue($this);
+        return $value;
     }
 
     public function setValueByName(string $name, int $value): void

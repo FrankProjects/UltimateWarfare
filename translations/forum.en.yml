@@ -1,9 +1,11 @@
 label:
   add_reaction: Add reaction
   close: Close
+  closed: Closed
   date: Date/Time
   forum: Forum
   name: Name
+  sticky: Sticky
   title: Title
   topics: Topics
   post: Post

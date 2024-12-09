@@ -22,6 +22,7 @@ interface OperationRepository
     public function findEnabled(): array;
 
     /**
+     * @param Player $player
      * @return Operation[]
      */
     public function findAvailableForPlayer(Player $player): array;

@@ -49,6 +49,7 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
 
     private function runGameEngine(User $user): void
     {
+        /** @var int|null $playerId */
         $playerId = $this->requestStack->getSession()->get('playerId');
 
         if ($playerId === null) {

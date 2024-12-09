@@ -13,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
-use FrankProjects\UltimateWarfare\Service\NetworthUpdaterService;
+use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 
 final class ConstructionProcessor implements Processor
 {
@@ -21,20 +21,20 @@ final class ConstructionProcessor implements Processor
     private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
     private WorldRegionUnitRepository $worldRegionUnitRepository;
-    private NetworthUpdaterService $networthUpdaterService;
+    private NetWorthUpdaterService $netWorthUpdaterService;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
         PlayerRepository $playerRepository,
         ReportRepository $reportRepository,
         WorldRegionUnitRepository $worldRegionUnitRepository,
-        NetworthUpdaterService $networthUpdaterService
+        NetWorthUpdaterService $netWorthUpdaterService
     ) {
         $this->constructionRepository = $constructionRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
         $this->worldRegionUnitRepository = $worldRegionUnitRepository;
-        $this->networthUpdaterService = $networthUpdaterService;
+        $this->netWorthUpdaterService = $netWorthUpdaterService;
     }
 
     public function run(int $timestamp): void
@@ -112,7 +112,7 @@ final class ConstructionProcessor implements Processor
         $this->playerRepository->save($player);
         $this->constructionRepository->remove($construction);
 
-        $this->networthUpdaterService->updateNetworthForPlayer($player);
+        $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
     }
 
     private function createConstructionReport(Construction $construction): void

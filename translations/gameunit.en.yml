@@ -1,7 +1,7 @@
 label:
   name: Name
   nameMulti: Plural name
-  networth: Networth
+  netWorth: NetWorth
   timestamp: Building time
   description: Description
   battleStats: Battle Stats

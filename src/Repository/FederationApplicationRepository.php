@@ -9,7 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\World;
 
 interface FederationApplicationRepository
 {
-    public function findByIdAndWorld(int $id, World $world): ?FederationApplication;
+    public function find(int $id): ?FederationApplication;
 
     public function remove(FederationApplication $federationApplication): void;
 

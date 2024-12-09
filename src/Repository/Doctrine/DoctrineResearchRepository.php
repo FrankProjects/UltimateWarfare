@@ -41,7 +41,7 @@ final class DoctrineResearchRepository implements ResearchRepository
 
     /**
      * @param Player $player
-     * @return Research[]
+     * @return ResearchPlayer[]
      */
     public function findOngoingByPlayer(Player $player): array
     {
