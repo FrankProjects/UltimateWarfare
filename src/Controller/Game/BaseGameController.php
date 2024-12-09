@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class BaseGameController extends BaseController
@@ -55,7 +56,11 @@ class BaseGameController extends BaseController
     private function getPlayerIdFromSession(): ?int
     {
         try {
-            return $this->container->get('request_stack')->getSession()->get('playerId');
+            /** @var RequestStack $requestStack */
+            $requestStack = $this->container->get('request_stack');
+            /** @var int|null $playerId */
+            $playerId = $requestStack->getSession()->get('playerId');
+            return $playerId;
         } catch (NotFoundExceptionInterface | ContainerExceptionInterface) {
             throw new AccessDeniedException('Player is not set');
         }

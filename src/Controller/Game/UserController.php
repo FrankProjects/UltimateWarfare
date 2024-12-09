@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Form\ChangePasswordType;
 use FrankProjects\UltimateWarfare\Form\UploadAvatarType;
 use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -76,7 +77,9 @@ final class UserController extends BaseGameController
         $changePasswordForm->handleRequest($request);
 
         if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
+            /** @var string $oldPassword */
             $oldPassword = $changePasswordForm->get('oldPassword')->getData();
+            /** @var string|null $plainPassword */
             $plainPassword = $changePasswordForm->get('plainPassword')->getData();
 
             if ($passwordHasher->isPasswordValid($user, $oldPassword)) {
@@ -118,36 +121,34 @@ final class UserController extends BaseGameController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $avatar */
             $avatar = $form->get('avatar')->getData();
+            $uploadedFile = $user->getId() . '-' . uniqid('', true) . '.' . $avatar->guessExtension();
 
-            if ($avatar !== null) {
-                $uploadedFile = $user->getId() . '-' . uniqid('', true) . '.' . $avatar->guessExtension();
+            try {
+                $avatar->move(
+                    $this->getParameter('app.avatars_directory'),
+                    $uploadedFile
+                );
 
-                try {
-                    $avatar->move(
-                        $this->getParameter('app.avatars_directory'),
-                        $uploadedFile
-                    );
+                $image = new \Imagick($this->getParameter('app.avatars_directory') . '/' . $uploadedFile);
+                $image->setImageFormat('png');
+                $image->setImageBackgroundColor('transparent');
+                $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE);
+                $image->cropThumbnailImage(200, 200);
+                $image->roundCornersImage(100, 100);
 
-                    $image = new \Imagick($this->getParameter('app.avatars_directory') . '/' . $uploadedFile);
-                    $image->setImageFormat('png');
-                    $image->setImageBackgroundColor('transparent');
-                    $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE);
-                    $image->cropThumbnailImage(200, 200);
-                    $image->roundCornersImage(100, 100);
+                unlink($this->getParameter('app.avatars_directory') . '/' . $uploadedFile);
 
-                    unlink($this->getParameter('app.avatars_directory') . '/' . $uploadedFile);
+                $user->setAvatar($image->getImageBlob());
+                $this->userRepository->save($user);
 
-                    $user->setAvatar($image->getImageBlob());
-                    $this->userRepository->save($user);
-
-                    $this->addFlash('success', 'Avatar uploaded successfully!');
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Could not upload avatar');
-                }
-
-                return $this->redirectToRoute('Game/Account/Edit');
+                $this->addFlash('success', 'Avatar uploaded successfully!');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Could not upload avatar');
             }
+
+            return $this->redirectToRoute('Game/Account/Edit');
         }
 
         return $this->render(

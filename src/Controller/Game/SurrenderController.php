@@ -23,6 +23,7 @@ final class SurrenderController extends BaseGameController
         $confirmPasswordForm->handleRequest($request);
 
         if ($confirmPasswordForm->isSubmitted() && $confirmPasswordForm->isValid()) {
+            /** @var string $plainPassword */
             $plainPassword = $confirmPasswordForm->get('plainPassword')->getData();
 
             if ($passwordHasher->isPasswordValid($user, $plainPassword)) {

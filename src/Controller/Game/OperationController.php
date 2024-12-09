@@ -187,7 +187,7 @@ final class OperationController extends BaseGameController
                     $worldRegion,
                     $operation,
                     $playerRegion,
-                    intval($request->get('amount'))
+                    $request->request->getInt('amount')
                 );
                 $this->addFlash('success', 'Successfully executed the operation!');
             } catch (Throwable $e) {

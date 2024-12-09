@@ -151,18 +151,19 @@ final class MessageController extends BaseGameController
         $player = $this->getPlayer();
 
         if ($playerName === '') {
-            $playerName = $request->request->get('toPlayerName');
+            $playerName = $request->request->getString('toPlayerName');
         }
 
-        $adminMessage = (bool)$request->get('admin', false);
+        $adminMessage = $request->request->getBoolean('admin', false);
 
+        // XXX TODO: Add form with isSubmitted && isValid
         if ($request->isMethod(Request::METHOD_POST)) {
             try {
                 $this->messageActionService->sendMessage(
                     $player,
-                    $request->get('subject'),
-                    $request->get('message'),
-                    (string) $playerName,
+                    $request->request->getString('subject'),
+                    $request->request->getString('message'),
+                    $playerName,
                     $adminMessage
                 );
 
@@ -177,8 +178,8 @@ final class MessageController extends BaseGameController
             [
                 'player' => $player,
                 'toPlayerName' => $playerName,
-                'subject' => $request->request->get('subject'),
-                'message' => $request->request->get('message')
+                'subject' => $request->request->getString('subject'),
+                'message' => $request->request->getString('message')
             ]
         );
     }
@@ -195,7 +196,9 @@ final class MessageController extends BaseGameController
             $request->get('del') !== null &&
             $request->get('selected_messages') !== null
         ) {
-            foreach ($request->get('selected_messages') as $messageId) {
+            /** @var array<int> $selectedMessageArray */
+            $selectedMessageArray = $request->get('selected_messages');
+            foreach ($selectedMessageArray as $messageId) {
                 $selectedMessages[] = intval($messageId);
             }
         }

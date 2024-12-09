@@ -68,12 +68,12 @@ final class FederationApplicationController extends BaseGameController
         $player = $this->getPlayer();
         $federation = $this->federationRepository->findByIdAndWorld($federationId, $player->getWorld());
         try {
-            $application = $request->get('application');
+            $application = $request->request->getString('application');
 
             if (
                 $federation !== null &&
                 $request->isMethod(Request::METHOD_POST) &&
-                $application !== null
+                $application !== ''
             ) {
                 $this->federationApplicationActionService->sendFederationApplication(
                     $this->getPlayer(),
