@@ -102,8 +102,8 @@ final class BattleEngine
     }
 
     /**
-     * @param array<int, FleetUnit> $attackerGameUnits
-     * @param array<int, WorldRegionUnit> $defenderGameUnits
+     * @param array<FleetUnit> $attackerGameUnits
+     * @param array<WorldRegionUnit> $defenderGameUnits
      */
     private function processResults(
         BattleResult $battleResults,

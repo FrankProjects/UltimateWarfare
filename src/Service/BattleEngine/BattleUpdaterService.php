@@ -35,7 +35,7 @@ final class BattleUpdaterService
      * XXX TODO: Set player notifications
      *
      * @param Fleet $fleet
-     * @param array<int, FleetUnit> $attackerGameUnits
+     * @param array<FleetUnit> $attackerGameUnits
      */
     public function updateBattleWon(Fleet $fleet, array $attackerGameUnits): void
     {
@@ -63,8 +63,8 @@ final class BattleUpdaterService
      * XXX TODO: Set player notifications
      *
      * @param Fleet $fleet
-     * @param array<int, FleetUnit> $attackerGameUnits
-     * @param array<int, WorldRegionUnit> $defenderGameUnits
+     * @param array<FleetUnit> $attackerGameUnits
+     * @param array<WorldRegionUnit> $defenderGameUnits
      */
     public function updateBattleLost(Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
     {
