@@ -71,6 +71,7 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
             ->getArrayResult();
 
         $gameUnits = [];
+        /** @var array{'id': int, 'total': int} $result */
         foreach ($results as $result) {
             $gameUnits[$result['id']] = $result['total'];
         }
