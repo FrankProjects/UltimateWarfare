@@ -36,7 +36,9 @@ class LocaleSubscriber implements EventSubscriberInterface
             $request->getSession()->set('_locale', $locale);
         } else {
             // if no explicit locale has been set on this request, use one from the session
-            $request->setLocale($request->getSession()->get('_locale', $this->defaultLocale));
+            /** @var string $sessionLocale */
+            $sessionLocale = $request->getSession()->get('_locale', $this->defaultLocale);
+            $request->setLocale($sessionLocale);
         }
     }
 
