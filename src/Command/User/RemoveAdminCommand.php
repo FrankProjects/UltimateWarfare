@@ -24,6 +24,7 @@ class RemoveAdminCommand extends AbstractUserCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var string $username */
         $username = $input->getArgument('username');
 
         try {
