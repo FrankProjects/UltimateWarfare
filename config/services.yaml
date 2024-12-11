@@ -36,3 +36,7 @@ services:
     ReCaptcha\ReCaptcha:
         arguments:
             - '%env(GOOGLE_RECAPTCHA_SECRET_KEY)%'
+
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - '%env(DATABASE_URL)%'
