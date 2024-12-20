@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/** @phpstan-ignore missingType.generics */
+/** @extends AbstractType<null> */
 class MapConfigurationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 
-/** @phpstan-ignore missingType.generics */
+/** @extends AbstractType<null> */
 class UploadAvatarType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

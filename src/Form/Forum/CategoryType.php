@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-/** @phpstan-ignore missingType.generics */
+/** @extends AbstractType<null> */
 class CategoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
