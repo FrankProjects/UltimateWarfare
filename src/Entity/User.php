@@ -7,6 +7,7 @@ namespace FrankProjects\UltimateWarfare\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use RuntimeException;
 use Serializable;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -393,6 +394,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
 
     public function getUserIdentifier(): string
     {
+        if ($this->username === '') {
+            throw new RuntimeException('UserIdentifier must not be empty.');
+        }
+
         return $this->username;
     }
 
