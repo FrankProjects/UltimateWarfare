@@ -9,11 +9,6 @@ parameters:
     containerXmlPath: var/cache/dev/FrankProjects_UltimateWarfare_KernelDevDebugContainer.xml
   doctrine:
     objectManagerLoader: tests/object-manager.php
-  ignoreErrors:
-    -
-      message: "#^Method FrankProjects\\\\UltimateWarfare\\\\Entity\\\\User::getUserIdentifier\\(\\) should return non-empty-string but returns string\\.$#"
-      count: 1
-      path: src/Entity/User.php
 
 includes:
   - vendor/phpstan/phpstan-strict-rules/rules.neon
