@@ -86,7 +86,6 @@ final class DoctrinePlayerRepository implements PlayerRepository
 
         $federation = $player->getFederation();
         if ($federation !== null) {
-            // XXX TODO: Delete Federation if you are owner
             $federation->setNetWorth($federation->getNetWorth() - $player->getNetWorth());
             $federation->setRegions($federation->getRegions() - count($player->getWorldRegions()));
             $this->entityManager->persist($federation);
@@ -106,6 +105,9 @@ final class DoctrinePlayerRepository implements PlayerRepository
         }
 
         foreach ($player->getFleets() as $fleet) {
+            foreach ($fleet->getFleetUnits() as $fleetUnit) {
+                $this->entityManager->remove($fleetUnit);
+            }
             $this->entityManager->remove($fleet);
         }
 
