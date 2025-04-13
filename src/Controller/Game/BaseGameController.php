@@ -83,7 +83,6 @@ class BaseGameController extends BaseController
         $player = $players->first();
         /** @var RequestStack $requestStack */
         $requestStack = $this->container->get('request_stack');
-        /** @var int|null $playerId */
         $requestStack->getSession()->set('playerId', $player->getId());
 
         return $player;
