@@ -36,12 +36,11 @@ class BaseGameController extends BaseController
     {
         /**
          * XXX TODO: Fix counter in messages navigation bar
-         * XXX TODO: Fix session expired page
          */
         $user = $this->getGameUser();
         $playerId = $this->getPlayerIdFromSession();
         if ($playerId === null) {
-            throw new AccessDeniedException('Player can not be found!');
+            return $this->setSessionPlayerId($user);
         }
 
         foreach ($user->getPlayers() as $player) {
@@ -64,5 +63,29 @@ class BaseGameController extends BaseController
         } catch (NotFoundExceptionInterface | ContainerExceptionInterface) {
             throw new AccessDeniedException('Player is not set');
         }
+    }
+
+    /**
+     * When session expired user will be redirected to login page.
+     * If login is successful, user is redirected to previous page,
+     * which requires a valid playerId.
+     *
+     * Set playerId for first linked Player for smooth experience.
+     */
+    private function setSessionPlayerId(User $user): Player
+    {
+        $players = $user->getPlayers();
+
+        if ($players->count() === 0 || ($players->first() instanceof Player) === false) {
+            throw new AccessDeniedException('User has no Player!');
+        }
+
+        $player = $players->first();
+        /** @var RequestStack $requestStack */
+        $requestStack = $this->container->get('request_stack');
+        /** @var int|null $playerId */
+        $requestStack->getSession()->set('playerId', $player->getId());
+
+        return $player;
     }
 }
