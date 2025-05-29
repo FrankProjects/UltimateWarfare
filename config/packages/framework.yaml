@@ -4,6 +4,12 @@ framework:
     csrf_protection: true
     http_method_override: true
     handle_all_throwables: true
+    profiler:
+        # Remove setting after upgrading to Symfony 8.0 in the future
+        collect_serializer_data: true
+    property_info:
+        # Introduced in 7.3, reconsider when upgrading to Symfony 8.0 as default will change
+        with_constructor_extractor: false
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
