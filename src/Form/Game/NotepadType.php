@@ -21,6 +21,7 @@ class NotepadType extends AbstractType
                 'notepad',
                 TextareaType::class,
                 [
+                    'required' => false,
                     'label' => false,
                     'attr' => [
                         'rows' => 15,
