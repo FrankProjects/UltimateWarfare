@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /** @extends AbstractType<null> */
 class ResetPasswordType extends AbstractType
@@ -30,7 +31,15 @@ class ResetPasswordType extends AbstractType
                     'second_options' => [
                         'label' => 'label.password_repeat',
                         'translation_domain' => 'register'
-                    ]
+                    ],
+                    'constraints' => [
+                        new Length(
+                            min: 8,
+                            max: 4096,
+                            minMessage: 'Password must have at least 8 characters',
+                        ),
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(

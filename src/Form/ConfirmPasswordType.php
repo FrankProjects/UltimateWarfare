@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /** @extends AbstractType<null> */
 class ConfirmPasswordType extends AbstractType
@@ -22,7 +23,11 @@ class ConfirmPasswordType extends AbstractType
                 [
                     'mapped' => false,
                     'label' => 'label.password',
-                    'translation_domain' => 'account'
+                    'translation_domain' => 'account',
+                    'constraints' => [
+                        new Length(min: 5)
+                    ],
+                    'empty_data' => ''
                 ]
             );
     }

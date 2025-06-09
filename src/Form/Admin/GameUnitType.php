@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /** @extends AbstractType<null> */
 class GameUnitType extends AbstractType
@@ -26,7 +27,11 @@ class GameUnitType extends AbstractType
                 'name',
                 TextType::class,
                 [
-                    'label' => 'label.name'
+                    'label' => 'label.name',
+                    'constraints' => [
+                        new Length(min: 4)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(
@@ -34,6 +39,10 @@ class GameUnitType extends AbstractType
                 TextType::class,
                 [
                     'label' => 'label.nameMulti',
+                    'constraints' => [
+                        new Length(min: 4)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(

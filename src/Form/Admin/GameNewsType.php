@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /** @extends AbstractType<null> */
 class GameNewsType extends AbstractType
@@ -23,7 +24,11 @@ class GameNewsType extends AbstractType
                 'title',
                 TextType::class,
                 [
-                    'label' => 'label.title'
+                    'label' => 'label.title',
+                    'constraints' => [
+                        new Length(min: 4)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(
@@ -32,6 +37,10 @@ class GameNewsType extends AbstractType
                 [
                     'label' => 'label.message',
                     'attr' => array('cols' => 70, 'rows' => 8),
+                    'constraints' => [
+                        new Length(min: 4)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(

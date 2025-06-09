@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /** @extends AbstractType<null> */
 class CategoryType extends AbstractType
@@ -17,7 +18,16 @@ class CategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class)
+            ->add(
+                'title',
+                TextType::class,
+                [
+                    'constraints' => [
+                        new Length(min: 5)
+                    ],
+                    'empty_data' => ''
+                ]
+            )
             ->add(
                 'submit',
                 SubmitType::class,

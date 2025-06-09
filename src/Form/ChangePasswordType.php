@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /** @extends AbstractType<null> */
 class ChangePasswordType extends AbstractType
@@ -24,6 +25,10 @@ class ChangePasswordType extends AbstractType
                 [
                     'mapped' => false,
                     'label' => 'label.old_password',
+                    'constraints' => [
+                        new Length(min: 5)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(
@@ -36,7 +41,15 @@ class ChangePasswordType extends AbstractType
                     ],
                     'second_options' => [
                         'label' => 'label.password_repeat',
-                    ]
+                    ],
+                    'constraints' => [
+                        new Length(
+                            min: 8,
+                            max: 4096,
+                            minMessage: 'Password must have at least 8 characters',
+                        ),
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(

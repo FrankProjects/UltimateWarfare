@@ -12,7 +12,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /** @extends AbstractType<null> */
 class ContactType extends AbstractType
@@ -26,7 +28,9 @@ class ContactType extends AbstractType
                 [
                     'required' => true,
                     'label' => 'label.name',
-                    'constraints' => [new Length(['min' => 1])],
+                    'constraints' => [
+                        new Length(min: 1)
+                    ],
                     'empty_data' => ''
                 ]
             )
@@ -35,7 +39,12 @@ class ContactType extends AbstractType
                 EmailType::class,
                 [
                     'required' => true,
-                    'label' => 'label.email'
+                    'label' => 'label.email',
+                    'constraints' => [
+                        new NotBlank(),
+                        new Email()
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(
@@ -44,7 +53,9 @@ class ContactType extends AbstractType
                 [
                     'required' => true,
                     'label' => 'label.subject',
-                    'constraints' => [new Length(['min' => 5])],
+                    'constraints' => [
+                        new Length(min: 5)
+                    ],
                     'empty_data' => ''
                 ]
             )
@@ -54,7 +65,9 @@ class ContactType extends AbstractType
                 [
                     'required' => true,
                     'label' => 'label.message',
-                    'constraints' => [new Length(['min' => 10])],
+                    'constraints' => [
+                        new Length(min: 10)
+                    ],
                     'empty_data' => ''
                 ]
             )
