@@ -10,23 +10,42 @@ jobs:
     name: "PHPUnit"
     runs-on: "ubuntu-latest"
 
+    strategy:
+      matrix:
+        php-version:
+          - "8.3"
+
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: "actions/checkout@v4"
         with:
           fetch-depth: 2
 
-      - name: "Install dependencies with composer"
-        uses: php-actions/composer@v6
+      - name: "Install PHP with Xdebug"
+        uses: "shivammathur/setup-php@v2"
         with:
-          php_version: 8.3
-          php_extensions: gd intl imagick
+          php-version: "${{ matrix.php-version }}"
+          coverage: "xdebug"
+          ini-values: "zend.assertions=1"
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v4"
+        with:
+          path: "~/.composer/cache"
+          key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-locked-"
+
+      - name: "Install dependencies with composer"
+        run: "composer install --no-interaction --prefer-dist"
+
+      - name: "Run PHPUnit"
+        run: "php bin/phpunit --coverage-text"
 
       - name: "PHPUnit Tests"
         uses: php-actions/phpunit@master
         with:
           version: 11.5
-          php_version: 8.3
+          php_version: "${{ matrix.php-version }}"
           bootstrap: vendor/autoload.php
           configuration: phpunit.xml.dist
           args: --coverage-text
