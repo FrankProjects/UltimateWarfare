@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /** @extends AbstractType<null> */
 class WorldType extends AbstractType
@@ -26,7 +27,11 @@ class WorldType extends AbstractType
                 'name',
                 TextType::class,
                 [
-                    'label' => 'label.name'
+                    'label' => 'label.name',
+                    'constraints' => [
+                        new Length(min: 4)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(
@@ -35,6 +40,10 @@ class WorldType extends AbstractType
                 [
                     'label' => 'label.description',
                     'attr' => array('cols' => 70, 'rows' => 8),
+                    'constraints' => [
+                        new Length(min: 4)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(

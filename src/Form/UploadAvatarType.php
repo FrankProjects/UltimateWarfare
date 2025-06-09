@@ -26,9 +26,9 @@ class UploadAvatarType extends AbstractType
                     'mapped' => false,
                     'label' => 'label.avatar',
                     'constraints' => [
-                        new Image([
-                            'maxSize' => '1024k',
-                        ])
+                        new Image(
+                            maxSize: '1024k'
+                        )
                     ],
                 ]
             )

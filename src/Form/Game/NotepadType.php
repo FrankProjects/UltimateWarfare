@@ -25,7 +25,8 @@ class NotepadType extends AbstractType
                     'attr' => [
                         'rows' => 15,
                         'cols' => 80
-                    ]
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(

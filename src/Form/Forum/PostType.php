@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /** @extends AbstractType<null> */
 class PostType extends AbstractType
@@ -22,6 +23,10 @@ class PostType extends AbstractType
                 TextareaType::class,
                 [
                     'attr' => array('cols' => 70, 'rows' => 8),
+                    'constraints' => [
+                        new Length(min: 5)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(

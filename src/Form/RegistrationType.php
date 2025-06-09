@@ -14,6 +14,10 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\IsTrue;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /** @extends AbstractType<null> */
 class RegistrationType extends AbstractType
@@ -25,14 +29,25 @@ class RegistrationType extends AbstractType
                 'email',
                 EmailType::class,
                 [
-                    'label' => 'label.email'
+                    'required' => true,
+                    'label' => 'label.email',
+                    'constraints' => [
+                        new NotBlank(),
+                        new Email()
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(
                 'username',
                 TextType::class,
                 [
-                    'label' => 'label.username'
+                    'required' => true,
+                    'label' => 'label.username',
+                    'constraints' => [
+                        new Length(min: 5)
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(
@@ -45,7 +60,15 @@ class RegistrationType extends AbstractType
                     ],
                     'second_options' => [
                         'label' => 'label.password_repeat'
-                    ]
+                    ],
+                    'constraints' => [
+                        new Length(
+                            min: 8,
+                            max: 4096,
+                            minMessage: 'Password must have at least 8 characters',
+                        ),
+                    ],
+                    'empty_data' => ''
                 ]
             )
             ->add(
@@ -53,7 +76,12 @@ class RegistrationType extends AbstractType
                 CheckboxType::class,
                 [
                     'mapped' => false,
-                    'label' => 'label.accept_rules'
+                    'label' => 'label.accept_rules',
+                    'constraints' => [
+                        new IsTrue(
+                            message: 'You must agree to our terms.'
+                        )
+                    ]
                 ]
             )
             ->add(
