@@ -731,9 +731,6 @@ Site/Login:
     path:      /login
     controller: FrankProjects\UltimateWarfare\Controller\Site\SecurityController::login
 
-Site/LoginCheck:
-    path:      /login_check
-
 Site/Logout:
     path:      /logout
 
