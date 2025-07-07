@@ -16,7 +16,7 @@
             <h3 class="text-center">Login</h3>
         </div>
 
-        <form class="form-horizontal" role="form" method="post" action="{{ path("Site/LoginCheck") }}">
+        <form class="form-horizontal" role="form" method="post" action="{{ path("Site/Login") }}">
             <div class="mb-3">
                 <label for="username" class="form-label">{{ 'label.username'|trans }}</label>
                 <input type="text" id="username" name="_username" value="{{ last_username }}" required="required"
@@ -33,7 +33,7 @@
                 <label class="form-check-label" for="remember_me">{{ 'label.remember_me'|trans }}</label>
             </div>
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+            <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}"/>
             <button type="submit" class="btn btn-primary btn-block">{{ 'label.login'|trans }}</button>
         </form>
     </div>

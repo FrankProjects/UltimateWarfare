@@ -21,9 +21,12 @@ security:
             security: false
         main:
             pattern: ^/
+            lazy: true
             form_login:
                 provider: frankprojects
                 default_target_path: /game/login
+                login_path: /login
+                check_path: /login
             logout:       true
 
     access_control:
