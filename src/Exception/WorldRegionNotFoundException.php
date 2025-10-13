@@ -6,5 +6,5 @@ namespace FrankProjects\UltimateWarfare\Exception;
 
 final class WorldRegionNotFoundException extends \Exception
 {
-    protected $message = 'World region does not exist!'; // @phpstan-ignore-line
+    protected $message = 'World region does not exist!';
 }

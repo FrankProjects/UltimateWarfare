@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\Research;
+use FrankProjects\UltimateWarfare\Entity\ResearchNeeds;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
 use FrankProjects\UltimateWarfare\Service\Action\ResearchActionService;
@@ -30,43 +33,69 @@ final class ResearchController extends BaseGameController
     {
         $player = $this->getPlayer();
         $ongoingResearch = $this->researchRepository->findOngoingByPlayer($player);
-        $unresearched = $this->researchRepository->findUnresearchedByPlayer($player);
-        $researchPlayerRecords = $player->getPlayerResearch();
-        $researchDataArray = [];
-        $researchPlayerArray = [];
-        foreach ($researchPlayerRecords as $researchPlayer) {
-            if ($researchPlayer->getActive()) {
-                $researchPlayerArray[] = $researchPlayer->getResearch()->getId();
-            }
-        }
+        $notResearched = $this->researchRepository->findNotResearchedByPlayer($player);
 
-        // XXX TODO: Make better code
-        foreach ($unresearched as $key => $notResearched) {
-            $researchDataArray[$key]['needs']['done'] = [];
-            $researchDataArray[$key]['needs']['notDone'] = [];
-            $researchDataArray[$key]['research'] = $notResearched;
-
-            foreach ($notResearched->getResearchNeeds() as $researchNeed) {
-                if (in_array($researchNeed->getRequiredResearch()->getId(), $researchPlayerArray, true)) {
-                    $researchDataArray[$key]['needs']['done'][] = $researchNeed;
-                } else {
-                    $researchDataArray[$key]['needs']['notDone'][] = $researchNeed;
-                }
-            }
-
-            if (count($researchDataArray[$key]['needs']['notDone']) > 0) {
-                unset($researchDataArray[$key]);
-            }
-        }
+        $completedResearchIds = $this->getCompletedResearchIds($player);
+        $availableResearch = $this->filterAvailableResearch($notResearched, $completedResearchIds);
 
         return $this->render(
             'game/research.html.twig',
             [
                 'player' => $player,
                 'ongoingResearch' => $ongoingResearch,
-                'researchDataArray' => $researchDataArray
+                'researchArray' => $availableResearch
             ]
         );
+    }
+
+    /**
+     * Get IDs of all completed research for the player
+     *
+     * @return array<int>
+     */
+    private function getCompletedResearchIds(Player $player): array
+    {
+        $completedIds = [];
+
+        foreach ($player->getPlayerResearch() as $researchPlayer) {
+            if ($researchPlayer->getActive()) {
+                $completedIds[] = $researchPlayer->getResearch()->getId();
+            }
+        }
+
+        return $completedIds;
+    }
+
+    /**
+     * Filter research to only include those with all prerequisites met
+     *
+     * @param array<Research> $notResearched
+     * @param array<int> $completedResearchIds
+     * @return array<Research>
+     */
+    private function filterAvailableResearch(array $notResearched, array $completedResearchIds): array
+    {
+        $availableResearch = [];
+
+        foreach ($notResearched as $research) {
+            $isAvailable = true;
+            foreach ($research->getResearchNeeds() as $researchNeed) {
+                $requiredResearchId = $researchNeed->getRequiredResearch()->getId();
+
+                if (in_array($requiredResearchId, $completedResearchIds, true)) {
+                    // Do nothing
+                } else {
+                    $isAvailable = false;
+                }
+            }
+
+            // Only include research where all prerequisites are met
+            if ($isAvailable === true) {
+                $availableResearch[] = $research;
+            }
+        }
+
+        return $availableResearch;
     }
 
     public function history(): Response
