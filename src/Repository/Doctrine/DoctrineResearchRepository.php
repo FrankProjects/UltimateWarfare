@@ -60,7 +60,7 @@ final class DoctrineResearchRepository implements ResearchRepository
      * @param Player $player
      * @return Research[]
      */
-    public function findUnresearchedByPlayer(Player $player): array
+    public function findNotResearchedByPlayer(Player $player): array
     {
         return $this->entityManager->createQuery(
             'SELECT r

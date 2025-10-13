@@ -27,7 +27,7 @@ interface ResearchRepository
      * @param Player $player
      * @return Research[]
      */
-    public function findUnresearchedByPlayer(Player $player): array;
+    public function findNotResearchedByPlayer(Player $player): array;
 
     public function remove(Research $research): void;
 
