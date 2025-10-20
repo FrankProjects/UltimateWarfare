@@ -24,6 +24,8 @@ interface ConstructionRepository
      */
     public function getGameUnitConstructionSumByWorldRegion(WorldRegion $worldRegion): array;
 
+    public function getGameUnitConstructionSumByWorldRegionAndType(WorldRegion $worldRegion, GameUnitType $gameUnitType): int;
+
     /**
      * @return array<int|string, mixed>
      */

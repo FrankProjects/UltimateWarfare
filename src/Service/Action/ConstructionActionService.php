@@ -46,7 +46,8 @@ final class ConstructionActionService
         Player $player,
         GameUnitType $gameUnitType,
         array $constructionData
-    ): void {
+    ): void
+    {
         $priceCash = 0;
         $priceWood = 0;
         $priceSteel = 0;
@@ -182,14 +183,7 @@ final class ConstructionActionService
 
     public function getCountGameUnitsInConstruction(WorldRegion $worldRegion, GameUnitType $gameUnitType): int
     {
-        $buildingsInConstruction = 0;
-        foreach ($worldRegion->getConstructions() as $regionConstruction) {
-            if ($regionConstruction->getGameUnit()->getGameUnitType()->getId() === $gameUnitType->getId()) {
-                $buildingsInConstruction += $regionConstruction->getNumber();
-            }
-        }
-
-        return $buildingsInConstruction;
+        return $this->constructionRepository->getGameUnitConstructionSumByWorldRegionAndType($worldRegion, $gameUnitType);
     }
 
     public function getCountGameUnitsInWorldRegion(WorldRegion $worldRegion, GameUnitType $gameUnitType): int
