@@ -3,81 +3,44 @@
 {% block title %}Ultimate Warfare - Federation bank deposit{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="3"><b>Federation bank deposit</b></td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <b>Adviser:</b><br />
-                Welcome <strong>{{ player.name }}</strong>,
-                <br />
-                You can make deposits to your Federation bank here!
-                <br />
-                <br />
-            </td>
-        </tr>
-        <tr class="tabletop">
-            <td colspan="3"><b>Cash and resources</b></td>
-        </tr>
-        <tr>
-            <td width="200">Resources</td>
-            <td width="200">You</td>
-            <td width="200">Bank</td>
-        </tr>
-        <tr>
-            <td>Cash:</td>
-            <td>$ {{ player.resources.cash }}</td>
-            <td>$ {{ player.federation.resources.cash }}</td>
-        </tr>
-        <tr>
-            <td>Wood:</td>
-            <td>{{ player.resources.wood }}</td>
-            <td>{{ player.federation.resources.wood }}</td>
-        </tr>
-        <tr>
-            <td>Steel:</td>
-            <td>{{ player.resources.steel }}</td>
-            <td>{{ player.federation.resources.steel }}</td>
-        </tr>
-        <tr>
-            <td>Food:</td>
-            <td>{{ player.resources.food }}</td>
-            <td>{{ player.federation.resources.food }}</td>
-        </tr>
-    </table>
-
-    <br />
-    <br />
-
     <form method="post" action="{{ path('Game/Federation/Bank/Deposit') }}">
         <table class="table text-center">
             <tr class="tabletop">
-                <td colspan="2"><b>Deposit</b></td>
+                <td colspan="4"><b>Federation bank deposit</b></td>
             </tr>
             <tr>
-                <td width="100">Resource: </td>
-                <td width="200">Amount: </td>
+                <td>Resources</td>
+                <td>You</td>
+                <td>Bank</td>
+                <td>Amount</td>
             </tr>
             <tr>
                 <td>Cash:</td>
-                <td><input type="text" size="12" name="resources[cash]"></td>
+                <td>$ {{ player.resources.cash }}</td>
+                <td>$ {{ federationResources.cash }}</td>
+                <td><input type="text" class="form-control" name="resources[cash]"></td>
             </tr>
             <tr>
                 <td>Wood:</td>
-                <td><input type="text" size="12" name="resources[wood]"></td>
+                <td>{{ player.resources.wood }}</td>
+                <td>{{ federationResources.wood }}</td>
+                <td><input type="text" class="form-control" name="resources[wood]"></td>
             </tr>
             <tr>
                 <td>Steel:</td>
-                <td><input type="text" size="12" name="resources[steel]"></td>
+                <td>{{ player.resources.steel }}</td>
+                <td>{{ federationResources.steel }}</td>
+                <td><input type="text" class="form-control" name="resources[steel]"></td>
             </tr>
             <tr>
                 <td>Food:</td>
-                <td><input type="text" size="12" name="resources[food]"></td>
+                <td>{{ player.resources.food }}</td>
+                <td>{{ federationResources.food }}</td>
+                <td><input type="text" class="form-control" name="resources[food]"></td>
             </tr>
             <tr>
-                <td>
-                    <input class="btn btn-primary" type="submit" name="submit" value="Donate">
+                <td colspan="4">
+                    <input class="btn btn-primary" type="submit" name="submit" value="Deposit">
                 </td>
             </tr>
         </table>

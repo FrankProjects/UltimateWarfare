@@ -68,6 +68,8 @@ final class FederationBankActionService
 
             $this->playerRepository->save($player);
             $this->federationRepository->save($federation);
+        } else {
+            throw new RuntimeException("No resources selected to deposit");
         }
     }
 
@@ -98,13 +100,13 @@ final class FederationBankActionService
                 continue;
             }
 
-            $resourceAmount = $player->getResources()->getValueByName($resourceName);
-            if ($amount > $resourceAmount) {
+            $federationResourceAmount = $federation->getResources()->getValueByName($resourceName);
+            if ($amount > $federationResourceAmount) {
                 throw new RuntimeException("Federation Bank doesn't have enough {$resourceName}!");
             }
 
+            $resourceAmount = $player->getResources()->getValueByName($resourceName);
             $player->getResources()->setValueByName($resourceName, $resourceAmount + $amount);
-            $federationResourceAmount = $federation->getResources()->getValueByName($resourceName);
             $federation->getResources()->setValueByName($resourceName, $federationResourceAmount - $amount);
 
             $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);

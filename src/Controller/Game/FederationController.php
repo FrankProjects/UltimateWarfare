@@ -34,7 +34,7 @@ final class FederationController extends BaseGameController
             return $this->render(
                 'game/federation/noFederation.html.twig',
                 [
-                    'player' => $this->getPlayer()
+                    'player' => $player
                 ]
             );
         }
@@ -42,7 +42,8 @@ final class FederationController extends BaseGameController
         return $this->render(
             'game/federation/yourFederation.html.twig',
             [
-                'player' => $this->getPlayer()
+                'player' => $player,
+                'federationPlayers' => $player->getFederation()->getPlayers()
             ]
         );
     }
@@ -190,7 +191,7 @@ final class FederationController extends BaseGameController
     {
         try {
             if ($request->isMethod(Request::METHOD_POST)) {
-                $name = $request->request->getString('name');
+                $name = trim($request->request->getString('name'));
                 $this->federationActionService->changeFederationName($this->getPlayer(), $name);
                 $this->addFlash('success', "You successfully changed the Federation name!");
 

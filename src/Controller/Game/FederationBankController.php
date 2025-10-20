@@ -37,6 +37,7 @@ final class FederationBankController extends BaseGameController
             'game/federation/bank/deposit.html.twig',
             [
                 'player' => $this->getPlayer(),
+                'federationResources' => $this->getPlayer()->getFederation()->getResources(),
             ]
         );
     }
@@ -59,6 +60,7 @@ final class FederationBankController extends BaseGameController
             'game/federation/bank/withdraw.html.twig',
             [
                 'player' => $this->getPlayer(),
+                'federationResources' => $this->getPlayer()->getFederation()->getResources(),
             ]
         );
     }
