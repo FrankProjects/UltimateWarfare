@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
+use FrankProjects\UltimateWarfare\Form\DTO\MarketOrderFormDTO;
 use FrankProjects\UltimateWarfare\Form\Game\MarketOrderType;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Service\Action\MarketActionService;
@@ -152,18 +153,21 @@ final class MarketController extends BaseGameController
             );
         }
 
-        $form = $this->createForm(MarketOrderType::class);
+        $marketOrderDTO = new MarketOrderFormDTO();
+        $form = $this->createForm(MarketOrderType::class, $marketOrderDTO);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                /** @var MarketOrderFormDTO $marketOrderDTO */
+                $marketOrderDTO = $form->getData();
                 $this->marketActionService->createOrder(
                     $player,
-                    $form->getData()['resource'],
-                    $form->getData()['price'],
-                    $form->getData()['amount'],
-                    $form->getData()['option'],
+                    $marketOrderDTO->getResource(),
+                    $marketOrderDTO->getPrice(),
+                    $marketOrderDTO->getAmount(),
+                    $marketOrderDTO->getOption(),
                 );
                 $this->addFlash('success', 'Created new market order');
             } catch (Throwable $e) {

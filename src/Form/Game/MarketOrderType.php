@@ -7,6 +7,7 @@ namespace FrankProjects\UltimateWarfare\Form\Game;
 
 use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
+use FrankProjects\UltimateWarfare\Form\DTO\MarketOrderFormDTO;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -65,7 +66,8 @@ class MarketOrderType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'translation_domain' => 'market'
+                'translation_domain' => 'market',
+                'data_class' => MarketOrderFormDTO::class,
             )
         );
     }
