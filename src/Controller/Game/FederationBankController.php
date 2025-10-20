@@ -21,12 +21,23 @@ final class FederationBankController extends BaseGameController
 
     public function deposit(Request $request): Response
     {
+        $player = $this->getPlayer();
+        $federation = $player->getFederation();
+        if ($federation === null) {
+            return $this->render(
+                'game/federation/noFederation.html.twig',
+                [
+                    'player' => $player
+                ]
+            );
+        }
+
         try {
             // XXX TODO: Rewrite to form isSubmitted && isValid
             if ($request->isMethod(Request::METHOD_POST)) {
                 /** @var array<string, string> $resources */
                 $resources = $request->get('resources');
-                $this->federationBankActionService->deposit($this->getPlayer(), $resources);
+                $this->federationBankActionService->deposit($player, $resources);
                 $this->addFlash('success', 'You successfully made a deposit!');
             }
         } catch (Throwable $e) {
@@ -36,19 +47,31 @@ final class FederationBankController extends BaseGameController
         return $this->render(
             'game/federation/bank/deposit.html.twig',
             [
-                'player' => $this->getPlayer(),
+                'player' => $player,
+                'federationResources' => $federation->getResources(),
             ]
         );
     }
 
     public function withdraw(Request $request): Response
     {
+        $player = $this->getPlayer();
+        $federation = $player->getFederation();
+        if ($federation === null) {
+            return $this->render(
+                'game/federation/noFederation.html.twig',
+                [
+                    'player' => $player
+                ]
+            );
+        }
+
         try {
             // XXX TODO: Rewrite to form isSubmitted && isValid
             if ($request->isMethod(Request::METHOD_POST)) {
                 /** @var array<string, string> $resources */
                 $resources = $request->get('resources');
-                $this->federationBankActionService->withdraw($this->getPlayer(), $resources);
+                $this->federationBankActionService->withdraw($player, $resources);
                 $this->addFlash('success', 'You successfully made a withdrawal!');
             }
         } catch (Throwable $e) {
@@ -58,7 +81,8 @@ final class FederationBankController extends BaseGameController
         return $this->render(
             'game/federation/bank/withdraw.html.twig',
             [
-                'player' => $this->getPlayer(),
+                'player' => $player,
+                'federationResources' => $federation->getResources(),
             ]
         );
     }

@@ -28,4 +28,16 @@ class GameResource
             self::GAME_RESOURCE_STEEL
         ];
     }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function getTradableGameResources(): array
+    {
+        return [
+            self::GAME_RESOURCE_FOOD,
+            self::GAME_RESOURCE_WOOD,
+            self::GAME_RESOURCE_STEEL
+        ];
+    }
 }

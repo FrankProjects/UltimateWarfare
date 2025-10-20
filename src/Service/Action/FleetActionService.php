@@ -83,9 +83,7 @@ final class FleetActionService
             throw new RuntimeException('Region is not owned by you.');
         }
 
-        $fleet = Fleet::createForPlayer($player, $region, $targetRegion);
-        $this->fleetRepository->save($fleet);
-
+        $gameUnitsToSend = [];
         foreach ($unitData as $gameUnitId => $amount) {
             $amount = intval($amount);
             if ($amount < 1) {
@@ -101,7 +99,21 @@ final class FleetActionService
                 continue;
             }
 
-            $this->addFleetUnitToFleet($region, $gameUnit, $amount, $fleet);
+            $gameUnitsToSend[] = [
+                'gameUnit' => $gameUnit,
+                'amount' => $amount,
+            ];
+        }
+
+        if (count($gameUnitsToSend) === 0) {
+            throw new RuntimeException('No game units selected to send!');
+        }
+
+        $fleet = Fleet::createForPlayer($player, $region, $targetRegion);
+        $this->fleetRepository->save($fleet);
+
+        foreach ($gameUnitsToSend as $gameUnitData) {
+            $this->addFleetUnitToFleet($region, $gameUnitData['gameUnit'], $gameUnitData['amount'], $fleet);
         }
     }
 

@@ -6,13 +6,13 @@
     <p class="text-center">
         <a class="B" href="{{ path('Game/Market') }}">Buy</a> -
         <a class="B" href="{{ path('Game/Market/Sell') }}">Sell</a> -
-        <a class="B" href="{{ path('Game/Market/PlaceOffer') }}">Place offer</a> -
-        <a class="B" href="{{ path('Game/Market/Offers') }}">Your offers</a>
+        <a class="B" href="{{ path('Game/Market/CreateOrder') }}">New order</a> -
+        <a class="B" href="{{ path('Game/Market/ListOrders') }}">Your orders</a>
     </p>
 
     <table class="table text-center">
         <tr class="tabletop">
-            <td colspan="5"><b>Your offers</b> </td>
+            <td colspan="5"><b>Your orders</b> </td>
         </tr>
         <tr>
             <td><b>Type</b></td>
@@ -32,7 +32,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">No offers...</td>
+                <td colspan="5">No orders...</td>
             </tr>
         {% endfor %}
     </table>

@@ -36,27 +36,27 @@
             <tr>
                 <td>Cash: </td>
                 <td>{{ player.resources.cash }}</td>
-                <td><input type="text" size="12" name="resources[cash]"></td>
+                <td><input type="text" class="form-control" name="resources[cash]"></td>
             </tr>
             <tr>
                 <td>Wood: </td>
                 <td>{{ player.resources.wood }}</td>
-                <td><input type="text" size="12" name="resources[wood]"></td>
+                <td><input type="text" class="form-control" name="resources[wood]"></td>
             </tr>
             <tr>
                 <td>Steel: </td>
                 <td>{{ player.resources.steel }}</td>
-                <td><input type="text" size="12" name="resources[steel]"></td>
+                <td><input type="text" class="form-control" name="resources[steel]"></td>
             </tr>
             <tr>
                 <td>Food:</td>
                 <td>{{ player.resources.food }}</td>
-                <td><input type="text" size="12" name="resources[food]"></td>
+                <td><input type="text" class="form-control" name="resources[food]"></td>
             </tr>
             <tr>
                 <td>To Player</td>
                 <td colspan="2">
-                    <select name="player">
+                    <select class="form-select" aria-label="to player" name="player">
                         {% for federationPlayer in player.federation.players %}
                             <option value="{{ federationPlayer.id }}">{{ federationPlayer.name }}</option>
                         {% endfor %}

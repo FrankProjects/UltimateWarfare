@@ -71,23 +71,6 @@
 
                 </td>
             </tr>
-            <tr class="tabletop">
-                <td colspan="6">
-                    <b>Federation Chat</b>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6">No active chat...</td>
-            </tr>
-
-            <form method="post" action="{{ path('Game/Federation') }}">
-                <tr>
-                    <td colspan="6">
-                        <input type="text" size="30" name="chat_text">
-                        <input class="btn btn-primary" type="submit" name="submit" value="Send">
-                    </td>
-                </tr>
-            </form>
 
         <tr class="tabletop">
             <td width="30">Online</td>
@@ -98,7 +81,7 @@
             <td width="60">Kick</td>
         </tr>
 
-        {% for federationPlayer in player.federation.players %}
+        {% for federationPlayer in federationPlayers %}
             <tr>
                 <td>
                     {% if date(federationPlayer.user.lastLogin) < date('-10 minutes') %}

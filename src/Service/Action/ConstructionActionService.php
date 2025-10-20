@@ -101,6 +101,10 @@ final class ConstructionActionService
             throw new RuntimeException("You don't have enough steel to build that.");
         }
 
+        if (count($constructions) === 0) {
+            throw new RuntimeException("You didn't select anything to build.");
+        }
+
         $resources->setCash($resources->getCash() - $priceCash);
         $resources->setWood($resources->getWood() - $priceWood);
         $resources->setSteel($resources->getSteel() - $priceSteel);
@@ -122,6 +126,7 @@ final class ConstructionActionService
         GameUnitType $gameUnitType,
         array $destroyData
     ): void {
+        $isRemoving = false;
         foreach ($destroyData as $gameUnitId => $amount) {
             $amount = intval($amount);
             if ($amount < 1) {
@@ -138,9 +143,14 @@ final class ConstructionActionService
             }
 
             $this->removeGameUnitsFromWorldRegion($region, $gameUnit, $amount);
+            $isRemoving = true;
         }
 
-        $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
+        if ($isRemoving === true) {
+            $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
+        } else {
+            throw new RuntimeException("You didn't select anything to remove.");
+        }
     }
 
     public function cancelConstruction(Player $player, int $constructionId): void
@@ -172,14 +182,7 @@ final class ConstructionActionService
 
     public function getCountGameUnitsInConstruction(WorldRegion $worldRegion, GameUnitType $gameUnitType): int
     {
-        $buildingsInConstruction = 0;
-        foreach ($worldRegion->getConstructions() as $regionConstruction) {
-            if ($regionConstruction->getGameUnit()->getGameUnitType()->getId() === $gameUnitType->getId()) {
-                $buildingsInConstruction += $regionConstruction->getNumber();
-            }
-        }
-
-        return $buildingsInConstruction;
+        return $this->constructionRepository->getGameUnitConstructionSumByWorldRegionAndType($worldRegion, $gameUnitType);
     }
 
     public function getCountGameUnitsInWorldRegion(WorldRegion $worldRegion, GameUnitType $gameUnitType): int

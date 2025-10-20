@@ -417,13 +417,13 @@ Game/Market/Sell/Order:
     requirements:
         marketItemId: '\d+'
 
-Game/Market/Offers:
-    path:      /game/market/offers
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::offers
+Game/Market/ListOrders:
+    path:      /game/market/orders
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::listOrders
 
-Game/Market/PlaceOffer:
-    path:      /game/market/place-offer
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::placeOffer
+Game/Market/CreateOrder:
+    path:      /game/market/new-order
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::createOrder
 
 Game/Message/Inbox:
     path:      /game/message/inbox

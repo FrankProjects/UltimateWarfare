@@ -14,16 +14,16 @@
             <td width="120">NetWorth</td>
         </tr>
 
-        {% for federationPlayer in federation.players %}
+        {% for federationPlayer in federationData %}
             <tr>
                 <td>
                     <a class="B" href="{{ path('Game/Profile', {'playerName': federationPlayer.name}) }}">{{ federationPlayer.name }}</a>
                 </td>
                 <td>
-                    {{ federationPlayer.federationHierarchy }}
+                    {{ federationPlayer.hierarchy }}
                 </td>
                 <td>
-                    {{ federationPlayer.regions }}
+                    {{ federationPlayer.worldRegionCount }}
                 </td>
                 <td>
                     {{ federationPlayer.netWorth }}

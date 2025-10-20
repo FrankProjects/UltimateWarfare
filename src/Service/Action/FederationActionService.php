@@ -154,6 +154,10 @@ final class FederationActionService
             throw new RuntimeException("You don't have permission to change the Federation name!");
         }
 
+        if ($federationName === '') {
+            throw new RuntimeException("Federation name can not be empty");
+        }
+
         if ($this->federationRepository->findByNameAndWorld($federationName, $player->getWorld()) !== null) {
             throw new RuntimeException("Federation name already exist!");
         }

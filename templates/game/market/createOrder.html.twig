@@ -1,0 +1,25 @@
+{% extends 'game.html.twig' %}
+
+{% block title %}Ultimate Warfare - Market{% endblock title %}
+
+{% block content %}
+    <p class="text-center">
+        <a class="B" href="{{ path('Game/Market') }}">Buy</a> -
+        <a class="B" href="{{ path('Game/Market/Sell') }}">Sell</a> -
+        <a class="B" href="{{ path('Game/Market/CreateOrder') }}">New order</a> -
+        <a class="B" href="{{ path('Game/Market/ListOrders') }}">Your orders</a>
+    </p>
+
+    <table class="table text-center">
+        <tr class="tabletop">
+            <td><b>Place order</b></td>
+        </tr>
+        <form method="post" action="{{ path('Game/Market/CreateOrder') }}">
+            <tr>
+                <td>
+                    {{ form(form) }}
+                </td>
+            </tr>
+        </form>
+    </table>
+{% endblock %}

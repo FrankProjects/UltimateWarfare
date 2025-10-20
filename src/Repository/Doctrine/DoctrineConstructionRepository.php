@@ -63,6 +63,28 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         return $gameUnits;
     }
 
+    public function getGameUnitConstructionSumByWorldRegionAndType(WorldRegion $worldRegion, GameUnitType $gameUnitType): int
+    {
+        $results = $this->entityManager
+            ->createQuery(
+                'SELECT gu.id, sum(c.number) as total
+              FROM ' . Construction::class . ' c
+              JOIN ' . GameUnit::class . ' gu WITH c.gameUnit = gu
+              WHERE c.worldRegion = :worldRegion AND gu.gameUnitType = :gameUnitType
+              GROUP BY gu.id'
+            )->setParameter('worldRegion', $worldRegion)
+            ->setParameter('gameUnitType', $gameUnitType)
+            ->getArrayResult();
+
+        $gameUnitsUnderConstruction = 0;
+        /** @var array{'id': int, 'total': int} $result */
+        foreach ($results as $result) {
+            $gameUnitsUnderConstruction += $result['total'];
+        }
+
+        return $gameUnitsUnderConstruction;
+    }
+
     public function getGameUnitConstructionSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
