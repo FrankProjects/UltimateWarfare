@@ -60,11 +60,22 @@ final class FederationController extends BaseGameController
             );
         }
 
+        // PHP 8.4 lazy objects doesn't load correct relations in twig.
+        $federationData = [];
+        foreach ($federation->getPlayers() as $federationPlayer) {
+            $federationData[] = [
+                'name' => $federationPlayer->getName(),
+                'hierarchy' => $federationPlayer->getFederationHierarchy(),
+                'worldRegionCount' => count($federationPlayer->getWorldRegions()),
+                'netWorth' => $federationPlayer->getNetWorth(),
+            ];
+        }
         return $this->render(
             'game/federation/federation.html.twig',
             [
                 'player' => $this->getPlayer(),
-                'federation' => $federation
+                'federation' => $federation,
+                'federationData' => $federationData,
             ]
         );
     }
