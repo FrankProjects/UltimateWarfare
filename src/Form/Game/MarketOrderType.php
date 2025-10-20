@@ -1,6 +1,5 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Form\Game;
@@ -21,7 +20,7 @@ class MarketOrderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $gameResources = [];
-        foreach(GameResource::getTradableGameResources() as $gameResource) {
+        foreach (GameResource::getTradableGameResources() as $gameResource) {
             $gameResources['label.' . $gameResource] = $gameResource;
         }
 

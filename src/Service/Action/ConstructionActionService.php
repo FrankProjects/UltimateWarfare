@@ -46,8 +46,7 @@ final class ConstructionActionService
         Player $player,
         GameUnitType $gameUnitType,
         array $constructionData
-    ): void
-    {
+    ): void {
         $priceCash = 0;
         $priceWood = 0;
         $priceSteel = 0;

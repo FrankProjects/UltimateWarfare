@@ -1,9 +1,9 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Form\DTO;
+
 class MarketOrderFormDTO
 {
     public string $resource;
