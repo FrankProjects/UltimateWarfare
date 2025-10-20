@@ -30,7 +30,7 @@ class GameResource
     }
 
     /**
-     * @return array<string, string>
+     * @return array<int, string>
      */
     public static function getTradableGameResources(): array
     {
