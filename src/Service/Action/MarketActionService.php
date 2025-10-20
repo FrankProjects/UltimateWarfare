@@ -141,12 +141,16 @@ final class MarketActionService
         $this->createReport($marketItem->getPlayer(), $buyMessage);
     }
 
-    public function placeOffer(Player $player, string $gameResource, int $price, int $amount, string $action): void
+    public function createOrder(Player $player, string $gameResource, int $price, int $amount, string $action): void
     {
         $this->ensureValidGameResource($gameResource);
 
-        if ($price < 1 || $amount < 1) {
-            throw new RuntimeException("Invalid input!");
+        if ($price < 1) {
+            throw new RuntimeException("Price can not be less than 1");
+        }
+
+        if ($amount < 1) {
+            throw new RuntimeException("Amount can not be less than 1");
         }
 
         $resources = $player->getResources();

@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
+use FrankProjects\UltimateWarfare\Form\Game\MarketOrderType;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Service\Action\MarketActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -104,7 +105,7 @@ final class MarketController extends BaseGameController
         return $this->redirectToRoute('Game/Market/Sell');
     }
 
-    public function offers(): Response
+    public function listOrders(): Response
     {
         $player = $this->getPlayer();
         $world = $player->getWorld();
@@ -118,7 +119,7 @@ final class MarketController extends BaseGameController
         }
 
         return $this->render(
-            'game/market/offers.html.twig',
+            'game/market/listOrders.html.twig',
             [
                 'player' => $player,
                 'marketItems' => $player->getMarketItems()
@@ -135,10 +136,10 @@ final class MarketController extends BaseGameController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('Game/Market/Offers');
+        return $this->redirectToRoute('Game/Market/ListOrders');
     }
 
-    public function placeOffer(Request $request): Response
+    public function createOrder(Request $request): Response
     {
         $player = $this->getPlayer();
         $world = $player->getWorld();
@@ -151,24 +152,30 @@ final class MarketController extends BaseGameController
             );
         }
 
-        if ($request->isMethod(Request::METHOD_POST)) {
-            $price = $request->request->getInt('price');
-            $amount = $request->request->getInt('amount');
-            $resource = $request->request->getString('resource');
-            $option = $request->request->getString('option');
+        $form = $this->createForm(MarketOrderType::class);
 
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->marketActionService->placeOffer($player, $resource, $price, $amount, $option);
-                $this->addFlash('success', 'you placed a new offer on the market!');
+                $this->marketActionService->createOrder(
+                    $player,
+                    $form->getData()['resource'],
+                    $form->getData()['price'],
+                    $form->getData()['amount'],
+                    $form->getData()['option'],
+                );
+                $this->addFlash('success', 'Created new market order');
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
         return $this->render(
-            'game/market/placeOffer.html.twig',
+            'game/market/createOrder.html.twig',
             [
                 'player' => $player,
+                'form' => $form->createView(),
                 'gameResources' => GameResource::getAll()
             ]
         );

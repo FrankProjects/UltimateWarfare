@@ -10,7 +10,7 @@
             </tr>
             <tr>
                 <td><br />Player:<br />
-                    <select name="player">
+                    <select class="form-select" aria-label="player" name="player">
                         {% for federationPlayer in player.federation.players %}
                             <option value="{{ federationPlayer.id }}">{{ federationPlayer.name }}</option>
                         {% endfor %}
@@ -19,7 +19,7 @@
                     <br /><br />
                     Rank:<br />
 
-                    <select name="rank">
+                    <select class="form-select" aria-label="rank" name="rank">
                         <option value="10">General (Federation Owner)</option>
                         <option value="9">Staff General</option>
                         <option value="8">Lieutenant General</option>

@@ -1,0 +1,11 @@
+label:
+  price: Price
+  amount: Amount
+  whatDoYouWantToDo: What do you want to do?
+  placeOrder: Place Order
+  wood: Wood
+  food: Food
+  steel: Steel
+  buy: Buy
+  sell: Sell
+  resource: Resource

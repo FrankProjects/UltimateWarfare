@@ -56,7 +56,7 @@
             <tr>
                 <td>To Player</td>
                 <td colspan="2">
-                    <select name="player">
+                    <select class="form-select" aria-label="to player" name="player">
                         {% for federationPlayer in player.federation.players %}
                             <option value="{{ federationPlayer.id }}">{{ federationPlayer.name }}</option>
                         {% endfor %}

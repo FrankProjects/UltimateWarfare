@@ -45,7 +45,7 @@
             <tr>
                 <td>To region</td>
                 <td colspan="2">
-                    <select name="target">
+                    <select class="form-select" aria-label="to region" name="target">
                         {% for targetRegionData in targetRegions %}
                             <option value="{{ targetRegionData.region.id }}">
                                 {{ targetRegionData.region.x }}, {{ targetRegionData.region.y }} - Travel time:
