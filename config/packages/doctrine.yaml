@@ -5,13 +5,9 @@ doctrine:
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        auto_mapping: true
-        enable_native_lazy_objects: true
         mappings:
             FrankProjects\UltimateWarfare:
                 is_bundle: false
                 type: xml
                 dir: '%kernel.project_dir%/config/doctrine'
                 prefix: 'FrankProjects\UltimateWarfare\Entity'
-        controller_resolver:
-            auto_mapping: false

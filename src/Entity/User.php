@@ -26,7 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     private string $password = '';
     private string $plainPassword = '';
     private ?DateTime $lastLogin = null;
-    /** Random string sent to the user email address in order to verify it */
+    /** Random string sent to the user email address to verify it */
     private ?string $confirmationToken = null;
     private ?DateTime $passwordRequestedAt = null;
 
@@ -102,8 +102,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
-
-        return;
     }
 
     public function removeRole(string $role): void
