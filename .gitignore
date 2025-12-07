@@ -11,6 +11,7 @@
 .idea
 /config/secrets/dev/
 .ddev/
+config/reference.php
 
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
