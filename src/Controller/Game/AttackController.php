@@ -89,9 +89,9 @@ final class AttackController extends BaseGameController
             return $this->redirectToRoute('Game/RegionList', [], 302);
         }
 
-        if ($request->isMethod(Request::METHOD_POST) && $request->get('units') !== null) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             /** @var array<int, string> $units */
-            $units = $request->get('units');
+            $units = $request->request->all('units');
             $this->fleetActionService->sendGameUnits(
                 $playerRegion,
                 $worldRegion,
