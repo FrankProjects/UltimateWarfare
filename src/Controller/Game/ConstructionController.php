@@ -92,7 +92,7 @@ final class ConstructionController extends BaseGameController
         if ($request->isMethod(Request::METHOD_POST)) {
             try {
                 /** @var array<int, string> $construct */
-                $construct = $request->get('construct');
+                $construct = $request->request->all('construct');
                 $this->constructionActionService->constructGameUnits(
                     $worldRegion,
                     $this->getPlayer(),
@@ -151,7 +151,7 @@ final class ConstructionController extends BaseGameController
         if ($request->isMethod(Request::METHOD_POST)) {
             try {
                 /** @var array<int, string> $destroy */
-                $destroy = $request->get('destroy');
+                $destroy = $request->request->all('destroy');
                 $this->constructionActionService->removeGameUnits(
                     $worldRegion,
                     $this->getPlayer(),

@@ -156,10 +156,11 @@ final class FederationController extends BaseGameController
     public function sendAid(Request $request): Response
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST) && $request->get('player') !== null) {
-                $aidPlayerId = $request->request->getInt('player');
+            $aidPlayerId = $request->request->getInt('player');
+
+            if ($request->isMethod(Request::METHOD_POST) && $aidPlayerId !== 0) {
                 /** @var array<string, string> $resources */
-                $resources = $request->get('resources');
+                $resources = $request->request->all('resources');
                 $this->federationActionService->sendAid($this->getPlayer(), $aidPlayerId, $resources);
                 $this->addFlash('success', "You have send aid!");
 
@@ -256,7 +257,7 @@ final class FederationController extends BaseGameController
     public function updateLeadershipMessage(Request $request): Response
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST) && $request->get('message') !== null) {
+            if ($request->isMethod(Request::METHOD_POST)) {
                 $message = $request->request->getString('message');
                 $this->federationActionService->updateLeadershipMessage($this->getPlayer(), $message);
                 $this->addFlash('success', "You successfully updated the leadership message");
@@ -278,11 +279,7 @@ final class FederationController extends BaseGameController
     public function changePlayerHierarchy(Request $request): Response
     {
         try {
-            if (
-                $request->isMethod(Request::METHOD_POST) &&
-                $request->get('playerId') !== null &&
-                $request->get('role') !== null
-            ) {
+            if ($request->isMethod(Request::METHOD_POST)) {
                 $this->federationActionService->changePlayerHierarchy(
                     $this->getPlayer(),
                     $request->request->getInt('playerId'),

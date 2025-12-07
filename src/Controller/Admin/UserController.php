@@ -38,7 +38,7 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'User banned!');
         }
 
-        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
     public function unban(int $userId): RedirectResponse
@@ -52,7 +52,7 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'User unbanned!');
         }
 
-        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
     public function enable(int $userId): RedirectResponse
@@ -67,7 +67,7 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'User enabled!');
         }
 
-        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
     public function forumBan(int $userId): RedirectResponse
@@ -81,7 +81,7 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'User forum banned!');
         }
 
-        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
     public function forumUnban(int $userId): RedirectResponse
@@ -95,12 +95,12 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'User forum unbanned!');
         }
 
-        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
     public function list(Request $request): Response
     {
-        $user = match ($request->get('filter')) {
+        $user = match ($request->attributes->get('filter')) {
             'banned' => $this->userRepository->findAllBanned(),
             'disabled' => $this->userRepository->findAllDisabled(),
             'active' => $this->userRepository->findAllActive(),
@@ -125,7 +125,7 @@ final class UserController extends AbstractController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
     public function removeAdmin(int $userId): RedirectResponse
@@ -138,7 +138,7 @@ final class UserController extends AbstractController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId], 302);
+        return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
     public function read(int $userId): Response

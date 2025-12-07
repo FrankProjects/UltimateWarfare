@@ -36,7 +36,7 @@ final class FederationBankController extends BaseGameController
             // XXX TODO: Rewrite to form isSubmitted && isValid
             if ($request->isMethod(Request::METHOD_POST)) {
                 /** @var array<string, string> $resources */
-                $resources = $request->get('resources');
+                $resources = $request->request->all('resources');
                 $this->federationBankActionService->deposit($player, $resources);
                 $this->addFlash('success', 'You successfully made a deposit!');
             }
@@ -70,7 +70,7 @@ final class FederationBankController extends BaseGameController
             // XXX TODO: Rewrite to form isSubmitted && isValid
             if ($request->isMethod(Request::METHOD_POST)) {
                 /** @var array<string, string> $resources */
-                $resources = $request->get('resources');
+                $resources = $request->request->all('resources');
                 $this->federationBankActionService->withdraw($player, $resources);
                 $this->addFlash('success', 'You successfully made a withdrawal!');
             }
