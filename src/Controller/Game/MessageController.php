@@ -193,11 +193,10 @@ final class MessageController extends BaseGameController
 
         if (
             $request->isMethod(Request::METHOD_POST) &&
-            $request->get('del') !== null &&
-            $request->get('selected_messages') !== null
+            $request->request->get('del') !== null
         ) {
             /** @var array<int> $selectedMessageArray */
-            $selectedMessageArray = $request->get('selected_messages');
+            $selectedMessageArray = $request->request->all('selected_messages');
             foreach ($selectedMessageArray as $messageId) {
                 $selectedMessages[] = intval($messageId);
             }
