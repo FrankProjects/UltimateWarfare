@@ -48,7 +48,7 @@ final class DoctrineResearchRepository implements ResearchRepository
         return $this->entityManager->createQuery(
             'SELECT rp
               FROM ' . ResearchPlayer::class . ' rp
-              JOIN ' . Research::class . ' r WITH rp.research = r
+              JOIN ' . Research::class . ' r ON rp.research = r
               WHERE rp.player = :player AND rp.active = 0'
         )->setParameter(
             'player',

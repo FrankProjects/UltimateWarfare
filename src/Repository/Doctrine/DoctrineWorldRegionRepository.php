@@ -70,7 +70,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->createQuery(
                 'SELECT gu.id, sum(wru.amount) as total
               FROM ' . WorldRegionUnit::class . ' wru
-              JOIN ' . GameUnit::class . ' gu WITH wru.gameUnit = gu
+              JOIN ' . GameUnit::class . ' gu ON wru.gameUnit = gu
               WHERE wru.worldRegion = :worldRegion
               GROUP BY gu.id'
             )->setParameter('worldRegion', $worldRegion)

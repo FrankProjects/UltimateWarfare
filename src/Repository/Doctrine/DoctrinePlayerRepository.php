@@ -47,7 +47,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
             ->createQuery(
                 'SELECT p
               FROM ' . Player::class . ' p
-              JOIN ' . WorldRegion::class . ' wr WITH wr.player = p
+              JOIN ' . WorldRegion::class . ' wr ON wr.player = p
               GROUP BY p.id
               HAVING p.world = :world
               ORDER BY COUNT(wr.player) DESC'
