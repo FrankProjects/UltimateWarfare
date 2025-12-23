@@ -28,21 +28,37 @@ final class Spy extends OperationProcessor
     public function processSuccess(): void
     {
         $this->addToOperationLog("Searching for buildings...");
+        $buildingsFound = false;
         foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
             if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() === GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
                 $this->addToOperationLog(
                     "- {$worldRegionUnit->getAmount()} {$worldRegionUnit->getGameUnit()->getNameMulti()}"
                 );
+                $buildingsFound = true;
             }
         }
 
+        if ($buildingsFound === false) {
+            $this->addToOperationLog(
+                "No buildings found"
+            );
+        }
+
         $this->addToOperationLog("Searching for units...");
+        $unitsFound = false;
         foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
             if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() === GameUnitType::GAME_UNIT_TYPE_UNITS) {
                 $this->addToOperationLog(
                     "- {$worldRegionUnit->getAmount()} {$worldRegionUnit->getGameUnit()->getNameMulti()}"
                 );
+                $unitsFound = true;
             }
+        }
+
+        if ($unitsFound === false) {
+            $this->addToOperationLog(
+                "No units found"
+            );
         }
     }
 

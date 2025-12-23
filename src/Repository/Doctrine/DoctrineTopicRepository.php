@@ -51,7 +51,7 @@ final class DoctrineTopicRepository implements TopicRepository
     {
         return $this->entityManager->createQuery(
             'SELECT t FROM ' . Topic::class . ' t
-                 LEFT JOIN ' . Post::class . ' p WITH p.topic = t 
+                 LEFT JOIN ' . Post::class . ' p ON p.topic = t 
                  WHERE t.category = :category
                  ORDER BY t.sticky, p.createDateTime DESC'
         )

@@ -28,7 +28,7 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
         return $this->entityManager->createQuery(
             'SELECT rp
               FROM ' . ResearchPlayer::class . ' rp
-              JOIN ' . Research::class . ' r WITH rp.research = r
+              JOIN ' . Research::class . ' r ON rp.research = r
               WHERE rp.active = 0 AND (rp.timestamp + r.timestamp) < :timestamp'
         )->setParameter(
             'timestamp',

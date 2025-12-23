@@ -48,7 +48,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->createQuery(
                 'SELECT gu.id, sum(c.number) as total
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu WITH c.gameUnit = gu
+              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
               WHERE c.worldRegion = :worldRegion
               GROUP BY gu.id'
             )->setParameter('worldRegion', $worldRegion)
@@ -69,7 +69,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->createQuery(
                 'SELECT gu.id, sum(c.number) as total
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu WITH c.gameUnit = gu
+              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
               WHERE c.worldRegion = :worldRegion AND gu.gameUnitType = :gameUnitType
               GROUP BY gu.id'
             )->setParameter('worldRegion', $worldRegion)
@@ -91,7 +91,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->createQuery(
                 'SELECT gu.id, sum(c.number) as total
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu WITH c.gameUnit = gu
+              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
               WHERE c.player = :player
               GROUP BY gu.id'
             )->setParameter('player', $player)
@@ -117,7 +117,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->createQuery(
                 'SELECT c
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu WITH c.gameUnit = gu
+              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
               WHERE c.player = :player AND gu.gameUnitType = :gameUnitType
               ORDER BY c.timestamp DESC'
             )->setParameter(
@@ -137,7 +137,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->createQuery(
                 'SELECT c
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu WITH c.gameUnit = gu
+              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
               WHERE (c.timestamp + gu.timestamp) < :timestamp'
             )->setParameter('timestamp', $timestamp)
             ->getResult();

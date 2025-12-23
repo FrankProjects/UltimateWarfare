@@ -42,8 +42,8 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
         return $this->entityManager->createQuery(
             'SELECT wru.amount, gu.netWorth
               FROM ' . WorldRegionUnit::class . ' wru
-              JOIN ' . WorldRegion::class . ' wr WITH wru.worldRegion = wr
-              JOIN ' . GameUnit::class . ' gu WITH wru.gameUnit = gu
+              JOIN ' . WorldRegion::class . ' wr ON wru.worldRegion = wr
+              JOIN ' . GameUnit::class . ' gu ON wru.gameUnit = gu
               WHERE wr.player = :player'
         )->setParameter(
             'player',
@@ -62,8 +62,8 @@ final class DoctrineWorldRegionUnitRepository implements WorldRegionUnitReposito
             ->createQuery(
                 'SELECT gu.id, sum(wru.amount) as total
               FROM ' . WorldRegionUnit::class . ' wru
-              JOIN ' . WorldRegion::class . ' wr WITH wru.worldRegion = wr
-              JOIN ' . GameUnit::class . ' gu WITH wru.gameUnit = gu
+              JOIN ' . WorldRegion::class . ' wr ON wru.worldRegion = wr
+              JOIN ' . GameUnit::class . ' gu ON wru.gameUnit = gu
               WHERE wr.player = :player AND gu.gameUnitType IN (:gameUnitTypes)
               GROUP BY gu.id'
             )->setParameter('player', $player)
