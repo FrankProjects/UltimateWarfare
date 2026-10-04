@@ -52,4 +52,6 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 
-Ultimate Warfare is open-sourced software licensed under the [MIT License](https://opensource.org/licenses/MIT).
+The Ultimate Warfare source code is open-sourced software licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+Some of the image assets in this repository come from third parties and are used under their own terms, which take precedence over the MIT License for those files. Please see [CREDITS.md](CREDITS.md) for details.
