@@ -6,7 +6,10 @@ namespace FrankProjects\UltimateWarfare\Service;
 
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
+use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattlePhase;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleReportCreator;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleResult;
@@ -19,17 +22,20 @@ final class BattleEngine
     private BattleReportCreator $battleReportCreator;
     private NetWorthUpdaterService $netWorthUpdaterService;
     private IncomeUpdaterService $incomeUpdaterService;
+    private GameUnitRegistry $gameUnitRegistry;
 
     public function __construct(
         BattleUpdaterService $battleUpdaterService,
         BattleReportCreator $battleReportCreator,
         NetWorthUpdaterService $netWorthUpdaterService,
-        IncomeUpdaterService $incomeUpdaterService
+        IncomeUpdaterService $incomeUpdaterService,
+        GameUnitRegistry $gameUnitRegistry
     ) {
         $this->battleUpdaterService = $battleUpdaterService;
         $this->battleReportCreator = $battleReportCreator;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
         $this->incomeUpdaterService = $incomeUpdaterService;
+        $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
     /**
@@ -45,11 +51,24 @@ final class BattleEngine
         $this->ensureCanAttack($fleet);
 
         $attackerGameUnits = $fleet->getFleetUnits()->toArray();
-        $defenderGameUnits = $fleet->getTargetWorldRegion()->getWorldRegionUnits()->toArray();
+        // Defenders are both stackable units and leveled buildings present in the region.
+        $defenderGameUnits = array_merge(
+            $fleet->getTargetWorldRegion()->getWorldRegionStackableUnits()->toArray(),
+            $fleet->getTargetWorldRegion()->getWorldRegionLeveledUnits()->toArray()
+        );
+        $defenderDamageMultiplier = $this->getDefenderDamageMultiplier(
+            $fleet->getTargetWorldRegion()->getPlayer()
+        );
 
         $battlePhaseResults = [];
         foreach ($this->getBattlePhases() as $battlePhaseName) {
-            $battlePhase = BattlePhase::factory($battlePhaseName, $attackerGameUnits, $defenderGameUnits);
+            $battlePhase = BattlePhase::factory(
+                $battlePhaseName,
+                $attackerGameUnits,
+                $defenderGameUnits,
+                $this->gameUnitRegistry,
+                $defenderDamageMultiplier
+            );
             $battlePhase->startBattlePhase();
 
             $attackerGameUnits = $battlePhase->getAttackerGameUnits();
@@ -75,6 +94,28 @@ final class BattleEngine
             BattlePhase::SEA_PHASE,
             BattlePhase::GROUND_PHASE
         ];
+    }
+
+    private function getDefenderDamageMultiplier(?Player $defender): float
+    {
+        if ($defender === null) {
+            return 1.0;
+        }
+
+        $level = 0;
+        foreach ($defender->getPlayerResearch() as $playerResearch) {
+            if ($playerResearch->getActive() !== true) {
+                continue;
+            }
+            if ($playerResearch->getResearchSlug() !== 'defensive-network') {
+                continue;
+            }
+            if ($playerResearch->getLevel() > $level) {
+                $level = $playerResearch->getLevel();
+            }
+        }
+
+        return $level === 0 ? 1.0 : pow(0.75, $level);
     }
 
     private function ensureCanAttack(Fleet $fleet): void
@@ -103,7 +144,7 @@ final class BattleEngine
 
     /**
      * @param array<FleetUnit> $attackerGameUnits
-     * @param array<WorldRegionUnit> $defenderGameUnits
+     * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $defenderGameUnits
      */
     private function processResults(
         BattleResult $battleResults,

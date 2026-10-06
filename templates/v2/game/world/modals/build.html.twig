@@ -1,0 +1,21 @@
+<div class="modal fade" id="buildModal" tabindex="-1" aria-labelledby="buildModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-build">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buildModalLabel">Build Units - Region <span id="buildRegionCoords"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="build-tabs" id="buildTabs"></div>
+                <div id="buildSpaceInfo" class="build-space-info" style="display: none;"></div>
+                <div id="buildUnitsContainer" class="build-units-container">
+                    <div class="build-loading">Loading units...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmBuildBtn">Build Selected</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -62,16 +62,29 @@ abstract class AbstractImageBuilder
     protected function getTypeImageColors(): array
     {
         return [
-            WorldRegion::TYPE_WATER => [self::COLOR_RED => 173, self::COLOR_GREEN => 216, self::COLOR_BLUE => 230],
-            WorldRegion::TYPE_BEACH => [self::COLOR_RED => 255, self::COLOR_GREEN => 255, self::COLOR_BLUE => 0],
-            WorldRegion::TYPE_FORREST => [self::COLOR_RED => 0, self::COLOR_GREEN => 128, self::COLOR_BLUE => 0],
-            WorldRegion::TYPE_MOUNTAIN => [self::COLOR_RED => 128, self::COLOR_GREEN => 128, self::COLOR_BLUE => 128]
+            WorldRegion::TYPE_DEEP_WATER => [self::COLOR_RED => 20, self::COLOR_GREEN => 50, self::COLOR_BLUE => 120],
+            WorldRegion::TYPE_WATER => [self::COLOR_RED => 35, self::COLOR_GREEN => 80, self::COLOR_BLUE => 165],
+            WorldRegion::TYPE_SHALLOW_WATER => [
+                self::COLOR_RED => 70, self::COLOR_GREEN => 150, self::COLOR_BLUE => 195,
+            ],
+            WorldRegion::TYPE_SAND => [self::COLOR_RED => 210, self::COLOR_GREEN => 190, self::COLOR_BLUE => 140],
+            WorldRegion::TYPE_GRASSLAND => [self::COLOR_RED => 75, self::COLOR_GREEN => 140, self::COLOR_BLUE => 60],
+            WorldRegion::TYPE_FOREST => [self::COLOR_RED => 35, self::COLOR_GREEN => 85, self::COLOR_BLUE => 35],
+            WorldRegion::TYPE_HILLS => [self::COLOR_RED => 110, self::COLOR_GREEN => 145, self::COLOR_BLUE => 75],
+            WorldRegion::TYPE_MOUNTAIN => [self::COLOR_RED => 128, self::COLOR_GREEN => 128, self::COLOR_BLUE => 128],
         ];
     }
 
-    protected function saveImage(string $imagePath): void
+    protected function getImageBinary(): string
     {
-        imagejpeg($this->image, $imagePath);
+        ob_start();
+        imagejpeg($this->image);
+        $data = ob_get_clean();
+        if ($data === false) {
+            throw new RuntimeException("Failed to capture image data");
+        }
+
+        return $data;
     }
 
     protected function ensureGD(): void

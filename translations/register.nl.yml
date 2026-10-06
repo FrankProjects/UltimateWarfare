@@ -5,3 +5,7 @@ label:
   password: Wachtwoord
   password_repeat: Wachtwoord herhalen
   register: Registreren
+page:
+  title: Ultimate Warfare - Registreren
+  header: Account registreren
+  help_text: Er wordt een e-mail met een activatiecode gestuurd naar het e-mailadres waarmee je registreert, dus controleer of je een correct adres invult.

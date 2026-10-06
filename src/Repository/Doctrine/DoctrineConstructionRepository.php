@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
+use Doctrine\Common\Collections\AbstractLazyCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Construction;
-use FrankProjects\UltimateWarfare\Entity\GameUnit;
-use FrankProjects\UltimateWarfare\Entity\GameUnitType;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 
 final class DoctrineConstructionRepository implements ConstructionRepository
 {
@@ -22,10 +24,13 @@ final class DoctrineConstructionRepository implements ConstructionRepository
      */
     private EntityRepository $repository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    private GameUnitRegistry $gameUnitRegistry;
+
+    public function __construct(EntityManagerInterface $entityManager, GameUnitRegistry $gameUnitRegistry)
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(Construction::class);
+        $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
     public function find(int $id): ?Construction
@@ -42,65 +47,69 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         return $this->repository->findBy(['player' => $player]);
     }
 
-    public function getGameUnitConstructionSumByWorldRegion(WorldRegion $worldRegion): array
-    {
-        $results = $this->entityManager
-            ->createQuery(
-                'SELECT gu.id, sum(c.number) as total
-              FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
-              WHERE c.worldRegion = :worldRegion
-              GROUP BY gu.id'
-            )->setParameter('worldRegion', $worldRegion)
-            ->getArrayResult();
+    public function getGameUnitConstructionSumByWorldRegionAndCategory(
+        WorldRegion $worldRegion,
+        GameUnitCategory $gameUnitCategory
+    ): int {
+        $unitIds = $this->gameUnitRegistry->getIdsByCategory($gameUnitCategory);
 
-        $gameUnits = [];
-        /** @var array{'id': int, 'total': int} $result */
-        foreach ($results as $result) {
-            $gameUnits[$result['id']] = $result['total'];
+        if ($unitIds === []) {
+            return 0;
         }
 
-        return $gameUnits;
+        $results = $this->entityManager
+            ->createQuery(
+                'SELECT sum(c.number) as total
+              FROM ' . Construction::class . ' c
+              WHERE c.worldRegion = :worldRegion AND c.gameUnit IN (:unitIds)'
+            )->setParameter('worldRegion', $worldRegion)
+            ->setParameter('unitIds', $unitIds)
+            ->getArrayResult();
+
+        /** @var array{total: numeric-string|null} $result */
+        $result = $results[0] ?? ['total' => null];
+
+        return (int) ($result['total'] ?? 0);
     }
 
-    public function getGameUnitConstructionSumByWorldRegionAndType(WorldRegion $worldRegion, GameUnitType $gameUnitType): int
+    /**
+     * @return array<int, array<int, int>>
+     */
+    public function getGameUnitConstructionSumByPlayerGroupedByRegion(Player $player): array
     {
         $results = $this->entityManager
             ->createQuery(
-                'SELECT gu.id, sum(c.number) as total
+                'SELECT IDENTITY(c.worldRegion) as regionId, c.gameUnit, sum(c.number) as total
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
-              WHERE c.worldRegion = :worldRegion AND gu.gameUnitType = :gameUnitType
-              GROUP BY gu.id'
-            )->setParameter('worldRegion', $worldRegion)
-            ->setParameter('gameUnitType', $gameUnitType)
+              WHERE c.player = :player
+              GROUP BY regionId, c.gameUnit'
+            )->setParameter('player', $player)
             ->getArrayResult();
 
-        $gameUnitsUnderConstruction = 0;
-        /** @var array{'id': int, 'total': int} $result */
+        $grouped = [];
+        /** @var array{regionId: string, gameUnit: GameUnitEnum, total: string} $result */
         foreach ($results as $result) {
-            $gameUnitsUnderConstruction += $result['total'];
+            $grouped[(int) $result['regionId']][$result['gameUnit']->value] = (int) $result['total'];
         }
 
-        return $gameUnitsUnderConstruction;
+        return $grouped;
     }
 
     public function getGameUnitConstructionSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
             ->createQuery(
-                'SELECT gu.id, sum(c.number) as total
+                'SELECT c.gameUnit, sum(c.number) as total
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
               WHERE c.player = :player
-              GROUP BY gu.id'
+              GROUP BY c.gameUnit'
             )->setParameter('player', $player)
             ->getArrayResult();
 
         $gameUnits = [];
-        /** @var array{'id': int, 'total': int} $result */
+        /** @var array{gameUnit: GameUnitEnum, total: int} $result */
         foreach ($results as $result) {
-            $gameUnits[$result['id']] = $result['total'];
+            $gameUnits[$result['gameUnit']->value] = $result['total'];
         }
 
         return $gameUnits;
@@ -108,22 +117,25 @@ final class DoctrineConstructionRepository implements ConstructionRepository
 
     /**
      * @param Player $player
-     * @param GameUnitType $gameUnitType
+     * @param GameUnitCategory $gameUnitCategory
      * @return Construction[]
      */
-    public function findByPlayerAndGameUnitType(Player $player, GameUnitType $gameUnitType): array
+    public function findByPlayerAndGameUnitCategory(Player $player, GameUnitCategory $gameUnitCategory): array
     {
+        $unitIds = $this->gameUnitRegistry->getIdsByCategory($gameUnitCategory);
+
+        if ($unitIds === []) {
+            return [];
+        }
+
         return $this->entityManager
             ->createQuery(
                 'SELECT c
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
-              WHERE c.player = :player AND gu.gameUnitType = :gameUnitType
+              WHERE c.player = :player AND c.gameUnit IN (:unitIds)
               ORDER BY c.timestamp DESC'
-            )->setParameter(
-                'player',
-                $player
-            )->setParameter('gameUnitType', $gameUnitType)
+            )->setParameter('player', $player)
+            ->setParameter('unitIds', $unitIds)
             ->getResult();
     }
 
@@ -133,18 +145,35 @@ final class DoctrineConstructionRepository implements ConstructionRepository
      */
     public function getCompletedConstructions(int $timestamp): array
     {
-        return $this->entityManager
+        /** @var Construction[] $completed */
+        $completed = $this->entityManager
             ->createQuery(
                 'SELECT c
               FROM ' . Construction::class . ' c
-              JOIN ' . GameUnit::class . ' gu ON c.gameUnit = gu
-              WHERE (c.timestamp + gu.timestamp) < :timestamp'
+              WHERE c.timestamp + c.duration < :timestamp'
             )->setParameter('timestamp', $timestamp)
             ->getResult();
+
+        return $completed;
+    }
+
+    /**
+     * @return Construction[]
+     */
+    public function getAllConstructions(): array
+    {
+        return $this->repository->findAll();
     }
 
     public function remove(Construction $construction): void
     {
+        // Keep an already loaded collection in sync; an unloaded one is fetched fresh from the database when accessed
+        $worldRegion = $construction->getWorldRegion();
+        $collection = $worldRegion->getConstructions();
+        if (!$collection instanceof AbstractLazyCollection || $collection->isInitialized()) {
+            $worldRegion->removeConstruction($construction);
+        }
+
         $this->entityManager->remove($construction);
         $this->entityManager->flush();
     }

@@ -55,7 +55,7 @@ final class UnbanRequestController extends AbstractController
         }
 
         $user = $unbanRequest->getUser();
-        $user->setActive(true);
+        $user->setBanned(false);
 
         $this->userRepository->save($user);
         $this->unbanRequestRepository->remove($unbanRequest);

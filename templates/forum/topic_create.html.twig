@@ -3,53 +3,35 @@
     {% trans_default_domain 'forum' %}
 
     <div class="text-center">
-        <a class="B" href="{{ path('Forum') }}">{{ 'label.forum'|trans }}</a> -
-        <a class="B" href="{{ path('Forum/Category', {'categoryId': topic.category.id}) }}">{{ 'label.topics'|trans }}</a>
+        <a href="{{ path('Forum') }}">{{ 'label.forum'|trans }}</a> -
+        <a href="{{ path('Forum/Category', {'categoryId': topic.category.value}) }}">{{ 'label.topics'|trans }}</a>
     </div>
 
     {{ form_start(form) }}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="2">
-                <b>{{ 'action.topic.create'|trans }}</b>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                {{ 'label.title'|trans }}
-            </td>
-            <td>
+    <div class="uw-card">
+        <div class="uw-card-header">{{ 'action.topic.create'|trans }}</div>
+        <div class="uw-card-body">
+            <div class="mb-3">
+                <label>{{ 'label.title'|trans }}</label>
                 {{ form_widget(form.title) }}
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
+            </div>
+            <div class="mb-3">
                 {{ form_widget(form.content) }}
-            </td>
-        </tr>
-        {% if is_granted('ROLE_MODERATOR') %}
-        <tr>
-            <td>
-                {{ form_label(form.sticky) }}
-            </td>
-            <td>
-                {{ form_widget(form.sticky) }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                {{ form_label(form.closed) }}
-            </td>
-            <td>
-                {{ form_widget(form.closed) }}
-            </td>
-        </tr>
-        {% endif %}
-        <tr>
-            <td colspan="2">
+            </div>
+            {% if is_granted('ROLE_MODERATOR') %}
+                <div class="mb-3">
+                    {{ form_label(form.sticky) }}
+                    {{ form_widget(form.sticky) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.closed) }}
+                    {{ form_widget(form.closed) }}
+                </div>
+            {% endif %}
+            <div>
                 {{ form_row(form.submit) }}
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+    </div>
     {{ form_end(form) }}
 {% endblock %}

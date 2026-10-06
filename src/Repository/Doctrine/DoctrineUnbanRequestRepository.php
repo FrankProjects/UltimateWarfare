@@ -54,4 +54,9 @@ final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
         $this->entityManager->persist($unbanRequest);
         $this->entityManager->flush();
     }
+
+    public function count(): int
+    {
+        return $this->repository->count();
+    }
 }

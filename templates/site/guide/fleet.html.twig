@@ -1,35 +1,51 @@
 {% extends 'site/guideBase.html.twig' %}
 {% block content %}
-    <table class="table">
-        <tr>
-            <td>
+    <div class="uw-card">
+        <div class="uw-card-header">Fleets</div>
+        <div class="uw-card-body">
+            <p>
+                Fleets allow you to move units between your own regions. This is separate from
+                <a href="{{ url('Guide/Attack') }}">attacking</a>, which sends units to enemy regions.
+            </p>
+        </div>
+    </div>
 
-                You see a list of all attacks, and also all the reinforcements that you have send.
+    <br/>
 
-                <ul>
-                    <li>
-                        <b>Time:</b> Time left before your fleets arrive.<br />
-                    </li>
-                    <li>
-                        <b>Soldiers/Tanks/Planes/Ships/:</b> The amount of units you have send.
-                    </li>
+    <div class="uw-card">
+        <div class="uw-card-header">Sending Units</div>
+        <div class="uw-card-body">
+            <p>To move units between your regions:</p>
+            <ol>
+                <li>Click on one of your regions on the <a href="{{ url('Guide/World') }}">world map</a>.</li>
+                <li>Select the units you want to send.</li>
+                <li>Choose a target region (must be another region you own).</li>
+                <li>The units will form a fleet and travel to the target.</li>
+            </ol>
+            <p>
+                Travel time is based on the distance between the source and target regions.
+                You can send Troops, Air Units, Naval Units, and Missiles.
+            </p>
+        </div>
+    </div>
 
-                    <li>
-                        <b>From region ... To ....</b> The region you attack from and the region you are attacking.
-                    </li>
-                    <li>
-                        <b>Attack</b> Press this button to launch your attack.
-                    </li>
-                    <li>
-                        <b>Reinforce</b> Press this button to station your reinforcements on your country.
-                    </li>
-                    <li>
-                        <b>Recall</b> Press this button to recall your units.
+    <br/>
 
-                    </li>
-                </ul>
-
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Fleet Actions</div>
+        <div class="uw-card-body">
+            <p>Active fleets are shown on the world map and in the fleet panel:</p>
+            <ul>
+                <li>
+                    <b>Recall:</b> Cancel a fleet that is still traveling. The units return to the source region immediately.
+                </li>
+                <li>
+                    <b>Reinforce:</b> When a fleet arrives at your region, you can reinforce to add the units to the region's garrison.
+                </li>
+            </ul>
+            <p>
+                The fleet panel shows each fleet's source and target coordinates, the units being transported, and the estimated time of arrival.
+            </p>
+        </div>
+    </div>
 {% endblock %}

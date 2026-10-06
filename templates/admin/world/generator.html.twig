@@ -3,34 +3,38 @@
 {% block title %}ADMIN - World{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="5"><b>World Generator</b></td>
-        </tr>
-        <tr>
-            <td>
-                {{ form(form) }}
+    <div class="uw-card">
+        <div class="uw-card-header">World Generator</div>
+        <div class="uw-card-body">
+            {{ form(form) }}
 
-                <table class="table-world-generator text-center">
-                {% for mapRow in map %}
-                    <tr>
-                    {% for mapItem in mapRow %}
-                        <td>
-                            {% if mapItem < form.waterLevel.vars.value / 100 %}
-                                <span style="background-color:lightblue">&nbsp;</span>
-                            {% elseif mapItem < form.beachLevel.vars.value / 100 %}
-                                <span style="background-color:yellow">&nbsp;</span>
-                            {% elseif mapItem < form.forrestLevel.vars.value / 100 %}
-                                <span style="background-color:green">&nbsp;</span>
-                            {% else %}
-                                <span style="background-color:gray">&nbsp;</span>
-                            {% endif %}
-                        </td>
-                    {% endfor %}
-                    </tr>
+            <table class="table-world-generator text-center">
+            {% for mapRow in map %}
+                <tr>
+                {% for mapItem in mapRow %}
+                    <td>
+                        {% if mapItem < form.deepWaterLevel.vars.value / 100 %}
+                            <span style="background-color:#143278">&nbsp;</span>
+                        {% elseif mapItem < form.waterLevel.vars.value / 100 %}
+                            <span style="background-color:#2350a5">&nbsp;</span>
+                        {% elseif mapItem < form.shallowWaterLevel.vars.value / 100 %}
+                            <span style="background-color:#4696c3">&nbsp;</span>
+                        {% elseif mapItem < form.sandLevel.vars.value / 100 %}
+                            <span style="background-color:#d2be8c">&nbsp;</span>
+                        {% elseif mapItem < form.grasslandLevel.vars.value / 100 %}
+                            <span style="background-color:#4b8c3c">&nbsp;</span>
+                        {% elseif mapItem < form.forestLevel.vars.value / 100 %}
+                            <span style="background-color:#235523">&nbsp;</span>
+                        {% elseif mapItem < form.hillsLevel.vars.value / 100 %}
+                            <span style="background-color:#6e914b">&nbsp;</span>
+                        {% else %}
+                            <span style="background-color:#808080">&nbsp;</span>
+                        {% endif %}
+                    </td>
                 {% endfor %}
-                </table>
-            </td>
-        </tr>
-    </table>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock %}

@@ -1,39 +1,25 @@
 {% extends 'site/guideBase.html.twig' %}
 
+{% from 'site/guide/_unit_resources.html.twig' import cost_section, income_section, upkeep_section, build_time %}
+
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="2"><b>{{ gameUnit.name }}</b></td>
-        </tr>
-        <tr>
-            <td class="text-start" width="350">
-                {{ gameUnit.description }}<br /><br />
-                Cash: {{ gameUnit.cost.cash }}<br />
-                Wood: {{ gameUnit.cost.wood }}<br />
-                Steel: {{ gameUnit.cost.steel }}<br />
-                Food: {{ gameUnit.cost.food }}<br />
-                NetWorth: {{ gameUnit.netWorth }}<br />
-                Building time: {{ gameUnit.timestamp }}<br />
-            </td>
-            <td width="350">
-                <img src="{{ asset('images/' ~ gameUnit.gameUnitType.imageDir ~ gameUnit.image) }}" alt="{{ gameUnit.name }}" width="150" height="130">
-            </td>
-        </tr>
-        <tr>
-            <td class="text-start" width="350">
-                <b>Income:</b><br />
-                Cash: {{ gameUnit.income.cash }}<br />
-                Wood: {{ gameUnit.income.wood }}<br />
-                Steel: {{ gameUnit.income.steel }}<br />
-                Food: {{ gameUnit.income.food }}<br />
-            </td>
-            <td class="text-start" width="350">
-                <b>Upkeep:</b><br />
-                Cash: {{ gameUnit.upkeep.cash }}<br />
-                Wood: {{ gameUnit.upkeep.wood }}<br />
-                Steel: {{ gameUnit.upkeep.steel }}<br />
-                Food: {{ gameUnit.upkeep.food }}<br />
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">{{ gameUnit.name }}</div>
+        <div class="uw-card-body">
+            <div class="guide-unit-detail">
+                <img src="{{ asset('images/' ~ gameUnit.gameUnitCategory.imageDir ~ gameUnit.image) }}"
+                     alt="{{ gameUnit.name }}" class="guide-unit-image">
+                <div class="guide-unit-description">{{ gameUnit.description }}</div>
+                <div class="guide-unit-details">
+                    {{ cost_section(gameUnit.cost) }}
+                    {{ income_section(gameUnit.income) }}
+                    {{ upkeep_section(gameUnit.upkeep) }}
+                    {{ build_time(gameUnit.timestamp) }}
+                    <div class="guide-unit-section">
+                        <span class="guide-section-label">Net Worth:</span> {{ gameUnit.netWorth }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

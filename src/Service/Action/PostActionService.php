@@ -26,7 +26,7 @@ final class PostActionService
 
     public function create(Post $post, Topic $topic, User $user, string $ipAddress): void
     {
-        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNotForumBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
 
         $post->setTopic($topic);
@@ -39,7 +39,7 @@ final class PostActionService
 
     public function edit(Post $post, User $user): void
     {
-        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNotForumBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
         $this->ensurePostPermissions($user, $post);
 
@@ -49,7 +49,7 @@ final class PostActionService
 
     public function remove(Post $post, User $user): void
     {
-        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNotForumBanned($user);
 
         $this->ensurePostPermissions($user, $post);
         $this->postRepository->remove($post);

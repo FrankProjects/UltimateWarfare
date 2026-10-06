@@ -11,9 +11,13 @@ label:
   created: Created
   finished: Finished
   running: Running
+  deepWaterLevel: Deep water level
   waterLevel: Water level
-  beachLevel: Beach level
-  forrestLevel: Forrest level
+  shallowWaterLevel: Shallow water level
+  sandLevel: Sand level
+  grasslandLevel: Grassland level
+  forestLevel: Forest level
+  hillsLevel: Hills level
   generate: Generate
   size: Size
   seed: Seed

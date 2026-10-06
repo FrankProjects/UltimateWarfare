@@ -31,6 +31,22 @@ interface ReportRepository
      */
     public function findReports(Player $player, int $limit = 100): array;
 
+    /**
+     * @param Player $player
+     * @param int|null $type
+     * @param int $limit
+     * @param int $offset
+     * @return Report[]
+     */
+    public function findReportsPaginated(Player $player, ?int $type, int $limit = 25, int $offset = 0): array;
+
+    /**
+     * @param Player $player
+     * @param int|null $type
+     * @return int
+     */
+    public function countReports(Player $player, ?int $type = null): int;
+
     public function remove(Report $report): void;
 
     public function save(Report $report): void;

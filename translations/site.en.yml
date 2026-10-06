@@ -1,0 +1,32 @@
+about:
+  title: Ultimate Warfare - About
+  header: About Ultimate Warfare
+  intro: Ultimate Warfare is an online multiplayer browser based strategy game where you compete with thousands of others for world domination.
+  storyline:
+    heading: Storyline
+    paragraph_1: In the year 1945, a catastrophic event has left the world in ruins, and the surviving nations are left to fight over the remaining resources. As a leader of a small nation, you must navigate through this new world and find a way to secure your nation's survival.
+    paragraph_2: With limited resources and a growing population, you must use strategic planning and tactical warfare to expand your territory, secure vital resources, and defend against enemy attacks. Your enemies are fierce and determined to dominate the world, and you must be prepared to use all the tools at your disposal to stay ahead.
+    paragraph_3: As you build your army and strengthen your infrastructure, you will encounter new challenges and obstacles. From natural disasters to enemy invasions, you must be prepared to adapt and respond quickly to whatever comes your way. You will need to use spy satellites to gather intel, send sniper teams to take out enemy leaders, and launch bombers to destroy key infrastructure.
+    paragraph_4: As you grow more powerful, you will need to make alliances with other nations to secure your position and prevent larger, more powerful nations from overpowering you. The world is constantly changing, and you must be prepared to change with it if you hope to achieve your ultimate goal of world domination.
+    paragraph_5: The journey to conquer the world will not be easy, but with determination, strategic thinking, and a bit of luck, you can rise to the top and become the ultimate ruler of the world in Ultimate Warfare.
+  team:
+    heading: Who are we?
+    paragraph_1: This game is designed, created and maintained by Frank Schreuder.
+    paragraph_2: Would like to know more about me and my projects? Take a look at %linkStart%Frank Projects%linkEnd%.
+  contact:
+    heading: Contact
+    paragraph: Use our %linkStart%contact form%linkEnd% if you would like to contact us.
+contact_page:
+  title: Ultimate Warfare - Contact
+  header: Contact
+  intro: Your feedback helps us improve Ultimate Warfare. Whether you have a suggestion, a question, or want to report an issue, we'd love to hear from you.
+community:
+  title: Ultimate Warfare - Community
+  header: Community
+  intro: Ultimate Warfare is a free and open-source online multiplayer browser based strategy game.
+  github_cta: Check it out on GitHub
+  support:
+    heading: Support Ultimate Warfare
+    paragraph_1: Ultimate-Warfare is and will always be free to play, but far from free to develop, run and maintain. Please consider supporting us with a donation.
+    paragraph_2: Donations are currently accepted through Paypal.
+    donate_alt: Donate

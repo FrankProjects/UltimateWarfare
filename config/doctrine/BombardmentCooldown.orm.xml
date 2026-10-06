@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\BombardmentCooldown" table="bombardment_cooldown">
+    <indexes>
+      <index name="idx_bombardment_cooldown_region_operation" columns="region_id,operation_slug"/>
+      <index name="idx_bombardment_cooldown_until" columns="cooldown_until"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="operationSlug" type="string" column="operation_slug" length="64"/>
+    <field name="cooldownUntil" type="integer" column="cooldown_until">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
+    <many-to-one field="worldRegion" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion">
+      <join-columns>
+        <join-column name="region_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="targetWorldRegion" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion">
+      <join-columns>
+        <join-column name="target_region_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

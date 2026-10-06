@@ -4,65 +4,115 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnit;
-use FrankProjects\UltimateWarfare\Entity\GameUnitType;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
-use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
+use FrankProjects\UltimateWarfare\Service\FleetFactory;
 use RuntimeException;
+use Doctrine\DBAL\LockMode;
+use Doctrine\ORM\EntityManagerInterface;
 
 final class FleetActionService
 {
     private FleetRepository $fleetRepository;
     private FleetUnitRepository $fleetUnitRepository;
-    private GameUnitRepository $gameUnitRepository;
-    private WorldRegionUnitRepository $worldRegionUnitRepository;
+    private GameUnitRegistry $gameUnitRegistry;
+    private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
+    private EntityManagerInterface $entityManager;
+    private FleetFactory $fleetFactory;
 
     public function __construct(
         FleetRepository $fleetRepository,
         FleetUnitRepository $fleetUnitRepository,
-        GameUnitRepository $gameUnitRepository,
-        WorldRegionUnitRepository $worldRegionUnitRepository
+        GameUnitRegistry $gameUnitRegistry,
+        WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
+        EntityManagerInterface $entityManager,
+        FleetFactory $fleetFactory
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
-        $this->gameUnitRepository = $gameUnitRepository;
-        $this->worldRegionUnitRepository = $worldRegionUnitRepository;
+        $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
+        $this->entityManager = $entityManager;
+        $this->fleetFactory = $fleetFactory;
     }
 
-    public function recall(int $fleetId, Player $player): bool
+    public function recall(int $fleetId, Player $player): WorldRegion
     {
-        $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
+        // Begin transaction for atomic operation
+        $this->entityManager->beginTransaction();
 
-        $targetPlayer = $fleet->getWorldRegion()->getPlayer();
-        if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
-            throw new RuntimeException('You are not the owner of this region!');
+        try {
+            // Get and lock the fleet to prevent race conditions
+            $fleet = $this->entityManager->find(
+                Fleet::class,
+                $fleetId,
+                LockMode::PESSIMISTIC_WRITE
+            );
+
+            if ($fleet === null || $fleet->getPlayer()->getId() !== $player->getId()) {
+                throw new RuntimeException('Fleet does not exist!');
+            }
+
+            $sourceRegion = $fleet->getWorldRegion();
+            $targetPlayer = $sourceRegion->getPlayer();
+            if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
+                throw new RuntimeException('You are not the owner of this region!');
+            }
+
+            $this->addFleetUnitsToWorldRegion($fleet, $sourceRegion);
+
+            $this->entityManager->commit();
+
+            return $sourceRegion;
+        } catch (\Exception $e) {
+            $this->entityManager->rollback();
+            throw $e;
         }
-
-        $this->addFleetUnitsToWorldRegion($fleet, $fleet->getWorldRegion());
-
-        return true;
     }
 
-    public function reinforce(int $fleetId, Player $player): bool
+    public function reinforce(int $fleetId, Player $player): WorldRegion
     {
-        $fleet = $this->getFleetByIdAndPlayer($fleetId, $player);
+        // Begin transaction for atomic operation
+        $this->entityManager->beginTransaction();
 
-        $targetPlayer = $fleet->getTargetWorldRegion()->getPlayer();
+        try {
+            // Get and lock the fleet to prevent race conditions
+            $fleet = $this->entityManager->find(
+                Fleet::class,
+                $fleetId,
+                LockMode::PESSIMISTIC_WRITE
+            );
 
-        if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
-            throw new RuntimeException('You are not the owner of this region!');
+            if ($fleet === null || $fleet->getPlayer()->getId() !== $player->getId()) {
+                throw new RuntimeException('Fleet does not exist!');
+            }
+
+            $targetRegion = $fleet->getTargetWorldRegion();
+            $targetPlayer = $targetRegion->getPlayer();
+
+            if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
+                throw new RuntimeException('You are not the owner of this region!');
+            }
+
+            $this->addFleetUnitsToWorldRegion($fleet, $targetRegion);
+
+            $this->entityManager->commit();
+
+            return $targetRegion;
+        } catch (\Exception $e) {
+            $this->entityManager->rollback();
+            throw $e;
         }
-
-        $this->addFleetUnitsToWorldRegion($fleet, $fleet->getTargetWorldRegion());
-
-        return true;
     }
 
     /**
@@ -72,9 +122,8 @@ final class FleetActionService
         WorldRegion $region,
         WorldRegion $targetRegion,
         Player $player,
-        GameUnitType $gameUnitType,
         array $unitData
-    ): void {
+    ): Fleet {
         if ($targetRegion->getWorld()->getId() !== $player->getWorld()->getId()) {
             throw new RuntimeException('Target region does not exist!');
         }
@@ -90,12 +139,13 @@ final class FleetActionService
                 continue;
             }
 
-            $gameUnit = $this->gameUnitRepository->find($gameUnitId);
-            if ($gameUnit === null) {
+            $gameUnitEnum = GameUnitEnum::tryFrom($gameUnitId);
+            if ($gameUnitEnum === null) {
                 continue;
             }
 
-            if ($gameUnit->getGameUnitType()->getId() !== $gameUnitType->getId()) {
+            $gameUnit = $this->gameUnitRegistry->find($gameUnitEnum);
+            if ($gameUnit->getGameUnitCategory()->isSendable() === false) {
                 continue;
             }
 
@@ -109,20 +159,11 @@ final class FleetActionService
             throw new RuntimeException('No game units selected to send!');
         }
 
-        $fleet = Fleet::createForPlayer($player, $region, $targetRegion);
+        $fleet = $this->fleetFactory->createForPlayer($player, $region, $targetRegion);
         $this->fleetRepository->save($fleet);
 
         foreach ($gameUnitsToSend as $gameUnitData) {
             $this->addFleetUnitToFleet($region, $gameUnitData['gameUnit'], $gameUnitData['amount'], $fleet);
-        }
-    }
-
-    private function getFleetByIdAndPlayer(int $fleetId, Player $player): Fleet
-    {
-        $fleet = $this->fleetRepository->findByIdAndPlayer($fleetId, $player);
-
-        if ($fleet === null) {
-            throw new RuntimeException('Fleet does not exist!');
         }
 
         return $fleet;
@@ -140,30 +181,30 @@ final class FleetActionService
     private function addFleetUnitToWorldRegion(FleetUnit $fleetUnit, WorldRegion $worldRegion): void
     {
         $found = false;
-        foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($fleetUnit->getGameUnit()->getId() === $worldRegionUnit->getGameUnit()->getId()) {
-                $worldRegionUnit->setAmount($worldRegionUnit->getAmount() + $fleetUnit->getAmount());
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
+        foreach ($worldRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+            if ($fleetUnit->getGameUnit() === $worldRegionStackableUnit->getGameUnit()) {
+                $worldRegionStackableUnit->setAmount($worldRegionStackableUnit->getAmount() + $fleetUnit->getAmount());
+                $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
                 $found = true;
                 break;
             }
         }
 
         if ($found === false) {
-            $worldRegionUnit = WorldRegionUnit::create(
+            $worldRegionStackableUnit = WorldRegionStackableUnit::create(
                 $worldRegion,
                 $fleetUnit->getGameUnit(),
                 $fleetUnit->getAmount()
             );
-            $this->worldRegionUnitRepository->save($worldRegionUnit);
+            $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
         }
     }
 
     private function addFleetUnitToFleet(WorldRegion $region, GameUnit $gameUnit, int $amount, Fleet $fleet): void
     {
         $hasUnit = false;
-        foreach ($region->getWorldRegionUnits() as $regionUnit) {
-            if ($regionUnit->getGameUnit()->getId() === $gameUnit->getId()) {
+        foreach ($region->getWorldRegionStackableUnits() as $regionUnit) {
+            if ($regionUnit->getGameUnit() === $gameUnit->getGameUnitEnum()) {
                 $hasUnit = true;
                 if ($amount > $regionUnit->getAmount()) {
                     throw new RuntimeException("You don't have that many " . $gameUnit->getName() . "s!");
@@ -175,9 +216,9 @@ final class FleetActionService
                 $this->fleetUnitRepository->save($fleetUnit);
 
                 if ($regionUnit->getAmount() === 0) {
-                    $this->worldRegionUnitRepository->remove($regionUnit);
+                    $this->worldRegionStackableUnitRepository->remove($regionUnit);
                 } else {
-                    $this->worldRegionUnitRepository->save($regionUnit);
+                    $this->worldRegionStackableUnitRepository->save($regionUnit);
                 }
                 break;
             }

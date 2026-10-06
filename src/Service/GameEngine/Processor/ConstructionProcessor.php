@@ -7,11 +7,14 @@ namespace FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
 use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 
@@ -20,26 +23,40 @@ final class ConstructionProcessor implements Processor
     private ConstructionRepository $constructionRepository;
     private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
-    private WorldRegionUnitRepository $worldRegionUnitRepository;
+    private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
+    private WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository;
     private NetWorthUpdaterService $netWorthUpdaterService;
+    private GameUnitRegistry $gameUnitRegistry;
+    private int $constructionTimeOverride;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
         PlayerRepository $playerRepository,
         ReportRepository $reportRepository,
-        WorldRegionUnitRepository $worldRegionUnitRepository,
-        NetWorthUpdaterService $netWorthUpdaterService
+        WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
+        WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
+        NetWorthUpdaterService $netWorthUpdaterService,
+        GameUnitRegistry $gameUnitRegistry,
+        int $constructionTimeOverride
     ) {
         $this->constructionRepository = $constructionRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
-        $this->worldRegionUnitRepository = $worldRegionUnitRepository;
+        $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
+        $this->worldRegionLeveledUnitRepository = $worldRegionLeveledUnitRepository;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
+        $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->constructionTimeOverride = $constructionTimeOverride;
     }
 
     public function run(int $timestamp): void
     {
-        $constructions = $this->constructionRepository->getCompletedConstructions($timestamp);
+        // Override construction time for testing purposes
+        if ($this->constructionTimeOverride > 0) {
+            $constructions = $this->constructionRepository->getAllConstructions();
+        } else {
+            $constructions = $this->constructionRepository->getCompletedConstructions($timestamp);
+        }
 
         foreach ($constructions as $construction) {
             $worldRegion = $construction->getWorldRegion();
@@ -59,15 +76,16 @@ final class ConstructionProcessor implements Processor
 
     private function updatePlayerResources(Player $player, Construction $construction): Player
     {
-        $upkeepCash = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getCash();
-        $upkeepFood = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getFood();
-        $upkeepWood = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getWood();
-        $upkeepSteel = $construction->getNumber() * $construction->getGameUnit()->getUpkeep()->getSteel();
+        $gameUnit = $this->gameUnitRegistry->find($construction->getGameUnit());
+        $upkeepCash = $construction->getNumber() * $gameUnit->getUpkeep()->getCash();
+        $upkeepFood = $construction->getNumber() * $gameUnit->getUpkeep()->getFood();
+        $upkeepWood = $construction->getNumber() * $gameUnit->getUpkeep()->getWood();
+        $upkeepSteel = $construction->getNumber() * $gameUnit->getUpkeep()->getSteel();
 
-        $incomeCash = $construction->getNumber() * $construction->getGameUnit()->getIncome()->getCash();
-        $incomeFood = $construction->getNumber() * $construction->getGameUnit()->getIncome()->getFood();
-        $incomeWood = $construction->getNumber() * $construction->getGameUnit()->getIncome()->getWood();
-        $incomeSteel = $construction->getNumber() * $construction->getGameUnit()->getIncome()->getSteel();
+        $incomeCash = $construction->getNumber() * $gameUnit->getIncome()->getCash();
+        $incomeFood = $construction->getNumber() * $gameUnit->getIncome()->getFood();
+        $incomeWood = $construction->getNumber() * $gameUnit->getIncome()->getWood();
+        $incomeSteel = $construction->getNumber() * $gameUnit->getIncome()->getSteel();
 
         $income = $player->getIncome();
         $upkeep = $player->getUpkeep();
@@ -93,51 +111,96 @@ final class ConstructionProcessor implements Processor
         // XXX TODO: Process income before processing construction...
         //$this->processPlayerIncome($construction->getPlayer(), $timestamp);
 
-        $worldRegionUnit = $this->getWorldRegionUnit($construction);
+        $gameUnit = $this->gameUnitRegistry->find($construction->getGameUnit());
 
-        if ($worldRegionUnit !== null) {
-            $worldRegionUnit->setAmount($worldRegionUnit->getAmount() + $construction->getNumber());
+        if ($gameUnit->getGameUnitCategory()->isLeveled()) {
+            $this->processLeveledConstruction($construction, $gameUnit->getBattleStats()->getHealth());
         } else {
-            $worldRegionUnit = WorldRegionUnit::create(
-                $construction->getWorldRegion(),
-                $construction->getGameUnit(),
-                $construction->getNumber()
-            );
+            $this->processStackableConstruction($construction);
         }
 
         $player = $this->updatePlayerResources($construction->getPlayer(), $construction);
         $this->createConstructionReport($construction);
 
-        $this->worldRegionUnitRepository->save($worldRegionUnit);
         $this->playerRepository->save($player);
         $this->constructionRepository->remove($construction);
 
         $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
     }
 
-    private function createConstructionReport(Construction $construction): void
+    /**
+     * Building or upgrading a leveled building: bump the level by one and (re)fill its
+     * health pool to the maximum for the new level.
+     */
+    private function processLeveledConstruction(Construction $construction, int $baseHealth): void
     {
-        $reportType = Report::TYPE_GENERAL;
-        if ($construction->getNumber() > 1) {
-            $message = "You completed {$construction->getNumber()} {$construction->getGameUnit()->getNameMulti()}!";
+        $worldRegionLeveledUnit = $this->getWorldRegionLeveledUnit($construction);
+        $newLevel = ($worldRegionLeveledUnit?->getLevel() ?? 0) + 1;
+        $maxHealth = $baseHealth * $newLevel;
+
+        if ($worldRegionLeveledUnit !== null) {
+            $worldRegionLeveledUnit->setLevel($newLevel);
+            $worldRegionLeveledUnit->setHealth($maxHealth);
         } else {
-            $message = "You completed {$construction->getNumber()} {$construction->getGameUnit()->getName()}!";
+            $worldRegionLeveledUnit = WorldRegionLeveledUnit::create(
+                $construction->getWorldRegion(),
+                $construction->getGameUnit(),
+                $newLevel,
+                $maxHealth
+            );
         }
 
-        $finishedConstructionTime = $construction->getTimestamp() + $construction->getGameUnit()->getTimestamp();
+        $this->worldRegionLeveledUnitRepository->save($worldRegionLeveledUnit);
+    }
+
+    private function processStackableConstruction(Construction $construction): void
+    {
+        $worldRegionStackableUnit = $this->getWorldRegionStackableUnit($construction);
+
+        if ($worldRegionStackableUnit !== null) {
+            $worldRegionStackableUnit->setAmount($worldRegionStackableUnit->getAmount() + $construction->getNumber());
+        } else {
+            $worldRegionStackableUnit = WorldRegionStackableUnit::create(
+                $construction->getWorldRegion(),
+                $construction->getGameUnit(),
+                $construction->getNumber()
+            );
+        }
+
+        $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
+    }
+
+    private function createConstructionReport(Construction $construction): void
+    {
+        $gameUnit = $this->gameUnitRegistry->find($construction->getGameUnit());
+        $reportType = Report::TYPE_GENERAL;
+        if ($construction->getNumber() > 1) {
+            $unitName = $gameUnit->getNameMulti();
+            $message = "You completed {$construction->getNumber()} {$unitName}!";
+        } else {
+            $unitName = $gameUnit->getName();
+            $message = "You completed {$construction->getNumber()} {$unitName}!";
+        }
+
+        $finishedConstructionTime = $construction->getTimestamp() + $construction->getDuration();
         $report = Report::createForPlayer($construction->getPlayer(), $finishedConstructionTime, $reportType, $message);
         $this->reportRepository->save($report);
     }
 
-    private function getWorldRegionUnit(Construction $construction): ?WorldRegionUnit
+    private function getWorldRegionStackableUnit(Construction $construction): ?WorldRegionStackableUnit
     {
         $worldRegion = $construction->getWorldRegion();
-        foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnitObject) {
-            if ($worldRegionUnitObject->getGameUnit()->getId() === $construction->getGameUnit()->getId()) {
-                return $worldRegionUnitObject;
+        foreach ($worldRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnitObject) {
+            if ($worldRegionStackableUnitObject->getGameUnit() === $construction->getGameUnit()) {
+                return $worldRegionStackableUnitObject;
             }
         }
 
         return null;
+    }
+
+    private function getWorldRegionLeveledUnit(Construction $construction): ?WorldRegionLeveledUnit
+    {
+        return $construction->getWorldRegion()->getLeveledUnit($construction->getGameUnit());
     }
 }

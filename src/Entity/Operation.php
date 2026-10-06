@@ -4,38 +4,38 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-class Operation
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
+
+abstract readonly class Operation
 {
-    private int $id;
-    private string $name;
-    private string $image;
-    private int $cost;
-    private string $description;
-    private bool $enabled = true;
-    private float $difficulty = 0.5;
-    private string $subclass;
-    private int $maxDistance;
-    private Research $research;
-    private GameUnit $gameUnit;
+    public const string COST_FLAT = 'flat';
+    public const string COST_PER_UNIT = 'per_unit';
+    public const string COST_PER_TARGET_REGION = 'per_target_region';
 
-    public function setId(int $id): void
-    {
-        $this->id = $id;
+    /**
+     * @param class-string<Research> $researchClass
+     */
+    public function __construct(
+        private string $name,
+        private string $image,
+        private int $cost,
+        private string $description,
+        private bool $enabled,
+        private float $difficulty,
+        private int $maxDistance,
+        private string $researchClass,
+        private ?GameUnitEnum $gameUnit,
+        private int $researchMinLevel = 1,
+    ) {
     }
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
+    abstract public function getSlug(): string;
+
+    abstract public function getProcessorClass(): string;
 
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
     }
 
     public function getImage(): string
@@ -43,19 +43,9 @@ class Operation
         return $this->image;
     }
 
-    public function setImage(string $image): void
-    {
-        $this->image = $image;
-    }
-
     public function getCost(): int
     {
         return $this->cost;
-    }
-
-    public function setCost(int $cost): void
-    {
-        $this->cost = $cost;
     }
 
     public function getDescription(): string
@@ -63,19 +53,9 @@ class Operation
         return $this->description;
     }
 
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
-    }
-
     public function isEnabled(): bool
     {
         return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): void
-    {
-        $this->enabled = $enabled;
     }
 
     public function getDifficulty(): float
@@ -83,48 +63,51 @@ class Operation
         return $this->difficulty;
     }
 
-    public function setDifficulty(float $difficulty): void
-    {
-        $this->difficulty = $difficulty;
-    }
-
     public function getMaxDistance(): int
     {
         return $this->maxDistance;
     }
 
-    public function setMaxDistance(int $maxDistance): void
+    /**
+     * @return class-string<Research>
+     */
+    public function getResearchClass(): string
     {
-        $this->maxDistance = $maxDistance;
+        return $this->researchClass;
     }
 
-    public function getResearch(): Research
+    public function getResearchSlug(): string
     {
-        return $this->research;
+        return (new $this->researchClass())->getSlug();
     }
 
-    public function setResearch(Research $research): void
+    public function getResearchName(): string
     {
-        $this->research = $research;
+        return (new $this->researchClass())->getName();
     }
 
-    public function getGameUnit(): GameUnit
+    public function getGameUnit(): ?GameUnitEnum
     {
         return $this->gameUnit;
     }
 
-    public function setGameUnit(GameUnit $gameUnit): void
+    public function getResearchMinLevel(): int
     {
-        $this->gameUnit = $gameUnit;
+        return $this->researchMinLevel;
     }
 
-    public function getSubclass(): string
+    public function hasCooldown(): bool
     {
-        return $this->subclass;
+        return false;
     }
 
-    public function setSubclass(string $subclass): void
+    public function getCostType(): string
     {
-        $this->subclass = $subclass;
+        return $this->gameUnit === null ? self::COST_FLAT : self::COST_PER_UNIT;
+    }
+
+    public function calculateCost(WorldRegion $targetRegion, int $amount): int
+    {
+        return $this->cost * max(1, $amount);
     }
 }

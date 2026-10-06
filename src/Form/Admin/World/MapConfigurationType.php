@@ -35,27 +35,59 @@ class MapConfigurationType extends AbstractType
                 ]
             )
             ->add(
+                'deepWaterLevel',
+                RangeType::class,
+                [
+                    'label' => 'label.deepWaterLevel',
+                    'attr' => ['min' => 100, 'max' => 250],
+                ]
+            )
+            ->add(
                 'waterLevel',
                 RangeType::class,
                 [
                     'label' => 'label.waterLevel',
-                    'attr' => array('min' => 0, 'max' => 1000),
+                    'attr' => ['min' => 100, 'max' => 250],
                 ]
             )
             ->add(
-                'beachLevel',
+                'shallowWaterLevel',
                 RangeType::class,
                 [
-                    'label' => 'label.beachLevel',
-                    'attr' => array('min' => 0, 'max' => 1000),
+                    'label' => 'label.shallowWaterLevel',
+                    'attr' => ['min' => 100, 'max' => 250],
                 ]
             )
             ->add(
-                'forrestLevel',
+                'sandLevel',
                 RangeType::class,
                 [
-                    'label' => 'label.forrestLevel',
-                    'attr' => array('min' => 0, 'max' => 1000),
+                    'label' => 'label.sandLevel',
+                    'attr' => ['min' => 100, 'max' => 250],
+                ]
+            )
+            ->add(
+                'grasslandLevel',
+                RangeType::class,
+                [
+                    'label' => 'label.grasslandLevel',
+                    'attr' => ['min' => 100, 'max' => 250],
+                ]
+            )
+            ->add(
+                'forestLevel',
+                RangeType::class,
+                [
+                    'label' => 'label.forestLevel',
+                    'attr' => ['min' => 100, 'max' => 250],
+                ]
+            )
+            ->add(
+                'hillsLevel',
+                RangeType::class,
+                [
+                    'label' => 'label.hillsLevel',
+                    'attr' => ['min' => 100, 'max' => 250],
                 ]
             )
             ->add(

@@ -1,13 +1,31 @@
 {% extends 'base.html.twig' %}
 
+{% block navbar_controls %}
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+            <button class="profile-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end admin-profile-menu">
+                <li><a class="dropdown-item" href="{{ path('Game/WorldMap') }}">Game</a></li>
+                <li><a class="dropdown-item" href="{{ path('Site/Logout') }}">Logout</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
 {% block body %}
-    <nav class="navbar col-sm-3 col-md-2 align-items-start">
-        {% include 'admin/navigation.html.twig' %}
-    </nav>
+    <div class="guide-layout">
+        <aside class="guide-sidebar">
+            {% include 'admin/navigation.html.twig' %}
+        </aside>
 
-    <main class="col-sm-9 col-md-10 justify-content-center">
-        {% include 'flashes.html.twig' %}
+        <main class="guide-content">
+            {% include 'flashes.html.twig' %}
 
-        {% block content %}{% endblock %}
-    </main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
 {% endblock %}

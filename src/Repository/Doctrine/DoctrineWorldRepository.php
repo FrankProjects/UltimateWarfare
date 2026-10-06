@@ -53,12 +53,8 @@ final class DoctrineWorldRepository implements WorldRepository
      */
     public function remove(World $world): void
     {
-        foreach ($world->getWorldSectors() as $worldSector) {
-            foreach ($worldSector->getWorldRegions() as $worldRegion) {
-                $this->entityManager->remove($worldRegion);
-            }
-
-            $this->entityManager->remove($worldSector);
+        foreach ($world->getWorldRegions() as $worldRegion) {
+            $this->entityManager->remove($worldRegion);
         }
 
         $this->entityManager->remove($world);

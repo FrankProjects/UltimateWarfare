@@ -1,0 +1,32 @@
+about:
+  title: Ultimate Warfare - Over
+  header: Over Ultimate Warfare
+  intro: Ultimate Warfare is een online browsergebaseerd multiplayer strategiespel waarin je met duizenden anderen strijdt om wereldoverheersing.
+  storyline:
+    heading: Verhaallijn
+    paragraph_1: In het jaar 1945 heeft een catastrofale gebeurtenis de wereld in puin achtergelaten en moeten de overlevende naties vechten om de resterende grondstoffen. Als leider van een kleine natie moet je je weg vinden in deze nieuwe wereld en een manier vinden om het voortbestaan van je land veilig te stellen.
+    paragraph_2: Met beperkte middelen en een groeiende bevolking moet je strategische planning en tactische oorlogsvoering gebruiken om je territorium uit te breiden, vitale grondstoffen veilig te stellen en je te verdedigen tegen vijandelijke aanvallen. Je vijanden zijn meedogenloos en vastbesloten om de wereld te domineren, dus je moet alle middelen gebruiken om voorop te blijven.
+    paragraph_3: Terwijl je je leger opbouwt en je infrastructuur versterkt, kom je nieuwe uitdagingen en obstakels tegen. Van natuurrampen tot vijandelijke invasies, je moet je snel kunnen aanpassen aan alles wat op je pad komt. Je zult spionagesatellieten moeten gebruiken om informatie te verzamelen, sluipschuttersteams sturen om vijandelijke leiders uit te schakelen en bommenwerpers inzetten om belangrijke infrastructuur te vernietigen.
+    paragraph_4: Naarmate je machtiger wordt, moet je allianties sluiten met andere naties om je positie veilig te stellen en te voorkomen dat grotere, machtigere landen je overheersen. De wereld verandert voortdurend en je moet mee veranderen als je je uiteindelijke doel van wereldoverheersing wilt bereiken.
+    paragraph_5: De reis om de wereld te veroveren zal niet gemakkelijk zijn, maar met vastberadenheid, strategisch inzicht en een beetje geluk kun je de top bereiken en de ultieme heerser van de wereld worden in Ultimate Warfare.
+  team:
+    heading: Wie zijn wij?
+    paragraph_1: Dit spel is ontworpen, gemaakt en wordt onderhouden door Frank Schreuder.
+    paragraph_2: Wil je meer weten over mij en mijn projecten? Bekijk dan %linkStart%Frank Projects%linkEnd%.
+  contact:
+    heading: Contact
+    paragraph: Gebruik ons %linkStart%contactformulier%linkEnd% als je contact met ons wilt opnemen.
+contact_page:
+  title: Ultimate Warfare - Contact
+  header: Contact
+  intro: Jouw feedback helpt ons Ultimate Warfare te verbeteren. Of je nu een suggestie, een vraag of een probleemmelding hebt, we horen graag van je.
+community:
+  title: Ultimate Warfare - Community
+  header: Community
+  intro: Ultimate Warfare is een gratis en open-source online browsergebaseerd multiplayer strategiespel.
+  github_cta: Bekijk het op GitHub
+  support:
+    heading: Ondersteun Ultimate Warfare
+    paragraph_1: Ultimate-Warfare is en blijft gratis om te spelen, maar zeker niet gratis om te ontwikkelen, hosten en onderhouden. Overweeg ons te steunen met een donatie.
+    paragraph_2: Donaties worden momenteel geaccepteerd via PayPal.
+    donate_alt: Doneren

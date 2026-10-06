@@ -38,9 +38,9 @@ final class ForumHelper
         }
     }
 
-    public function ensureNotBanned(User $user): void
+    public function ensureNotForumBanned(User $user): void
     {
-        if ($user->getForumBan()) {
+        if ($user->isForumBanned()) {
             throw new RuntimeException('You are forum banned!');
         }
     }

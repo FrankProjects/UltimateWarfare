@@ -19,7 +19,7 @@ interface UserRepository
     /**
      * @return User[]
      */
-    public function findAllDisabled(): array;
+    public function findAllEmailUnverified(): array;
 
     /**
      * @return User[]
@@ -29,9 +29,11 @@ interface UserRepository
     /**
      * @return User[]
      */
-    public function findAllActive(): array;
+    public function findAllEmailVerified(): array;
 
-    public function findByConfirmationToken(string $confirmationToken): ?User;
+    public function findByEmailVerificationToken(string $emailVerificationToken): ?User;
+
+    public function findByPasswordResetToken(string $passwordResetToken): ?User;
 
     public function findByEmail(string $email): ?User;
 
@@ -42,9 +44,14 @@ interface UserRepository
      * @param DateTime $lastDateTime
      * @return User[]
      */
-    public function findByLastLogin(DateTime $firstDateTime, DateTime $lastDateTime): array;
+    public function findByLastSeenBetween(DateTime $firstDateTime, DateTime $lastDateTime): array;
 
     public function loadUserByUsername(string $username): ?User;
+
+    /**
+     * @return User[]
+     */
+    public function findByLastSeenIp(string $lastSeenIp): array;
 
     public function save(User $user): void;
 }

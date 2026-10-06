@@ -59,7 +59,8 @@ final class FederationApplicationActionService
             throw new RuntimeException("Federation members world limit reached!");
         }
 
-        $news = "{$federationApplication->getPlayer()->getName()} has has been accepted into the Federation by {$player->getName()}";
+        $news = "{$federationApplication->getPlayer()->getName()} has has been accepted"
+            . " into the Federation by {$player->getName()}";
         $federationNews = FederationNews::createForFederation($federation, $news);
         $this->federationNewsRepository->save($federationNews);
 
@@ -102,7 +103,8 @@ final class FederationApplicationActionService
             throw new RuntimeException("FederationApplication does not belong to your Federation!");
         }
 
-        $news = "{$federationApplication->getPlayer()->getName()} has has been rejected to join the Federation by {$player->getName()}";
+        $news = "{$federationApplication->getPlayer()->getName()} has has been rejected"
+            . " to join the Federation by {$player->getName()}";
         $federationNews = FederationNews::createForFederation($federation, $news);
         $this->federationNewsRepository->save($federationNews);
 

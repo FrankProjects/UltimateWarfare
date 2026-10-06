@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Command\Maintenance;
 
 use FrankProjects\UltimateWarfare\Entity\World;
-use FrankProjects\UltimateWarfare\Entity\WorldSector;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Service\WorldImageGeneratorService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -59,16 +58,6 @@ class RegenerateWordMapImagesCommand extends Command
         $output->writeln("Processing World: {$world->getName()}");
         $output->write("\tGenerating World image");
         $this->worldImageGeneratorService->generateWorldImage($world);
-        $output->writeln(' - <info>OK</info>');
-        foreach ($world->getWorldSectors() as $worldSector) {
-            $this->processWorldSector($output, $worldSector);
-        }
-    }
-
-    private function processWorldSector(OutputInterface $output, WorldSector $worldSector): void
-    {
-        $output->write("\t\tGenerating WorldSector image: {$worldSector->getId()}");
-        $this->worldImageGeneratorService->generateWorldSectorImage($worldSector);
         $output->writeln(' - <info>OK</info>');
     }
 }

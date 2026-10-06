@@ -1,63 +1,50 @@
 {% extends 'site/guideBase.html.twig' %}
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="3"><b>Regions</b></td>
-        </tr>
-        <tr>
-            <td width="120">
-                <img src="{{ asset('images/map/forrest.jpg') }}" alt="Region" width="120" height="100">
-            </td>
-            <td class="text-start" width="370">
-                <ul>
-                    <li>Position: 3,3: 13<li>Built: 0 / 683<li>Population: 0 / 0<li>Click <a class="B" href="{{ url('Guide/Region') }}"><b>here</b></a> to go to this region.</ul>
-            </td>
-            <td class="text-start" width="210">
-                Soldiers: 0 <br />Tanks: 0 <br />Planes: 0 <br />Ships: 0 </td>
-        </tr>
-        <tr>
-            <td width="120">
-                <img src="{{ asset('images/map/forrest.jpg') }}" alt="Region" width="120" height="100">
-            </td>
-            <td class="text-start" width="370">
-                <ul>
-                    <li>Position: 16,17: 7<li>Built: 162 / 2147<li>Population: 0 / 0<li>Click <a class="B" href="{{ url('Guide/Region') }}"><b>here</b></a> to go to this region.</ul>
-            </td>
-            <td class="text-start" width="210">
-                Soldiers: 0 <br />Tanks: 255 <br />Planes: 0 <br />Ships: 0 </td>
-        </tr>
-        <tr>
-            <td width="120">
-                <img src="{{ asset('images/map/forrest.jpg') }}" alt="Region" width="120" height="100">
-            </td>
-            <td class="text-start" width="370">
-                <ul>
-                    <li>Position: 18,18: 12<li>Built: 0 / 1845<li>Population: 0 / 0<li>Click <a class="B" href="{{ url('Guide/Region') }}"><b>here</b></a> to go to this region.</ul>
-            </td>
-            <td class="text-start" width="210">
-                Soldiers: 0 <br />Tanks: 0 <br />Planes: 0 <br />Ships: 0 </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Regions</div>
+        <div class="uw-card-body">
+            <p>
+                Regions are the building blocks of your empire. Click on any of your regions on the
+                <a href="{{ url('Guide/World') }}">world map</a> to view and manage it.
+            </p>
+        </div>
+    </div>
 
-    <br />
-    <br />
+    <br/>
 
-    <table class="table text-start">
-        <tr>
-            <td>
-                This is your region page, you will see a list of all the regions you own. From here you can control them, build on them and train units!
-                <ul>
-                    <li>
-                        <b>Position:</b> You can see your region position. (Position: 3,2) 3 = x coordinate and 2 = y coordinate.<br />
-                    </li>
-                    <li>
-                        <b>Built:</b> You can see the maximum building space here and also the amount of buildings you already have. (400/1000) means you have 400 buildings, so you can build 600 more on this region.
-                    </li>
-                    <li>
-                        <b>Population:</b> your population is working in your factories as well as other buildings. They also pay tax and are therefore very important for you. This figure shows how much population you have on each country.
-                    </li>
-                </ul>
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Region Details</div>
+        <div class="uw-card-body">
+            <p>Each region has the following properties:</p>
+            <ul>
+                <li>
+                    <b>Coordinates (X, Y):</b> The region's position on the hex map.
+                </li>
+                <li>
+                    <b>Terrain type:</b> Determines what can be built. Land regions (grassland, forest, hills, mountain) support standard buildings and units. Coastal and water regions (sand, shallow water, water, deep water) allow harbors and naval units.
+                </li>
+                <li>
+                    <b>Building space:</b> Each region has a maximum of 1000 building space. Buildings and units take up space, so you need to manage it carefully. For example, if a region shows 400/1000, you have used 400 space and can build 600 more.
+                </li>
+                <li>
+                    <b>Stationed units:</b> The military units currently garrisoned in this region, organized by category (Troops, Air Units, Naval Units, etc.).
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="uw-card">
+        <div class="uw-card-header">Expanding Your Empire</div>
+        <div class="uw-card-body">
+            <p>
+                You can acquire new regions in two ways:
+            </p>
+            <ul>
+                <li><b>Buy:</b> Click on an unowned region on the map to purchase it. The cost increases with each region you already own.</li>
+                <li><b>Conquer:</b> <a href="{{ url('Guide/Attack') }}">Attack</a> an enemy region and win the battle to capture it.</li>
+            </ul>
+        </div>
+    </div>
 {% endblock %}

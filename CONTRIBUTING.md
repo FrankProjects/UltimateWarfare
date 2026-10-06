@@ -14,6 +14,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Participating in the beta](#participating-in-the-beta)
   - [Reporting bugs](#reporting-bugs)
   - [Collaborating with development](#collaborating-with-development)
+  - [Contributor License Agreement](#contributor-license-agreement)
 - [Local development](#local-development)
   - [Setting up](#setting-up)
   - [Directory structure](#directory-structure)
@@ -28,6 +29,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
 
 - For code contributions, make sure you have a [GitHub account](https://github.com/signup/free)
 - Make sure you read, understand and agree to the [Code of Conduct](CODE_OF_CONDUCT.md)
+- For code contributions, you must sign the [Contributor License Agreement](CLA.md)
 
 Collaboration and contributing will be primarily done through GitHub.
 
@@ -60,6 +62,19 @@ Fork the repository on GitHub, make a new branch off develop and start from ther
 When making changes, add or modify relevant tests with your changes if it involves game mechanic-related code.
 
 Once you're satisfied with your modifications, send me a pull request. I will review it, edit it as needed and merge it with the develop branch.
+
+
+### Contributor License Agreement
+
+Before your first pull request can be merged, you need to sign the [Contributor License Agreement](CLA.md) (CLA). You only need to do this once, and it covers all your past and future contributions.
+
+You keep the copyright to your contributions. The CLA grants the maintainer a license to use them and to distribute the project, including your contributions, under license terms of the maintainer's choosing. This keeps the project's licensing in one hand, so it can change in the future without having to track down every contributor.
+
+To sign, post the following comment on your first pull request:
+
+> I have read the Ultimate Warfare Contributor License Agreement and I hereby sign it.
+
+Pull requests from contributors who have not signed the CLA will not be merged.
 
 
 ## Local development
@@ -103,13 +118,6 @@ $ composer install --prefer-source
 ```bash
 $ bin/console doctrine:database:create
 $ bin/console doctrine:schema:create
-```
-
-
-##### Load database data
-
-```bash
-$ bin/console doctrine:migrations:migrate
 ```
 
 ### Directory structure

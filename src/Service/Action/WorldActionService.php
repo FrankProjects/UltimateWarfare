@@ -45,12 +45,12 @@ final class WorldActionService
     {
         $world = $this->getWorld($worldId);
 
-        foreach ($world->getPlayers() as $player) {
-            $this->playerRepository->remove($player);
-        }
-
         foreach ($world->getFederations() as $federation) {
             $this->federationRepository->remove($federation);
+        }
+
+        foreach ($world->getPlayers() as $player) {
+            $this->playerRepository->remove($player);
         }
     }
 

@@ -42,9 +42,9 @@ final class DoctrineUserRepository implements UserRepository
     /**
      * @return User[]
      */
-    public function findAllDisabled(): array
+    public function findAllEmailUnverified(): array
     {
-        return $this->repository->findBy(['enabled' => 0]);
+        return $this->repository->findBy(['emailVerified' => 0]);
     }
 
     /**
@@ -52,20 +52,25 @@ final class DoctrineUserRepository implements UserRepository
      */
     public function findAllBanned(): array
     {
-        return $this->repository->findBy(['active' => 0]);
+        return $this->repository->findBy(['banned' => 1]);
     }
 
     /**
      * @return User[]
      */
-    public function findAllActive(): array
+    public function findAllEmailVerified(): array
     {
-        return $this->repository->findBy(['enabled' => 1]);
+        return $this->repository->findBy(['emailVerified' => 1]);
     }
 
-    public function findByConfirmationToken(string $confirmationToken): ?User
+    public function findByEmailVerificationToken(string $emailVerificationToken): ?User
     {
-        return $this->repository->findOneBy(['confirmationToken' => $confirmationToken]);
+        return $this->repository->findOneBy(['emailVerificationToken' => $emailVerificationToken]);
+    }
+
+    public function findByPasswordResetToken(string $passwordResetToken): ?User
+    {
+        return $this->repository->findOneBy(['passwordResetToken' => $passwordResetToken]);
     }
 
     public function findByEmail(string $email): ?User
@@ -83,10 +88,10 @@ final class DoctrineUserRepository implements UserRepository
      * @param DateTime $lastDateTime
      * @return User[]
      */
-    public function findByLastLogin(DateTime $firstDateTime, DateTime $lastDateTime): array
+    public function findByLastSeenBetween(DateTime $firstDateTime, DateTime $lastDateTime): array
     {
         return $this->repository->createQueryBuilder('u')
-            ->where('u.lastLogin BETWEEN :firstDateTime AND :lastDateTime')
+            ->where('u.lastSeenAt BETWEEN :firstDateTime AND :lastDateTime')
             ->setParameter('firstDateTime', $firstDateTime)
             ->setParameter('lastDateTime', $lastDateTime)
             ->getQuery()
@@ -100,6 +105,14 @@ final class DoctrineUserRepository implements UserRepository
             ->setParameter('username', $username)
             ->getQuery()
             ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findByLastSeenIp(string $lastSeenIp): array
+    {
+        return $this->repository->findBy(['lastSeenIp' => $lastSeenIp]);
     }
 
     public function save(User $user): void

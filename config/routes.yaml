@@ -1,707 +1,754 @@
 Admin:
     path:      /admin
     controller: FrankProjects\UltimateWarfare\Controller\Admin\DashboardController::dashboard
+    methods:   [GET]
 
 Admin/Contact/List:
     path:      /admin/contact/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\ContactController::list
+    methods:   [GET]
 
 Admin/Contact/Read:
     path:      /admin/contact/read/{contactId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\ContactController::read
+    methods:   [GET]
     requirements:
         contactId: '\d+'
 
 Admin/Contact/Remove:
     path:      /admin/contact/remove/{contactId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\ContactController::remove
+    methods:   [POST]
     requirements:
         contactId: '\d+'
-
-Admin/GameNews/Create:
-    path:      /admin/game-news/create
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameNewsController::create
-
-Admin/GameNews/List:
-    path:      /admin/game-news/list
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameNewsController::list
-
-Admin/GameNews/Edit:
-    path:      /admin/game-news/edit/{gameNewsId}
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameNewsController::edit
-    requirements:
-        gameNewsId: '\d+'
-
-Admin/GameNews/Remove:
-    path:      /admin/game-news/remove/{gameNewsId}
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameNewsController::remove
-    requirements:
-        gameNewsId: '\d+'
-
-Admin/GameUnit/List:
-    path:      /admin/game-unit/list
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameUnitController::list
-
-Admin/GameUnit/Edit:
-    path:      /admin/game-unit/edit/{gameUnitId}
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\GameUnitController::edit
-    requirements:
-        gameUnitId: '\d+'
 
 Admin/ServerLogs:
     path:      /admin/server-logs
     controller: FrankProjects\UltimateWarfare\Controller\Admin\ServerLogsController::showLogs
+    methods:   [GET]
 
 Admin/UnbanRequest/List:
     path:      /admin/unban-request/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::list
+    methods:   [GET]
 
 Admin/UnbanRequest/Remove:
     path:      /admin/unban-request/remove/{unbanRequestId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::remove
+    methods:   [POST]
     requirements:
         unbanRequestId: '\d+'
 
 Admin/UnbanRequest/Unban:
     path:      /admin/unban-request/unban/{unbanRequestId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UnbanRequestController::unban
+    methods:   [POST]
     requirements:
         unbanRequestId: '\d+'
 
 Admin/User/Ban:
     path:      /admin/user/ban/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::ban
+    methods:   [POST]
     requirements:
         userId: '\d+'
 
 Admin/User/Unban:
     path:      /admin/user/unban/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::unban
+    methods:   [POST]
     requirements:
         userId: '\d+'
 
-Admin/User/Enable:
-    path:      /admin/user/enable/{userId}
-    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::enable
+Admin/User/VerifyEmail:
+    path:      /admin/user/verify-email/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::verifyEmail
+    methods:   [POST]
     requirements:
         userId: '\d+'
 
 Admin/User/ForumBan:
     path:      /admin/user/forum-ban/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::forumBan
+    methods:   [POST]
     requirements:
         userId: '\d+'
 
 Admin/User/ForumUnban:
     path:      /admin/user/forum-unban/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::forumUnban
+    methods:   [POST]
     requirements:
         userId: '\d+'
 
 Admin/User/List:
     path:      /admin/user/list/{filter}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::list
+    methods:   [GET]
     defaults:
         filter: ''
 
 Admin/User/MakeAdmin:
     path:      /admin/user/make-admin/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::makeAdmin
+    methods:   [POST]
     requirements:
         userId: '\d+'
 
 Admin/User/RemoveAdmin:
     path:      /admin/user/remove-admin/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::removeAdmin
+    methods:   [POST]
     requirements:
         userId: '\d+'
 
 Admin/User/Read:
     path:      /admin/user/read/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::read
+    methods:   [GET]
     requirements:
         userId: '\d+'
 
 Admin/World/Create:
     path:      /admin/world/create
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::create
+    methods:   [GET, POST]
 
 Admin/World/Generate:
     path:      /admin/world/generate/{worldId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::generate
+    methods:   [GET, POST]
     requirements:
         worldId: '\d+'
 
 Admin/World/List:
     path:      /admin/world/list
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::list
+    methods:   [GET]
 
 Admin/World/Edit:
     path:      /admin/world/edit/{worldId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::edit
+    methods:   [GET, POST]
     requirements:
         worldId: '\d+'
 
 Admin/World/Remove:
     path:      /admin/world/remove/{worldId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::remove
+    methods:   [POST]
     requirements:
         worldId: '\d+'
 
 Admin/World/Reset:
     path:      /admin/world/reset/{worldId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\WorldController::reset
+    methods:   [POST]
     requirements:
         worldId: '\d+'
 
 Forum:
     path:      /forum
     controller: FrankProjects\UltimateWarfare\Controller\Forum\ForumController::index
+    methods:   [GET]
 
 Forum/Category:
     path:      /forum/category/{categoryId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::category
-    requirements:
-        categoryId: '\d+'
-
-Forum/Category/Create:
-    path:      /forum/category/create/
-    controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::create
-
-Forum/Category/Edit:
-    path:      /forum/category/edit/{categoryId}
-    controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::edit
-    requirements:
-        categoryId: '\d+'
-
-Forum/Category/Remove:
-    path:      /forum/category/remove/{categoryId}
-    controller: FrankProjects\UltimateWarfare\Controller\Forum\CategoryController::remove
+    methods:   [GET]
     requirements:
         categoryId: '\d+'
 
 Forum/Post/Edit:
     path:      /forum/post/edit/{postId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\PostController::edit
+    methods:   [GET, POST]
     requirements:
         postId: '\d+'
 
 Forum/Post/Remove:
     path:      /forum/post/remove/{postId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\PostController::remove
+    methods:   [POST]
     requirements:
         postId: '\d+'
 
 Forum/Topic:
     path:      /forum/topic/{topicId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::topic
+    methods:   [GET, POST]
     requirements:
         topicId: '\d+'
 
 Forum/Topic/Create:
     path:      /forum/topic/create/{categoryId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::create
+    methods:   [GET, POST]
     requirements:
         categoryId: '\d+'
 
 Forum/Topic/Edit:
     path:      /forum/topic/edit/{topicId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::edit
+    methods:   [GET, POST]
     requirements:
         topicId: '\d+'
 
 Forum/Topic/Remove:
     path:      /forum/topic/remove/{topicId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::remove
+    methods:   [POST]
     requirements:
         topicId: '\d+'
 
 Forum/Topic/Sticky:
     path:      /forum/topic/sticky/{topicId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::sticky
+    methods:   [POST]
     requirements:
         topicId: '\d+'
 
 Forum/Topic/Unsticky:
     path:      /forum/topic/unsticky/{topicId}
     controller: FrankProjects\UltimateWarfare\Controller\Forum\TopicController::unsticky
+    methods:   [POST]
     requirements:
         topicId: '\d+'
 
 Game/Login:
     path:      /game/login
     controller: FrankProjects\UltimateWarfare\Controller\Game\LoginController::login
+    methods:   [GET]
 
 Game/Login/Player:
     path:      /game/login/player/{playerId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\LoginController::loginForPlayer
+    methods:   [GET]
     requirements:
         playerId: '\d+'
 
-Game/Account:
-    path:      /game/account
-    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::account
+Game/Api/Profile:
+    path:      /game/api/profile
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::profileApi
+    methods: [GET]
 
-Game/Account/Edit:
-    path:      /game/account/edit
-    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::edit
+Game/Api/Profile/ChangePassword:
+    path:      /game/api/profile/change-password
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::changePasswordApi
+    methods: [POST]
 
-Game/Account/UploadAvatar:
-    path:      /game/account/upload_avatar
-    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::uploadAvatar
+Game/Api/Profile/Surrender:
+    path:      /game/api/profile/surrender
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::surrenderApi
+    methods: [POST]
 
-Game/Account/DeleteAvatar:
-    path:      /game/account/delete_avatar
-    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::deleteAvatar
+Game/Api/Worlds:
+    path:      /game/api/worlds
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::worldsApi
+    methods: [GET]
 
 Game/Banned:
     path:      /game/banned
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::banned
+    methods:   [GET, POST]
 
-Game/Construction:
-    path:      /game/construction/{type}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::construction
-    defaults:
-        type: 0
-    requirements:
-        type: '\d+'
+Game/Api/Construction/Overview:
+    path:      /game/api/construction/overview
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::constructionOverviewApi
+    methods: [GET]
 
-Game/Construction/Cancel:
-    path:      /game/construction/cancel/{constructionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::cancel
+Game/Api/Construction/Cancel:
+    path:      /game/api/construction/cancel/{constructionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::cancelApi
+    methods: [POST]
     requirements:
         constructionId: '\d+'
 
-Game/Federation:
-    path:      /game/federation
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::federation
+Game/Api/Federation/Status:
+    path:      /game/api/federation/status
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::statusApi
+    methods: [GET]
 
-Game/Federation/Applications:
-    path:      /game/federation/applications
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::showFederationApplications
+Game/Api/Federation/List:
+    path:      /game/api/federation/list
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::listApi
+    methods: [GET]
 
-Game/Federation/Application/Accept:
-    path:      /game/federation/application/accept/{federationApplicationId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::acceptFederationApplication
-    requirements:
-        federationApplicationId: '\d+'
-
-Game/Federation/Application/Reject:
-    path:      /game/federation/application/reject{federationApplicationId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::rejectFederationApplication
-    requirements:
-        federationApplicationId: '\d+'
-
-Game/Federation/Application/Send:
-    path:      /game/federation/application/send/{federationId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::sendApplication
+Game/Api/Federation/Show:
+    path:      /game/api/federation/show/{federationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::showApi
+    methods: [GET]
     requirements:
         federationId: '\d+'
 
-Game/Federation/Bank/Deposit:
-    path:      /game/federation/bank/deposit
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationBankController::deposit
+Game/Api/Federation/News:
+    path:      /game/api/federation/news
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::newsApi
+    methods: [GET]
 
-Game/Federation/Bank/Withdraw:
-    path:      /game/federation/bank/withdraw
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationBankController::withdraw
+Game/Api/Federation/Create:
+    path:      /game/api/federation/create
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::createApi
+    methods: [POST]
 
-Game/Federation/Show:
-    path:      /game/federation/{federationId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::showFederation
-    requirements:
-        federationId: '\d+'
+Game/Api/Federation/SendAid:
+    path:      /game/api/federation/send-aid
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::sendAidApi
+    methods: [POST]
 
-Game/Federation/Create:
-    path:      /game/federation/create
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::createFederation
+Game/Api/Federation/Remove:
+    path:      /game/api/federation/remove
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::removeApi
+    methods: [POST]
 
-Game/Federation/Join:
-    path:      /game/federation/join
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::joinFederation
+Game/Api/Federation/ChangeName:
+    path:      /game/api/federation/change-name
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::changeNameApi
+    methods: [POST]
 
-Game/Federation/List:
-    path:      /game/federation/list
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::listFederations
+Game/Api/Federation/Leave:
+    path:      /game/api/federation/leave
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::leaveApi
+    methods: [POST]
 
-Game/Federation/News:
-    path:      /game/federation/news
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::federationNews
-
-Game/Federation/SendAid:
-    path:      /game/federation/send-aid
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::sendAid
-
-Game/Federation/Remove:
-    path:      /game/federation/remove
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::removeFederation
-
-Game/Federation/ChangeName:
-    path:      /game/federation/change-name
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::changeFederationName
-
-Game/Federation/Leave:
-    path:      /game/federation/leave
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::leaveFederation
-
-Game/Federation/KickPlayer:
-    path:      /game/federation/kick/{playerId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::kickPlayer
+Game/Api/Federation/Kick:
+    path:      /game/api/federation/kick/{playerId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::kickPlayerApi
+    methods: [POST]
     requirements:
         playerId: '\d+'
 
-Game/Federation/UpdateLeadershipMessage:
-    path:      /game/federation/update-leadership-message
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::updateLeadershipMessage
+Game/Api/Federation/UpdateMessage:
+    path:      /game/api/federation/update-message
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::updateMessageApi
+    methods: [POST]
 
-Game/Federation/ChangePlayerHierarchy:
-    path:      /game/federation/change-roles
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::changePlayerHierarchy
+Game/Api/Federation/ChangeRole:
+    path:      /game/api/federation/change-role
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationController::changeRoleApi
+    methods: [POST]
 
-Game/Fleets:
-    path:      /game/fleets
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::fleetList
+Game/Api/Federation/Applications:
+    path:      /game/api/federation/applications
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::applicationsApi
+    methods: [GET]
 
-Game/Fleet/Attack:
-    path:      /game/fleet/attack/{fleetId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\BattleController::battle
-
-Game/Fleet/Recall:
-    path:      /game/fleet/recall/{fleetId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::recall
-
-Game/Fleet/Reinforce:
-    path:      /game/fleet/reinforce/{fleetId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::reinforce
-
-Game/Headquarter:
-    path:      /game/headquarter
-    controller: FrankProjects\UltimateWarfare\Controller\Game\HeadquarterController::headquarter
-
-Game/Headquarter/Army:
-    path:      /game/headquarter/army
-    controller: FrankProjects\UltimateWarfare\Controller\Game\HeadquarterController::army
-
-Game/Headquarter/Income:
-    path:      /game/headquarter/income
-    controller: FrankProjects\UltimateWarfare\Controller\Game\HeadquarterController::income
-
-Game/Headquarter/Infrastructure:
-    path:      /game/headquarter/infrastructure
-    controller: FrankProjects\UltimateWarfare\Controller\Game\HeadquarterController::infrastructure
-
-Game/Market:
-    path:      /game/market
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::buy
-
-Game/Market/Cancel/Order:
-    path:      /game/market/cancel/{marketItemId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::cancelOrder
+Game/Api/Federation/Application/Accept:
+    path:      /game/api/federation/application/accept/{federationApplicationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::acceptApi
+    methods: [POST]
     requirements:
+        federationApplicationId: '\d+'
+
+Game/Api/Federation/Application/Reject:
+    path:      /game/api/federation/application/reject/{federationApplicationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::rejectApi
+    methods: [POST]
+    requirements:
+        federationApplicationId: '\d+'
+
+Game/Api/Federation/Application/Send:
+    path:      /game/api/federation/apply/{federationId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationApplicationController::sendApplicationApi
+    methods: [POST]
+    requirements:
+        federationId: '\d+'
+
+Game/Api/Federation/Bank/Deposit:
+    path:      /game/api/federation/bank/deposit
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationBankController::depositApi
+    methods: [POST]
+
+Game/Api/Federation/Bank/Withdraw:
+    path:      /game/api/federation/bank/withdraw
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FederationBankController::withdrawApi
+    methods: [POST]
+
+Game/Api/Fleet/Overview:
+    path:      /game/api/fleet/overview
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::fleetOverviewApi
+    methods: [GET]
+
+Game/Fleet/Attack/Api:
+    path:      /game/api/fleet/attack/{fleetId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\BattleController::battleApi
+    methods: [POST]
+    requirements:
+        fleetId: '\d+'
+
+Game/Fleet/Recall/Api:
+    path:      /game/api/fleet/recall/{fleetId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::recallApi
+    methods: [POST]
+    requirements:
+        fleetId: '\d+'
+
+Game/Fleet/Reinforce/Api:
+    path:      /game/api/fleet/reinforce/{fleetId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::reinforceApi
+    methods: [POST]
+    requirements:
+        fleetId: '\d+'
+
+Game/Api/Statistics:
+    path:      /game/api/statistics
+    controller: FrankProjects\UltimateWarfare\Controller\Game\StatisticsController::statisticsApi
+    methods: [GET]
+
+Game/Api/Market/BuyList:
+    path:      /game/api/market/buy-list
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::marketBuyListApi
+    methods: [GET]
+
+Game/Api/Market/SellList:
+    path:      /game/api/market/sell-list
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::marketSellListApi
+    methods: [GET]
+
+Game/Api/Market/MyOrders:
+    path:      /game/api/market/my-orders
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::marketMyOrdersApi
+    methods: [GET]
+
+Game/Api/Market/Action:
+    path:      /game/api/market/{action}/{marketItemId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::marketActionApi
+    methods: [POST]
+    requirements:
+        action: 'buy|sell|cancel'
         marketItemId: '\d+'
 
-Game/Market/Buy/Order:
-    path:      /game/market/buy/{marketItemId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::buyOrder
-    requirements:
-        marketItemId: '\d+'
+Game/Api/Market/CreateOrder:
+    path:      /game/api/market/create-order
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::marketCreateOrderApi
+    methods: [POST]
 
-Game/Market/Sell:
-    path:      /game/market/sell
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::sell
+Game/Api/Message/Send:
+    path:      /game/api/message/send
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::sendMessageApi
+    methods: [POST]
 
+Game/Api/Message/Inbox:
+    path:      /game/api/message/inbox
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inboxApi
+    methods: [GET]
 
-Game/Market/Sell/Order:
-    path:      /game/market/sell/{marketItemId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::sellOrder
-    requirements:
-        marketItemId: '\d+'
+Game/Api/Message/Outbox:
+    path:      /game/api/message/outbox
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::outboxApi
+    methods: [GET]
 
-Game/Market/ListOrders:
-    path:      /game/market/orders
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::listOrders
-
-Game/Market/CreateOrder:
-    path:      /game/market/new-order
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MarketController::createOrder
-
-Game/Message/Inbox:
-    path:      /game/message/inbox
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inbox
-
-Game/Message/Inbox/Delete:
-    path:      /game/message/inbox/delete/{messageId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inboxDelete
+Game/Api/Message/Read:
+    path:      /game/api/message/inbox/{messageId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::readMessageApi
+    methods: [GET]
     requirements:
         messageId: '\d+'
 
-Game/Message/Inbox/Read:
-    path:      /game/message/inbox/read/{messageId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::inboxRead
+Game/Api/Message/ReadOutbox:
+    path:      /game/api/message/outbox/{messageId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::readOutboxMessageApi
+    methods: [GET]
     requirements:
         messageId: '\d+'
 
-Game/Message/New:
-    path:      /game/message/new/{playerName}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::newMessage
-    defaults:
-        playerName: ''
-
-Game/Message/Outbox:
-    path:      /game/message/outbox
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::outbox
-
-Game/Message/Outbox/Delete:
-    path:      /game/message/outbox/delete/{messageId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::outboxDelete
+Game/Api/Message/DeleteInbox:
+    path:      /game/api/message/inbox/{messageId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::deleteInboxMessageApi
+    methods: [DELETE]
     requirements:
         messageId: '\d+'
 
-Game/Message/Outbox/Read:
-    path:      /game/message/outbox/read/{messageId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::outboxRead
+Game/Api/Message/DeleteOutbox:
+    path:      /game/api/message/outbox/{messageId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\MessageController::deleteOutboxMessageApi
+    methods: [DELETE]
     requirements:
         messageId: '\d+'
 
-Game/Notepad:
-    path:      /game/notepad
-    controller: FrankProjects\UltimateWarfare\Controller\Game\NotepadController::notepad
-
-Game/Operation/ExecuteOperation:
-    path: /game/world/region/execute-operation/{regionId}/{operationId}/{playerRegionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::executeOperation
+Game/Api/Operation/List:
+    path:      /game/api/operation/list/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::operationsApi
+    methods: [GET]
     requirements:
         regionId: '\d+'
-        operationId: '\d+'
+
+Game/Api/Operation/EligibleRegions:
+    path:      /game/api/operation/eligible-regions/{regionId}/{operationSlug}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::operationEligibleRegionsApi
+    methods: [GET]
+    requirements:
+        regionId: '\d+'
+        operationSlug: '[a-z0-9-]+'
+
+Game/Api/Operation/Units:
+    path:      /game/api/operation/units/{regionId}/{operationSlug}/{playerRegionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::operationUnitsApi
+    methods: [GET]
+    requirements:
+        regionId: '\d+'
+        operationSlug: '[a-z0-9-]+'
         playerRegionId: '\d+'
 
-Game/Operation/SelectGameUnit:
-    path: /game/world/region/select-operation-units/{regionId}/{operationId}/{playerRegionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::selectGameUnits
+Game/Api/Operation/Execute:
+    path:      /game/api/operation/execute/{regionId}/{operationSlug}/{playerRegionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::executeOperationApi
+    methods: [POST]
     requirements:
         regionId: '\d+'
-        operationId: '\d+'
+        operationSlug: '[a-z0-9-]+'
         playerRegionId: '\d+'
 
-Game/Operation/SelectOperation:
-    path: /game/world/region/select-operation/{regionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::selectOperation
-    requirements:
-        regionId: '\d+'
+Game/Api/Player/Profile:
+    path:      /game/api/player/profile/{playerName}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ProfileController::playerProfileApi
+    methods: [GET]
 
-Game/Operation/SelectWorldRegion:
-    path: /game/world/region/select-operation-region/{regionId}/{operationId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\OperationController::selectWorldRegion
-    requirements:
-        regionId: '\d+'
-        operationId: '\d+'
+Game/Api/Rankings:
+    path:      /game/api/rankings
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RankingController::rankingApi
+    methods: [GET]
 
-Game/Profile:
-    path:      /game/profile/{playerName}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ProfileController::profile
+Game/Api/Reports:
+    path:      /game/api/reports
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ReportController::reportsApi
+    methods: [GET]
 
-Game/Rankings:
-    path:      /game/rankings/{sortBy}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\RankingController::ranking
-    defaults:
-        sortBy: 'region'
+Game/Api/Research/Tree:
+    path:      /game/api/research/tree
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::researchTreeApi
+    methods: [GET]
 
-Game/RegionList:
-    path:      /game/region-list
-    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::regionList
+Game/Api/Research/Perform:
+    path:      /game/api/research/perform/{researchSlug}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::performResearchApi
+    methods: [POST]
 
-Game/Reports:
-    path:      /game/reports/{type}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ReportController::report
-    defaults:
-        type: 0
-    requirements:
-        type: '\d+'
+Game/Api/Research/Cancel:
+    path:      /game/api/research/cancel/{researchSlug}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::performCancelApi
+    methods: [POST]
 
-Game/Research:
-    path:      /game/research
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::research
-
-Game/Research/Cancel:
-    path:      /game/research/cancel/{researchId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::performCancel
-    requirements:
-        type: '\d+'
-
-Game/Research/History:
-    path:      /game/research/history
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::history
-
-Game/Research/Perform:
-    path:      /game/research/perform/{researchId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ResearchController::performResearch
-    requirements:
-        type: '\d+'
-
-Game/Surrender:
-    path:      /game/surrender
-    controller: FrankProjects\UltimateWarfare\Controller\Game\SurrenderController::surrender
-
-Game/World:
-    path:      /game/world
-    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::world
+Game/WorldMap:
+    path:      /game/world-map
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::worldMap
+    methods:   [GET]
 
 Game/World/Create:
     path:      /game/world/create
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::create
+    methods:   [GET, POST]
 
-Game/World/Region:
-    path:      /game/world/region/{regionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::region
+Game/World/Image:
+    path:      /game/world/image/{worldId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::image
+    methods:   [GET]
+    requirements:
+        worldId: '\d+'
+
+Game/Api/World/Region/Attack:
+    path:      /game/api/world/region/attack-from/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\AttackController::attackFromRegionsApi
+    methods: [GET]
     requirements:
         regionId: '\d+'
 
-Game/World/Region/Attack:
-    path:      /game/world/region/attack/{regionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\AttackController::attack
-    requirements:
-        regionId: '\d+'
-
-Game/World/Region/AttackSelectGameUnits:
-    path:      /game/world/region/attack/{regionId}/{playerRegionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\AttackController::attackSelectGameUnits
+Game/Api/World/Region/Attack/Units:
+    path:      /game/api/world/region/attack-units/{regionId}/{playerRegionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\AttackController::attackUnitsApi
+    methods: [GET]
     requirements:
         regionId: '\d+'
         playerRegionId: '\d+'
 
-Game/World/Region/Build:
-    path:      /game/world/region/build/{regionId}/{gameUnitTypeId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::constructGameUnits
+Game/Api/World/Region/Attack/Send:
+    path:      /game/api/world/region/attack-send/{regionId}/{playerRegionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\AttackController::attackSendApi
+    methods: [POST]
     requirements:
         regionId: '\d+'
-        gameUnitTypeId: '\d+'
+        playerRegionId: '\d+'
 
-Game/World/Region/Buy:
-    path:      /game/world/region/buy/{regionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::buy
+Game/Api/World/Region/Build:
+    path:      /game/api/world/region/build/{regionId}/{gameUnitCategoryId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::constructGameUnitsApi
+    methods: [POST]
+    requirements:
+        regionId: '\d+'
+        gameUnitCategoryId: '\d+'
+
+Game/Api/World/Region/Destroy:
+    path:      /game/api/world/region/destroy/{regionId}/{gameUnitCategoryId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::removeGameUnitsApi
+    methods: [POST]
+    requirements:
+        regionId: '\d+'
+        gameUnitCategoryId: '\d+'
+
+Game/Api/Region/AllBuildData:
+    path:      /game/api/world/region/all-build-data/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::getAllBuildDataApi
+    methods:   [GET]
     requirements:
         regionId: '\d+'
 
-Game/World/Region/RemoveGameUnits:
-    path:      /game/world/region/remove/{regionId}/{gameUnitTypeId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\ConstructionController::removeGameUnits
+Game/Api/World/Region/Leveled/Build:
+    path:      /game/api/world/region/leveled/build/{regionId}/{gameUnitEnumId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\LeveledUnitController::buildApi
+    methods: [POST]
     requirements:
         regionId: '\d+'
-        gameUnitTypeId: '\d+'
+        gameUnitEnumId: '\d+'
 
-Game/World/Region/SendUnits:
-    path:      /game/world/region/send-units/{regionId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::sendGameUnits
+Game/Api/World/Region/Leveled/Upgrade:
+    path:      /game/api/world/region/leveled/upgrade/{regionId}/{gameUnitEnumId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\LeveledUnitController::upgradeApi
+    methods: [POST]
+    requirements:
+        regionId: '\d+'
+        gameUnitEnumId: '\d+'
+
+Game/Api/World/Region/Leveled/Repair:
+    path:      /game/api/world/region/leveled/repair/{regionId}/{gameUnitEnumId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\LeveledUnitController::repairApi
+    methods: [POST]
+    requirements:
+        regionId: '\d+'
+        gameUnitEnumId: '\d+'
+
+Game/Api/Region/Overview:
+    path:      /game/api/region/overview
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::regionOverviewApi
+    methods:   [GET]
+
+Game/Api/World/Region/Buy:
+    path:      /game/api/world/region/buy/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\RegionController::buyApi
+    methods: [POST]
     requirements:
         regionId: '\d+'
 
-Game/World/Search/Free:
-    path:      /game/world/search/free
-    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::searchFree
-
-Game/World/Search/Player:
-    path:      /game/world/search/player
-    controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::searchPlayer
-
-Game/World/Sector:
-    path:      /game/world/sector/{sectorId}
-    controller: FrankProjects\UltimateWarfare\Controller\Game\SectorController::sector
+Game/Api/World/Region/SendUnits/Data:
+    path:      /game/api/world/region/send-units-data/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::sendUnitsDataApi
+    methods: [GET]
     requirements:
-        sectorId: '\d+'
+        regionId: '\d+'
+
+Game/Api/World/Region/SendUnits/Targets:
+    path:      /game/api/world/region/send-units-targets/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::sendUnitsTargetsApi
+    methods: [GET]
+    requirements:
+        regionId: '\d+'
+
+Game/Api/World/Region/SendUnits/Send:
+    path:      /game/api/world/region/send-units/{regionId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::sendUnitsApi
+    methods: [POST]
+    requirements:
+        regionId: '\d+'
 
 Game/SelectName:
     path:      /game/select-name/{worldId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::selectName
+    methods:   [GET]
     requirements:
         worldId: '\d+'
 
 Game/SelectWorld:
     path:      /game/select-world
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::selectWorld
+    methods:   [GET]
 
 Game/StartWorld:
     path:      /game/start/{worldId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::start
+    methods:   [POST]
     requirements:
         worldId: '\d+'
 
 Game/Story/Chapter1:
     path:      /game/story/1/{page}
     controller: FrankProjects\UltimateWarfare\Controller\Game\StoryController::page
+    methods:   [GET]
     requirements:
         page: '\d+'
 
+
 Guide:
     path:      /guide
-    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::index
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::gettingStarted
+    methods:   [GET]
 
 Guide/Attack:
     path:      /guide/attack
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::attack
+    methods:   [GET]
 
 Guide/Construction:
     path:      /guide/construction
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::construction
+    methods:   [GET]
 
 Guide/Federation:
     path:      /guide/federation
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::federation
+    methods:   [GET]
 
 Guide/Fleet:
     path:      /guide/fleet
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::fleet
+    methods:   [GET]
 
-Guide/Headquarter:
-    path:      /guide/headquarter
-    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::headquarter
+Guide/GettingStarted:
+    path:      /guide/getting-started
+    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::gettingStarted
+    methods:   [GET]
 
 Guide/ListOperations:
     path:      /guide/list-operations
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::listOperations
+    methods:   [GET]
 
 Guide/ListResearch:
     path:      /guide/list-research
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::listResearch
+    methods:   [GET]
 
 Guide/ListUnits:
-    path:      /guide/list-units/{gameUnitTypeId}
+    path:      /guide/list-units/{gameUnitCategoryId}
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::listUnits
+    methods:   [GET]
     defaults:
-        gameUnitTypeId: 0
+        gameUnitCategoryId: 0
     requirements:
-        gameUnitTypeId: '\d+'
+        gameUnitCategoryId: '\d+'
 
 Guide/Market:
     path:      /guide/market
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::market
-
-Guide/Ranking:
-    path:      /guide/ranking
-    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::ranking
+    methods:   [GET]
 
 Guide/Region:
     path:      /guide/region
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::region
-
-Guide/Report:
-    path:      /guide/report
-    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::report
+    methods:   [GET]
 
 Guide/Research:
     path:      /guide/research
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::research
+    methods:   [GET]
 
 Guide/Rules:
     path:      /guide/rules
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::rules
-
-Guide/Surrender:
-    path:      /guide/surrender
-    controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::surrender
+    methods:   [GET]
 
 Guide/GameUnit:
     path:      /guide/unit/{gameUnitId}
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::gameUnit
+    methods:   [GET]
     defaults:
         gameUnitId: 0
     requirements:
@@ -710,42 +757,58 @@ Guide/GameUnit:
 Guide/World:
     path:      /guide/world
     controller: FrankProjects\UltimateWarfare\Controller\Site\GuideController::world
+    methods:   [GET]
 
 Site/About:
     path:      /about
     controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::about
+    methods:   [GET]
 
 Site/Community:
     path:      /community
     controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::community
+    methods:   [GET]
 
 Site/Contact:
     path:      /contact
     controller: FrankProjects\UltimateWarfare\Controller\Site\ContactController::contact
+    methods:   [GET, POST]
 
 Site/Homepage:
     path:      /
     controller: FrankProjects\UltimateWarfare\Controller\Site\IndexController::index
+    methods:   [GET]
 
 Site/Login:
     path:      /login
     controller: FrankProjects\UltimateWarfare\Controller\Site\SecurityController::login
+    methods:   [GET, POST]
 
 Site/Logout:
     path:      /logout
+    methods:   [GET]
 
 Site/ResetPassword:
     path:      /reset-password
     controller: FrankProjects\UltimateWarfare\Controller\Site\ResetPasswordController::requestPasswordReset
+    methods:   [GET, POST]
+
+Site/Captcha:
+    path:      /captcha
+    controller: FrankProjects\UltimateWarfare\Controller\Site\CaptchaController::captcha
+    methods:   [GET]
 
 Site/Register:
     path:      /register
     controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::register
+    methods:   [GET, POST]
 
-User/Activation:
+User/VerifyEmail:
     path:      /user/activate/{token}
-    controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::activateUser
+    controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::verifyEmail
+    methods:   [GET]
 
 User/Password/Reset:
     path:      /password/reset/{token}
     controller: FrankProjects\UltimateWarfare\Controller\Site\ResetPasswordController::resetPassword
+    methods:   [GET, POST]

@@ -1,23 +1,61 @@
 {% extends 'site/guideBase.html.twig' %}
 
+{% macro difficulty_cell(difficulty) %}
+    {% if difficulty < 0.05 %}
+        {% set tier_label = 'Guaranteed' %}{% set tier_class = 'tier-0' %}{% set tier_pct = 10 %}
+    {% elseif difficulty < 0.2 %}
+        {% set tier_label = 'Easy' %}{% set tier_class = 'tier-1' %}{% set tier_pct = 25 %}
+    {% elseif difficulty < 0.4 %}
+        {% set tier_label = 'Moderate' %}{% set tier_class = 'tier-2' %}{% set tier_pct = 45 %}
+    {% elseif difficulty < 0.6 %}
+        {% set tier_label = 'Hard' %}{% set tier_class = 'tier-3' %}{% set tier_pct = 65 %}
+    {% else %}
+        {% set tier_label = 'Extreme' %}{% set tier_class = 'tier-4' %}{% set tier_pct = 95 %}
+    {% endif %}
+    <span class="guide-difficulty-badge {{ tier_class }}">{{ tier_label }}</span>
+    <div class="guide-difficulty-bar">
+        <div class="guide-difficulty-bar-fill {{ tier_class }}" style="width: {{ tier_pct }}%"></div>
+    </div>
+{% endmacro %}
+
+{% macro cost_cell(operation) %}
+    <span class="guide-cost-amount">${{ operation.cost|number_format }}</span>
+    {% if operation.costType == 'flat' %}
+        <span class="guide-cost-type">flat</span>
+    {% elseif operation.costType == 'per_unit' %}
+        <span class="guide-cost-type">per unit deployed</span>
+    {% elseif operation.costType == 'per_target_region' %}
+        <span class="guide-cost-type">&times; target's regions</span>
+    {% endif %}
+{% endmacro %}
+
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="2"><b>Operations</b></td>
-        </tr>
+    <div class="guide-operations-list">
         {% for operation in operations %}
-            <tr>
-                <td width="150"><img src="{{ asset('images/operations/' ~ operation.image) }}" alt="{{ operation.name }}" width="150" height="130"></td>
-                <td class="text-start" width="450">
-                    {{ operation.description }}
-                    <ul>
-                        <li>Name: {{ operation.name }}</li>
-                        <li>Cash: {{ operation.cost }}</li>
-                        <li>Research requirement: {{ operation.research.name }}</li>
-                        <li>Difficulty: {{ operation.difficulty }}</li>
-                    </ul>
-                </td>
-            </tr>
+            <article class="guide-operation-card">
+                <div class="guide-operation-image">
+                    <img src="{{ asset('images/operations/' ~ operation.image) }}"
+                         alt="{{ operation.name }}" width="400" height="365">
+                </div>
+                <div class="guide-operation-body">
+                    <h2 class="guide-operation-title">{{ operation.name }}</h2>
+                    <p class="guide-operation-description">{{ operation.description }}</p>
+                    <dl class="guide-operation-stats">
+                        <div><dt>Difficulty</dt><dd>{{ _self.difficulty_cell(operation.difficulty) }}</dd></div>
+                        <div><dt>Cost</dt><dd>{{ _self.cost_cell(operation) }}</dd></div>
+                        <div><dt>Range</dt><dd>{{ operation.maxDistance }} region{{ operation.maxDistance == 1 ? '' : 's' }}</dd></div>
+                        <div><dt>Research</dt>
+                            <dd>{{ operation.researchName }}{% if operation.researchMinLevel > 1 %} (lvl {{ operation.researchMinLevel }}+){% endif %}</dd>
+                        </div>
+                        {% if operation.gameUnit %}
+                            <div><dt>Unit</dt><dd>{{ gameUnitNames[operation.gameUnit.value] ?? operation.gameUnit.name }}</dd></div>
+                        {% endif %}
+                        {% if operation.hasCooldown %}
+                            <div><dt>Cooldown</dt><dd>10 minutes per firing</dd></div>
+                        {% endif %}
+                    </dl>
+                </div>
+            </article>
         {% endfor %}
-    </table>
+    </div>
 {% endblock %}

@@ -1,47 +1,44 @@
 {% extends 'site.html.twig' %}
+{% trans_default_domain 'login' %}
 
-{% block title %}Ultimate Warfare - Login{% endblock title %}
+{% block title %}{{ 'page.title'|trans }}{% endblock title %}
 
 {% block content %}
-    {% trans_default_domain 'login' %}
-
     {% if error %}
         <div class="alert alert-danger" role="alert">
             {{ error.messageKey|trans(error.messageData, 'security') }}
         </div>
     {% endif %}
 
-    <div class="uw-div">
-        <div class="uw-div-top">
-            <h3 class="text-center">Login</h3>
+    <div class="form-card-wrapper">
+        <div class="uw-card">
+            <div class="uw-card-header">{{ 'page.header'|trans }}</div>
+            <div class="uw-card-body">
+                <form method="post" action="{{ path("Site/Login") }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">{{ 'label.username'|trans }}</label>
+                        <input type="text" id="username" name="_username" value="{{ last_username }}" required="required"
+                               class="form-control"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">{{ 'label.password'|trans }}</label>
+                        <input autocomplete="off" type="password" id="password" name="_password" required="required"
+                               class="form-control"/>
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-check-input" type="checkbox" value="" id="remember_me"/>
+                        <label class="form-check-label" for="remember_me">{{ 'label.remember_me'|trans }}</label>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}"/>
+                    <button type="submit" class="btn btn-primary w-100">{{ 'label.login'|trans }}</button>
+                </form>
+            </div>
         </div>
 
-        <form class="form-horizontal" role="form" method="post" action="{{ path("Site/Login") }}">
-            <div class="mb-3">
-                <label for="username" class="form-label">{{ 'label.username'|trans }}</label>
-                <input type="text" id="username" name="_username" value="{{ last_username }}" required="required"
-                       class="form-control"/>
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">{{ 'label.password'|trans }}</label>
-                <input autocomplete="off" type="password" id="password" name="_password" required="required"
-                       class="form-control"/>
-            </div>
-            <div class="mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="remember_me"/>
-                <label class="form-check-label" for="remember_me">{{ 'label.remember_me'|trans }}</label>
-            </div>
-
-            <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}"/>
-            <button type="submit" class="btn btn-primary btn-block">{{ 'label.login'|trans }}</button>
-        </form>
+        <p class="text-center">
+            <a href="{{ url('Site/ResetPassword') }}">{{ 'label.lost_password'|trans({}, 'login') }}</a>
+        </p>
     </div>
-
-    <br/>
-    <br/>
-
-    <p class="text-center">
-        <a class="B" href="{{ url('Site/ResetPassword') }}">{{ 'label.lost_password'|trans({}, 'login') }}</a>
-    </p>
 {% endblock %}

@@ -4,51 +4,41 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-use Doctrine\Common\Collections\Collection;
-
-class Category
+enum Category: int
 {
-    private int $id;
-    private string $title;
-
-    /**
-     * @var Collection<int, Topic>
-     */
-    private Collection $topics;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function setTitle(string $title): void
-    {
-        $this->title = $title;
-    }
+    case Announcements = 1;
+    case General = 2;
+    case Bugs = 3;
+    case Ideas = 4;
+    case OffTopic = 5;
 
     public function getTitle(): string
     {
-        return $this->title;
+        return match ($this) {
+            self::Announcements => 'Announcements',
+            self::General => 'General',
+            self::Bugs => 'Bugs',
+            self::Ideas => 'Ideas',
+            self::OffTopic => 'Off-Topic',
+        };
+    }
+
+    public function getSlug(): string
+    {
+        return match ($this) {
+            self::Announcements => 'announcements',
+            self::General => 'general',
+            self::Bugs => 'bugs',
+            self::Ideas => 'ideas',
+            self::OffTopic => 'off-topic',
+        };
     }
 
     /**
-     * @return Collection<int, Topic>
+     * @return Category[]
      */
-    public function getTopics(): Collection
+    public static function getAll(): array
     {
-        return $this->topics;
-    }
-
-    /**
-     * @param Collection<int, Topic> $topics
-     */
-    public function setTopics(Collection $topics): void
-    {
-        $this->topics = $topics;
+        return self::cases();
     }
 }

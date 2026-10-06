@@ -37,7 +37,6 @@ final class ContactController extends AbstractController
             'site/contact.html.twig',
             [
                 'form' => $form->createView(),
-                'gg_recaptcha_site_key' => $this->getParameter('app.gg_recaptcha_site_key')
             ]
         );
     }

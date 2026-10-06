@@ -8,12 +8,11 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use RuntimeException;
-use Serializable;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, Serializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
     private const string ROLE_DEFAULT = 'ROLE_USER';
     public const string ROLE_ADMIN = 'ROLE_ADMIN';
@@ -21,23 +20,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     private int $id;
     private string $username = '';
     private string $email = '';
-    private mixed $avatar = '';
-    private bool $enabled = false;
+    /** Set once the user clicked the verification link sent to their email address; required to log in */
+    private bool $emailVerified = false;
     private string $password = '';
     private string $plainPassword = '';
-    private ?DateTime $lastLogin = null;
+    /** Updated on every request, not only on login */
+    private ?DateTime $lastSeenAt = null;
+    private ?string $lastSeenIp = null;
     /** Random string sent to the user email address to verify it */
-    private ?string $confirmationToken = null;
-    private ?DateTime $passwordRequestedAt = null;
+    private ?string $emailVerificationToken = null;
+    /** Random string sent to the user email address to reset the password */
+    private ?string $passwordResetToken = null;
+    private ?DateTime $passwordResetRequestedAt = null;
 
     /**
      * @var array<int, string>
      */
     private array $roles;
-    private DateTime $signup;
-    private bool $active = true;
-    private bool $adviser = false;
-    private bool $forumBan = false;
+    private DateTime $signedUpAt;
+    /** Banned from the whole site (game and forum); a banned user can still log in to request an unban */
+    private bool $banned = false;
+    /** Banned from posting in the forum only */
+    private bool $forumBanned = false;
 
     /** @var Collection<int, Player> */
     private Collection $players;
@@ -172,11 +176,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         return true;
     }
 
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
-
     public function getId(): int
     {
         return $this->id;
@@ -197,101 +196,94 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         $this->email = $email;
     }
 
-    public function getAvatar(): mixed
+    public function getLastSeenAt(): ?DateTime
     {
-        return $this->avatar;
+        return $this->lastSeenAt;
     }
 
-    public function setAvatar(mixed $avatar): void
+    public function setLastSeenAt(DateTime $lastSeenAt): void
     {
-        $this->avatar = $avatar;
+        $this->lastSeenAt = $lastSeenAt;
     }
 
-    public function hasAvatar(): bool
+    public function getLastSeenIp(): ?string
     {
-        if (is_resource($this->avatar)) {
-            $stats = fstat($this->avatar);
-            if ($stats !== false) {
-                return $stats['size'] > 0;
-            }
-        }
-
-        return false;
+        return $this->lastSeenIp;
     }
 
-    public function getLastLogin(): ?DateTime
+    public function setLastSeenIp(?string $lastSeenIp): void
     {
-        return $this->lastLogin;
+        $this->lastSeenIp = $lastSeenIp;
     }
 
-    public function setLastLogin(DateTime $lastLogin): void
+    public function getEmailVerificationToken(): ?string
     {
-        $this->lastLogin = $lastLogin;
+        return $this->emailVerificationToken;
     }
 
-    public function getConfirmationToken(): ?string
+    public function setEmailVerificationToken(?string $emailVerificationToken): void
     {
-        return $this->confirmationToken;
+        $this->emailVerificationToken = $emailVerificationToken;
     }
 
-    public function setConfirmationToken(?string $confirmationToken): void
+    public function getPasswordResetToken(): ?string
     {
-        $this->confirmationToken = $confirmationToken;
+        return $this->passwordResetToken;
     }
 
-    public function getPasswordRequestedAt(): ?DateTime
+    public function setPasswordResetToken(?string $passwordResetToken): void
     {
-        return $this->passwordRequestedAt;
+        $this->passwordResetToken = $passwordResetToken;
     }
 
-    public function setPasswordRequestedAt(DateTime $passwordRequestedAt): void
+    public function getPasswordResetRequestedAt(): ?DateTime
     {
-        $this->passwordRequestedAt = $passwordRequestedAt;
+        return $this->passwordResetRequestedAt;
     }
 
-    public function setEnabled(bool $enabled): void
+    public function setPasswordResetRequestedAt(DateTime $passwordResetRequestedAt): void
     {
-        $this->enabled = $enabled;
+        $this->passwordResetRequestedAt = $passwordResetRequestedAt;
     }
 
-    public function setSignup(DateTime $signup): void
+    public function isEmailVerified(): bool
     {
-        $this->signup = $signup;
+        return $this->emailVerified;
     }
 
-    public function getSignup(): DateTime
+    public function setEmailVerified(bool $emailVerified): void
     {
-        return $this->signup;
+        $this->emailVerified = $emailVerified;
     }
 
-    public function setActive(bool $active): void
+    public function setSignedUpAt(DateTime $signedUpAt): void
     {
-        $this->active = $active;
+        $this->signedUpAt = $signedUpAt;
     }
 
-    public function getActive(): bool
+    public function getSignedUpAt(): DateTime
     {
-        return $this->active;
+        return $this->signedUpAt;
     }
 
-    public function setAdviser(bool $adviser): void
+    public function isBanned(): bool
     {
-        $this->adviser = $adviser;
+        return $this->banned;
     }
 
-    public function getAdviser(): bool
+    public function setBanned(bool $banned): void
     {
-        return $this->adviser;
+        $this->banned = $banned;
     }
 
-    public function setForumBan(bool $forumBan): void
+    public function isForumBanned(): bool
     {
-        $this->forumBan = $forumBan;
+        return $this->forumBanned;
     }
 
-    public function getForumBan(): bool
+    public function setForumBanned(bool $forumBanned): void
     {
-        return $this->forumBan;
+        $this->forumBanned = $forumBanned;
     }
 
     /**
@@ -399,51 +391,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         return $this->username;
     }
 
+    /**
+     * Account status flags are deliberately not serialized:
+     * the user is refreshed from the database on every request.
+     */
     public function __serialize(): array
     {
         return [
             'id' => $this->id,
             'username' => $this->username,
-            'enabled' => $this->enabled,
             'email' => $this->email,
             'password' => $this->password,
         ];
     }
 
     /**
-     * @param array<string|int|bool> $data
+     * @param array<string|int> $data
      */
     public function __unserialize(array $data): void
     {
         $this->id = (int) $data['id'];
         $this->username = (string) $data['username'];
-        $this->enabled = (bool) $data['enabled'];
         $this->email = (string) $data['email'];
         $this->password = (string) $data['password'];
-    }
-
-    /**
-     * @deprecated
-     */
-    public function serialize()
-    {
-        return serialize($this->__serialize());
-    }
-
-    /**
-     * @deprecated
-     */
-    public function unserialize(string $data)
-    {
-        /** @var array{
-         *     'id': int,
-         *     'username': string,
-         *     'enabled': boolean,
-         *     'email': string,
-         *     'password': string
-         * } $dataArray
-         */
-        $dataArray = unserialize($data);
-        $this->__unserialize($dataArray);
     }
 }

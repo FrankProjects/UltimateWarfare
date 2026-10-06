@@ -3,40 +3,44 @@
 {% block title %}ADMIN - Contact{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="5"><b>Contact</b></td>
-        </tr>
-        <tr>
-            <td width="150">Name</td>
-            <td width="150">Email</td>
-            <td width="300">Subject</td>
-            <td width="50">Date</td>
-            <td width="50">Action</td>
-        </tr>
-        {% for contact in contacts %}
-            <tr>
-                <td>
-                    {{ contact.name }}
-                </td>
-                <td>
-                    {{ contact.email }}
-                </td>
-                <td>
-                    {{ contact.subject }}
-                </td>
-                <td>
-                    {{ contact.createDateTime|date("Y-m-d H:i:s") }}
-                </td>
-                <td>
-                    <a class="btn btn-primary" href="{{ path('Admin/Contact/Read', {'contactId': contact.id}) }}"><b>Read</b></a><br />
-                    <a class="btn btn-danger" href="{{ path('Admin/Contact/Remove', {'contactId': contact.id}) }}"><b>Remove</b></a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">No contact forms....</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Contact</div>
+        <div class="uw-card-body">
+            <table class="table text-center">
+                <tr>
+                    <td width="150">Name</td>
+                    <td width="150">Email</td>
+                    <td width="300">Subject</td>
+                    <td width="50">Date</td>
+                    <td width="50">Action</td>
+                </tr>
+                {% for contact in contacts %}
+                    <tr>
+                        <td>
+                            {{ contact.name }}
+                        </td>
+                        <td>
+                            {{ contact.email }}
+                        </td>
+                        <td>
+                            {{ contact.subject }}
+                        </td>
+                        <td>
+                            {{ contact.createDateTime|date("Y-m-d H:i:s") }}
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" href="{{ path('Admin/Contact/Read', {'contactId': contact.id}) }}"><b>Read</b></a><br />
+                            <form method="POST" action="{{ path('Admin/Contact/Remove', {'contactId': contact.id}) }}" style="display:inline">
+                                <button type="submit" class="btn btn-danger"><b>Remove</b></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">No contact forms....</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock %}

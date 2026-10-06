@@ -18,7 +18,8 @@ class World
 
     private int $id;
     private string $name = '';
-    private string $image = '';
+    /** @var resource|string|null */
+    private mixed $imageData = null;
     private string $description = '';
     private int $status = 0;
     private bool $public = false;
@@ -31,9 +32,6 @@ class World
 
     /** @var Collection<int, WorldRegion> */
     private Collection $worldRegions;
-
-    /** @var Collection<int, WorldSector> */
-    private Collection $worldSectors;
 
     /** @var Collection<int, Player> */
     private Collection $players;
@@ -52,7 +50,6 @@ class World
     public function __construct()
     {
         $this->worldRegions = new ArrayCollection();
-        $this->worldSectors = new ArrayCollection();
         $this->players = new ArrayCollection();
         $this->marketItems = new ArrayCollection();
         $this->messages = new ArrayCollection();
@@ -81,14 +78,23 @@ class World
         return $this->name;
     }
 
-    public function setImage(string $image): void
+    public function setImageData(?string $imageData): void
     {
-        $this->image = $image;
+        $this->imageData = $imageData;
     }
 
-    public function getImage(): string
+    public function getImageData(): ?string
     {
-        return $this->image;
+        if (is_resource($this->imageData)) {
+            $contents = stream_get_contents($this->imageData);
+            $this->imageData = $contents !== false ? $contents : null;
+        }
+
+        if (!is_string($this->imageData)) {
+            return null;
+        }
+
+        return $this->imageData;
     }
 
     public function getDescription(): string
@@ -219,22 +225,6 @@ class World
     }
 
     /**
-     * @return Collection<int, WorldSector>
-     */
-    public function getWorldSectors(): Collection
-    {
-        return $this->worldSectors;
-    }
-
-    /**
-     * @param Collection<int, WorldSector> $worldSectors
-     */
-    public function setWorldSectors(Collection $worldSectors): void
-    {
-        $this->worldSectors = $worldSectors;
-    }
-
-    /**
      * @return Collection<int, Player>
      */
     public function getPlayers(): Collection
@@ -334,10 +324,6 @@ class World
                     return false;
                 }
             }
-        }
-
-        if (count($this->getWorldSectors()) !== 25) {
-            return false;
         }
 
         if (count($this->getWorldRegions()) !== 625) {

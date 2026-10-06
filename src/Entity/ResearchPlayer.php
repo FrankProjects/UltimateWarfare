@@ -10,7 +10,9 @@ class ResearchPlayer
     private int $timestamp;
     private bool $active = false;
     private Player $player;
-    private Research $research;
+    private string $researchSlug;
+    private int $level = 1;
+    private int $completionTimestamp = 0;
 
     public function setId(int $id): void
     {
@@ -52,13 +54,33 @@ class ResearchPlayer
         $this->player = $player;
     }
 
-    public function getResearch(): Research
+    public function getResearchSlug(): string
     {
-        return $this->research;
+        return $this->researchSlug;
     }
 
-    public function setResearch(Research $research): void
+    public function setResearchSlug(string $researchSlug): void
     {
-        $this->research = $research;
+        $this->researchSlug = $researchSlug;
+    }
+
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(int $level): void
+    {
+        $this->level = $level;
+    }
+
+    public function getCompletionTimestamp(): int
+    {
+        return $this->completionTimestamp;
+    }
+
+    public function setCompletionTimestamp(int $completionTimestamp): void
+    {
+        $this->completionTimestamp = $completionTimestamp;
     }
 }

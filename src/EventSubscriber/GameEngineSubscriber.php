@@ -42,7 +42,7 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
             return;
         }
 
-        if ($user->getActive() !== false) {
+        if (!$user->isBanned()) {
             $this->runGameEngine($user);
         }
     }

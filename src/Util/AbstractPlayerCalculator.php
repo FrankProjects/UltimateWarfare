@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\GameUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use RuntimeException;
 
 /**
@@ -21,6 +22,11 @@ abstract class AbstractPlayerCalculator
 
     protected AbstractGameResources $abstractGameResources;
 
+    public function __construct(
+        private readonly GameUnitRegistry $gameUnitRegistry
+    ) {
+    }
+
     protected function calculateForFleets(Player $player, string $type): void
     {
         foreach ($player->getFleets() as $fleet) {
@@ -31,7 +37,8 @@ abstract class AbstractPlayerCalculator
     private function calculateForFleetUnits(Fleet $fleet, string $type): void
     {
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
-            $gameUnitResource = $this->getAbstractGameResources($fleetUnit->getGameUnit(), $type);
+            $gameUnit = $this->gameUnitRegistry->find($fleetUnit->getGameUnit());
+            $gameUnitResource = $this->getAbstractGameResources($gameUnit, $type);
             $this->updateAbstractGameResource($fleetUnit->getAmount(), $gameUnitResource);
         }
     }
@@ -39,15 +46,23 @@ abstract class AbstractPlayerCalculator
     protected function calculateForWorldRegions(Player $player, string $type): void
     {
         foreach ($player->getWorldRegions() as $worldRegion) {
-            $this->calculateForWorldRegionUnits($worldRegion, $type);
+            $this->calculateForWorldRegionStackableUnits($worldRegion, $type);
         }
     }
 
-    private function calculateForWorldRegionUnits(WorldRegion $worldRegion, string $type): void
+    private function calculateForWorldRegionStackableUnits(WorldRegion $worldRegion, string $type): void
     {
-        foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
-            $gameUnitResource = $this->getAbstractGameResources($worldRegionUnit->getGameUnit(), $type);
-            $this->updateAbstractGameResource($worldRegionUnit->getAmount(), $gameUnitResource);
+        foreach ($worldRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+            $gameUnit = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit());
+            $gameUnitResource = $this->getAbstractGameResources($gameUnit, $type);
+            $this->updateAbstractGameResource($worldRegionStackableUnit->getAmount(), $gameUnitResource);
+        }
+
+        // Leveled buildings (Defense / Special) scale their income/upkeep by their level.
+        foreach ($worldRegion->getWorldRegionLeveledUnits() as $leveledUnit) {
+            $gameUnit = $this->gameUnitRegistry->find($leveledUnit->getGameUnit());
+            $gameUnitResource = $this->getAbstractGameResources($gameUnit, $type);
+            $this->updateAbstractGameResource($leveledUnit->getLevel(), $gameUnitResource);
         }
     }
 

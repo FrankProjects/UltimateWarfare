@@ -3,36 +3,40 @@
 {% block title %}Ultimate Warfare - The Story{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td><b>Ultimate Warfare The Story</b></td>
-        </tr>
-        <tr>
-            <td>
+    <div class="uw-card">
+        <div class="uw-card-header">Ultimate Warfare - The Story</div>
+        <div class="uw-card-body text-center">
+            <p>
                 Scientists from both countries knew what destructive damage the warhead was capable of, yet no one tried to stop them.
                 They were given the go ahead at every point and were never questioned.
-                However, each and every living soul involved in thesyphon project knew they would not survive...<br /><br />
+                However, each and every living soul involved in the syphon project knew they would not survive...
+            </p>
+            <p>
+                America and Russia. Who knew the earth could be destroyed at the touch of a button?
+                Both had tried to sneak their warheads in from the back. The rockets were headed straight for each other. The crash was unavoidable.
+                The rockets smashed together with a massive crash.
+            </p>
+            <p>
+                The sound that followed was as loud as a jet plane missing your ear by an inch, it was loud enough to be heard on the other side of the earth.
+                The shockwave that erupted out of the explosion engulfed the world in toxic radiation. Nothing on this earth survived, or so it was thought.
+            </p>
+            <p>
+                Just before the rockets smashed together, the main governments of America and Russia left Earth. Only just managing to keep alive.
+                Each on their own space shuttle they left in search of a new home. However, after five years of no luck, they returned home.
+                Only to find that the Earth had been freed of its toxic revelation.
+            </p>
+            <p>
+                They both landed safely and started to rebuild the earth. This time there would be no projects. This war would be fought like men.
+                The Earth was the playground, the war was the game.
+            </p>
 
-                America and Russia. Who knew the earth could be destroyed at the touch of a button? <br />
-                Both had tried to sneak thier warheads in from the back. The rockets were headed straight for eachother. The crash was unavoidable. <br />
-                The rockets smashed together with an massive crash.<br /><br />
-
-                The sound that followed was as loud as a jet plane missing your ear by an inch, it was loud enough to be heard on the other side of the earth. <br />
-                The shockwave that erupted out of the explosion engulfed the world in toxic radiation. Nothing on this earth survived, or so it was thought.<br /><br />
-
-                Just before the rockets smashed together, the main governments of America and Russia left Earth. Only just managing to keep alive. <br />
-                Each on thier own space shuttle they left in search of a new home. However, after five years of no luck, they returned home. <br />
-                Only to find that the Earth had been freed of its toxic revelation.<br /><br />
-
-                They both landed safely and started to rebuild the earth. This time there would be no projects. This war would be fought like men. <br />
-                The Earth was the playground, the war was the game.<br /><br />
-
+            <p>
                 {% if players is empty %}
                     <a class="btn btn-primary" href="{{ path('Game/SelectWorld') }}"><strong>Play</strong></a>
                 {% else %}
                     <a class="btn btn-primary" href="{{ path('Game/Login') }}"><strong>Play</strong></a>
                 {% endif %}
-            </td>
-        </tr>
-    </table>
+            </p>
+        </div>
+    </div>
 {% endblock %}

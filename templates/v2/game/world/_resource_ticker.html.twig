@@ -1,0 +1,24 @@
+<div class="resource-ticker">
+    {% set resources = [
+        { name: 'Cash', icon: 'resource_cash.svg', key: 'cash' },
+        { name: 'Wood', icon: 'resource_wood.svg', key: 'wood' },
+        { name: 'Food', icon: 'resource_grain_wheat.svg', key: 'food' },
+        { name: 'Steel', icon: 'resource_steel.svg', key: 'steel' },
+    ] %}
+
+    {% for res in resources %}
+        {% set amount = attribute(player.resources, res.key) %}
+        {% set income = attribute(player.income, res.key) %}
+        {% set upkeep = attribute(player.upkeep, res.key) %}
+        {% set net = income - upkeep %}
+        <div class="resource-item">
+            <img src="{{ asset('images/icons/' ~ res.icon) }}" alt="{{ res.name }}" class="resource-icon">
+            <div class="resource-details">
+                <span class="resource-amount">{{ amount|number_format(0, '.', ',') }}</span>
+                <span class="resource-income {% if net >= 0 %}positive{% else %}negative{% endif %}">
+                    {% if net >= 0 %}+{% endif %}{{ net|number_format(0, '.', ',') }}/h
+                </span>
+            </div>
+        </div>
+    {% endfor %}
+</div>

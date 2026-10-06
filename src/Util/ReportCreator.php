@@ -18,8 +18,12 @@ final class ReportCreator
         $this->reportRepository = $reportRepository;
     }
 
-    public function createReport(Player $player, int $timestamp, string $report, int $type = Report::TYPE_ATTACKED): void
-    {
+    public function createReport(
+        Player $player,
+        int $timestamp,
+        string $report,
+        int $type = Report::TYPE_ATTACKED
+    ): void {
         $report = Report::createForPlayer($player, $timestamp, $type, $report);
         $this->reportRepository->save($report);
     }

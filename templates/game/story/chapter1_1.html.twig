@@ -3,23 +3,22 @@
 {% block title %}Ultimate Warfare - The Story{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td><b>Ultimate Warfare The Story</b></td>
-        </tr>
-        <tr>
-            <td>
-                The year was 1945. The earth was in a mess. The two main superpowers, America and Russia, had engaged in an massive war. <br />
-                Though both knew that the war was only a cover up. America and Russia had both finally finished creating the ultimate weapon. <br />
-                It was known as the 'Syphon Warhead'.<br /><br />
+    <div class="uw-card">
+        <div class="uw-card-header">Ultimate Warfare - The Story</div>
+        <div class="uw-card-body text-center">
+            <p>
+                The year was 1945. The earth was in a mess. The two main superpowers, America and Russia, had engaged in an massive war.
+                Though both knew that the war was only a cover up. America and Russia had both finally finished creating the ultimate weapon.
+                It was known as the 'Syphon Warhead'.
+            </p>
 
-                <img src="{{ asset('images/story1.jpg') }}" width="400" height="300" alt="Syphon Warhead!" />
+            <p>
+                <img src="{{ asset('images/story1.jpg') }}" width="400" height="300" alt="Syphon Warhead!" style="border-radius: 6px;" />
+            </p>
 
-                <br />
-                <br />
-
-                <a class="btn btn-primary" href="{{ path('Game/Story/Chapter1', {'page': 2}) }}"><strong>Next>>></strong></a>
-            </td>
-        </tr>
-    </table>
+            <p>
+                <a class="btn btn-primary" href="{{ path('Game/Story/Chapter1', {'page': 2}) }}"><strong>Next &raquo;</strong></a>
+            </p>
+        </div>
+    </div>
 {% endblock %}

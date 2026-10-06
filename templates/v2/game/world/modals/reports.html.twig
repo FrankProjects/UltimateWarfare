@@ -1,0 +1,24 @@
+<div class="modal fade" id="reportsModal" tabindex="-1" aria-labelledby="reportsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportsModalLabel">Reports</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="build-tabs" id="reportsTabs"></div>
+                <div id="reportsContainer" style="max-height: 400px; overflow-y: auto;">
+                    <div class="build-loading">Loading reports...</div>
+                </div>
+                <div id="reportsPagination" style="margin-top: 15px; text-align: center; display: none;">
+                    <button type="button" id="reportsPrevBtn" class="legend-toggle" style="margin-right: 10px;">&larr; Previous</button>
+                    <span id="reportsPageInfo" style="color: #f3e6c1;"></span>
+                    <button type="button" id="reportsNextBtn" class="legend-toggle" style="margin-left: 10px;">Next &rarr;</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

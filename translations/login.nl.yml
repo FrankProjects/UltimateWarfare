@@ -4,3 +4,6 @@ label:
   login: Inloggen
   lost_password: Wachtwoord vergeten?
   remember_me: Onthoud mij
+page:
+  title: Ultimate Warfare - Inloggen
+  header: Inloggen

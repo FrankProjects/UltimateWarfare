@@ -6,133 +6,157 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Research;
-use FrankProjects\UltimateWarfare\Entity\ResearchNeeds;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
-use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
+use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\ResearchActionService;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
 
 final class ResearchController extends BaseGameController
 {
-    private ResearchRepository $researchRepository;
+    private ResearchRegistry $researchRegistry;
     private ResearchPlayerRepository $researchPlayerRepository;
     private ResearchActionService $researchActionService;
 
     public function __construct(
-        ResearchRepository $researchRepository,
+        ResearchRegistry $researchRegistry,
         ResearchPlayerRepository $researchPlayerRepository,
         ResearchActionService $researchActionService
     ) {
-        $this->researchRepository = $researchRepository;
+        $this->researchRegistry = $researchRegistry;
         $this->researchPlayerRepository = $researchPlayerRepository;
         $this->researchActionService = $researchActionService;
     }
 
-    public function research(): Response
+    public function researchTreeApi(): JsonResponse
     {
         $player = $this->getPlayer();
-        $ongoingResearch = $this->researchRepository->findOngoingByPlayer($player);
-        $notResearched = $this->researchRepository->findNotResearchedByPlayer($player);
+        $completedLevels = $this->researchPlayerRepository->getCompletedLevelsBySlug($player);
+        $ongoingResearchPlayers = $this->researchPlayerRepository->findOngoingByPlayer($player);
 
-        $completedResearchIds = $this->getCompletedResearchIds($player);
-        $availableResearch = $this->filterAvailableResearch($notResearched, $completedResearchIds);
+        $ongoingMap = [];
+        foreach ($ongoingResearchPlayers as $rp) {
+            $ongoingMap[$rp->getResearchSlug()] = $rp;
+        }
 
-        return $this->render(
-            'game/research.html.twig',
-            [
-                'player' => $player,
-                'ongoingResearch' => $ongoingResearch,
-                'researchArray' => $availableResearch
-            ]
-        );
+        $allResearch = $this->researchRegistry->findEnabled();
+        $now = time();
+        $researchData = [];
+
+        foreach ($allResearch as $research) {
+            $researchData[] = $this->buildResearchPayload($research, $completedLevels, $ongoingMap, $now);
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'research' => $researchData,
+            'playerCash' => $player->getResources()->getCash(),
+        ]);
+    }
+
+    public function performResearchApi(string $researchSlug): JsonResponse
+    {
+        try {
+            $player = $this->getPlayer();
+            $this->researchActionService->performResearch($researchSlug, $player);
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Successfully started a new research project!',
+                'newCash' => $player->getResources()->getCash(),
+            ]);
+        } catch (Throwable $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function performCancelApi(string $researchSlug): JsonResponse
+    {
+        try {
+            $this->researchActionService->performCancel($researchSlug, $this->getPlayer());
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Successfully cancelled your research project!',
+            ]);
+        } catch (Throwable $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
-     * Get IDs of all completed research for the player
-     *
-     * @return array<int>
+     * @param array<string, int>                                     $completedLevels
+     * @param array<string, \FrankProjects\UltimateWarfare\Entity\ResearchPlayer> $ongoingMap
+     * @return array<string, mixed>
      */
-    private function getCompletedResearchIds(Player $player): array
-    {
-        $completedIds = [];
+    private function buildResearchPayload(
+        Research $research,
+        array $completedLevels,
+        array $ongoingMap,
+        int $now,
+    ): array {
+        $slug = $research->getSlug();
+        $currentLevel = $completedLevels[$slug] ?? 0;
+        $maxLevel = $research->getMaxLevel();
+        $nextLevel = $currentLevel + 1;
+        $isOngoing = isset($ongoingMap[$slug]);
+        $isMaxed = $currentLevel >= $maxLevel;
 
-        foreach ($player->getPlayerResearch() as $researchPlayer) {
-            if ($researchPlayer->getActive()) {
-                $completedIds[] = $researchPlayer->getResearch()->getId();
-            }
+        if ($isOngoing) {
+            $status = 'researching';
+        } elseif ($isMaxed) {
+            $status = 'maxed';
+        } else {
+            $status = $this->arePrerequisitesMet($research, $nextLevel, $completedLevels)
+                ? 'available'
+                : 'locked';
         }
 
-        return $completedIds;
+        $payload = [
+            'slug' => $slug,
+            'name' => $research->getName(),
+            'description' => $research->getDescription(),
+            'image' => $research->getImage(),
+            'currentLevel' => $currentLevel,
+            'maxLevel' => $maxLevel,
+            'status' => $status,
+            'nextCost' => $isMaxed ? null : $research->getCost($nextLevel),
+            'nextDuration' => $isMaxed ? null : $research->getTimestamp($nextLevel),
+            'prerequisites' => $isMaxed ? [] : $research->getPrerequisiteDescriptions($nextLevel),
+            'targetLevel' => null,
+            'completionTimestamp' => null,
+            'remainingSeconds' => null,
+        ];
+
+        if ($isOngoing) {
+            $rp = $ongoingMap[$slug];
+            $payload['targetLevel'] = $rp->getLevel();
+            $payload['completionTimestamp'] = $rp->getCompletionTimestamp();
+            $payload['remainingSeconds'] = max(0, $rp->getCompletionTimestamp() - $now);
+        }
+
+        return $payload;
     }
 
     /**
-     * Filter research to only include those with all prerequisites met
-     *
-     * @param array<Research> $notResearched
-     * @param array<int> $completedResearchIds
-     * @return array<Research>
+     * @param array<string, int> $completedLevels
      */
-    private function filterAvailableResearch(array $notResearched, array $completedResearchIds): array
+    private function arePrerequisitesMet(Research $research, int $level, array $completedLevels): bool
     {
-        $availableResearch = [];
-
-        foreach ($notResearched as $research) {
-            $isAvailable = true;
-            foreach ($research->getResearchNeeds() as $researchNeed) {
-                $requiredResearchId = $researchNeed->getRequiredResearch()->getId();
-
-                if (in_array($requiredResearchId, $completedResearchIds, true)) {
-                    // Do nothing
-                } else {
-                    $isAvailable = false;
-                }
-            }
-
-            // Only include research where all prerequisites are met
-            if ($isAvailable === true) {
-                $availableResearch[] = $research;
+        foreach ($research->getPrerequisites($level) as $prereqClass => $minLevel) {
+            $prereqSlug = (new $prereqClass())->getSlug();
+            $playerLevel = $completedLevels[$prereqSlug] ?? 0;
+            if ($playerLevel < $minLevel) {
+                return false;
             }
         }
 
-        return $availableResearch;
-    }
-
-    public function history(): Response
-    {
-        $player = $this->getPlayer();
-        $finishedResearch = $this->researchPlayerRepository->findFinishedByPlayer($player);
-
-        return $this->render(
-            'game/researchHistory.html.twig',
-            [
-                'player' => $player,
-                'finishedResearch' => $finishedResearch
-            ]
-        );
-    }
-
-    public function performResearch(int $researchId): Response
-    {
-        try {
-            $this->researchActionService->performResearch($researchId, $this->getPlayer());
-            $this->addFlash('success', 'Successfully started a new research project!');
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
-
-        return $this->redirectToRoute('Game/Research');
-    }
-
-    public function performCancel(int $researchId): Response
-    {
-        try {
-            $this->researchActionService->performCancel($researchId, $this->getPlayer());
-            $this->addFlash('success', 'Successfully cancelled your research project!');
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
-
-        return $this->redirectToRoute('Game/Research');
+        return true;
     }
 }

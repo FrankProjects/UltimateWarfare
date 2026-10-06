@@ -1,23 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% block navigation %}
+    {% include 'site/navigation.html.twig' %}
+{% endblock %}
+
 {% block body %}
-    <nav class="navbar col-sm-3 col-md-2 navbar-expand-lg navbar-dark bg-dark align-items-start" role="navigation">
-        <div class="container-fluid flex-column">
-            <div>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
+    {% include 'flashes.html.twig' %}
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                {% include 'site/navigation.html.twig' %}
-            </div>
-        </div>
-    </nav>
-
-    <main class="col-sm-9 col-md-10 justify-content-center">
-        {% include 'flashes.html.twig' %}
-
-        {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
 {% endblock %}

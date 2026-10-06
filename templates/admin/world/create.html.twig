@@ -3,16 +3,12 @@
 {% block title %}ADMIN - World{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="5"><b>Create world</b></td>
-        </tr>
-        <tr>
-            <td>
-                {{ form_start(form) }}
-                {{ form_widget(form) }}
-                {{ form_end(form) }}
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Create world</div>
+        <div class="uw-card-body">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

@@ -113,8 +113,10 @@ final class WorldController extends AbstractController
         return $this->redirectToRoute('Admin/World/List', [], 302);
     }
 
-    public function generate(Request $request, int $worldId, int $sector = 0): Response
+    public function generate(Request $request, int $worldId): Response
     {
+        set_time_limit(300);
+
         $world = $this->worldRepository->find($worldId);
         if ($world === null) {
             $this->addFlash('error', 'World does not exist');
@@ -128,7 +130,7 @@ final class WorldController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $save = (bool)$form->get('save')->getData();
-            $map = $this->worldGeneratorService->generate($world, $save, $sector);
+            $map = $this->worldGeneratorService->generate($world, $save);
             $this->addFlash('success', 'Generated new map!');
         }
 

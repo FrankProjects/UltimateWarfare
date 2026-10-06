@@ -1,0 +1,17 @@
+title: Ultimate Warfare - Free multiplayer strategy game
+hero:
+  tagline: Compete for world domination in this multiplayer strategy game
+  cta: Play Now - Free
+features:
+  free_to_play:
+    title: Free to Play
+    text: Browser based MMORPG, no download required
+  pvp:
+    title: PVP Battles
+    text: Player vs Player and Federation warfare
+  world_map:
+    title: World Map
+    text: Conquer regions on an interactive hex map
+  strategy:
+    title: Strategy
+    text: Research, build, and command your armies

@@ -3,39 +3,118 @@
 {% block title %}Ultimate Warfare - Select World{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="2"><b>Select your World</b></td>
-        </tr>
-        {% for world in worlds %}
-            <tr>
-                <td width="400">
-                    <b>{{ world.name }}</b><br />
-                    <img src="{{ asset('images/world/' ~ world.image) }}" alt="{{ world.name }}">
-                </td>
-                <td width="300">
-                    <b>Max players:</b> {{ world.maxplayers }}<br /><br />
-                    <b>Info:</b><br />
-                    {{ world.description }}<br /><br />
-                    <b>At start:</b><br />
-                    Cash: {{ world.resources.cash }}<br />
-                    Wood: {{ world.resources.wood }}<br />
-                    Steel: {{ world.resources.steel }}<br />
-                    Food: {{ world.resources.food }}<br /><br />
-                    <a class="btn btn-primary" href="{{ path('Game/SelectName', {'worldId': world.id}) }}"><b>Play this World</b></a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="2">
-                    <div>
-                        No active worlds to join. Create a new game world!
-                    </div>
-                    <div>
-                        <a class="btn btn-primary" href="{{ path('Game/World/Create') }}"><b>Create new world</b></a>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Select your World</div>
+        <div class="uw-card-body" style="padding: 0; overflow-x: auto;">
+            {% if worlds|length > 0 %}
+                <table class="table uw-world-table" id="world-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th class="sortable" data-sort-key="name">World Name</th>
+                            <th class="sortable" data-sort-key="status">Status</th>
+                            <th class="sortable" data-sort-key="start">Start Date</th>
+                            <th class="sortable" data-sort-key="players">Players</th>
+                            <th class="sortable" data-sort-key="maxplayers">Max Players</th>
+                            <th>Start Resources</th>
+                            <th>Join</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for world in worlds %}
+                            <tr>
+                                <td>
+                                    <img src="{{ path('Game/World/Image', {'worldId': world.id}) }}"
+                                         alt="{{ world.name }}"
+                                         class="world-thumb">
+                                </td>
+                                <td data-sort="{{ world.name|lower }}">{{ world.name }}</td>
+                                <td data-sort="{{ world.status }}">
+                                    {% if world.status == 0 %}
+                                        <span class="status-created">Created</span>
+                                    {% elseif world.status == 1 %}
+                                        <span class="status-running">Running</span>
+                                    {% else %}
+                                        <span class="status-finished">Finished</span>
+                                    {% endif %}
+                                </td>
+                                <td data-sort="{{ world.startTimestamp }}">
+                                    {% if world.startTimestamp > 0 %}
+                                        {{ world.startTimestamp|date('Y-m-d') }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td data-sort="{{ world.players|length }}">
+                                    {{ world.players|length }}
+                                </td>
+                                <td data-sort="{{ world.maxPlayers }}">{{ world.maxPlayers }}</td>
+                                <td class="start-resources">
+                                    <img src="{{ asset('images/icons/resource_cash.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Cash"> {{ world.resources.cash }}
+                                    <img src="{{ asset('images/icons/resource_wood.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Wood"> {{ world.resources.wood }}
+                                    <img src="{{ asset('images/icons/resource_steel.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Steel"> {{ world.resources.steel }}
+                                    <img src="{{ asset('images/icons/resource_grain_wheat.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Food"> {{ world.resources.food }}
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary btn-sm"
+                                       href="{{ path('Game/SelectName', {'worldId': world.id}) }}">Join</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="text-center" style="padding: 20px;">
+                    <p>No active worlds to join. Create a new game world!</p>
+                    <a class="btn btn-primary" href="{{ path('Game/World/Create') }}">
+                        <strong>Create new world</strong>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var table = document.getElementById('world-table');
+            if (!table) return;
+
+            var headers = table.querySelectorAll('th.sortable');
+            var tbody = table.querySelector('tbody');
+
+            headers.forEach(function (header) {
+                header.addEventListener('click', function () {
+                    var colIndex = Array.prototype.indexOf.call(this.parentNode.children, this);
+                    var isAsc = this.classList.contains('sort-asc');
+
+                    headers.forEach(function (h) {
+                        h.classList.remove('sort-asc', 'sort-desc');
+                    });
+
+                    var direction = isAsc ? 'desc' : 'asc';
+                    this.classList.add('sort-' + direction);
+
+                    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+                    rows.sort(function (a, b) {
+                        var aVal = a.children[colIndex].getAttribute('data-sort') || '';
+                        var bVal = b.children[colIndex].getAttribute('data-sort') || '';
+
+                        var aNum = parseFloat(aVal);
+                        var bNum = parseFloat(bVal);
+                        if (!isNaN(aNum) && !isNaN(bNum)) {
+                            return direction === 'asc' ? aNum - bNum : bNum - aNum;
+                        }
+
+                        return direction === 'asc'
+                            ? aVal.localeCompare(bVal)
+                            : bVal.localeCompare(aVal);
+                    });
+
+                    rows.forEach(function (row) {
+                        tbody.appendChild(row);
+                    });
+                });
+            });
+        });
+    </script>
 {% endblock %}

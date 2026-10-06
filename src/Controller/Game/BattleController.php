@@ -6,7 +6,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Service\BattleEngine;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
 
 final class BattleController extends BaseGameController
@@ -22,29 +22,40 @@ final class BattleController extends BaseGameController
         $this->fleetRepository = $fleetRepository;
     }
 
-    public function battle(int $fleetId): Response
+    public function battleApi(int $fleetId): JsonResponse
     {
         $player = $this->getPlayer();
         $fleet = $this->fleetRepository->findByIdAndPlayer($fleetId, $player);
+
         if ($fleet === null) {
-            $this->addFlash('error', 'Fleet does not exist');
-            return $this->redirectToRoute('Game/Fleets', [], 302);
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Fleet does not exist'
+            ], 404);
         }
 
         try {
             $battleResults = $this->battleEngine->battle($fleet);
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('Game/Fleets', [], 302);
-        }
 
-        return $this->render(
-            'game/battle.html.twig',
-            [
-                'player' => $player,
-                'battleResults' => $battleResults,
-                'hasWon' => $battleResults->hasWon()
-            ]
-        );
+            // Collect battle log from all phases
+            $battleLog = [];
+            foreach ($battleResults->getBattlePhases() as $battlePhase) {
+                foreach ($battlePhase->getBattleLog() as $line) {
+                    $battleLog[] = $line;
+                }
+            }
+
+            return new JsonResponse([
+                'success' => true,
+                'hasWon' => $battleResults->hasWon(),
+                'battleLog' => $battleLog,
+                'message' => $battleResults->hasWon() ? 'Victory! You won the battle!' : 'Defeat! You lost the battle.'
+            ]);
+        } catch (Throwable $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }

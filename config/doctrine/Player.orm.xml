@@ -37,11 +37,6 @@
         <option name="default">0</option>
       </options>
     </field>
-    <field name="notepad" type="text" column="notepad" length="65535">
-      <options>
-        <option name="default"/>
-      </options>
-    </field>
     <embedded name="income" class="FrankProjects\UltimateWarfare\Entity\Player\Income"/>
     <embedded name="notifications" class="FrankProjects\UltimateWarfare\Entity\Player\Notifications"/>
     <embedded name="resources" class="FrankProjects\UltimateWarfare\Entity\Player\Resources"/>

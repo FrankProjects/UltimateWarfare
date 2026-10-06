@@ -29,16 +29,16 @@ final class RegisterActionService
         $this->userRepository = $userRepository;
     }
 
-    public function activateUser(string $token): void
+    public function verifyEmail(string $token): void
     {
-        $user = $this->userRepository->findByConfirmationToken($token);
+        $user = $this->userRepository->findByEmailVerificationToken($token);
 
         if ($user === null) {
             throw new RuntimeException("User with this token does not exist");
         }
 
-        $user->setConfirmationToken(null);
-        $user->setEnabled(true);
+        $user->setEmailVerificationToken(null);
+        $user->setEmailVerified(true);
         $this->userRepository->save($user);
     }
 
@@ -60,8 +60,8 @@ final class RegisterActionService
             throw new RuntimeException('TokenGenerator failed!');
         }
 
-        $user->setSignup(new DateTime());
-        $user->setConfirmationToken($token);
+        $user->setSignedUpAt(new DateTime());
+        $user->setEmailVerificationToken($token);
 
         if ($this->userRepository->findByEmail($user->getEmail()) !== null) {
             throw new RuntimeException('User with this email already exist!');

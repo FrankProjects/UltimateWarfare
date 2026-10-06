@@ -3,32 +3,38 @@
 {% block title %}ADMIN - Unban requests{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="3"><b>Unban requests</b></td>
-        </tr>
-        <tr>
-            <td width="150">Username</td>
-            <td width="450">Message</td>
-            <td width="100">Action</td>
-        </tr>
-        {% for unbanRequest in unbanRequests %}
-            <tr>
-                <td>
-                    {{ unbanRequest.user.username }}
-                </td>
-                <td>
-                    {{ unbanRequest.post }}
-                </td>
-                <td>
-                    <a class="btn btn-primary" href="{{ path('Admin/UnbanRequest/Unban', {'unbanRequestId': unbanRequest.id}) }}"><b>Unban</b></a><br />
-                    <a class="btn btn-danger" href="{{ path('Admin/UnbanRequest/Remove', {'unbanRequestId': unbanRequest.id}) }}"><b>Remove</b></a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">No unban requests....</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Unban requests</div>
+        <div class="uw-card-body">
+            <table class="table text-center">
+                <tr>
+                    <td width="150">Username</td>
+                    <td width="450">Message</td>
+                    <td width="100">Action</td>
+                </tr>
+                {% for unbanRequest in unbanRequests %}
+                    <tr>
+                        <td>
+                            {{ unbanRequest.user.username }}
+                        </td>
+                        <td>
+                            {{ unbanRequest.post }}
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ path('Admin/UnbanRequest/Unban', {'unbanRequestId': unbanRequest.id}) }}" style="display:inline">
+                                <button type="submit" class="btn btn-primary"><b>Unban</b></button>
+                            </form><br />
+                            <form method="POST" action="{{ path('Admin/UnbanRequest/Remove', {'unbanRequestId': unbanRequest.id}) }}" style="display:inline">
+                                <button type="submit" class="btn btn-danger"><b>Remove</b></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">No unban requests....</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock %}

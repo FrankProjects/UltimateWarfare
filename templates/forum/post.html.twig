@@ -1,34 +1,32 @@
-<table class="table text-center">
-    <tr>
-        <td width="200">Name: {{ post.user.username }}
-            {% if 'ROLE_ADMIN' in post.user.roles  %}
-                <p>
-                    <b>Forum Moderator</b>
-                </p>
-            {% endif %}
-            {% if post.user.hasAvatar %}
-                <img alt="{{ post.user.username }} Avatar" src="data:image/jpeg;base64,{{ post.user.avatar|base64_encode() }}" />
-            {% endif %}
-        </td>
-        <td rowspan="3" width="700">{{ post.content|nl2br }}
-            <br/>
-            {% if post.editUser %}
-                <br/><br/><i> Last edited by: {{ post.editUser.username }}</i>
-            {% endif %}
+<div class="uw-card">
+    <div class="uw-card-body">
+        <div class="row">
+            <div class="col-3">
+                <div>Name: {{ post.user.username }}</div>
+                {% if 'ROLE_ADMIN' in post.user.roles %}
+                    <p><b>Forum Moderator</b></p>
+                {% endif %}
+                <div>
+                    Date/Time:<br/>
+                    {{ post.createDateTime|date("Y-m-d H:i:s") }}
+                </div>
+            </div>
+            <div class="col-9">
+                {{ post.content|nl2br }}
+                {% if post.editUser %}
+                    <br/><br/><i> Last edited by: {{ post.editUser.username }}</i>
+                {% endif %}
 
-            {% if user != null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}
-                <br/>
-                <br/>
-                <a class="btn btn-primary" href="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" title="Delete">Delete</a>
-                - <a class="btn btn-primary" href="{{ path('Forum/Post/Edit', {'postId': post.id}) }}" title="Edit">Edit</a>
-            {% endif %}
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Date/Time:<br/>
-            {{ post.createDateTime|date("Y-m-d H:i:s") }}
-        </td>
-    </tr>
-</table>
+                {% if user != null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}
+                    <br/>
+                    <br/>
+                    <form method="POST" action="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" style="display:inline">
+                        <button type="submit" class="btn btn-primary" title="Delete">Delete</button>
+                    </form>
+                    - <a class="btn btn-primary" href="{{ path('Forum/Post/Edit', {'postId': post.id}) }}" title="Edit">Edit</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 <br/>

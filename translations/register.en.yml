@@ -5,3 +5,7 @@ label:
   password: Password
   password_repeat: Repeat Password
   register: Register
+page:
+  title: Ultimate Warfare - Register
+  header: Register Account
+  help_text: An email with an activation code will be sent to the email address you register, so make sure you enter a correct address.

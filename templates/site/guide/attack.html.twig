@@ -1,206 +1,138 @@
 {% extends 'site/guideBase.html.twig' %}
 {% block content %}
-    <table class="table text-start">
-        <tr>
-            <td>
-                The attack system is a quite advanced system. When your attack fleet arrives and attacks there so no way
-                back. The results of the battle depends on many factors, we will run through them step by step now.<br/><br/>
-
-                <b>Small Player Protection:</b><br/>
-                Bigger players can't attack players that have 25% or less of their regions. This will prevent bigger
-                players from attacking new players. If a small player attacks a big player, the big player can attack
-                back for 24 hours.<br/><br/>
-
-                <b>Support:</b><br/>
-                First of all the defender is in a better position, because if he owns the regions around the region you
-                attack, and he has Train stations, airports or / and harbors in them, that regions will help him defend
-                his region!<br/><br/>
-
-                Look at the example below,<br/>
-                If "ATTACKER" attacks region 2,2 and the defender has a Train station, airport and harbor on 1,2, then
-                1,2 will send all his units to region 2,2 to defend it!<br/>
-                If region 2,3 has only 1 airfield, he will only send planes to 2,2 to defend it!<br/>
-                And same for region 3,2. The reinforcements to defend a region are based on the train stations, airports
-                and harbors from the surrounding regions and ofcource on the units that are located in those
-                regions.<br/><br/>
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Attack System</div>
+        <div class="uw-card-body">
+            <p>
+                Attacking is how you capture regions from other players. Once your attack fleet arrives and the battle begins,
+                there is no way back. Make sure you are prepared before launching an attack!
+            </p>
+        </div>
+    </div>
 
     <br/>
-    <br/>
 
-    <table width="360" class="worldtable text-center">
-        <tr>
-            <td width="15">x</td>
-            <td width="119">1</td>
-            <td width="119">2</td>
-            <td width="119">3</td>
-        </tr>
-        <tr>
-            <td width="15">1</td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a href="{{ url('Guide/Attack') }}"><span style="color:gold"><b>Building<br/>YOU</b></span></a>
-            </td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a>
-            </td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a class="A" href="{{ url('Guide/Attack') }}">Buy</a>
-            </td>
-        </tr>
-        <tr>
-            <td width="15">2</td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a href="{{ url('Guide/Attack') }}"><span style="color:gold"><b>Building<br/>YOU</b></span></a>
-            </td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a>
-            </td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a></td>
-        </tr>
-        <tr>
-            <td width="15">3</td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a href="{{ url('Guide/Attack') }}"><span style="color:gold"><b>Building<br/>YOU</b></span></a>
-            </td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a class="A" href="{{ url('Guide/Attack') }}">Attack<br/>DEFENDER</a>
-            </td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top">
-                <br/><a class="A" href="{{ url('Guide/Attack') }}">Buy</a>
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Protection Rules</div>
+        <div class="uw-card-body">
+            <ul>
+                <li>You cannot attack a player who has only <b>1 region</b> remaining.</li>
+                <li>You cannot attack a player within their first <b>48 hours</b> of joining the world.</li>
+                <li>You cannot attack your own regions.</li>
+            </ul>
+        </div>
+    </div>
 
     <br/>
-    <br/>
 
-    <table class="table text-start">
-        <tr>
-            <td>
-                <br/>
-                Some Limits:
-                <ul>
-
-                    <li>
-                        <b>Train stations:</b> Every train station can send max 25 soldiers and 1 tank (If you have
-                        that many on your region) as support.<br/>
-                    </li>
-                    <li>
-                        <b>Airport:</b> Every airport can send max 10 planes (If you have that many planes on your
-                        region) as support.
-                    </li>
-                    <li>
-                        <b>Harbor:</b> Every harbor can send max 1 ship (If you have that many ships on your region)
-                        as support.
-                    </li>
-                </ul>
-
-                <br/>
-                <br/>
-                <b>Battle Stages:</b><br/>
-                The battle takes place in 4 Battle Stages,<br/>
-                Air Battle<br/>
-                Sea Battle<br/>
-                Ground Battle<br/>
-                And then the Final Stage<br/><br/>
-
-                <b>Air Battle:</b><br/>
-                This is the first battle stage,<br/>
-                Your planes start with attacking the defenders Anti Air Missiles,
-                You need 10 planes to destroy 1 Anti Air Missile!<br/>
-                If you didn't killed all Anti Air Missiles, then every 2 Missiles will kill 1 plane of
-                you!<br/><br/>
-                Now the planes battle, every 5 planes you send will kill 1 enemy plane! After that you will lose 1
-                plane for every 5 planes that the defender has left from backfire!<br/><br/>
-
-                Then the planes you have left will move on to the defending ships, but cos of the strong armor you
-                need 100 planes to take out 1 warship!<br/>
-                This was the final stage of the Air battle<br/><br/>
-
-                <b>Sea Battle:</b><br/>
-                Your ships move through the heavy guarded sea, you will lose 1 ship for every 1000 sea mines. After
-                that you kill 1 enemy ship with every 2 ships you have, the defender kills 1 ship of you with every
-                2 ships that he has left.<br/><br/>
-
-                <b>Ground Battle:</b><br/>
-                The defender will use his planes to attack your soldiers! Every plane is able to kill 4 attacking
-                soldiers.<br/>
-                The attacking ships open fire at the enemy ground troops now, every ships is able to take down 9
-                defending soldiers.<br/>
-                After that the attacking will lose 1 soldier for every 20 land mines the defender has!<br/>
-                After that every 2 attacking tanks take down 1 defending tank, in return fire every 2 tanks that the
-                defender has left kills 1 attacking tank!<br/>
-                In the next stage every attacking tank kills 2 soldiers.<br/><br/>
-
-                <b>Final Stage:</b><br/>
-                Finally the final stage, in this stage the attacking soldiers will fight the defending soldiers,
-                every 2 attacking soldiers kill 1 defending soldier, and in backfire every 2 defending soldiers will
-                kill 1 attacking soldier.<br/><br/>
-                To win a battle the attacker needs to have 2 times the amount of soldiers after the final
-                stage!<br/>
-                The attacker gains the region WITH all buildings.<br/>
-                Look below for an example battle report:
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Attack Range</div>
+        <div class="uw-card-body">
+            <p>
+                Different unit types have different attack ranges measured in tiles.
+                Distance is calculated as the maximum of the horizontal and vertical distance between regions (diagonal movement counts as 1 tile).
+            </p>
+            <table class="table">
+                <tr>
+                    <th>Unit Type</th>
+                    <th>Range</th>
+                </tr>
+                <tr>
+                    <td>Soldier, Sniper, Mine Sweeper</td>
+                    <td>1 tile</td>
+                </tr>
+                <tr>
+                    <td>Tank, Artillery</td>
+                    <td>2 tiles</td>
+                </tr>
+                <tr>
+                    <td>Fighter</td>
+                    <td>3 tiles</td>
+                </tr>
+                <tr>
+                    <td>Bomber</td>
+                    <td>5 tiles</td>
+                </tr>
+                <tr>
+                    <td>Strategic Bomber</td>
+                    <td>7 tiles</td>
+                </tr>
+                <tr>
+                    <td>Naval Units</td>
+                    <td>1 tile (both source and target must be coastal)</td>
+                </tr>
+            </table>
+            <p>
+                A region is considered <b>coastal</b> if it is a water or sand terrain type, or if it is directly adjacent to one.
+            </p>
+        </div>
+    </div>
 
     <br/>
+
+    <div class="uw-card">
+        <div class="uw-card-header">How to Attack</div>
+        <div class="uw-card-body">
+            <ol>
+                <li>Click on an enemy region on the <a href="{{ url('Guide/World') }}">world map</a>.</li>
+                <li>The game shows you which of your regions have units within attack range.</li>
+                <li>Select a source region to attack from.</li>
+                <li>Choose which units to send.</li>
+                <li>Your attack fleet will travel to the target. Travel time depends on the distance between regions.</li>
+                <li>When the fleet arrives, the battle begins automatically.</li>
+            </ol>
+        </div>
+    </div>
+
     <br/>
 
+    <div class="uw-card">
+        <div class="uw-card-header">Battle System</div>
+        <div class="uw-card-body">
+            <p>
+                Battles are resolved in <b>3 phases</b>, each based on a different combat domain:
+            </p>
 
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td><b>Ultimate Warfare Battle Report</b></td>
-        </tr>
-        <tr>
-            <td><b>Air Battle</b>
-                <br/>
-                You started with 21 planes...<br/>
-                You killed 0 enemy planes,<br/>
-                You lost 4 planes during the air battle.
+            <b>Phase 1: Air Battle</b>
+            <p>
+                Units with air combat stats fight first. Air defense power hits attacking units, then air attack power hits defending units.
+            </p>
 
-                <br/><br/>
+            <b>Phase 2: Sea Battle</b>
+            <p>
+                Units with sea combat stats fight next. Sea defense power hits attacking units, then sea attack power hits defending units.
+            </p>
 
-                After a while you saw 2 ships,<br/>
-                They couldn't protect theirself against your fast strike planes,<br/>
-                After your stikes there were 2 ships left.
+            <b>Phase 3: Ground Battle</b>
+            <p>
+                Units with ground combat stats fight last. Ground defense power hits attacking units, then ground attack power hits defending units.
+            </p>
 
-                <br/><br/>
+            <br/>
+            <b>How casualties are calculated:</b>
+            <p>
+                Each unit type has attack and defense stats for each combat phase (air, sea, ground), as well as health and armor values.
+                The total power in a phase is the sum of all units' relevant attack or defense stat multiplied by their count.
+                Casualties are determined by dividing the opposing power by each unit type's effective health (health multiplied by armor).
+            </p>
+        </div>
+    </div>
 
-                You finally reached the land...<br/>
-                Your rader saw 250 soldiers, 14 tanks and 0 bunkers,<br/><br/>
+    <br/>
 
-                <b>Sea Battle</b><br/>
-                You started with 3 ships,<br/>
-                Your enemy had 2 ships, <br/>
-                and 1 Support ships!<br/>
-                After a huge battle you had 2 ships left.<br/><br>
-
-                <br/>
-                <b>Ground Battle</b>
-                <br/>
-                You started with 734 soldiers,<br/>
-                5 enemy planes opent fire at your ground troops,<br/>
-                After the strikes from the enemy planes you had 714 soldiers left.<br/>
-                Your 2 ships opent fire and killed 18 soldiers.<br/>
-                Your 57 tanks were fighting against 14 tanks,<br/>
-                and 6 Support tanks!<br/>
-                After the battle you had 54 tanks left, your enemy had 0 tanks left.<br/><br/>
-
-                Your 54 tanks found a group of 232 enemy soldiers.<br/>
-                You managed to kill some enemy soldiers, your enemy had 124 soldiers left.<br/>
-                <br/><br/>
-
-                <b>The Final Stage</b><br/>
-                You have 714 soldiers left, your enemy had 124 soldiers left.<br/>
-                and 150 Support soldiers!<br/>
-                After the battle you had 639 left, your enemy had 0 soldiers left.<br/><br/>
-
-                YOU WON
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Victory</div>
+        <div class="uw-card-body">
+            <p>
+                After all three battle phases, if the <b>defender has no defense power remaining</b> and the <b>attacker still has attack power</b>,
+                the attacker wins the battle.
+            </p>
+            <p>
+                The winner captures the region along with all its buildings intact. The losing attacker's fleet is destroyed.
+            </p>
+            <p>
+                Both players receive a battle report detailing the outcome.
+            </p>
+        </div>
+    </div>
 {% endblock %}

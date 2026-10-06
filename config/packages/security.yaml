@@ -22,11 +22,14 @@ security:
         main:
             pattern: ^/
             lazy: true
+            entry_point: FrankProjects\UltimateWarfare\Security\ApiAwareAuthenticationEntryPoint
+            user_checker: FrankProjects\UltimateWarfare\Security\UserChecker
             form_login:
                 provider: frankprojects
                 default_target_path: /game/login
                 login_path: /login
                 check_path: /login
+                success_handler: FrankProjects\UltimateWarfare\Security\ApiAwareAuthenticationSuccessHandler
             logout:       true
 
     access_control:

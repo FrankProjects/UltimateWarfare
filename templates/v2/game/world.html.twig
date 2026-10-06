@@ -1,0 +1,125 @@
+
+{% extends 'v2/game.html.twig' %}
+
+{% block title %}Ultimate Warfare - World Map{% endblock title %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/world-map.css') }}">
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/map/camera-controller.js') }}"></script>
+    <script src="{{ asset('js/map/unit-renderer.js') }}"></script>
+    <script src="{{ asset('js/map/tile-renderer.js') }}"></script>
+    <script src="{{ asset('js/map/fleet-manager.js') }}"></script>
+    <script src="{{ asset('js/map/bombardment-manager.js') }}"></script>
+    <script src="{{ asset('js/hex-map.js') }}"></script>
+{% endblock javascripts %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div id="worldMapContainer">
+                {% include 'v2/game/world/_map_controls.html.twig' %}
+
+                <canvas id="worldMap"></canvas>
+
+                <div id="unitTooltip"></div>
+                <div id="unitInfoTooltip"></div>
+
+                <div class="map-zoom-controls">
+                    <button type="button" id="zoomInBtn" title="Zoom in">+</button>
+                    <button type="button" id="zoomOutBtn" title="Zoom out">−</button>
+                    <button type="button" id="resetViewBtn" title="Center on your region">⌂</button>
+                    <button type="button" id="toggleOverlay" title="Toggle overlays">◉</button>
+                </div>
+
+                {% include 'v2/game/world/_map_legend.html.twig' %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'v2/game/world/_modals.html.twig' %}
+
+    <script>
+        // Global config object — bridges Twig data to JavaScript modules
+        var WorldApp = {
+            imageBasePath: '{{ asset('images') }}',
+            playerName: {{ player.name|json_encode|raw }},
+            regionPrice: {{ player.regionPrice }},
+            showWelcome: {{ showWelcome ? 'true' : 'false' }},
+            worldMap: null,
+            defaultTileClick: null,
+            worldRegions: [
+                {% for region in regions %}
+                {
+                    x: {{ region.x }},
+                    y: {{ region.y }},
+                    id: {{ region.id }},
+                    type: {{ region.type|json_encode|raw }},
+                    image: {{ region.image|json_encode|raw }},
+                    hasOwner: {{ region.hasOwner ? 'true' : 'false' }},
+                    isYours: {{ region.isYours ? 'true' : 'false' }},
+                    ownerName: {{ region.ownerName|json_encode|raw }},
+                    isVisible: {{ region.isVisible ? 'true' : 'false' }},
+                    units: {{ region.units|json_encode|raw }}
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            playerFleets: [
+                {% for fleet in fleets %}
+                {
+                    id: {{ fleet.id }},
+                    sourceX: {{ fleet.sourceX }},
+                    sourceY: {{ fleet.sourceY }},
+                    targetX: {{ fleet.targetX }},
+                    targetY: {{ fleet.targetY }},
+                    targetRegionId: {{ fleet.targetRegionId }},
+                    targetIsYours: {{ fleet.targetIsYours ? 'true' : 'false' }},
+                    timestampArrive: {{ fleet.timestampArrive }},
+                    hasArrived: {{ fleet.hasArrived ? 'true' : 'false' }},
+                    eta: {{ fleet.eta }},
+                    unitCount: {{ fleet.unitCount }},
+                    units: {{ fleet.units|json_encode|raw }}
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            playerBombardments: [
+                {% for bombardment in bombardments %}
+                {
+                    sourceX: {{ bombardment.sourceX }},
+                    sourceY: {{ bombardment.sourceY }},
+                    targetX: {{ bombardment.targetX }},
+                    targetY: {{ bombardment.targetY }},
+                    cooldownUntil: {{ bombardment.cooldownUntil }},
+                    remainingSeconds: {{ bombardment.remainingSeconds }}
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ]
+        };
+    </script>
+    <script src="{{ asset('js/world/notifications.js') }}"></script>
+    <script src="{{ asset('js/world/api-fetch.js') }}"></script>
+    <script src="{{ asset('js/world/messages.js') }}"></script>
+    <script src="{{ asset('js/world/reports.js') }}"></script>
+    <script src="{{ asset('js/world/research.js') }}"></script>
+    <script src="{{ asset('js/world/build.js') }}"></script>
+    <script src="{{ asset('js/world/destroy.js') }}"></script>
+    <script src="{{ asset('js/world/attack.js') }}"></script>
+    <script src="{{ asset('js/world/operations.js') }}"></script>
+    <script src="{{ asset('js/world/send-units.js') }}"></script>
+    <script src="{{ asset('js/world/fleet-overview.js') }}"></script>
+    <script src="{{ asset('js/world/construction.js') }}"></script>
+    <script src="{{ asset('js/world/region-overview.js') }}"></script>
+    <script src="{{ asset('js/world/market.js') }}"></script>
+    <script src="{{ asset('js/world/federation.js') }}"></script>
+    <script src="{{ asset('js/world/profile.js') }}"></script>
+    <script src="{{ asset('js/world/player-profile.js') }}"></script>
+    <script src="{{ asset('js/world/rankings.js') }}"></script>
+    <script src="{{ asset('js/world/statistics.js') }}"></script>
+    <script src="{{ asset('js/world/worlds.js') }}"></script>
+    <script src="{{ asset('js/world/modals.js') }}"></script>
+    <script src="{{ asset('js/world/map-init.js') }}"></script>
+{% endblock content %}

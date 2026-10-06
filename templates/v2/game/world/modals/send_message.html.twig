@@ -1,0 +1,26 @@
+<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sendMessageModalLabel">Send Message to <span id="sendMessageRecipient"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="message-form">
+                    <div class="message-form-group">
+                        <label for="messageSubject">Subject</label>
+                        <input type="text" id="messageSubject" maxlength="255" placeholder="Enter subject...">
+                    </div>
+                    <div class="message-form-group">
+                        <label for="messageBody">Message</label>
+                        <textarea id="messageBody" rows="5" placeholder="Type your message..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmSendMessageBtn">Send Message</button>
+            </div>
+        </div>
+    </div>
+</div>

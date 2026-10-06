@@ -44,19 +44,37 @@ final class DoctrineTopicRepository implements TopicRepository
     }
 
     /**
-     * @param Category $category
      * @return Topic[]
      */
     public function getByCategorySortedByStickyAndDate(Category $category): array
     {
         return $this->entityManager->createQuery(
             'SELECT t FROM ' . Topic::class . ' t
-                 LEFT JOIN ' . Post::class . ' p ON p.topic = t 
+                 LEFT JOIN ' . Post::class . ' p ON p.topic = t
                  WHERE t.category = :category
                  ORDER BY t.sticky, p.createDateTime DESC'
         )
-            ->setParameter('category', $category->getId())
+            ->setParameter('category', $category->value)
             ->getResult();
+    }
+
+    public function getTopicCountByCategory(Category $category): int
+    {
+        return (int) $this->entityManager->createQuery(
+            'SELECT COUNT(t.id) FROM ' . Topic::class . ' t WHERE t.category = :category'
+        )
+            ->setParameter('category', $category->value)
+            ->getSingleScalarResult();
+    }
+
+    public function getLastTopicByCategory(Category $category): ?Topic
+    {
+        return $this->entityManager->createQuery(
+            'SELECT t FROM ' . Topic::class . ' t WHERE t.category = :category ORDER BY t.createDateTime DESC'
+        )
+            ->setParameter('category', $category->value)
+            ->setMaxResults(1)
+            ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
     public function remove(Topic $topic): void

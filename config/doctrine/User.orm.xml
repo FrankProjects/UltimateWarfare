@@ -6,33 +6,29 @@
     </id>
     <field name="username" column="username" length="180" unique="true"/>
     <field name="email" column="email" length="180" unique="true"/>
-    <field name="avatar" column="avatar" type="blob" />
-    <field name="enabled" type="boolean" column="enabled">
+    <field name="emailVerified" type="boolean" column="email_verified">
       <options>
         <option name="default">0</option>
       </options>
     </field>
     <field name="password" column="password" length="255"/>
-    <field name="lastLogin" type="datetime" column="last_login" nullable="true"/>
-    <field name="confirmationToken" column="confirmation_token" length="180" unique="true" nullable="true"/>
-    <field name="passwordRequestedAt" type="datetime" column="password_requested_at" nullable="true"/>
+    <field name="lastSeenAt" type="datetime" column="last_seen_at" nullable="true"/>
+    <field name="lastSeenIp" column="last_seen_ip" length="45" nullable="true"/>
+    <field name="emailVerificationToken" column="email_verification_token" length="180" unique="true" nullable="true"/>
+    <field name="passwordResetToken" column="password_reset_token" length="180" unique="true" nullable="true"/>
+    <field name="passwordResetRequestedAt" type="datetime" column="password_reset_requested_at" nullable="true"/>
     <field name="roles" type="json" column="roles">
       <options>
         <option name="fixed"/>
       </options>
     </field>
-    <field name="signup" type="datetime" column="signup"/>
-    <field name="active" type="boolean" column="active">
+    <field name="signedUpAt" type="datetime" column="signed_up_at"/>
+    <field name="banned" type="boolean" column="banned">
       <options>
-        <option name="default">1</option>
+        <option name="default">0</option>
       </options>
     </field>
-    <field name="adviser" type="boolean" column="adviser">
-      <options>
-        <option name="default">1</option>
-      </options>
-    </field>
-    <field name="forumBan" type="boolean" column="forum_ban">
+    <field name="forumBanned" type="boolean" column="forum_banned">
       <options>
         <option name="default">0</option>
       </options>

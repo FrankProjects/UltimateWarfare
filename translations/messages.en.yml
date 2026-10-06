@@ -1,0 +1,4 @@
+captcha:
+  prompt: Solve the math problem
+  alt: CAPTCHA
+  refresh: Refresh

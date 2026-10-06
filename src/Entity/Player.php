@@ -24,10 +24,9 @@ class Player
     private int $timestampUpdate;
     private int $netWorth = 0;
     private int $federationHierarchy = 0;
-    private string $notepad = '';
     private User $user;
     private World $world;
-    private ?Federation $federation;
+    private ?Federation $federation = null;
 
     /** @var Collection<int, Report> */
     private Collection $reports;
@@ -136,16 +135,6 @@ class Player
     public function getFederationHierarchy(): int
     {
         return $this->federationHierarchy;
-    }
-
-    public function setNotepad(string $notepad): void
-    {
-        $this->notepad = $notepad;
-    }
-
-    public function getNotepad(): string
-    {
-        return $this->notepad;
     }
 
     /**

@@ -7,12 +7,11 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use FrankProjects\UltimateWarfare\Entity\GameUnit;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
-use FrankProjects\UltimateWarfare\Entity\WorldSector;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 
 final class DoctrineWorldRegionRepository implements WorldRegionRepository
@@ -36,16 +35,6 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     }
 
     /**
-     * @param WorldSector $worldSector
-     * @param Player|null $player
-     * @return WorldRegion[]
-     */
-    public function findByWorldSectorAndPlayer(WorldSector $worldSector, ?Player $player): array
-    {
-        return $this->repository->findBy(['worldSector' => $worldSector, 'player' => $player]);
-    }
-
-    /**
      * @param World $world
      * @param Player|null $player
      * @return WorldRegion[]
@@ -61,28 +50,49 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     }
 
     /**
-     * @param WorldRegion $worldRegion
-     * @return array<int|string, mixed>
+     * @return WorldRegion[]
      */
-    public function getWorldGameUnitSumByWorldRegion(WorldRegion $worldRegion): array
+    public function findByPlayerWithUnitsAndConstructions(Player $player): array
+    {
+        // Separate fetch joins per collection, as joining them all at once multiplies the result rows
+        $worldRegions = [];
+        foreach (['worldRegionStackableUnits', 'worldRegionLeveledUnits', 'constructions'] as $collection) {
+            /** @var WorldRegion[] $worldRegions */
+            $worldRegions = $this->entityManager
+                ->createQuery(
+                    'SELECT wr, item
+                  FROM ' . WorldRegion::class . ' wr
+                  LEFT JOIN wr.' . $collection . ' item
+                  WHERE wr.player = :player'
+                )->setParameter('player', $player)
+                ->getResult();
+        }
+
+        return $worldRegions;
+    }
+
+    /**
+     * @return array<int, array<int, int>>
+     */
+    public function getWorldGameUnitSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
             ->createQuery(
-                'SELECT gu.id, sum(wru.amount) as total
-              FROM ' . WorldRegionUnit::class . ' wru
-              JOIN ' . GameUnit::class . ' gu ON wru.gameUnit = gu
-              WHERE wru.worldRegion = :worldRegion
-              GROUP BY gu.id'
-            )->setParameter('worldRegion', $worldRegion)
+                'SELECT IDENTITY(wrsu.worldRegion) as regionId, wrsu.gameUnit, sum(wrsu.amount) as total
+              FROM ' . WorldRegionStackableUnit::class . ' wrsu
+              JOIN ' . WorldRegion::class . ' wr WITH wrsu.worldRegion = wr
+              WHERE wr.player = :player
+              GROUP BY regionId, wrsu.gameUnit'
+            )->setParameter('player', $player)
             ->getArrayResult();
 
-        $gameUnits = [];
-        /** @var array{'id': int, 'total': int} $result */
+        $grouped = [];
+        /** @var array{regionId: string, gameUnit: GameUnitEnum, total: string} $result */
         foreach ($results as $result) {
-            $gameUnits[$result['id']] = $result['total'];
+            $grouped[(int) $result['regionId']][$result['gameUnit']->value] = (int) $result['total'];
         }
 
-        return $gameUnits;
+        return $grouped;
     }
 
     public function getPreviousWorldRegionForPlayer(int $id, Player $player): ?WorldRegion
@@ -113,6 +123,52 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->setFirstResult(0)
             ->setMaxResults(1)
             ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
+    }
+
+    /**
+     * Find 6 hex neighbors (pointy-top, odd-r offset)
+     * @return WorldRegion[]
+     */
+    public function findAdjacentRegions(int $x, int $y, World $world): array
+    {
+        // Hex neighbors differ based on even/odd row
+        if ($y % 2 === 0) {
+            // Even row neighbors
+            $neighbors = [
+                [$x - 1, $y], [$x + 1, $y],
+                [$x - 1, $y - 1], [$x, $y - 1],
+                [$x - 1, $y + 1], [$x, $y + 1],
+            ];
+        } else {
+            // Odd row neighbors (shifted right)
+            $neighbors = [
+                [$x - 1, $y], [$x + 1, $y],
+                [$x, $y - 1], [$x + 1, $y - 1],
+                [$x, $y + 1], [$x + 1, $y + 1],
+            ];
+        }
+
+        $conditions = [];
+        $parameters = ['world' => $world];
+        foreach ($neighbors as $i => [$nx, $ny]) {
+            $conditions[] = "(wr.x = :x{$i} AND wr.y = :y{$i})";
+            $parameters["x{$i}"] = $nx;
+            $parameters["y{$i}"] = $ny;
+        }
+
+        $dql = 'SELECT wr FROM ' . WorldRegion::class . ' wr'
+            . ' WHERE wr.world = :world'
+            . ' AND (' . implode(' OR ', $conditions) . ')';
+
+        $query = $this->entityManager->createQuery($dql);
+        foreach ($parameters as $key => $value) {
+            $query->setParameter($key, $value);
+        }
+
+        /** @var WorldRegion[] $result */
+        $result = $query->getResult();
+
+        return $result;
     }
 
     public function save(WorldRegion $worldRegion): void

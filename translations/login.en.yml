@@ -4,3 +4,6 @@ label:
   login: Log in
   lost_password: Forgot your password?
   remember_me: Remember me
+page:
+  title: Ultimate Warfare - Login
+  header: Login

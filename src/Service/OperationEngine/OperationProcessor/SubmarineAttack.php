@@ -4,21 +4,26 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class SubmarineAttack extends OperationProcessor
 {
-    protected const int GAME_UNIT_SUBMARINE_ID = 403;
-    protected const int GAME_UNIT_SHIP_ID = 303;
     protected const int SHIPS_KILLED_PER_SUBMARINE = 1;
+    private const float BASE_SUCCESS = 0.70;
 
     public function getFormula(): float
     {
-        $specialOps = $this->getSpecialOps();
-        $guards = $this->getGuards();
-        $total_units = $specialOps + $guards + 1;
+        $rtLevel = $this->getAttackerResearchLevel('research-tier');
+        $defNetLevel = $this->getTargetResearchLevel('defensive-network');
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
+        $probability = self::BASE_SUCCESS
+            + 0.05 * max(0, $rtLevel - 1)
+            - 0.12 * $defNetLevel;
+
+        $probability = max(0.05, min(0.95, $probability));
+
+        return $probability - mt_rand(0, 1000) / 1000.0;
     }
 
     public function processPreOperation(): void
@@ -29,63 +34,59 @@ final class SubmarineAttack extends OperationProcessor
     public function processSuccess(): void
     {
         $ships = 0;
-        foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SHIP_ID) {
-                $ships = $ships + $worldRegionUnit->getAmount();
+        foreach ($this->region->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+            if ($worldRegionStackableUnit->getGameUnit() === GameUnitEnum::DESTROYER) {
+                $ships = $ships + $worldRegionStackableUnit->getAmount();
             }
         }
 
         if (($this->amount * self::SHIPS_KILLED_PER_SUBMARINE) > $ships) {
-            foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SHIP_ID) {
-                    $this->worldRegionUnitRepository->remove($worldRegionUnit);
-                    $this->addToOperationLog("You sunk {$ships} {$worldRegionUnit->getGameUnit()->getNameMulti()}!");
+            foreach ($this->region->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+                if ($worldRegionStackableUnit->getGameUnit() === GameUnitEnum::DESTROYER) {
+                    $this->worldRegionStackableUnitRepository->remove($worldRegionStackableUnit);
+                    $unitName = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit())->getNameMulti();
+                    $this->addToOperationLog("You sunk {$ships} {$unitName}!");
                 }
             }
 
             $this->addToOperationLog("You sunk all ships!");
-            $reportText = "Somebody launched a Submarine attack against region {$this->region->getX()}, {$this->region->getY()} and sunk all ships.";
+            $reportText = "Somebody launched a Submarine attack"
+                . " against region {$this->region->getX()}, {$this->region->getY()} and sunk all ships.";
             $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         } else {
             $shipsDestroyed = $this->amount * self::SHIPS_KILLED_PER_SUBMARINE;
-            foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SHIP_ID) {
-                    $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $shipsDestroyed);
-                    $this->worldRegionUnitRepository->save($worldRegionUnit);
-                    $this->addToOperationLog(
-                        "You sunk {$shipsDestroyed} {$worldRegionUnit->getGameUnit()->getNameMulti()}!"
-                    );
+            foreach ($this->region->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+                if ($worldRegionStackableUnit->getGameUnit() === GameUnitEnum::DESTROYER) {
+                    $worldRegionStackableUnit->setAmount($worldRegionStackableUnit->getAmount() - $shipsDestroyed);
+                    $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
+                    $unitName = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit())->getNameMulti();
+                    $this->addToOperationLog("You sunk {$shipsDestroyed} {$unitName}!");
                 }
             }
 
-            $reportText = "Somebody launched a Submarine attack against region {$this->region->getX()}, {$this->region->getY()} and sunk {$shipsDestroyed} ships.";
+            $reportText = "Somebody launched a Submarine attack"
+                . " against region {$this->region->getX()}, {$this->region->getY()}"
+                . " and sunk {$shipsDestroyed} ships.";
             $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         }
     }
 
     public function processFailed(): void
     {
-        $specialOpsLost = intval($this->getSpecialOps() * 0.05);
-        $submarinesLost = intval($this->amount * 0.2);
+        $submarinesLost = intval($this->amount * 0.05);
 
-        foreach ($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SPECIAL_OPS_ID) {
-                $worldRegionUnit->setAmount(intval($worldRegionUnit->getAmount() - $specialOpsLost));
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
-            }
-
-            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SUBMARINE_ID) {
-                $worldRegionUnit->setAmount(intval($worldRegionUnit->getAmount() - $submarinesLost));
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
+        foreach ($this->playerRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+            if ($worldRegionStackableUnit->getGameUnit() === GameUnitEnum::SUBMARINE) {
+                $worldRegionStackableUnit->setAmount(intval($worldRegionStackableUnit->getAmount() - $submarinesLost));
+                $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
             }
         }
 
-        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a Submarine attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a Submarine attack"
+            . " against region {$this->region->getX()}, {$this->region->getY()} but failed.";
         $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
-        $this->addToOperationLog(
-            "We failed our Submarine attack and lost {$specialOpsLost} Special Ops and {$submarinesLost} Submarines"
-        );
+        $this->addToOperationLog("We failed our Submarine attack and lost {$submarinesLost} Submarines");
     }
 
     public function processPostOperation(): void

@@ -7,8 +7,8 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Service\Action\FederationActionService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 final class FederationController extends BaseGameController
@@ -27,275 +27,253 @@ final class FederationController extends BaseGameController
         $this->federationActionService = $federationActionService;
     }
 
-    public function federation(): Response
+    public function statusApi(): JsonResponse
     {
         $player = $this->getPlayer();
-        if ($player->getFederation() === null) {
-            return $this->render(
-                'game/federation/noFederation.html.twig',
-                [
-                    'player' => $player
-                ]
-            );
+
+        if (!$player->getWorld()->getFederation()) {
+            return new JsonResponse([
+                'success' => true,
+                'hasFederation' => false,
+                'federationEnabled' => false,
+            ]);
         }
 
-        return $this->render(
-            'game/federation/yourFederation.html.twig',
-            [
-                'player' => $player,
-                'federationPlayers' => $player->getFederation()->getPlayers()
-            ]
-        );
-    }
-
-    public function showFederation(int $federationId): Response
-    {
-        $federation = $this->federationRepository->findByIdAndWorld($federationId, $this->getPlayer()->getWorld());
+        $federation = $player->getFederation();
         if ($federation === null) {
-            return $this->render(
-                'game/federation/noFederation.html.twig',
-                [
-                    'player' => $this->getPlayer()
-                ]
-            );
+            return new JsonResponse([
+                'success' => true,
+                'hasFederation' => false,
+                'federationEnabled' => true,
+            ]);
         }
 
-        // PHP 8.4 lazy objects doesn't load correct relations in twig.
-        $federationData = [];
+        $members = [];
         foreach ($federation->getPlayers() as $federationPlayer) {
-            $federationData[] = [
+            $members[] = [
+                'id' => $federationPlayer->getId(),
                 'name' => $federationPlayer->getName(),
                 'hierarchy' => $federationPlayer->getFederationHierarchy(),
-                'worldRegionCount' => count($federationPlayer->getWorldRegions()),
+                'regions' => count($federationPlayer->getWorldRegions()),
                 'netWorth' => $federationPlayer->getNetWorth(),
             ];
         }
-        return $this->render(
-            'game/federation/federation.html.twig',
-            [
-                'player' => $this->getPlayer(),
-                'federation' => $federation,
-                'federationData' => $federationData,
-            ]
-        );
+
+        return new JsonResponse([
+            'success' => true,
+            'hasFederation' => true,
+            'federationEnabled' => true,
+            'playerId' => $player->getId(),
+            'hierarchy' => $player->getFederationHierarchy(),
+            'federation' => [
+                'id' => $federation->getId(),
+                'name' => $federation->getName(),
+                'leaderMessage' => $federation->getLeaderMessage(),
+                'regions' => $federation->getRegions(),
+                'netWorth' => $federation->getNetWorth(),
+                'bank' => [
+                    'cash' => $federation->getResources()->getCash(),
+                    'wood' => $federation->getResources()->getWood(),
+                    'steel' => $federation->getResources()->getSteel(),
+                    'food' => $federation->getResources()->getFood(),
+                ],
+                'members' => $members,
+            ],
+            'playerResources' => [
+                'cash' => $player->getResources()->getCash(),
+                'wood' => $player->getResources()->getWood(),
+                'steel' => $player->getResources()->getSteel(),
+                'food' => $player->getResources()->getFood(),
+            ],
+        ]);
     }
 
-    public function federationNews(): Response
+    public function showApi(int $federationId): JsonResponse
     {
         $player = $this->getPlayer();
+        $federation = $this->federationRepository->findByIdAndWorld($federationId, $player->getWorld());
+
+        if ($federation === null) {
+            return new JsonResponse(['success' => false, 'message' => 'Federation not found']);
+        }
+
+        $members = [];
+        foreach ($federation->getPlayers() as $federationPlayer) {
+            $members[] = [
+                'name' => $federationPlayer->getName(),
+                'hierarchy' => $federationPlayer->getFederationHierarchy(),
+                'regions' => count($federationPlayer->getWorldRegions()),
+                'netWorth' => $federationPlayer->getNetWorth(),
+            ];
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'federation' => [
+                'id' => $federation->getId(),
+                'name' => $federation->getName(),
+                'regions' => $federation->getRegions(),
+                'netWorth' => $federation->getNetWorth(),
+            ],
+            'members' => $members,
+        ]);
+    }
+
+    public function newsApi(): JsonResponse
+    {
+        $player = $this->getPlayer();
+
         if ($player->getFederation() === null) {
-            return $this->render(
-                'game/federation/noFederation.html.twig',
-                [
-                    'player' => $this->getPlayer()
-                ]
-            );
+            return new JsonResponse(['success' => false, 'message' => 'Not in a federation']);
         }
 
-        $federationNews = $this->federationNewsRepository->findByFederationSortedByTimestamp($player->getFederation());
-
-        return $this->render(
-            'game/federation/news.html.twig',
-            [
-                'player' => $player,
-                'federationNews' => $federationNews
-            ]
+        $newsItems = $this->federationNewsRepository->findByFederationSortedByTimestamp(
+            $player->getFederation()
         );
-    }
 
-    public function createFederation(Request $request): Response
-    {
-        $federationName = trim($request->request->getString('name'));
-
-        try {
-            if ($request->isMethod(Request::METHOD_POST)) {
-                $this->federationActionService->createFederation($this->getPlayer(), $federationName);
-                $this->addFlash('success', "You successfully created a new Federation");
-
-                return $this->redirectToRoute('Game/Federation');
-            }
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
+        $news = [];
+        foreach ($newsItems as $item) {
+            $news[] = [
+                'timestamp' => $item->getTimestamp(),
+                'news' => $item->getNews(),
+            ];
         }
 
-        return $this->render(
-            'game/federation/create.html.twig',
-            [
-                'player' => $this->getPlayer(),
-                'federationName' => $federationName
-            ]
-        );
+        return new JsonResponse(['success' => true, 'news' => $news]);
     }
 
-    public function joinFederation(): Response
+    public function listApi(): JsonResponse
     {
-        $federations = $this->federationRepository->findByWorldSortedByRegion($this->getPlayer()->getWorld());
+        $player = $this->getPlayer();
 
-        return $this->render(
-            'game/federation/join.html.twig',
-            [
-                'player' => $this->getPlayer(),
-                'federations' => $federations
-            ]
-        );
+        if (!$player->getWorld()->getFederation()) {
+            return new JsonResponse(['success' => false, 'message' => 'Federations not enabled']);
+        }
+
+        $federations = $this->federationRepository->findByWorldSortedByRegion($player->getWorld());
+
+        $items = [];
+        foreach ($federations as $federation) {
+            $items[] = [
+                'id' => $federation->getId(),
+                'name' => $federation->getName(),
+                'founder' => $federation->getFounder()->getName(),
+                'players' => count($federation->getPlayers()),
+                'regions' => $federation->getRegions(),
+                'netWorth' => $federation->getNetWorth(),
+            ];
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'federations' => $items,
+            'hasFederation' => $player->getFederation() !== null,
+        ]);
     }
 
-    public function listFederations(): Response
-    {
-        $federations = $this->federationRepository->findByWorldSortedByRegion($this->getPlayer()->getWorld());
-
-        return $this->render(
-            'game/federation/list.html.twig',
-            [
-                'player' => $this->getPlayer(),
-                'federations' => $federations
-            ]
-        );
-    }
-
-    public function sendAid(Request $request): Response
+    public function createApi(Request $request): JsonResponse
     {
         try {
-            $aidPlayerId = $request->request->getInt('player');
+            /** @var array{name?: string} $data */
+            $data = json_decode($request->getContent(), true);
+            $name = trim($data['name'] ?? '');
+            $this->federationActionService->createFederation($this->getPlayer(), $name);
 
-            if ($request->isMethod(Request::METHOD_POST) && $aidPlayerId !== 0) {
-                /** @var array<string, string> $resources */
-                $resources = $request->request->all('resources');
-                $this->federationActionService->sendAid($this->getPlayer(), $aidPlayerId, $resources);
-                $this->addFlash('success', "You have send aid!");
-
-                return $this->redirectToRoute('Game/Federation');
-            }
+            return new JsonResponse(['success' => true, 'message' => 'Federation created successfully']);
         } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
         }
-
-        return $this->render(
-            'game/federation/sendAid.html.twig',
-            [
-                'player' => $this->getPlayer()
-            ]
-        );
     }
 
-    public function removeFederation(Request $request): Response
+    public function sendAidApi(Request $request): JsonResponse
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST)) {
-                $this->federationActionService->removeFederation($this->getPlayer());
-                $this->addFlash('success', "You successfully removed a Federation");
+            /** @var array{playerId?: int, resources?: array<string, string>} $data */
+            $data = json_decode($request->getContent(), true);
+            $playerId = $data['playerId'] ?? 0;
+            /** @var array<string, string> $resources */
+            $resources = $data['resources'] ?? [];
+            $this->federationActionService->sendAid($this->getPlayer(), $playerId, $resources);
 
-                return $this->redirectToRoute('Game/Federation');
-            }
+            return new JsonResponse(['success' => true, 'message' => 'Aid sent successfully']);
         } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
         }
-
-        return $this->render(
-            'game/federation/removeFederation.html.twig',
-            [
-                'player' => $this->getPlayer()
-            ]
-        );
     }
 
-    public function changeFederationName(Request $request): Response
+    public function removeApi(): JsonResponse
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST)) {
-                $name = trim($request->request->getString('name'));
-                $this->federationActionService->changeFederationName($this->getPlayer(), $name);
-                $this->addFlash('success', "You successfully changed the Federation name!");
+            $this->federationActionService->removeFederation($this->getPlayer());
 
-                return $this->redirectToRoute('Game/Federation');
-            }
+            return new JsonResponse(['success' => true, 'message' => 'Federation removed']);
         } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
         }
-
-        return $this->render(
-            'game/federation/changeFederationName.html.twig',
-            [
-                'player' => $this->getPlayer()
-            ]
-        );
     }
 
-    public function leaveFederation(Request $request): Response
+    public function changeNameApi(Request $request): JsonResponse
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST)) {
-                $this->federationActionService->leaveFederation($this->getPlayer());
-                $this->addFlash('success', "You successfully left your Federation");
+            /** @var array{name?: string} $data */
+            $data = json_decode($request->getContent(), true);
+            $name = trim($data['name'] ?? '');
+            $this->federationActionService->changeFederationName($this->getPlayer(), $name);
 
-                return $this->redirectToRoute('Game/Federation');
-            }
+            return new JsonResponse(['success' => true, 'message' => 'Federation name changed']);
         } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
         }
-
-        return $this->render(
-            'game/federation/leaveFederation.html.twig',
-            [
-                'player' => $this->getPlayer()
-            ]
-        );
     }
 
-    public function kickPlayer(int $playerId): Response
+    public function leaveApi(): JsonResponse
+    {
+        try {
+            $this->federationActionService->leaveFederation($this->getPlayer());
+
+            return new JsonResponse(['success' => true, 'message' => 'You have left the federation']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function kickPlayerApi(int $playerId): JsonResponse
     {
         try {
             $this->federationActionService->kickPlayer($this->getPlayer(), $playerId);
-            $this->addFlash('success', "You successfully kicked a player");
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
 
-        return $this->redirectToRoute('Game/Federation');
+            return new JsonResponse(['success' => true, 'message' => 'Player kicked']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 
-    public function updateLeadershipMessage(Request $request): Response
+    public function updateMessageApi(Request $request): JsonResponse
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST)) {
-                $message = $request->request->getString('message');
-                $this->federationActionService->updateLeadershipMessage($this->getPlayer(), $message);
-                $this->addFlash('success', "You successfully updated the leadership message");
+            /** @var array{message?: string} $data */
+            $data = json_decode($request->getContent(), true);
+            $message = $data['message'] ?? '';
+            $this->federationActionService->updateLeadershipMessage($this->getPlayer(), $message);
 
-                return $this->redirectToRoute('Game/Federation');
-            }
+            return new JsonResponse(['success' => true, 'message' => 'Leadership message updated']);
         } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
         }
-
-        return $this->render(
-            'game/federation/updateLeadershipMessage.html.twig',
-            [
-                'player' => $this->getPlayer()
-            ]
-        );
     }
 
-    public function changePlayerHierarchy(Request $request): Response
+    public function changeRoleApi(Request $request): JsonResponse
     {
         try {
-            if ($request->isMethod(Request::METHOD_POST)) {
-                $this->federationActionService->changePlayerHierarchy(
-                    $this->getPlayer(),
-                    $request->request->getInt('playerId'),
-                    $request->request->getInt('role')
-                );
-                $this->addFlash('success', "You successfully updated a player rank");
-            }
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
+            /** @var array{playerId?: int, role?: int} $data */
+            $data = json_decode($request->getContent(), true);
+            $playerId = $data['playerId'] ?? 0;
+            $role = $data['role'] ?? 0;
+            $this->federationActionService->changePlayerHierarchy($this->getPlayer(), $playerId, $role);
 
-        return $this->render(
-            'game/federation/changePlayerHierarchy.html.twig',
-            [
-                'player' => $this->getPlayer()
-            ]
-        );
+            return new JsonResponse(['success' => true, 'message' => 'Player rank updated']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 }

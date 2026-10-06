@@ -86,6 +86,57 @@ final class DoctrineReportRepository implements ReportRepository
             ->getResult();
     }
 
+    /**
+     * @param Player $player
+     * @param int|null $type
+     * @param int $limit
+     * @param int $offset
+     * @return Report[]
+     */
+    public function findReportsPaginated(Player $player, ?int $type, int $limit = 25, int $offset = 0): array
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select('r')
+            ->from(Report::class, 'r')
+            ->where('r.player = :player')
+            ->andWhere('r.timestamp < :timestamp')
+            ->setParameter('player', $player)
+            ->setParameter('timestamp', time())
+            ->orderBy('r.timestamp', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset);
+
+        if ($type !== null) {
+            $qb->andWhere('r.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param Player $player
+     * @param int|null $type
+     * @return int
+     */
+    public function countReports(Player $player, ?int $type = null): int
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb->select('COUNT(r.id)')
+            ->from(Report::class, 'r')
+            ->where('r.player = :player')
+            ->andWhere('r.timestamp < :timestamp')
+            ->setParameter('player', $player)
+            ->setParameter('timestamp', time());
+
+        if ($type !== null) {
+            $qb->andWhere('r.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
     public function remove(Report $report): void
     {
         $this->entityManager->remove($report);

@@ -3,21 +3,85 @@
 {% block title %}ADMIN - Server Logs{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="3"><b>Server Logs</b></td>
-        </tr>
-        {% for logFile, logData in logs %}
-            <tr>
-                <td colspan="3">{{ logFile }}</td>
-            </tr>
-            {% for log in logData %}
-                <tr>
-                    <td>{{ log.datetime }}</td>
-                    <td>{{ log.level_name }}</td>
-                    <td>{{ log.message }}</td>
-                </tr>
-            {% endfor %}
-        {% endfor %}
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Server Logs</div>
+        <div class="uw-card-body">
+            <p>Showing the latest {{ maxEntries }} entries per log file, newest first.</p>
+
+            <div class="server-log-filters">
+                {% for level in levels %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input server-log-level-filter" type="checkbox" id="log-level-{{ level }}" value="{{ level }}" checked>
+                        <label class="form-check-label" for="log-level-{{ level }}">
+                            <span class="server-log-level server-log-level-{{ level|lower }}">{{ level }}</span>
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% for logFile, logData in logs %}
+        <div class="uw-card">
+            <div class="uw-card-header">{{ logFile }}</div>
+            <div class="server-log-scroll">
+                {% if logData is empty %}
+                    <p class="p-3 mb-0">No readable log entries.</p>
+                {% else %}
+                    <table class="table server-log-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Level</th>
+                                <th>Channel</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logData %}
+                                <tr data-level="{{ log.level }}">
+                                    <td class="server-log-time">{{ log.datetime ? log.datetime|date('Y-m-d H:i:s') : '' }}</td>
+                                    <td><span class="server-log-level server-log-level-{{ log.level|lower }}">{{ log.level }}</span></td>
+                                    <td>{{ log.channel }}</td>
+                                    <td class="server-log-message">
+                                        {% if log.context is not null %}
+                                            <details>
+                                                <summary>{{ log.message }}</summary>
+                                                <pre>{{ log.context }}</pre>
+                                            </details>
+                                        {% else %}
+                                            {{ log.message }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+    <script>
+        (function () {
+            const filters = document.querySelectorAll('.server-log-level-filter');
+
+            function applyFilters() {
+                const visibleLevels = new Set();
+                filters.forEach(function (filter) {
+                    if (filter.checked) {
+                        visibleLevels.add(filter.value);
+                    }
+                });
+
+                document.querySelectorAll('.server-log-table tbody tr').forEach(function (row) {
+                    row.hidden = !visibleLevels.has(row.dataset.level);
+                });
+            }
+
+            filters.forEach(function (filter) {
+                filter.addEventListener('change', applyFilters);
+            });
+        })();
+    </script>
 {% endblock %}

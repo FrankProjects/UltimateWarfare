@@ -8,43 +8,32 @@ use FrankProjects\UltimateWarfare\Entity\Operation;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Util\ReportCreator;
 use RuntimeException;
 
 abstract class OperationProcessor implements OperationInterface
 {
-    protected const int GAME_UNIT_SPECIAL_OPS_ID = 401;
-    protected const int GAME_UNIT_GUARD_ID = 400;
     protected WorldRegion $region;
     protected Operation $operation;
     protected WorldRegion $playerRegion;
     protected int $amount;
     protected ReportCreator $reportCreator;
     protected PlayerRepository $playerRepository;
-    protected WorldRegionUnitRepository $worldRegionUnitRepository;
+    protected WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
+    protected WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository;
     protected WorldRegionRepository $worldRegionRepository;
     protected ConstructionRepository $constructionRepository;
+    protected GameUnitRegistry $gameUnitRegistry;
     /**
-     * @var array <int, string>
+     * @var array<int, array<string, mixed>>
      */
     protected array $operationLog = [];
 
-    /**
-     * OperationProcessor constructor.
-     *
-     * @param WorldRegion $region
-     * @param Operation $operation
-     * @param WorldRegion $playerRegion
-     * @param int $amount
-     * @param ReportCreator $reportCreator
-     * @param PlayerRepository $playerRepository
-     * @param WorldRegionUnitRepository $worldRegionUnitRepository
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param ConstructionRepository $constructionRepository
-     */
     private function __construct(
         WorldRegion $region,
         Operation $operation,
@@ -52,9 +41,11 @@ abstract class OperationProcessor implements OperationInterface
         int $amount,
         ReportCreator $reportCreator,
         PlayerRepository $playerRepository,
-        WorldRegionUnitRepository $worldRegionUnitRepository,
+        WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
+        WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
         WorldRegionRepository $worldRegionRepository,
-        ConstructionRepository $constructionRepository
+        ConstructionRepository $constructionRepository,
+        GameUnitRegistry $gameUnitRegistry
     ) {
         $this->region = $region;
         $this->operation = $operation;
@@ -62,39 +53,29 @@ abstract class OperationProcessor implements OperationInterface
         $this->amount = $amount;
         $this->reportCreator = $reportCreator;
         $this->playerRepository = $playerRepository;
-        $this->worldRegionUnitRepository = $worldRegionUnitRepository;
+        $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
+        $this->worldRegionLeveledUnitRepository = $worldRegionLeveledUnitRepository;
         $this->worldRegionRepository = $worldRegionRepository;
         $this->constructionRepository = $constructionRepository;
+        $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
-    /**
-     * @param string $subclass
-     * @param WorldRegion $region
-     * @param Operation $operation
-     * @param WorldRegion $playerRegion
-     * @param int $amount
-     * @param ReportCreator $reportCreator
-     * @param PlayerRepository $playerRepository
-     * @param WorldRegionUnitRepository $worldRegionUnitRepository
-     * @param WorldRegionRepository $worldRegionRepository
-     * @param ConstructionRepository $constructionRepository
-     * @return OperationInterface
-     */
     public static function factory(
-        string $subclass,
         WorldRegion $region,
         Operation $operation,
         WorldRegion $playerRegion,
         int $amount,
         ReportCreator $reportCreator,
         PlayerRepository $playerRepository,
-        WorldRegionUnitRepository $worldRegionUnitRepository,
+        WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
+        WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
         WorldRegionRepository $worldRegionRepository,
-        ConstructionRepository $constructionRepository
+        ConstructionRepository $constructionRepository,
+        GameUnitRegistry $gameUnitRegistry
     ): OperationInterface {
-        $className = "FrankProjects\\UltimateWarfare\\Service\\OperationEngine\\OperationProcessor\\" . $subclass;
+        $className = $operation->getProcessorClass();
         if (!class_exists($className) || is_subclass_of($className, OperationInterface::class) === false) {
-            throw new RuntimeException("Unknown Operation {$subclass}");
+            throw new RuntimeException("Unknown Operation processor {$className}");
         }
 
         return new $className(
@@ -104,14 +85,16 @@ abstract class OperationProcessor implements OperationInterface
             $amount,
             $reportCreator,
             $playerRepository,
-            $worldRegionUnitRepository,
+            $worldRegionStackableUnitRepository,
+            $worldRegionLeveledUnitRepository,
             $worldRegionRepository,
-            $constructionRepository
+            $constructionRepository,
+            $gameUnitRegistry
         );
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, array<string, mixed>>
      */
     public function execute(): array
     {
@@ -136,36 +119,14 @@ abstract class OperationProcessor implements OperationInterface
         return ($random - 1) / 10;
     }
 
-    protected function getSpecialOps(): int
-    {
-        foreach ($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SPECIAL_OPS_ID) {
-                return $worldRegionUnit->getAmount();
-            }
-        }
-
-        return 0;
-    }
-
-    protected function getGuards(): int
-    {
-        foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_GUARD_ID) {
-                return $worldRegionUnit->getAmount();
-            }
-        }
-
-        return 0;
-    }
-
-    protected function hasResearched(int $researchId): bool
+    protected function hasResearched(string $researchSlug): bool
     {
         foreach ($this->getPlayerRegionPlayer()->getPlayerResearch() as $playerResearch) {
             if ($playerResearch->getActive() === false) {
                 continue;
             }
 
-            if ($playerResearch->getResearch()->getId() === $researchId) {
+            if ($playerResearch->getResearchSlug() === $researchSlug) {
                 return true;
             }
         }
@@ -173,8 +134,41 @@ abstract class OperationProcessor implements OperationInterface
         return false;
     }
 
+    protected function getAttackerResearchLevel(string $researchSlug): int
+    {
+        return $this->highestCompletedResearchLevel($this->getPlayerRegionPlayer(), $researchSlug);
+    }
+
+    protected function getTargetResearchLevel(string $researchSlug): int
+    {
+        $targetPlayer = $this->region->getPlayer();
+        if ($targetPlayer === null) {
+            return 0;
+        }
+
+        return $this->highestCompletedResearchLevel($targetPlayer, $researchSlug);
+    }
+
+    private function highestCompletedResearchLevel(Player $player, string $researchSlug): int
+    {
+        $highest = 0;
+        foreach ($player->getPlayerResearch() as $playerResearch) {
+            if ($playerResearch->getActive() === false) {
+                continue;
+            }
+            if ($playerResearch->getResearchSlug() !== $researchSlug) {
+                continue;
+            }
+            if ($playerResearch->getLevel() > $highest) {
+                $highest = $playerResearch->getLevel();
+            }
+        }
+
+        return $highest;
+    }
+
     /**
-     * @return array<int, string>
+     * @return array<int, array<string, mixed>>
      */
     public function getOperationLog(): array
     {
@@ -183,7 +177,32 @@ abstract class OperationProcessor implements OperationInterface
 
     protected function addToOperationLog(string $log): void
     {
-        $this->operationLog[] = $log;
+        $this->operationLog[] = ['type' => 'line', 'text' => $log];
+    }
+
+    protected function addSection(string $title): void
+    {
+        $this->operationLog[] = ['type' => 'section', 'title' => $title];
+    }
+
+    protected function addRow(string $label, string $value): void
+    {
+        $this->operationLog[] = ['type' => 'row', 'label' => $label, 'value' => $value];
+    }
+
+    protected function addEmpty(string $text): void
+    {
+        $this->operationLog[] = ['type' => 'empty', 'text' => $text];
+    }
+
+    protected function addReportEntry(int $timestamp, string $text): void
+    {
+        $this->operationLog[] = ['type' => 'report', 'timestamp' => $timestamp, 'text' => $text];
+    }
+
+    protected function addFailure(string $text): void
+    {
+        $this->operationLog[] = ['type' => 'failure', 'text' => $text];
     }
 
     protected function getTargetRegionPlayer(): Player

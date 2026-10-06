@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Service\Action\FederationBankActionService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 final class FederationBankController extends BaseGameController
@@ -19,71 +19,33 @@ final class FederationBankController extends BaseGameController
         $this->federationBankActionService = $federationBankActionService;
     }
 
-    public function deposit(Request $request): Response
+    public function depositApi(Request $request): JsonResponse
     {
-        $player = $this->getPlayer();
-        $federation = $player->getFederation();
-        if ($federation === null) {
-            return $this->render(
-                'game/federation/noFederation.html.twig',
-                [
-                    'player' => $player
-                ]
-            );
-        }
-
         try {
-            // XXX TODO: Rewrite to form isSubmitted && isValid
-            if ($request->isMethod(Request::METHOD_POST)) {
-                /** @var array<string, string> $resources */
-                $resources = $request->request->all('resources');
-                $this->federationBankActionService->deposit($player, $resources);
-                $this->addFlash('success', 'You successfully made a deposit!');
-            }
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
+            /** @var array{resources?: array<string, string>} $data */
+            $data = json_decode($request->getContent(), true);
+            /** @var array<string, string> $resources */
+            $resources = $data['resources'] ?? [];
+            $this->federationBankActionService->deposit($this->getPlayer(), $resources);
 
-        return $this->render(
-            'game/federation/bank/deposit.html.twig',
-            [
-                'player' => $player,
-                'federationResources' => $federation->getResources(),
-            ]
-        );
+            return new JsonResponse(['success' => true, 'message' => 'Deposit successful']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 
-    public function withdraw(Request $request): Response
+    public function withdrawApi(Request $request): JsonResponse
     {
-        $player = $this->getPlayer();
-        $federation = $player->getFederation();
-        if ($federation === null) {
-            return $this->render(
-                'game/federation/noFederation.html.twig',
-                [
-                    'player' => $player
-                ]
-            );
-        }
-
         try {
-            // XXX TODO: Rewrite to form isSubmitted && isValid
-            if ($request->isMethod(Request::METHOD_POST)) {
-                /** @var array<string, string> $resources */
-                $resources = $request->request->all('resources');
-                $this->federationBankActionService->withdraw($player, $resources);
-                $this->addFlash('success', 'You successfully made a withdrawal!');
-            }
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
+            /** @var array{resources?: array<string, string>} $data */
+            $data = json_decode($request->getContent(), true);
+            /** @var array<string, string> $resources */
+            $resources = $data['resources'] ?? [];
+            $this->federationBankActionService->withdraw($this->getPlayer(), $resources);
 
-        return $this->render(
-            'game/federation/bank/withdraw.html.twig',
-            [
-                'player' => $player,
-                'federationResources' => $federation->getResources(),
-            ]
-        );
+            return new JsonResponse(['success' => true, 'message' => 'Withdrawal successful']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 }

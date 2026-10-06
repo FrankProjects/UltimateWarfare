@@ -7,7 +7,7 @@ namespace FrankProjects\UltimateWarfare\Service\OperationEngine;
 interface OperationInterface
 {
     /**
-     * @return array<int, string>
+     * @return array<int, array<string, mixed>>
      */
     public function execute(): array;
     public function getFormula(): float;

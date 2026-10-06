@@ -46,7 +46,8 @@ class ResetPasswordType extends AbstractType
                 'submit',
                 SubmitType::class,
                 [
-                    'label' => 'Reset Password'
+                    'label' => 'label.submit',
+                    'translation_domain' => 'reset_password'
                 ]
             );
     }

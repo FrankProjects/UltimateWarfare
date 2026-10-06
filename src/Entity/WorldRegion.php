@@ -6,14 +6,20 @@ namespace FrankProjects\UltimateWarfare\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use RuntimeException;
 
 class WorldRegion
 {
+    public const string TYPE_DEEP_WATER = 'deep_water';
     public const string TYPE_WATER = 'water';
-    public const string TYPE_BEACH = 'beach';
-    public const string TYPE_FORREST = 'forrest';
+    public const string TYPE_SHALLOW_WATER = 'shallow_water';
+    public const string TYPE_SAND = 'sand';
+    public const string TYPE_GRASSLAND = 'grassland';
+    public const string TYPE_FOREST = 'forest';
+    public const string TYPE_HILLS = 'hills';
     public const string TYPE_MOUNTAIN = 'mountain';
+
 
     private int $id;
     private int $x;
@@ -25,13 +31,17 @@ class WorldRegion
     private int $space = 1000;
     private int $population = 0;
     private World $world;
-    private WorldSector $worldSector;
     private ?Player $player;
 
     /**
-     * @var Collection<int, WorldRegionUnit>
+     * @var Collection<int, WorldRegionStackableUnit>
      */
-    private Collection $worldRegionUnits;
+    private Collection $worldRegionStackableUnits;
+
+    /**
+     * @var Collection<int, WorldRegionLeveledUnit>
+     */
+    private Collection $worldRegionLeveledUnits;
 
     /**
      * @var Collection<int, Construction>
@@ -50,7 +60,8 @@ class WorldRegion
 
     public function __construct()
     {
-        $this->worldRegionUnits = new ArrayCollection();
+        $this->worldRegionStackableUnits = new ArrayCollection();
+        $this->worldRegionLeveledUnits = new ArrayCollection();
         $this->constructions = new ArrayCollection();
         $this->fleets = new ArrayCollection();
         $this->targetFleets = new ArrayCollection();
@@ -107,10 +118,14 @@ class WorldRegion
     public static function getAllTypes(): array
     {
         return [
+            self::TYPE_DEEP_WATER,
             self::TYPE_WATER,
-            self::TYPE_BEACH,
-            self::TYPE_FORREST,
-            self::TYPE_MOUNTAIN
+            self::TYPE_SHALLOW_WATER,
+            self::TYPE_SAND,
+            self::TYPE_GRASSLAND,
+            self::TYPE_FOREST,
+            self::TYPE_HILLS,
+            self::TYPE_MOUNTAIN,
         ];
     }
 
@@ -169,19 +184,79 @@ class WorldRegion
     }
 
     /**
-     * @return Collection<int, WorldRegionUnit>
+     * @return Collection<int, WorldRegionStackableUnit>
      */
-    public function getWorldRegionUnits(): Collection
+    public function getWorldRegionStackableUnits(): Collection
     {
-        return $this->worldRegionUnits;
+        return $this->worldRegionStackableUnits;
     }
 
     /**
-     * @param Collection<int, WorldRegionUnit> $worldRegionUnits
+     * @param Collection<int, WorldRegionStackableUnit> $worldRegionStackableUnits
      */
-    public function setWorldRegionUnits(Collection $worldRegionUnits): void
+    public function setWorldRegionStackableUnits(Collection $worldRegionStackableUnits): void
     {
-        $this->worldRegionUnits = $worldRegionUnits;
+        $this->worldRegionStackableUnits = $worldRegionStackableUnits;
+    }
+
+    public function addWorldRegionStackableUnit(WorldRegionStackableUnit $worldRegionStackableUnit): void
+    {
+        $this->worldRegionStackableUnits->add($worldRegionStackableUnit);
+    }
+
+    public function removeWorldRegionStackableUnit(WorldRegionStackableUnit $worldRegionStackableUnit): void
+    {
+        $this->worldRegionStackableUnits->removeElement($worldRegionStackableUnit);
+    }
+
+    /**
+     * @return Collection<int, WorldRegionLeveledUnit>
+     */
+    public function getWorldRegionLeveledUnits(): Collection
+    {
+        return $this->worldRegionLeveledUnits;
+    }
+
+    /**
+     * @param Collection<int, WorldRegionLeveledUnit> $worldRegionLeveledUnits
+     */
+    public function setWorldRegionLeveledUnits(Collection $worldRegionLeveledUnits): void
+    {
+        $this->worldRegionLeveledUnits = $worldRegionLeveledUnits;
+    }
+
+    public function addWorldRegionLeveledUnit(WorldRegionLeveledUnit $worldRegionLeveledUnit): void
+    {
+        $this->worldRegionLeveledUnits->add($worldRegionLeveledUnit);
+    }
+
+    public function removeWorldRegionLeveledUnit(WorldRegionLeveledUnit $worldRegionLeveledUnit): void
+    {
+        $this->worldRegionLeveledUnits->removeElement($worldRegionLeveledUnit);
+    }
+
+    /**
+     * Return the leveled building (Defense / Special) of the given type present in this
+     * region, or null when the building is not present.
+     */
+    public function getLeveledUnit(GameUnitEnum $gameUnit): ?WorldRegionLeveledUnit
+    {
+        foreach ($this->worldRegionLeveledUnits as $worldRegionLeveledUnit) {
+            if ($worldRegionLeveledUnit->getGameUnit() === $gameUnit) {
+                return $worldRegionLeveledUnit;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Return the level of a leveled building (Defense / Special) present in this region,
+     * or 0 when the building is not present.
+     */
+    public function getUnitLevel(GameUnitEnum $gameUnit): int
+    {
+        return $this->getLeveledUnit($gameUnit)?->getLevel() ?? 0;
     }
 
     public function getWorld(): World
@@ -220,16 +295,6 @@ class WorldRegion
         $this->fleets = $fleets;
     }
 
-    public function getWorldSector(): WorldSector
-    {
-        return $this->worldSector;
-    }
-
-    public function setWorldSector(WorldSector $worldSector): void
-    {
-        $this->worldSector = $worldSector;
-    }
-
     /**
      * @return Collection<int, Fleet>
      */
@@ -246,13 +311,23 @@ class WorldRegion
         return $this->constructions;
     }
 
+    public function addConstruction(Construction $construction): void
+    {
+        $this->constructions->add($construction);
+    }
+
+    public function removeConstruction(Construction $construction): void
+    {
+        $this->constructions->removeElement($construction);
+    }
+
     public function getRegionName(): string
     {
         return "{$this->getX()}, {$this->getY()}";
     }
 
-    public static function createForWorldSector(
-        WorldSector $worldSector,
+    public static function createForWorld(
+        World $world,
         int $x,
         int $y,
         int $z,
@@ -260,8 +335,7 @@ class WorldRegion
         int $space
     ): WorldRegion {
         $worldRegion = new WorldRegion();
-        $worldRegion->setWorld($worldSector->getWorld());
-        $worldRegion->setWorldSector($worldSector);
+        $worldRegion->setWorld($world);
         $worldRegion->setX($x);
         $worldRegion->setY($y);
         $worldRegion->setZ($z);
@@ -270,5 +344,30 @@ class WorldRegion
         $worldRegion->setPopulation($space * 10);
 
         return $worldRegion;
+    }
+
+    /**
+     * @return array{
+     *   id: int, x: int, y: int, z: int, type: string, owner: string,
+     *   units: array<int, WorldRegionStackableUnit>, structures: array<int, WorldRegionLeveledUnit>
+     * }
+     */
+    public function toArray(): array
+    {
+        $playerName = '';
+        $player = $this->getPlayer();
+        if ($player !== null) {
+            $playerName = $player->getName();
+        }
+        return [
+            'id' => $this->getId(),
+            'x' => $this->getX(),
+            'y' => $this->getY(),
+            'z' => $this->getZ(),
+            'type' => $this->getType(),
+            'owner' => $playerName,
+            'units' => $this->getWorldRegionStackableUnits()->toArray(),
+            'structures' => $this->getWorldRegionLeveledUnits()->toArray()
+        ];
     }
 }

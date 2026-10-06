@@ -38,24 +38,25 @@ final class ResetPasswordController extends AbstractController
             $user = $this->userRepository->findByEmail($email);
 
             if ($user !== null) {
-                if (!$user->isEnabled()) {
-                    $this->addFlash('error', 'Your account is not activated!');
+                if (!$user->isEmailVerified()) {
+                    $this->addFlash('error', 'Your email address is not verified!');
                 } elseif (
-                    $user->getPasswordRequestedAt() === null ||
-                    $user->getPasswordRequestedAt()->getTimestamp() + 12 * 60 * 60 < time()
+                    $user->getPasswordResetRequestedAt() === null ||
+                    $user->getPasswordResetRequestedAt()->getTimestamp() + 12 * 60 * 60 < time()
                 ) {
                     $generator = new TokenGenerator();
                     $token = $generator->generateToken(40);
 
-                    $user->setPasswordRequestedAt(new DateTime());
-                    $user->setConfirmationToken($token);
+                    $user->setPasswordResetRequestedAt(new DateTime());
+                    $user->setPasswordResetToken($token);
                     $this->userRepository->save($user);
 
                     try {
                         $this->mailService->sendPasswordResetMail($user, (string) $request->getClientIp());
                         $this->addFlash(
                             'success',
-                            "An e-mail has been sent to {$user->getEmail()} with your recovery instructions... Check your Spam mail if you didn't receive an email"
+                            "An e-mail has been sent to {$user->getEmail()} with your recovery instructions..."
+                            . " Check your Spam mail if you didn't receive an email"
                         );
                     } catch (Throwable $e) {
                         $this->addFlash('error', $e->getMessage());
@@ -73,7 +74,7 @@ final class ResetPasswordController extends AbstractController
 
     public function resetPassword(Request $request, string $token): Response
     {
-        $user = $this->userRepository->findByConfirmationToken($token);
+        $user = $this->userRepository->findByPasswordResetToken($token);
 
         if ($user !== null) {
             $form = $this->createForm(ResetPasswordType::class, $user);
@@ -82,7 +83,7 @@ final class ResetPasswordController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $password = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
                 $user->setPassword($password);
-                $user->setConfirmationToken(null);
+                $user->setPasswordResetToken(null);
                 $this->userRepository->save($user);
 
                 $this->addFlash('success', 'You successfully changed your password!');

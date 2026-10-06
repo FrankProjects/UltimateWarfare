@@ -4,9 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    app.gg_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
-    app.avatars_directory: '%kernel.project_dir%/var/uploads/avatars'
     app.uw_forum_enabled: '%env(bool:UW_FORUM_ENABLED)%'
+    app.uw_construction_time_override: '%env(default::int:UW_CONSTRUCTION_TIME_OVERRIDE)%'
+    app.uw_research_time_override: '%env(default::int:UW_RESEARCH_TIME_OVERRIDE)%'
+    app.uw_fleet_travel_time_override: '%env(default::int:UW_FLEET_TRAVEL_TIME_OVERRIDE)%'
 
 services:
     # default configuration for services in *this* file
@@ -32,10 +33,14 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-
-    ReCaptcha\ReCaptcha:
+    FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ConstructionProcessor:
         arguments:
-            - '%env(GOOGLE_RECAPTCHA_SECRET_KEY)%'
+            $constructionTimeOverride: '%app.uw_construction_time_override%'
+
+    FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ResearchProcessor:
+        arguments:
+            $researchRegistry: '@FrankProjects\UltimateWarfare\Repository\ResearchRegistry'
+            $researchTimeOverride: '%app.uw_research_time_override%'
 
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:

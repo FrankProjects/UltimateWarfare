@@ -3,7 +3,6 @@
   <entity name="FrankProjects\UltimateWarfare\Entity\WorldRegion" table="world_region">
     <indexes>
       <index name="worldxy" columns="world_id,x,y"/>
-      <index name="regionInSector" columns="sector_id,player_id"/>
     </indexes>
     <unique-constraints>
       <unique-constraint name="unique_world_region" columns="x,y,world_id"/>
@@ -54,18 +53,14 @@
         <option name="default">0</option>
       </options>
     </field>
-    <one-to-many field="worldRegionUnits" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegionUnit" mapped-by="worldRegion"/>
+    <one-to-many field="worldRegionStackableUnits" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit" mapped-by="worldRegion"/>
+    <one-to-many field="worldRegionLeveledUnits" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit" mapped-by="worldRegion"/>
     <one-to-many field="constructions" target-entity="FrankProjects\UltimateWarfare\Entity\Construction" mapped-by="worldRegion"/>
     <one-to-many field="fleets" target-entity="FrankProjects\UltimateWarfare\Entity\Fleet" mapped-by="worldRegion"/>
     <one-to-many field="targetFleets" target-entity="FrankProjects\UltimateWarfare\Entity\Fleet" mapped-by="targetWorldRegion"/>
     <many-to-one field="world" target-entity="FrankProjects\UltimateWarfare\Entity\World" inversed-by="worldRegions">
       <join-columns>
         <join-column name="world_id" nullable="false"/>
-      </join-columns>
-    </many-to-one>
-    <many-to-one field="worldSector" target-entity="FrankProjects\UltimateWarfare\Entity\WorldSector" inversed-by="worldRegions">
-      <join-columns>
-        <join-column name="sector_id" nullable="false"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="player" target-entity="FrankProjects\UltimateWarfare\Entity\Player" inversed-by="worldRegions">

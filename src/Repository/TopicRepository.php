@@ -15,10 +15,13 @@ interface TopicRepository
     public function getLastTopicByUser(User $user): ?Topic;
 
     /**
-     * @param Category $category
      * @return Topic[]
      */
     public function getByCategorySortedByStickyAndDate(Category $category): array;
+
+    public function getTopicCountByCategory(Category $category): int;
+
+    public function getLastTopicByCategory(Category $category): ?Topic;
 
     public function remove(Topic $topic): void;
 

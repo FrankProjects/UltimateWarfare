@@ -5,26 +5,31 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class ProfileController extends BaseGameController
 {
-    public function profile(string $playerName, PlayerRepository $playerRepository): Response
+    public function playerProfileApi(string $playerName, PlayerRepository $playerRepository): JsonResponse
     {
         $player = $this->getPlayer();
         $profilePlayer = $playerRepository->findByNameAndWorld($playerName, $player->getWorld());
 
         if ($profilePlayer === null) {
-            $this->addFlash('error', 'Player profile can not be found!');
-            return $this->redirectToRoute('Game/Headquarter');
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Player not found',
+            ]);
         }
 
-        return $this->render(
-            'game/profile.html.twig',
-            [
-                'player' => $player,
-                'profilePlayer' => $profilePlayer,
-            ]
-        );
+        return new JsonResponse([
+            'success' => true,
+            'profile' => [
+                'name' => $profilePlayer->getName(),
+                'joinDate' => date('Y-m-d H:i:s', $profilePlayer->getTimestampJoined()),
+                'regions' => count($profilePlayer->getWorldRegions()),
+                'netWorth' => $profilePlayer->getNetWorth(),
+                'federation' => $profilePlayer->getFederation()?->getName(),
+            ],
+        ]);
     }
 }

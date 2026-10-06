@@ -10,7 +10,7 @@ use RuntimeException;
 
 class WorldImageBuilder extends AbstractImageBuilder
 {
-    public function generateForWorld(World $world, string $path): void
+    public function generateForWorld(World $world): string
     {
         $size = (int)sqrt(count($world->getWorldRegions())) * 5;
         if ($size === 0) {
@@ -28,6 +28,6 @@ class WorldImageBuilder extends AbstractImageBuilder
             }
         }
 
-        $this->saveImage($path);
+        return $this->getImageBinary();
     }
 }

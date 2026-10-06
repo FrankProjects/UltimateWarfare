@@ -48,4 +48,9 @@ final class DoctrineContactRepository implements ContactRepository
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
     }
+
+    public function count(): int
+    {
+        return $this->repository->count();
+    }
 }

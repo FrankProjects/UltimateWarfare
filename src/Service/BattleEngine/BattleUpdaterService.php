@@ -6,29 +6,34 @@ namespace FrankProjects\UltimateWarfare\Service\BattleEngine;
 
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
-use FrankProjects\UltimateWarfare\Entity\WorldRegionUnit;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
-use FrankProjects\UltimateWarfare\Repository\WorldRegionUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 
 final class BattleUpdaterService
 {
     private FleetRepository $fleetRepository;
     private FleetUnitRepository $fleetUnitRepository;
     private WorldRegionRepository $worldRegionRepository;
-    private WorldRegionUnitRepository $worldRegionUnitRepository;
+    private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
+    private WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository;
 
     public function __construct(
         FleetRepository $fleetRepository,
         FleetUnitRepository $fleetUnitRepository,
         WorldRegionRepository $worldRegionRepository,
-        WorldRegionUnitRepository $worldRegionUnitRepository
+        WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
+        WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
         $this->worldRegionRepository = $worldRegionRepository;
-        $this->worldRegionUnitRepository = $worldRegionUnitRepository;
+        $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
+        $this->worldRegionLeveledUnitRepository = $worldRegionLeveledUnitRepository;
     }
 
     /**
@@ -43,17 +48,20 @@ final class BattleUpdaterService
         $targetWorldRegion->setPlayer($fleet->getPlayer());
         $this->worldRegionRepository->save($targetWorldRegion);
 
-        foreach ($targetWorldRegion->getWorldRegionUnits() as $regionUnit) {
-            $this->worldRegionUnitRepository->remove($regionUnit);
+        foreach ($targetWorldRegion->getWorldRegionStackableUnits() as $regionUnit) {
+            $this->worldRegionStackableUnitRepository->remove($regionUnit);
+        }
+        foreach ($targetWorldRegion->getWorldRegionLeveledUnits() as $leveledUnit) {
+            $this->worldRegionLeveledUnitRepository->remove($leveledUnit);
         }
 
         foreach ($attackerGameUnits as $fleetUnit) {
-            $worldRegionUnit = WorldRegionUnit::create(
+            $worldRegionStackableUnit = WorldRegionStackableUnit::create(
                 $targetWorldRegion,
                 $fleetUnit->getGameUnit(),
                 $fleetUnit->getAmount()
             );
-            $this->worldRegionUnitRepository->save($worldRegionUnit);
+            $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
         }
         $this->fleetRepository->remove($fleet);
     }
@@ -64,15 +72,28 @@ final class BattleUpdaterService
      *
      * @param Fleet $fleet
      * @param array<FleetUnit> $attackerGameUnits
-     * @param array<WorldRegionUnit> $defenderGameUnits
+     * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $defenderGameUnits
      */
     public function updateBattleLost(Fleet $fleet, array $attackerGameUnits, array $defenderGameUnits): void
     {
-        foreach ($fleet->getTargetWorldRegion()->getWorldRegionUnits() as $regionUnit) {
-            $this->worldRegionUnitRepository->remove($regionUnit);
+        // Defenders missing from $defenderGameUnits died in battle; survivors are updated in place
+        $targetWorldRegion = $fleet->getTargetWorldRegion();
+        foreach ($targetWorldRegion->getWorldRegionStackableUnits()->toArray() as $regionUnit) {
+            if (!in_array($regionUnit, $defenderGameUnits, true)) {
+                $this->worldRegionStackableUnitRepository->remove($regionUnit);
+            }
         }
-        foreach ($defenderGameUnits as $worldRegionUnit) {
-            $this->worldRegionUnitRepository->save($worldRegionUnit);
+        foreach ($targetWorldRegion->getWorldRegionLeveledUnits()->toArray() as $leveledUnit) {
+            if (!in_array($leveledUnit, $defenderGameUnits, true)) {
+                $this->worldRegionLeveledUnitRepository->remove($leveledUnit);
+            }
+        }
+        foreach ($defenderGameUnits as $worldRegionStackableUnit) {
+            if ($worldRegionStackableUnit instanceof WorldRegionLeveledUnit) {
+                $this->worldRegionLeveledUnitRepository->save($worldRegionStackableUnit);
+            } else {
+                $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
+            }
         }
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
             $this->fleetUnitRepository->remove($fleetUnit);

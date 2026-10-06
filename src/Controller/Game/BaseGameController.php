@@ -14,19 +14,19 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class BaseGameController extends BaseController
 {
-    public function getGameUser(bool $checkActive = true): User
+    public function getGameUser(bool $allowBanned = false): User
     {
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof User) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        if ($user->isEnabled() !== true) {
-            throw new AccessDeniedException('User is not enabled!');
+        if (!$user->isEmailVerified()) {
+            throw new AccessDeniedException('Email address is not verified!');
         }
 
-        if ($checkActive && $user->getActive() !== true) {
-            throw new AccessDeniedException('User is not active!');
+        if (!$allowBanned && $user->isBanned()) {
+            throw new AccessDeniedException('User is banned!');
         }
 
         return $user;

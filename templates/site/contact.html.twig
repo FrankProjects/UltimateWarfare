@@ -1,29 +1,19 @@
 {% extends 'site.html.twig' %}
+{% trans_default_domain 'site' %}
 
-{% block title %}Ultimate Warfare - Contact{% endblock title %}
+{% block title %}{{ 'contact_page.title'|trans }}{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td><b>Contact</b></td>
-        </tr>
-        <tr>
-            <td>
-                <p>
-                    I would like to hear what you think. Send me a message, whether it is praise or criticism, a question, a suggestion, or just a hello.
-                </p>
+    <div class="form-card-wrapper">
+        <div class="uw-card">
+            <div class="uw-card-header">{{ 'contact_page.header'|trans }}</div>
+            <div class="uw-card-body">
+                <p class="text-center">{{ 'contact_page.intro'|trans }}</p>
 
                 {{ form_start(form) }}
                 {{ form_widget(form) }}
                 {{ form_end(form) }}
-            </td>
-        </tr>
-    </table>
-
-    <script type="text/javascript">
-        var gg_recaptcha_site_key = '{{ gg_recaptcha_site_key }}';
-    </script>
-    <script src="{{ asset('js/recaptcha.js') }}"></script>
-    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?onload=onGoogleReCaptchaLoad&render=explicit"></script>
-
+            </div>
+        </div>
+    </div>
 {% endblock %}

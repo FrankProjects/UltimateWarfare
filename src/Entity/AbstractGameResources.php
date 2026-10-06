@@ -11,6 +11,14 @@ abstract class AbstractGameResources
     public int $wood = 0;
     public int $steel = 0;
 
+    public function __construct(int $cash = 0, int $food = 0, int $wood = 0, int $steel = 0)
+    {
+        $this->cash = $cash;
+        $this->food = $food;
+        $this->wood = $wood;
+        $this->steel = $steel;
+    }
+
     public function setCash(int $cash): void
     {
         $this->cash = $cash;

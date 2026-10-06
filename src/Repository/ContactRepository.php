@@ -18,4 +18,6 @@ interface ContactRepository
     public function remove(Contact $contact): void;
 
     public function save(Contact $contact): void;
+
+    public function count(): int;
 }

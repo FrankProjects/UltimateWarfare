@@ -9,9 +9,13 @@ class MapConfiguration
     private int $size = 25;
     private float $persistence = 0.9;
     private int $seed = 1550441399;
-    private int $waterLevel = 160;
-    private int $beachLevel = 165;
-    private int $forrestLevel = 230;
+    private int $deepWaterLevel = 130;
+    private int $waterLevel = 150;
+    private int $shallowWaterLevel = 160;
+    private int $sandLevel = 168;
+    private int $grasslandLevel = 200;
+    private int $forestLevel = 220;
+    private int $hillsLevel = 225;
 
     public function getSize(): int
     {
@@ -43,6 +47,16 @@ class MapConfiguration
         $this->seed = $seed;
     }
 
+    public function getDeepWaterLevel(): int
+    {
+        return $this->deepWaterLevel;
+    }
+
+    public function setDeepWaterLevel(int $deepWaterLevel): void
+    {
+        $this->deepWaterLevel = $deepWaterLevel;
+    }
+
     public function getWaterLevel(): int
     {
         return $this->waterLevel;
@@ -53,23 +67,53 @@ class MapConfiguration
         $this->waterLevel = $waterLevel;
     }
 
-    public function getBeachLevel(): int
+    public function getShallowWaterLevel(): int
     {
-        return $this->beachLevel;
+        return $this->shallowWaterLevel;
     }
 
-    public function setBeachLevel(int $beachLevel): void
+    public function setShallowWaterLevel(int $shallowWaterLevel): void
     {
-        $this->beachLevel = $beachLevel;
+        $this->shallowWaterLevel = $shallowWaterLevel;
     }
 
-    public function getForrestLevel(): int
+    public function getSandLevel(): int
     {
-        return $this->forrestLevel;
+        return $this->sandLevel;
     }
 
-    public function setForrestLevel(int $forrestLevel): void
+    public function setSandLevel(int $sandLevel): void
     {
-        $this->forrestLevel = $forrestLevel;
+        $this->sandLevel = $sandLevel;
+    }
+
+    public function getGrasslandLevel(): int
+    {
+        return $this->grasslandLevel;
+    }
+
+    public function setGrasslandLevel(int $grasslandLevel): void
+    {
+        $this->grasslandLevel = $grasslandLevel;
+    }
+
+    public function getForestLevel(): int
+    {
+        return $this->forestLevel;
+    }
+
+    public function setForestLevel(int $forestLevel): void
+    {
+        $this->forestLevel = $forestLevel;
+    }
+
+    public function getHillsLevel(): int
+    {
+        return $this->hillsLevel;
+    }
+
+    public function setHillsLevel(int $hillsLevel): void
+    {
+        $this->hillsLevel = $hillsLevel;
     }
 }

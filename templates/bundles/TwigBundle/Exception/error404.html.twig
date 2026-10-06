@@ -1,17 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <main class="col-sm-12 justify-content-center">
-        <table class="table text">
-            <tr class="tabletop">
-                <td class="text-center"><b>Page not found</b></td>
-            </tr>
-            <tr>
-                <td class="text-center">
-                    The requested page couldn't be located. Checkout for any URL
-                    misspelling or <a class="B" href="{{ path('Site/Homepage') }}">return to the homepage</a>.
-                </td>
-            </tr>
-        </table>
-    </main>
+    <div class="uw-card">
+        <div class="uw-card-header">Page Not Found</div>
+        <div class="uw-card-body text-center">
+            <p>The requested page couldn't be located. Check for any URL
+            misspelling or <a href="{{ path('Site/Homepage') }}">return to the homepage</a>.</p>
+        </div>
+    </div>
 {% endblock %}

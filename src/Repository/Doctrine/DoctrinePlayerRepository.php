@@ -116,8 +116,11 @@ final class DoctrinePlayerRepository implements PlayerRepository
         }
 
         foreach ($player->getWorldRegions() as $worldRegion) {
-            foreach ($worldRegion->getWorldRegionUnits() as $worldRegionUnit) {
-                $this->entityManager->remove($worldRegionUnit);
+            foreach ($worldRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+                $this->entityManager->remove($worldRegionStackableUnit);
+            }
+            foreach ($worldRegion->getWorldRegionLeveledUnits() as $worldRegionLeveledUnit) {
+                $this->entityManager->remove($worldRegionLeveledUnit);
             }
 
             $worldRegion->setName('');

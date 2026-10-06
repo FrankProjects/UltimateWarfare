@@ -9,80 +9,83 @@ use FrankProjects\UltimateWarfare\Entity\Research;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
-use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
+use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
 use RuntimeException;
 
 final class ResearchActionService
 {
-    private PlayerRepository $playerRepository;
-    private ResearchRepository $researchRepository;
+    private ResearchRegistry $researchRegistry;
     private ResearchPlayerRepository $researchPlayerRepository;
+    private PlayerRepository $playerRepository;
 
     public function __construct(
-        ResearchRepository $researchRepository,
+        ResearchRegistry $researchRegistry,
         ResearchPlayerRepository $researchPlayerRepository,
         PlayerRepository $playerRepository
     ) {
-        $this->researchRepository = $researchRepository;
+        $this->researchRegistry = $researchRegistry;
         $this->researchPlayerRepository = $researchPlayerRepository;
         $this->playerRepository = $playerRepository;
     }
 
-    public function performResearch(int $researchId, Player $player): void
+    public function performResearch(string $researchSlug, Player $player): void
     {
-        $research = $this->getResearchById($researchId);
-
-        $this->ensureCanResearch($research, $player);
+        $research = $this->getResearchBySlug($researchSlug);
+        $targetLevel = $this->resolveTargetLevel($research, $player);
 
         $researchPlayer = new ResearchPlayer();
         $researchPlayer->setPlayer($player);
-        $researchPlayer->setResearch($research);
+        $researchPlayer->setResearchSlug($research->getSlug());
+        $researchPlayer->setLevel($targetLevel);
         $researchPlayer->setTimestamp(time());
+        $researchPlayer->setCompletionTimestamp(time() + $research->getTimestamp($targetLevel));
 
         $resources = $player->getResources();
-        $resources->setCash($resources->getCash() - $research->getCost());
+        $resources->setCash($resources->getCash() - $research->getCost($targetLevel));
 
         $player->setResources($resources);
         $this->playerRepository->save($player);
         $this->researchPlayerRepository->save($researchPlayer);
     }
 
-    public function performCancel(int $researchId, Player $player): void
+    public function performCancel(string $researchSlug, Player $player): void
     {
-        $research = $this->getResearchById($researchId);
+        $this->getResearchBySlug($researchSlug);
 
         /** @var ResearchPlayer $playerResearch */
         foreach ($player->getPlayerResearch() as $playerResearch) {
-            if ($playerResearch->getResearch()->getId() !== $research->getId()) {
+            if ($playerResearch->getResearchSlug() !== $researchSlug) {
                 continue;
             }
 
             if ($playerResearch->getActive()) {
-                throw new RuntimeException('Research project is already completed!');
+                continue;
             }
 
             $this->researchPlayerRepository->remove($playerResearch);
+            return;
         }
     }
 
-    private function getResearchById(int $researchId): Research
+    private function getResearchBySlug(string $researchSlug): Research
     {
-        $research = $this->researchRepository->find($researchId);
+        $research = $this->researchRegistry->find($researchSlug);
 
         if ($research === null) {
             throw new RuntimeException('This technology does not exist!');
         }
 
-        if (!$research->getActive()) {
+        if (!$research->isEnabled()) {
             throw new RuntimeException('This technology is disabled!');
         }
 
         return $research;
     }
 
-    private function ensureCanResearch(Research $research, Player $player): void
+    private function resolveTargetLevel(Research $research, Player $player): int
     {
-        $researchArray = [];
+        $completedLevelsBySlug = [];
+        $currentLevel = 0;
 
         /** @var ResearchPlayer $playerResearch */
         foreach ($player->getPlayerResearch() as $playerResearch) {
@@ -90,21 +93,36 @@ final class ResearchActionService
                 throw new RuntimeException('You can only research 1 technology at a time!');
             }
 
-            if ($playerResearch->getResearch()->getId() === $research->getId()) {
-                throw new RuntimeException('This technology has already been researched!');
+            $slug = $playerResearch->getResearchSlug();
+            $level = $playerResearch->getLevel();
+
+            if (!isset($completedLevelsBySlug[$slug]) || $level > $completedLevelsBySlug[$slug]) {
+                $completedLevelsBySlug[$slug] = $level;
             }
 
-            $researchArray[$playerResearch->getResearch()->getId()] = $playerResearch->getResearch();
+            if ($slug === $research->getSlug() && $level > $currentLevel) {
+                $currentLevel = $level;
+            }
         }
 
-        foreach ($research->getResearchNeeds() as $researchNeed) {
-            if (!isset($researchArray[$researchNeed->getRequiredResearch()->getId()])) {
+        $targetLevel = $currentLevel + 1;
+
+        if ($targetLevel > $research->getMaxLevel()) {
+            throw new RuntimeException('This technology is already at its maximum level!');
+        }
+
+        foreach ($research->getPrerequisites($targetLevel) as $prereqClass => $minLevel) {
+            $prereqSlug = (new $prereqClass())->getSlug();
+            $playerPrereqLevel = $completedLevelsBySlug[$prereqSlug] ?? 0;
+            if ($playerPrereqLevel < $minLevel) {
                 throw new RuntimeException('You do not have all required technologies!');
             }
         }
 
-        if ($research->getCost() > $player->getResources()->getCash()) {
+        if ($research->getCost($targetLevel) > $player->getResources()->getCash()) {
             throw new RuntimeException('You can not afford that!');
         }
+
+        return $targetLevel;
     }
 }

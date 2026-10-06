@@ -6,8 +6,8 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Service\Action\FederationApplicationActionService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 final class FederationApplicationController extends BaseGameController
@@ -23,74 +23,79 @@ final class FederationApplicationController extends BaseGameController
         $this->federationApplicationActionService = $federationApplicationActionService;
     }
 
-    public function showFederationApplications(): Response
+    public function applicationsApi(): JsonResponse
     {
-        return $this->render(
-            'game/federation/applications.html.twig',
-            [
-                'player' => $this->getPlayer(),
-            ]
-        );
+        $player = $this->getPlayer();
+
+        if ($player->getFederation() === null) {
+            return new JsonResponse(['success' => false, 'message' => 'Not in a federation']);
+        }
+
+        $applications = [];
+        foreach ($player->getFederation()->getFederationApplications() as $application) {
+            $applications[] = [
+                'id' => $application->getId(),
+                'playerName' => $application->getPlayer()->getName(),
+                'application' => $application->getApplication(),
+            ];
+        }
+
+        return new JsonResponse(['success' => true, 'applications' => $applications]);
     }
 
-    public function acceptFederationApplication(int $federationApplicationId): Response
+    public function acceptApi(int $federationApplicationId): JsonResponse
     {
         try {
             $this->federationApplicationActionService->acceptFederationApplication(
                 $this->getPlayer(),
                 $federationApplicationId
             );
-            $this->addFlash('success', 'You successfully accepted a new player!');
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
 
-        return $this->redirectToRoute('Game/Federation/Applications');
+            return new JsonResponse(['success' => true, 'message' => 'Application accepted']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 
-    public function rejectFederationApplication(int $federationApplicationId): Response
+    public function rejectApi(int $federationApplicationId): JsonResponse
     {
         try {
             $this->federationApplicationActionService->rejectFederationApplication(
                 $this->getPlayer(),
                 $federationApplicationId
             );
-            $this->addFlash('success', 'You successfully rejected a player!');
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
 
-        return $this->redirectToRoute('Game/Federation/Applications');
+            return new JsonResponse(['success' => true, 'message' => 'Application rejected']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 
-    public function sendApplication(Request $request, int $federationId): Response
+    public function sendApplicationApi(Request $request, int $federationId): JsonResponse
     {
-        $player = $this->getPlayer();
-        $federation = $this->federationRepository->findByIdAndWorld($federationId, $player->getWorld());
         try {
-            $application = $request->request->getString('application');
-
-            if (
-                $federation !== null &&
-                $request->isMethod(Request::METHOD_POST) &&
-                $application !== ''
-            ) {
-                $this->federationApplicationActionService->sendFederationApplication(
-                    $this->getPlayer(),
-                    $federation,
-                    $application
-                );
-                $this->addFlash('success', 'You successfully send your application!');
+            $player = $this->getPlayer();
+            $federation = $this->federationRepository->findByIdAndWorld($federationId, $player->getWorld());
+            if ($federation === null) {
+                return new JsonResponse(['success' => false, 'message' => 'Federation not found']);
             }
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
 
-        return $this->render(
-            'game/federation/sendApplication.html.twig',
-            [
-                'player' => $this->getPlayer(),
-            ]
-        );
+            /** @var array{application?: string} $data */
+            $data = json_decode($request->getContent(), true);
+            $application = trim($data['application'] ?? '');
+            if ($application === '') {
+                return new JsonResponse(['success' => false, 'message' => 'Application text is required']);
+            }
+
+            $this->federationApplicationActionService->sendFederationApplication(
+                $player,
+                $federation,
+                $application
+            );
+
+            return new JsonResponse(['success' => true, 'message' => 'Application sent successfully']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 }

@@ -4,53 +4,32 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use InvalidArgumentException;
 
-class Research
+abstract readonly class Research
 {
-    private int $id;
-    private string $name;
-    private string $image;
-    private int $cost;
-    private int $timestamp;
-    private string $description;
-    private bool $active = false;
-
-    /** @var Collection<int, ResearchPlayer> */
-    private Collection $researchPlayers;
-
-    /** @var Collection<int, ResearchNeeds> */
-    private Collection $researchNeeds;
-
-    /** @var Collection<int, ResearchNeeds> */
-    private Collection $requiredResearch;
-
-    /** @var Collection<int, Operation> */
-    private Collection $operations;
-
-    public function __construct()
-    {
-        $this->researchPlayers = new ArrayCollection();
-        $this->researchNeeds = new ArrayCollection();
-        $this->requiredResearch = new ArrayCollection();
-        $this->operations = new ArrayCollection();
+    /**
+     * @param array<int,int>                                  $costPerLevel          1-indexed map level => cost
+     * @param array<int,int>                                  $timestampPerLevel     1-indexed map level => seconds
+     * @param array<int, array<class-string<Research>, int>>  $prerequisitesPerLevel 1-indexed; for each level, a map
+     *                                                                               of prerequisite research class to
+     *                                                                               its required minimum level. The
+     *                                                                               implicit "previous level of this
+     *                                                                               same research" prerequisite is
+     *                                                                               enforced by sequential progression.
+     */
+    public function __construct(
+        private string $name,
+        private string $image,
+        private string $description,
+        private bool $enabled,
+        private array $costPerLevel,
+        private array $timestampPerLevel,
+        private array $prerequisitesPerLevel = [],
+    ) {
     }
 
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
+    abstract public function getSlug(): string;
 
     public function getName(): string
     {
@@ -62,112 +41,66 @@ class Research
         return $this->image;
     }
 
-    public function setImage(string $image): void
-    {
-        $this->image = $image;
-    }
-
-    public function setCost(int $cost): void
-    {
-        $this->cost = $cost;
-    }
-
-    public function getCost(): int
-    {
-        return $this->cost;
-    }
-
-    public function setTimestamp(int $timestamp): void
-    {
-        $this->timestamp = $timestamp;
-    }
-
-    public function getTimestamp(): int
-    {
-        return $this->timestamp;
-    }
-
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
-    }
-
     public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function setActive(bool $active): void
+    public function isEnabled(): bool
     {
-        $this->active = $active;
+        return $this->enabled;
     }
 
-    public function getActive(): bool
+    public function getMaxLevel(): int
     {
-        return $this->active;
+        return count($this->costPerLevel);
     }
 
-    /**
-     * @return Collection<int, ResearchNeeds>
-     */
-    public function getResearchNeeds(): Collection
+    public function getCost(int $level): int
     {
-        return $this->researchNeeds;
+        $this->assertValidLevel($level);
+        return $this->costPerLevel[$level];
     }
 
-    /**
-     * @param Collection<int, ResearchNeeds> $researchNeeds
-     */
-    public function setResearchNeeds(Collection $researchNeeds): void
+    public function getTimestamp(int $level): int
     {
-        $this->researchNeeds = $researchNeeds;
+        $this->assertValidLevel($level);
+        return $this->timestampPerLevel[$level];
     }
 
     /**
-     * @return Collection<int, ResearchNeeds>
+     * @return array<class-string<Research>, int>
      */
-    public function getRequiredResearch(): Collection
+    public function getPrerequisites(int $level): array
     {
-        return $this->requiredResearch;
+        $this->assertValidLevel($level);
+        return $this->prerequisitesPerLevel[$level] ?? [];
     }
 
     /**
-     * @param Collection<int, ResearchNeeds> $requiredResearch
+     * @return array<array{slug: string, name: string, minLevel: int}>
      */
-    public function setRequiredResearch(Collection $requiredResearch): void
+    public function getPrerequisiteDescriptions(int $level): array
     {
-        $this->requiredResearch = $requiredResearch;
+        $descriptions = [];
+        foreach ($this->getPrerequisites($level) as $prerequisiteClass => $minLevel) {
+            $prerequisite = new $prerequisiteClass();
+            $descriptions[] = [
+                'slug' => $prerequisite->getSlug(),
+                'name' => $prerequisite->getName(),
+                'minLevel' => $minLevel,
+            ];
+        }
+
+        return $descriptions;
     }
 
-    /**
-     * @return Collection<int, ResearchPlayer>
-     */
-    public function getResearchPlayers(): Collection
+    private function assertValidLevel(int $level): void
     {
-        return $this->researchPlayers;
-    }
-
-    /**
-     * @param Collection<int, ResearchPlayer> $researchPlayers
-     */
-    public function setResearchPlayers(Collection $researchPlayers): void
-    {
-        $this->researchPlayers = $researchPlayers;
-    }
-
-    /**
-     * @return Collection<int, Operation>
-     */
-    public function getOperations(): Collection
-    {
-        return $this->operations;
-    }
-
-    /**
-     * @param Collection<int, Operation> $operations
-     */
-    public function setOperations(Collection $operations): void
-    {
-        $this->operations = $operations;
+        if (!isset($this->costPerLevel[$level]) || !isset($this->timestampPerLevel[$level])) {
+            throw new InvalidArgumentException(
+                sprintf('Level %d is not defined for research %s', $level, $this->getSlug())
+            );
+        }
     }
 }

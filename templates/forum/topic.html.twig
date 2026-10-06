@@ -3,63 +3,61 @@
     {% trans_default_domain 'forum' %}
 
     <div class="text-center">
-        <a class="B" href="{{ path('Forum') }}">{{ 'label.forum'|trans }}</a> -
-        <a class="B" href="{{ path('Forum/Category', {'categoryId': topic.category.id}) }}">{{ 'label.topics'|trans }}</a>
+        <a href="{{ path('Forum') }}">{{ 'label.forum'|trans }}</a> -
+        <a href="{{ path('Forum/Category', {'categoryId': topic.category.value}) }}">{{ 'label.topics'|trans }}</a>
     </div>
 
     {% if is_granted('ROLE_ADMIN') %}
         {% if topic.sticky %}
-            <a class="btn btn-primary" href="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}">{{ 'action.topic.unsticky'|trans }}</a>
+            <form method="POST" action="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}" style="display:inline">
+                <button type="submit" class="btn btn-primary">{{ 'action.topic.unsticky'|trans }}</button>
+            </form>
         {% else %}
-            <a class="btn btn-primary" href="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}">{{ 'action.topic.sticky'|trans }}</a>
+            <form method="POST" action="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}" style="display:inline">
+                <button type="submit" class="btn btn-primary">{{ 'action.topic.sticky'|trans }}</button>
+            </form>
         {% endif %}
     {% endif %}
 
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="2">
-                <b>
-                    {% if topic.sticky == 1 %}
-                        <span style="color:#CC0000">Sticky </span>{{ topic.title }}
-                    {% else %}
-                        {{ topic.title }}
+    <div class="uw-card">
+        <div class="uw-card-header">
+            {% if topic.sticky == 1 %}
+                <span style="color:#CC0000">Sticky </span>{{ topic.title }}
+            {% else %}
+                {{ topic.title }}
+            {% endif %}
+        </div>
+        <div class="uw-card-body">
+            <div class="row">
+                <div class="col-3">
+                    <div>{{ 'label.name'|trans }}: {{ topic.user.username }}</div>
+                    {% if 'ROLE_ADMIN' in topic.user.roles %}
+                        <p><b>Forum Moderator</b></p>
                     {% endif %}
-                </b>
-            </td>
-        </tr>
-        <tr>
-            <td width="200">{{ 'label.name'|trans }}: {{ topic.user.username }}
-                {% if 'ROLE_ADMIN' in topic.user.roles  %}
-                    <p>
-                        <b>Forum Moderator</b>
-                    </p>
-                {% endif %}
-                {% if topic.user.hasAvatar %}
-                    <img alt="{{ topic.user.username }} Avatar" src="data:image/jpeg;base64,{{ topic.user.avatar|base64_encode() }}" />
-                {% endif %}
-            </td>
-            <td rowspan="3" width="700">
-                {{ topic.content|nl2br }}
+                    <div>
+                        {{ 'label.date'|trans }}:<br />
+                        {{ topic.createDateTime|date("Y-m-d H:i:s") }}
+                    </div>
+                </div>
+                <div class="col-9">
+                    {{ topic.content|nl2br }}
 
-                {% if topic.editUser != null %}
-                    <br/><br/><i> Last edited by: {{ topic.editUser.username }}</i>
-                {% endif %}
+                    {% if topic.editUser != null %}
+                        <br/><br/><i> Last edited by: {{ topic.editUser.username }}</i>
+                    {% endif %}
 
-                {% if user != null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}
-                    <br />
-                    <br />
-                    <a class="btn btn-primary" href="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}">{{ 'action.topic.delete'|trans }}</a> -
-                    <a class="btn btn-primary" href="{{ path('Forum/Topic/Edit', {'topicId': topic.id}) }}">{{ 'action.topic.edit'|trans }}</a>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                {{ 'label.date'|trans }}:<br />
-                {{ topic.createDateTime|date("Y-m-d H:i:s") }}
-            </td>
-        </tr>
-    </table>
+                    {% if user != null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}
+                        <br />
+                        <br />
+                        <form method="POST" action="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}" style="display:inline">
+                            <button type="submit" class="btn btn-primary">{{ 'action.topic.delete'|trans }}</button>
+                        </form> -
+                        <a class="btn btn-primary" href="{{ path('Forum/Topic/Edit', {'topicId': topic.id}) }}">{{ 'action.topic.edit'|trans }}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 
     <br />
 
@@ -69,21 +67,15 @@
 
     {% if user != null %}
         {{ form_start(form) }}
-        <table class="table text-center">
-            <tr class="tabletop">
-                <td><b>{{ 'label.add_reaction'|trans }}</b></td>
-            </tr>
-            <tr>
-                <td>
-                    {{ form_widget(form.content) }}
-                </td>
-            </tr>
-            <tr>
-                <td>
+        <div class="uw-card">
+            <div class="uw-card-header">{{ 'label.add_reaction'|trans }}</div>
+            <div class="uw-card-body">
+                {{ form_widget(form.content) }}
+                <div class="mt-2">
                     {{ form_row(form.submit) }}
-                </td>
-            </tr>
-        </table>
+                </div>
+            </div>
+        </div>
         {{ form_end(form) }}
     {% endif %}
 {% endblock %}

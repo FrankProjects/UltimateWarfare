@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Site;
 
 use FrankProjects\UltimateWarfare\Controller\BaseController;
-use FrankProjects\UltimateWarfare\Exception\GameUnitTypeNotFoundException;
-use FrankProjects\UltimateWarfare\Repository\GameUnitRepository;
-use FrankProjects\UltimateWarfare\Repository\GameUnitTypeRepository;
-use FrankProjects\UltimateWarfare\Repository\OperationRepository;
-use FrankProjects\UltimateWarfare\Repository\ResearchRepository;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
+use FrankProjects\UltimateWarfare\Entity\Research\ResearchTierResearch;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\OperationRegistry;
+use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
 use Symfony\Component\HttpFoundation\Response;
 
 final class GuideController extends BaseController
@@ -24,14 +25,15 @@ final class GuideController extends BaseController
         return $this->render('site/guide/construction.html.twig');
     }
 
-    public function gameUnit(int $gameUnitId, GameUnitRepository $gameUnitRepository): Response
+    public function gameUnit(int $gameUnitId, GameUnitRegistry $gameUnitRegistry): Response
     {
-        $gameUnit = $gameUnitRepository->find($gameUnitId);
-
-        if ($gameUnit === null) {
+        $gameUnitEnum = GameUnitEnum::tryFrom($gameUnitId);
+        if ($gameUnitEnum === null) {
             $this->addFlash('error', 'No such game unit!');
             return $this->redirectToRoute('Guide/ListUnits');
         }
+
+        $gameUnit = $gameUnitRegistry->find($gameUnitEnum);
 
         return $this->render(
             'site/guide/gameUnit.html.twig',
@@ -51,59 +53,84 @@ final class GuideController extends BaseController
         return $this->render('site/guide/fleet.html.twig');
     }
 
-    public function headquarter(): Response
+    public function gettingStarted(): Response
     {
-        return $this->render('site/guide/headquarter.html.twig');
+        return $this->render('site/guide/gettingStarted.html.twig');
     }
 
-    public function index(): Response
-    {
-        return $this->render('site/guide/index.html.twig');
-    }
 
-    public function listOperations(OperationRepository $operationRepository): Response
+    public function listOperations(OperationRegistry $operationRegistry, GameUnitRegistry $gameUnitRegistry): Response
     {
-        $operations = $operationRepository->findEnabled();
+        $operations = $operationRegistry->findEnabled();
+
+        $gameUnitNames = [];
+        foreach ($operations as $operation) {
+            $gameUnit = $operation->getGameUnit();
+            if ($gameUnit !== null && !isset($gameUnitNames[$gameUnit->value])) {
+                $gameUnitNames[$gameUnit->value] = $gameUnitRegistry->find($gameUnit)->getName();
+            }
+        }
 
         return $this->render(
             'site/guide/listOperations.html.twig',
             [
-                'operations' => $operations
+                'operations' => $operations,
+                'gameUnitNames' => $gameUnitNames,
             ]
         );
     }
 
-    public function listResearch(ResearchRepository $researchRepository): Response
+    public function listResearch(ResearchRegistry $researchRegistry): Response
     {
-        $researches = $researchRepository->findAll();
+        $researches = $researchRegistry->findEnabled();
+
+        $researchTier = null;
+        $researchesByTier = [];
+        foreach ($researches as $research) {
+            if ($research instanceof ResearchTierResearch) {
+                $researchTier = $research;
+                continue;
+            }
+            $tier = 0;
+            for ($level = 1; $level <= $research->getMaxLevel(); $level++) {
+                foreach ($research->getPrerequisites($level) as $prerequisiteClass => $minLevel) {
+                    if ($prerequisiteClass === ResearchTierResearch::class) {
+                        $tier = max($tier, $minLevel);
+                    }
+                }
+            }
+            $researchesByTier[$tier][] = $research;
+        }
+        ksort($researchesByTier);
+        foreach ($researchesByTier as &$bucket) {
+            usort($bucket, static fn ($a, $b) => strcmp($a->getName(), $b->getName()));
+        }
+        unset($bucket);
 
         return $this->render(
             'site/guide/listResearch.html.twig',
             [
-                'researches' => $researches
+                'researchTier' => $researchTier,
+                'researchesByTier' => $researchesByTier,
             ]
         );
     }
 
-    public function listUnits(int $gameUnitTypeId, GameUnitTypeRepository $gameUnitTypeRepository): Response
+    public function listUnits(int $gameUnitCategoryId, GameUnitRegistry $gameUnitRegistry): Response
     {
-        try {
-            $gameUnitType = $gameUnitTypeRepository->find($gameUnitTypeId);
-        } catch (GameUnitTypeNotFoundException) {
-            $gameUnitTypes = $gameUnitTypeRepository->findAll();
-
-            return $this->render(
-                'site/guide/selectGameUnitType.html.twig',
-                [
-                    'gameUnitTypes' => $gameUnitTypes
-                ]
-            );
+        $gameUnitCategory = GameUnitCategory::fromInteger($gameUnitCategoryId);
+        if ($gameUnitCategory === null) {
+            $gameUnitCategory = GameUnitCategory::BUILDINGS;
         }
+
+        $gameUnits = $gameUnitRegistry->findByCategory($gameUnitCategory);
 
         return $this->render(
             'site/guide/listGameUnits.html.twig',
             [
-                'gameUnitType' => $gameUnitType
+                'gameUnitCategory' => $gameUnitCategory,
+                'gameUnitCategories' => GameUnitCategory::getAll(),
+                'gameUnits' => $gameUnits
             ]
         );
     }
@@ -118,19 +145,9 @@ final class GuideController extends BaseController
         return $this->render('site/guide/market.html.twig');
     }
 
-    public function ranking(): Response
-    {
-        return $this->render('site/guide/ranking.html.twig');
-    }
-
     public function region(): Response
     {
         return $this->render('site/guide/region.html.twig');
-    }
-
-    public function report(): Response
-    {
-        return $this->render('site/guide/report.html.twig');
     }
 
     public function research(): Response
@@ -141,11 +158,6 @@ final class GuideController extends BaseController
     public function rules(): Response
     {
         return $this->render('site/guide/rules.html.twig');
-    }
-
-    public function surrender(): Response
-    {
-        return $this->render('site/guide/surrender.html.twig');
     }
 
     public function world(): Response

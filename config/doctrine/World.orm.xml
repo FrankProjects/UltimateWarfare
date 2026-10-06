@@ -9,11 +9,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="image" column="image" length="255">
-      <options>
-        <option name="fixed"/>
-      </options>
-    </field>
+    <field name="imageData" type="blob" column="image_data" nullable="true"/>
     <field name="description" type="text" column="description" length="65535">
       <options>
         <option name="fixed"/>
@@ -55,7 +51,6 @@
     <embedded name="resources" class="FrankProjects\UltimateWarfare\Entity\World\Resources"/>
     <one-to-many field="players" target-entity="FrankProjects\UltimateWarfare\Entity\Player" mapped-by="world"/>
     <one-to-many field="worldRegions" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion" mapped-by="world"/>
-    <one-to-many field="worldSectors" target-entity="FrankProjects\UltimateWarfare\Entity\WorldSector" mapped-by="world"/>
     <one-to-many field="marketItems" target-entity="FrankProjects\UltimateWarfare\Entity\MarketItem" mapped-by="world"/>
     <one-to-many field="messages" target-entity="FrankProjects\UltimateWarfare\Entity\Message" mapped-by="world"/>
     <one-to-many field="federations" target-entity="FrankProjects\UltimateWarfare\Entity\Federation" mapped-by="world"/>

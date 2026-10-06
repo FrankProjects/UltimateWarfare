@@ -14,10 +14,10 @@
         <join-column name="fleet_id" nullable="false"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="gameUnit" target-entity="FrankProjects\UltimateWarfare\Entity\GameUnit" inversed-by="fleetUnits">
-      <join-columns>
-        <join-column name="game_unit_id" nullable="false"/>
-      </join-columns>
-    </many-to-one>
+    <field name="gameUnit" type="integer" column="game_unit_id" enum-type="FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum">
+      <options>
+        <option name="unsigned">1</option>
+      </options>
+    </field>
   </entity>
 </doctrine-mapping>

@@ -30,13 +30,12 @@ final class TopicActionService
 
     public function create(Topic $topic, Category $category, User $user, string $ipAddress): void
     {
-        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNotForumBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
-        $dateTime = $this->forumHelper->getCurrentDateTime();
 
         $topic->setCategory($category);
         $topic->setPosterIp($ipAddress);
-        $topic->setCreateDateTime($dateTime);
+        $topic->setCreateDateTime($this->forumHelper->getCurrentDateTime());
         $topic->setUser($user);
 
         $this->topicRepository->save($topic);
@@ -44,7 +43,7 @@ final class TopicActionService
 
     public function edit(Topic $topic, User $user): void
     {
-        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNotForumBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
         $this->ensureTopicPermissions($user, $topic);
 
@@ -54,7 +53,7 @@ final class TopicActionService
 
     public function remove(Topic $topic, User $user): void
     {
-        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNotForumBanned($user);
         $this->ensureTopicPermissions($user, $topic);
 
         foreach ($topic->getPosts() as $post) {
@@ -66,7 +65,7 @@ final class TopicActionService
 
     public function sticky(Topic $topic, User $user): void
     {
-        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNotForumBanned($user);
         $this->ensureTopicPermissions($user, $topic);
 
         if (!$user->hasRole('ROLE_ADMIN')) {
@@ -79,7 +78,7 @@ final class TopicActionService
 
     public function unsticky(Topic $topic, User $user): void
     {
-        $this->forumHelper->ensureNotBanned($user);
+        $this->forumHelper->ensureNotForumBanned($user);
         $this->ensureTopicPermissions($user, $topic);
 
         if (!$user->hasRole('ROLE_ADMIN')) {

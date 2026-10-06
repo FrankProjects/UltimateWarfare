@@ -1,24 +1,21 @@
 {% extends 'site.html.twig' %}
+{% trans_default_domain 'register' %}
 
-{% block title %}Ultimate Warfare - Register{% endblock title %}
+{% block title %}{{ 'page.title'|trans }}{% endblock title %}
 
 {% block content %}
-    <div class="uw-div">
-        <div class="uw-div-top">
-            <h3 class="text-center">Register Account</h3>
+    <div class="form-card-wrapper">
+        <div class="uw-card">
+            <div class="uw-card-header">{{ 'page.header'|trans }}</div>
+            <div class="uw-card-body">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+
+                <p style="margin-top: 12px; color: #999; font-size: 13px;">
+                    {{ 'page.help_text'|trans }}
+                </p>
+            </div>
         </div>
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
-
-        <p>
-            An email with an activation code will be sent to the email address you register, so make sure you enter a correct address.
-        </p>
     </div>
-
-    <script type="text/javascript">
-        var gg_recaptcha_site_key = '{{ gg_recaptcha_site_key }}';
-    </script>
-    <script src="{{ asset('js/recaptcha.js') }}"></script>
-    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?onload=onGoogleReCaptchaLoad&render=explicit"></script>
 {% endblock %}

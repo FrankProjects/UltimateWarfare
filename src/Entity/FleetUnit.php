@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
+
 class FleetUnit
 {
     private int $id;
     private int $amount;
     private Fleet $fleet;
-    private GameUnit $gameUnit;
+    private GameUnitEnum $gameUnit;
 
     public function setId(int $id): void
     {
@@ -41,17 +43,17 @@ class FleetUnit
         $this->fleet = $fleet;
     }
 
-    public function getGameUnit(): GameUnit
+    public function getGameUnit(): GameUnitEnum
     {
         return $this->gameUnit;
     }
 
-    public function setGameUnit(GameUnit $gameUnit): void
+    public function setGameUnit(GameUnitEnum $gameUnit): void
     {
         $this->gameUnit = $gameUnit;
     }
 
-    public static function createForFleet(Fleet $fleet, GameUnit $gameUnit, int $amount): FleetUnit
+    public static function createForFleet(Fleet $fleet, GameUnitEnum $gameUnit, int $amount): FleetUnit
     {
         $fleetUnit = new FleetUnit();
         $fleetUnit->setGameUnit($gameUnit);

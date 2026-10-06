@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
@@ -53,11 +54,12 @@ final class RegionActionService
 
         $playerRegions = [];
         foreach ($player->getWorldRegions() as $playerWorldRegion) {
-            $travelTime = $this->distanceCalculator->calculateDistanceTravelTime(
+            $travelTime = $this->distanceCalculator->calculateFleetTravelTime(
                 $playerWorldRegion->getX(),
                 $playerWorldRegion->getY(),
                 $worldRegion->getX(),
-                $worldRegion->getY()
+                $worldRegion->getY(),
+                $playerWorldRegion->getUnitLevel(GameUnitEnum::TRAIN_STATION)
             );
             $travelTimeLeft = $this->timeCalculator->calculateTimeLeft($travelTime);
             $playerRegions[] = [
@@ -123,6 +125,10 @@ final class RegionActionService
         $player->setNetWorth($player->getNetWorth() + NetWorthCalculator::NET_WORTH_CALCULATOR_REGION);
 
         $worldRegion->setPlayer($player);
+
+        // Add the region to the player's collection to keep both sides in sync
+        // This fixes the new buy price for next regions
+        $player->getWorldRegions()->add($worldRegion);
 
         $federation = $player->getFederation();
 

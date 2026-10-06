@@ -1,32 +1,23 @@
 {% extends 'site.html.twig' %}
+{% trans_default_domain 'site' %}
 
-{% block title %}Ultimate Warfare - Community{% endblock title %}
+{% block title %}{{ 'community.title'|trans }}{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td><b>Community</b></td>
-        </tr>
-        <tr>
-            <td>
-                <p>
-                    Ultimate Warfare is a free and open-source online multiplayer browser based strategy game.
-                </p>
-                <p>
-                    <a class="btn btn-primary" href="https://github.com/FrankProjects/UltimateWarfare" title="Github">Check it out on github</a>
-                </p>
+    <div class="uw-card">
+        <div class="uw-card-header">{{ 'community.header'|trans }}</div>
+        <div class="uw-card-body text-center">
+            <p>{{ 'community.intro'|trans }}</p>
+            <p>
+                <a class="btn btn-primary" href="https://github.com/FrankProjects/UltimateWarfare">{{ 'community.github_cta'|trans }}</a>
+            </p>
 
-                <b>Support Ultimate-Warfare and make a Donation...</b>
-                <p>
-                    Ultimate-Warfare is and will always be free to play, but far from free to develop, run and maintain. Please consider supporting us with a donation.
-                </p>
-                <p>
-                    Donations are currently accepted through Paypal.
-                </p>
-                <p>
-                    <a href="https://www.paypal.me/frankschreuder"><img src="{{ asset('images/donate.gif') }}" alt="Donate" /></a>
-                </p>
-            </td>
-        </tr>
-    </table>
+            <h3>{{ 'community.support.heading'|trans }}</h3>
+            <p>{{ 'community.support.paragraph_1'|trans }}</p>
+            <p>{{ 'community.support.paragraph_2'|trans }}</p>
+            <p>
+                <a href="https://www.paypal.me/frankschreuder"><img src="{{ asset('images/donate.gif') }}" alt="{{ 'community.support.donate_alt'|trans }}" /></a>
+            </p>
+        </div>
+    </div>
 {% endblock %}

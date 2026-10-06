@@ -1,57 +1,33 @@
 {% extends 'site.html.twig' %}
+{% trans_default_domain 'homepage' %}
+
+{% block title %}{{ 'title'|trans }}{% endblock %}
+
 {% block content %}
-    <table class="table text">
-        <tr class="tabletop">
-            <td class="text-center"><b>Welcome to Ultimate Warfare</b></td>
-        </tr>
-        <tr>
-            <td>
-                <p class="text-center">
-                    Ultimate Warfare is an online multiplayer browser based strategy game where you compete with thousands of others for world domination!
-                </p>
-                <p class="text-center">
-                    <a class="btn btn-primary" href="{{ path('Site/Register') }}">Register now for free!</a>
-                </p>
-                <p class="text-left">
-                    <b>Features:</b>
-                    <ul>
-                        <li>Free to play MMORPG (Massively multiplayer online role-playing game)</li>
-                        <li>Online / Browser based game (No download required)</li>
-                        <li>Player vs Player (PVP) and Federation (Clan) battles</li>
-                        <li>War game (Conquer regions on a world map)</li>
-                    </ul>
-                </p>
-            </td>
-        </tr>
-    </table>
+    <div class="uw-hero" style="background-image: url('{{ asset('images/uw_background.jpg') }}');">
+        <div class="uw-hero-overlay">
+            <h1>Ultimate Warfare</h1>
+            <p class="tagline">{{ 'hero.tagline'|trans }}</p>
+            <a class="btn-cta" href="{{ path('Site/Register') }}">{{ 'hero.cta'|trans }}</a>
+        </div>
+    </div>
 
-    <br />
-
-    <table class="table text">
-        <tr class="tabletop">
-            <td class="text-center"><strong>Game News</strong></td>
-        </tr>
-
-        {% for news in gameNews %}
-            <tr>
-                <td class="text-center">
-                    <b>{{ news.title }}</b>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ news.message|nl2br }}
-                    <br />
-                    <br />
-                    <i>
-                        Posted on {{ news.createDateTime|date("Y-m-d H:i:s") }}
-                    </i>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td class="text-center">No Game News found!</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="features-grid">
+        <div class="feature-item">
+            <strong>{{ 'features.free_to_play.title'|trans }}</strong>
+            <span>{{ 'features.free_to_play.text'|trans }}</span>
+        </div>
+        <div class="feature-item">
+            <strong>{{ 'features.pvp.title'|trans }}</strong>
+            <span>{{ 'features.pvp.text'|trans }}</span>
+        </div>
+        <div class="feature-item">
+            <strong>{{ 'features.world_map.title'|trans }}</strong>
+            <span>{{ 'features.world_map.text'|trans }}</span>
+        </div>
+        <div class="feature-item">
+            <strong>{{ 'features.strategy.title'|trans }}</strong>
+            <span>{{ 'features.strategy.text'|trans }}</span>
+        </div>
+    </div>
 {% endblock %}

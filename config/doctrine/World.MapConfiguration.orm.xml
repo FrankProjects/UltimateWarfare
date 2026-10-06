@@ -16,19 +16,45 @@
         <option name="unsigned">1</option>
       </options>
     </field>
+    <field name="deepWaterLevel" type="integer" column="deep_water_level">
+      <options>
+        <option name="unsigned">1</option>
+        <option name="default">130</option>
+      </options>
+    </field>
     <field name="waterLevel" type="integer" column="water_level">
       <options>
         <option name="unsigned">1</option>
       </options>
     </field>
-    <field name="beachLevel" type="integer" column="beach_level">
+    <field name="shallowWaterLevel" type="integer" column="shallow_water_level">
       <options>
         <option name="unsigned">1</option>
+        <option name="default">160</option>
       </options>
     </field>
-    <field name="forrestLevel" type="integer" column="forrest_level">
+    <field name="sandLevel" type="integer" column="sand_level">
       <options>
         <option name="unsigned">1</option>
+        <option name="default">168</option>
+      </options>
+    </field>
+    <field name="grasslandLevel" type="integer" column="grassland_level">
+      <options>
+        <option name="unsigned">1</option>
+        <option name="default">200</option>
+      </options>
+    </field>
+    <field name="forestLevel" type="integer" column="forest_level">
+      <options>
+        <option name="unsigned">1</option>
+        <option name="default">230</option>
+      </options>
+    </field>
+    <field name="hillsLevel" type="integer" column="hills_level">
+      <options>
+        <option name="unsigned">1</option>
+        <option name="default">250</option>
       </options>
     </field>
   </embeddable>

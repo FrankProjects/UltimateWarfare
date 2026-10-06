@@ -1,53 +1,59 @@
 {% extends 'site/guideBase.html.twig' %}
 {% block content %}
-    <table width="360" class="worldtable text-center">
-        <tr>
-            <td width="15">x</td>
-            <td width="119">1</td>
-            <td width="119">2</td>
-            <td width="119">3</td>
-        </tr>
-        <tr>
-            <td width="15">1</td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a href="{{ url('Guide/World') }}"><span style="color:gold"><b>Building<br />You</b></span></a></td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a class="A" href="{{ url('Guide/World') }}">Attack<br />DEFENDER</a></td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a class="A" href="{{ url('Guide/World') }}">Buy</a></td>
-        </tr>
-        <tr>
-            <td width="15">2</td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a href="{{ url('Guide/World') }}"><span style="color:gold"><b>Building<br />You</b></span></a></td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a class="A" href="{{ url('Guide/World') }}">Attack<br />DEFENDER</a></td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a class="A" href="{{ url('Guide/World') }}">Attack<br />DEFENDER</a></td>
-        </tr>
-        <tr>
-            <td width="15">3</td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a href="{{ url('Guide/World') }}"><span style="color:gold"><b>Building<br />You</b></span></a></td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a class="A" href="{{ url('Guide/World') }}">Attack<br />DEFENDER</a></td>
-            <td width="119" height="103" background="{{ asset('images/map/forrest.jpg') }}" valign="top"><br /><a class="A" href="{{ url('Guide/World') }}">Buy</a></td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">World Map</div>
+        <div class="uw-card-body">
+            <p>
+                The world map is the main interface of the game. It is an interactive hex-based map that you can zoom and pan to explore.
+                The map size depends on which world you are playing in.
+            </p>
+            <p>
+                Your resources and income are displayed at the top of the screen. Active fleets are shown on the map as they travel between regions.
+            </p>
+        </div>
+    </div>
 
-    <br />
-    <br />
+    <br/>
 
-    <table class="table text-start">
-        <tr>
-            <td>
-                <p>
-                    This is the world map, The size of the maps depends on what world you are playing!
-                </p>
-                <ul>
-                    <li>
-                        <b>Attack:</b> If this link is visible, then this region is owned by an enemy.
-                    </li>
-                    <li>
-                        <b>Building:</b> If this link is visible, then this region is owned by you, you can click on it to start building on it.
-                    </li>
-                    <li>
-                        <b>Buy:</b> If this link is visible, then this region has no owner yet. You can buy this region to expand your empire.
-                    </li>
-                </ul>
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Terrain Types</div>
+        <div class="uw-card-body">
+            <p>The world is made up of different terrain types. Terrain affects what you can build:</p>
+            <ul>
+                <li><b>Grassland</b> &mdash; Standard land region.</li>
+                <li><b>Forest</b> &mdash; Standard land region.</li>
+                <li><b>Hills</b> &mdash; Standard land region.</li>
+                <li><b>Mountain</b> &mdash; Standard land region.</li>
+                <li><b>Sand</b> &mdash; Coastal region. Harbors and naval units can be placed here.</li>
+                <li><b>Shallow Water</b> &mdash; Water region.</li>
+                <li><b>Water</b> &mdash; Water region.</li>
+                <li><b>Deep Water</b> &mdash; Water region.</li>
+            </ul>
+            <p>
+                A region is considered <b>coastal</b> if it is a water or sand type, or if it is directly adjacent to a water or sand region.
+                Coastal regions are important for naval operations.
+            </p>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="uw-card">
+        <div class="uw-card-header">Interacting with the Map</div>
+        <div class="uw-card-body">
+            <p>Click on a hex tile to interact with it. What you can do depends on who owns the region:</p>
+            <ul>
+                <li>
+                    <b>Your region:</b> Opens the region panel where you can view your buildings and units,
+                    start <a href="{{ url('Guide/Construction') }}">construction</a>, and <a href="{{ url('Guide/Fleet') }}">send units</a> to other regions.
+                </li>
+                <li>
+                    <b>Enemy region:</b> Shows <a href="{{ url('Guide/Attack') }}">attack</a> options if you have units within range.
+                </li>
+                <li>
+                    <b>Unowned region:</b> You can buy this region to expand your empire. The cost increases with each region you already own.
+                </li>
+            </ul>
+        </div>
+    </div>
 {% endblock %}

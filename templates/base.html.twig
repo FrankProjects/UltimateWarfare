@@ -16,28 +16,33 @@
         {% block javascripts %}{% endblock %}
     </head>
     <body>
-        <div class="container border border-primary">
-            <div class="row">
-                <img src="{{ asset('images/banner.jpg') }}" class="img-fluid g-0" alt="Ultimate Warfare Online multiplayer Text-based game" />
+        <nav class="navbar navbar-expand-lg">
+            <div class="container" style="max-width: 960px;">
+                <a class="navbar-brand" href="{{ path('Site/Homepage') }}">Ultimate Warfare</a>
+                {% block navbar_controls %}
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav" aria-controls="siteNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="siteNav">
+                        {% block navigation %}{% endblock %}
+                    </div>
+                {% endblock %}
             </div>
-            <div class="row">
-                {% block body %}{% endblock %}
-            </div>
-            <div class="row">
-                <hr />
-            </div>
-            <div class="row justify-content-center">
-                <p class="text-center">
-                    <a class="B" href="{{ path('Site/About') }}" title="Ultimate Warfare - About">About</a> -
-                    <a class="B" href="{{ path('Site/Contact') }}" title="Ultimate Warfare - Contact">Contact</a> -
-                    <a class="B" href="{{ path('Site/Community') }}" title="Ultimate Warfare - Community">Community</a>
-                </p>
-            </div>
-            <div class="row justify-content-center">
-                <p class="text-center">
-                    copyright &copy; 2006 - 2023 ultimate-warfare.com
-                </p>
-            </div>
+        </nav>
+
+        <div class="site-content">
+            {% block body %}{% endblock %}
         </div>
+
+        <footer class="site-footer">
+            <div class="container">
+                <p>
+                    <a href="{{ path('Site/About') }}">About</a> &middot;
+                    <a href="{{ path('Site/Contact') }}">Contact</a> &middot;
+                    <a href="{{ path('Site/Community') }}">Community</a>
+                </p>
+                <p>copyright &copy; 2006 - 2026 ultimate-warfare.com</p>
+            </div>
+        </footer>
     </body>
 </html>

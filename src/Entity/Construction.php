@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
+
 class Construction
 {
     private int $id;
     private int $number;
     private int $timestamp;
+    private int $duration;
     private Player $player;
     private WorldRegion $worldRegion;
-    private GameUnit $gameUnit;
+    private GameUnitEnum $gameUnit;
 
     public function setId(int $id): void
     {
@@ -43,6 +46,20 @@ class Construction
         return $this->timestamp;
     }
 
+    public function setDuration(int $duration): void
+    {
+        $this->duration = $duration;
+    }
+
+    /**
+     * Effective build time in seconds, with any special-building build-speed bonus
+     * already applied and locked in at the moment the construction was queued.
+     */
+    public function getDuration(): int
+    {
+        return $this->duration;
+    }
+
     public function getPlayer(): Player
     {
         return $this->player;
@@ -63,12 +80,12 @@ class Construction
         $this->worldRegion = $worldRegion;
     }
 
-    public function getGameUnit(): GameUnit
+    public function getGameUnit(): GameUnitEnum
     {
         return $this->gameUnit;
     }
 
-    public function setGameUnit(GameUnit $gameUnit): void
+    public function setGameUnit(GameUnitEnum $gameUnit): void
     {
         $this->gameUnit = $gameUnit;
     }
@@ -76,8 +93,9 @@ class Construction
     public static function create(
         WorldRegion $worldRegion,
         Player $player,
-        GameUnit $gameUnit,
-        int $amount
+        GameUnitEnum $gameUnit,
+        int $amount,
+        int $duration
     ): Construction {
         $construction = new Construction();
         $construction->setWorldRegion($worldRegion);
@@ -85,6 +103,10 @@ class Construction
         $construction->setGameUnit($gameUnit);
         $construction->setNumber($amount);
         $construction->setTimestamp(time());
+        $construction->setDuration($duration);
+
+        // Keep the inverse side in sync, so an already loaded collection includes the new construction
+        $worldRegion->addConstruction($construction);
 
         return $construction;
     }

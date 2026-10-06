@@ -9,14 +9,18 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class AdvancedSpy extends OperationProcessor
 {
-    protected const int GAME_UNIT_SPY_ID = 407;
-
     public function getFormula(): float
     {
-        $guards = $this->getGuards();
-        $total_units = $this->amount + $guards + 1;
+        $spyLevel = $this->getAttackerResearchLevel('spy-technology');
+        $counterEspionageLevel = $this->getTargetResearchLevel('counter-espionage');
 
-        return (3 * $this->amount / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
+        $probability = 0.50
+            + 0.10 * ($spyLevel - $counterEspionageLevel)
+            - $this->operation->getDifficulty();
+
+        $probability = max(0.05, min(0.95, $probability));
+
+        return $probability - mt_rand(0, 1000) / 1000.0;
     }
 
     public function processPreOperation(): void
@@ -27,41 +31,42 @@ final class AdvancedSpy extends OperationProcessor
     public function processSuccess(): void
     {
         $player = $this->getTargetRegionPlayer();
+        $resources = $player->getResources();
 
         $population = 0;
-        $worldRegions = $player->getWorldRegions();
-        $regionCount = count($worldRegions);
-        foreach ($worldRegions as $worldRegion) {
+        foreach ($player->getWorldRegions() as $worldRegion) {
             $population += $worldRegion->getPopulation();
         }
-        $this->addToOperationLog("Searching for player information...");
 
-        // XXX TODO: number_format($resource, 0, '.', ',')
-        $this->addToOperationLog("Cash: \${$player->getResources()->getCash()}");
-        $this->addToOperationLog("Food: {$player->getResources()->getFood()}");
-        $this->addToOperationLog("Wood: {$player->getResources()->getWood()}");
-        $this->addToOperationLog("Steel: {$player->getResources()->getSteel()}");
+        $this->addSection('Enemy Resources');
+        $this->addRow('Cash', '$' . number_format($resources->getCash()));
+        $this->addRow('Food', number_format($resources->getFood()));
+        $this->addRow('Wood', number_format($resources->getWood()));
+        $this->addRow('Steel', number_format($resources->getSteel()));
+        $this->addRow('Population', number_format($population));
 
-        $this->addToOperationLog("Population: {$population}");
-        $this->addToOperationLog("Regions: {$regionCount}");
-        $this->addToOperationLog("NetWorth: {$player->getNetWorth()}");
+        $this->addSection('Recent Reports (last 24h)');
+        $cutoff = time() - 86400;
+        $reportsFound = 0;
+        foreach ($player->getReports() as $report) {
+            $timestamp = $report->getTimestamp();
+            if ($timestamp > $cutoff && $timestamp < time()) {
+                $this->addReportEntry($timestamp, $report->getReport());
+                $reportsFound++;
+            }
+        }
+        if ($reportsFound === 0) {
+            $this->addEmpty('No reports filed in the last 24 hours.');
+        }
     }
 
     public function processFailed(): void
     {
-        $spiesLost = intval($this->amount * 0.05);
-
-        foreach ($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SPY_ID) {
-                $worldRegionUnit->setAmount(intval($worldRegionUnit->getAmount() - $spiesLost));
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
-            }
-        }
-
-        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to spy on region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to spy"
+            . " on region {$this->region->getX()}, {$this->region->getY()} but failed.";
         $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText, Report::TYPE_GENERAL);
 
-        $this->addToOperationLog("We failed to spy and lost {$spiesLost} spies");
+        $this->addFailure("Our spies were caught. The enemy's defenses spotted us and an alert has been raised.");
     }
 
     public function processPostOperation(): void

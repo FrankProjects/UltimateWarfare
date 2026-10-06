@@ -21,4 +21,6 @@ interface UnbanRequestRepository
     public function remove(UnbanRequest $unbanRequest): void;
 
     public function save(UnbanRequest $unbanRequest): void;
+
+    public function count(): int;
 }

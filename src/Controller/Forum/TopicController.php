@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Forum;
 
+use FrankProjects\UltimateWarfare\Entity\Category;
 use FrankProjects\UltimateWarfare\Entity\Topic;
 use FrankProjects\UltimateWarfare\Entity\Post;
 use FrankProjects\UltimateWarfare\Exception\ForumDisabledException;
 use FrankProjects\UltimateWarfare\Form\Forum\PostType;
 use FrankProjects\UltimateWarfare\Form\Forum\TopicType;
-use FrankProjects\UltimateWarfare\Repository\CategoryRepository;
 use FrankProjects\UltimateWarfare\Repository\TopicRepository;
 use FrankProjects\UltimateWarfare\Service\Action\PostActionService;
 use FrankProjects\UltimateWarfare\Service\Action\TopicActionService;
@@ -22,18 +22,15 @@ class TopicController extends BaseForumController
 {
     private TopicActionService $topicActionService;
     private PostActionService $postActionService;
-    private CategoryRepository $categoryRepository;
     private TopicRepository $topicRepository;
 
     public function __construct(
         TopicActionService $topicActionService,
         PostActionService $postActionService,
-        CategoryRepository $categoryRepository,
         TopicRepository $topicRepository
     ) {
         $this->topicActionService = $topicActionService;
         $this->postActionService = $postActionService;
-        $this->categoryRepository = $categoryRepository;
         $this->topicRepository = $topicRepository;
     }
 
@@ -82,7 +79,7 @@ class TopicController extends BaseForumController
             return $this->render('forum/forum_disabled.html.twig');
         }
 
-        $category = $this->categoryRepository->find($categoryId);
+        $category = Category::tryFrom($categoryId);
 
         if ($category === null) {
             $this->addFlash('error', 'No such category!');
@@ -95,7 +92,12 @@ class TopicController extends BaseForumController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && $this->getGameUser() !== null) {
             try {
-                $this->topicActionService->create($topic, $category, $this->getGameUser(), (string) $request->getClientIp());
+                $this->topicActionService->create(
+                    $topic,
+                    $category,
+                    $this->getGameUser(),
+                    (string) $request->getClientIp()
+                );
                 $this->addFlash('success', 'Successfully created topic');
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
@@ -143,7 +145,7 @@ class TopicController extends BaseForumController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('Forum/Category', ['categoryId' => $category->getId()]);
+        return $this->redirectToRoute('Forum/Category', ['categoryId' => $category->value]);
     }
 
     public function edit(Request $request, int $topicId): Response

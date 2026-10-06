@@ -92,27 +92,4 @@ class Fleet
     {
         return $this->fleetUnits;
     }
-
-    public static function createForPlayer(
-        Player $player,
-        WorldRegion $worldRegion,
-        WorldRegion $targetWorldRegion
-    ): Fleet {
-        $distanceCalculator = new DistanceCalculator();
-        $travelTime = $distanceCalculator->calculateDistanceTravelTime(
-            $targetWorldRegion->getX(),
-            $targetWorldRegion->getY(),
-            $worldRegion->getX(),
-            $worldRegion->getY()
-        );
-
-        $fleet = new Fleet();
-        $fleet->setPlayer($player);
-        $fleet->setWorldRegion($worldRegion);
-        $fleet->setTargetWorldRegion($targetWorldRegion);
-        $fleet->setTimestamp(time());
-        $fleet->setTimestampArrive(time() + $travelTime);
-
-        return $fleet;
-    }
 }

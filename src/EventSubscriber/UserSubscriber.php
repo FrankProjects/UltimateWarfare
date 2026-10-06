@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\EventSubscriber;
 
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -40,26 +42,36 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         }
 
         try {
-            $user->setLastLogin(new \DateTime());
+            $user->setLastSeenAt(new \DateTime());
+            $user->setLastSeenIp($event->getRequest()->getClientIp());
             $this->userRepository->save($user);
         } catch (\Exception $e) {
         }
 
-        if ($user->getActive() === false) {
+        if ($user->isBanned()) {
             $this->checkBannedAndRedirect($event);
         }
     }
 
     private function checkBannedAndRedirect(RequestEvent $event): void
     {
-        if (
-            !str_contains($event->getRequest()->getRequestUri(), '/game') &&
-            !str_contains($event->getRequest()->getRequestUri(), '/forum')
-        ) {
+        $path = $event->getRequest()->getPathInfo();
+        $isGamePath = str_starts_with($path, '/game/');
+        $isForumPath = $path === '/forum' || str_starts_with($path, '/forum/');
+
+        if (!$isGamePath && !$isForumPath) {
             return;
         }
 
-        if (str_contains($event->getRequest()->getRequestUri(), '/game/banned')) {
+        if ($path === '/game/banned') {
+            return;
+        }
+
+        if (str_starts_with($path, '/game/api/')) {
+            $event->setResponse(new JsonResponse(
+                ['success' => false, 'message' => 'Your account has been banned.'],
+                Response::HTTP_FORBIDDEN
+            ));
             return;
         }
 

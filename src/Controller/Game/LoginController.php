@@ -30,11 +30,14 @@ final class LoginController extends BaseGameController
         }
         $player = $players->first();
         $requestStack->getSession()->set('playerId', $player->getId());
-        return $this->redirectToRoute('Game/Headquarter');
+        return $this->redirectToRoute('Game/WorldMap');
     }
 
-    public function loginForPlayer(RequestStack $requestStack, int $playerId, PlayerRepository $playerRepository): RedirectResponse
-    {
+    public function loginForPlayer(
+        RequestStack $requestStack,
+        int $playerId,
+        PlayerRepository $playerRepository
+    ): RedirectResponse {
         try {
             $user = $this->getLoginUser();
         } catch (Throwable $e) {
@@ -53,7 +56,7 @@ final class LoginController extends BaseGameController
         }
 
         $requestStack->getSession()->set('playerId', $player->getId());
-        return $this->redirectToRoute('Game/Headquarter');
+        return $this->redirectToRoute('Game/WorldMap');
     }
 
     private function getLoginUser(): User
@@ -63,11 +66,11 @@ final class LoginController extends BaseGameController
             throw new RuntimeException('You are not logged in!');
         }
 
-        if ($user->isEnabled() !== true) {
-            throw new RuntimeException('Your account is not enabled!');
+        if (!$user->isEmailVerified()) {
+            throw new RuntimeException('Your email address is not verified!');
         }
 
-        if ($user->getActive() !== true) {
+        if ($user->isBanned()) {
             throw new RuntimeException('You are banned!');
         }
 

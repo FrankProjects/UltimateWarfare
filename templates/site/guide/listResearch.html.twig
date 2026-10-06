@@ -1,26 +1,75 @@
 {% extends 'site/guideBase.html.twig' %}
 
-{% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="2"><b>Research</b></td>
-        </tr>
-        {% for research in researches %}
-            <tr>
-                <td width="150"><img src="{{ asset('images/research/' ~ research.image) }}" alt="{{ research.name }}" width="150" height="130"></td>
+{% macro format_duration(seconds) %}
+    {%- if seconds < 60 -%}
+        {{ seconds }}s
+    {%- elseif seconds < 3600 -%}
+        {{ (seconds / 60)|round }}m
+    {%- elseif seconds < 86400 -%}
+        {{ (seconds / 3600)|round(1) }}h
+    {%- else -%}
+        {{ (seconds / 86400)|round(1) }}d
+    {%- endif -%}
+{% endmacro %}
 
-                <td class="text-start" width="450">
-                    {{ research.description }}<br /><br />
-                    Name: {{ research.name }}<br />
-                    Cash: {{ research.cost }}<br />
-                    Research time: {{ research.timestamp }}<br /><br />
-
-                    <b>Requirements:</b><br />
-
-                    {% for researchNeeds in research.researchNeeds %}
-                        - {{ researchNeeds.requiredResearch.name }}<br />
+{% macro research_card(research) %}
+    <article class="guide-research-card">
+        <div class="guide-research-image">
+            <img src="{{ asset('images/research/' ~ research.image) }}"
+                 alt="{{ research.name }}" width="400" height="365">
+        </div>
+        <div class="guide-research-body">
+            <h2 class="guide-research-title">{{ research.name }}</h2>
+            <p class="guide-research-description">{{ research.description }}</p>
+            <dl class="guide-research-stats">
+                <div><dt>Max level</dt><dd>{{ research.maxLevel }}</dd></div>
+                <div><dt>Prerequisites</dt>
+                    <dd>
+                        {% set prereqs = research.getPrerequisiteDescriptions(1) %}
+                        {% if prereqs|length > 0 %}
+                            {% for prereq in prereqs %}
+                                {{ prereq.name }} lvl {{ prereq.minLevel }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </dd>
+                </div>
+            </dl>
+            <table class="guide-research-levels">
+                <thead>
+                    <tr><th>Level</th><th>Cost</th><th>Time</th></tr>
+                </thead>
+                <tbody>
+                    {% for level in 1..research.maxLevel %}
+                        <tr>
+                            <td>{{ level }}</td>
+                            <td>${{ research.getCost(level)|number_format }}</td>
+                            <td>{{ _self.format_duration(research.getTimestamp(level)) }}</td>
+                        </tr>
                     {% endfor %}
-                </td>
-        {% endfor %}
-    </table>
+                </tbody>
+            </table>
+        </div>
+    </article>
+{% endmacro %}
+
+{% block content %}
+    {% if researchTier %}
+        <section class="guide-research-section">
+            <h2 class="guide-research-section-title">Core Research</h2>
+            {{ _self.research_card(researchTier) }}
+        </section>
+    {% endif %}
+
+    {% for tier, researches in researchesByTier %}
+        <section class="guide-research-section">
+            <h2 class="guide-research-section-title">
+                {% if tier == 0 %}No tier requirement{% else %}Tier {{ tier }}{% endif %}
+            </h2>
+            {% for research in researches %}
+                {{ _self.research_card(research) }}
+            {% endfor %}
+        </section>
+    {% endfor %}
 {% endblock %}

@@ -4,26 +4,33 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
-use FrankProjects\UltimateWarfare\Entity\GameUnitType;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class MissileAttack extends OperationProcessor
 {
+    private const float BASE_SUCCESS = 0.62;
+
     public function getFormula(): float
     {
-        $specialOps = $this->getSpecialOps();
-        $guards = $this->getGuards();
-        $total_units = $specialOps + $guards + 1;
+        $rtLevel = $this->getAttackerResearchLevel('research-tier');
+        $defNetLevel = $this->getTargetResearchLevel('defensive-network');
 
-        return (3 * $specialOps / (2 * $total_units)) - (3 * $guards / (2 * $total_units)) - $this->operation->getDifficulty() + $this->getRandomChance();
+        $probability = self::BASE_SUCCESS
+            + 0.05 * max(0, $rtLevel - 1)
+            - 0.12 * $defNetLevel;
+
+        $probability = max(0.05, min(0.95, $probability));
+
+        return $probability - mt_rand(0, 1000) / 1000.0;
     }
 
     public function processPreOperation(): void
     {
-        foreach ($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() === $this->operation->getGameUnit()->getId()) {
-                $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $this->amount);
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
+        foreach ($this->playerRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+            if ($worldRegionStackableUnit->getGameUnit() === $this->operation->getGameUnit()) {
+                $worldRegionStackableUnit->setAmount($worldRegionStackableUnit->getAmount() - $this->amount);
+                $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
             }
         }
     }
@@ -31,40 +38,44 @@ final class MissileAttack extends OperationProcessor
     public function processSuccess(): void
     {
         $totalBuildings = 0;
-        foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() === GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
-                $totalBuildings = $totalBuildings + $worldRegionUnit->getAmount();
+        foreach ($this->region->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+            $gameUnit = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit());
+            if ($gameUnit->getGameUnitCategory() === GameUnitCategory::BUILDINGS) {
+                $totalBuildings = $totalBuildings + $worldRegionStackableUnit->getAmount();
             }
         }
 
         if (($this->amount / 2) > $totalBuildings) {
             $buildingsDestroyed = $totalBuildings;
-            foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() === GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
-                    $this->worldRegionUnitRepository->remove($worldRegionUnit);
-                    $this->addToOperationLog(
-                        "You destroyed all {$worldRegionUnit->getGameUnit()->getName()} buildings!"
-                    );
+            foreach ($this->region->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+                $gameUnit = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit());
+                if ($gameUnit->getGameUnitCategory() === GameUnitCategory::BUILDINGS) {
+                    $this->worldRegionStackableUnitRepository->remove($worldRegionStackableUnit);
+                    $unitName = $gameUnit->getName();
+                    $this->addToOperationLog("You destroyed all {$unitName} buildings!");
                 }
             }
 
-            $reportText = "{$this->getPlayerRegionPlayer()->getName()} launched a missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed all buildings.";
+            $reportText = "{$this->getPlayerRegionPlayer()->getName()} launched a missile attack"
+                . " against region {$this->region->getX()}, {$this->region->getY()} and destroyed all buildings.";
             $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         } else {
             $buildingsDestroyed = intval($this->amount / 2);
-            foreach ($this->region->getWorldRegionUnits() as $worldRegionUnit) {
-                if ($worldRegionUnit->getGameUnit()->getGameUnitType()->getId() === GameUnitType::GAME_UNIT_TYPE_BUILDINGS) {
-                    $percentage = $worldRegionUnit->getAmount() / $totalBuildings;
+            foreach ($this->region->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+                $gameUnit = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit());
+                if ($gameUnit->getGameUnitCategory() === GameUnitCategory::BUILDINGS) {
+                    $percentage = $worldRegionStackableUnit->getAmount() / $totalBuildings;
                     $destroyed = intval($buildingsDestroyed * $percentage);
-                    $worldRegionUnit->setAmount($worldRegionUnit->getAmount() - $destroyed);
-                    $this->worldRegionUnitRepository->save($worldRegionUnit);
-                    $this->addToOperationLog(
-                        "You destroyed {$destroyed} {$worldRegionUnit->getGameUnit()->getName()} buildings!"
-                    );
+                    $worldRegionStackableUnit->setAmount($worldRegionStackableUnit->getAmount() - $destroyed);
+                    $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
+                    $unitName = $gameUnit->getName();
+                    $this->addToOperationLog("You destroyed {$destroyed} {$unitName} buildings!");
                 }
             }
 
-            $reportText = "{$this->getPlayerRegionPlayer()->getName()} launched a missile attack against region {$this->region->getX()}, {$this->region->getY()} and destroyed {$buildingsDestroyed} buildings.";
+            $reportText = "{$this->getPlayerRegionPlayer()->getName()} launched a missile attack"
+                . " against region {$this->region->getX()}, {$this->region->getY()}"
+                . " and destroyed {$buildingsDestroyed} buildings.";
             $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
         }
 
@@ -73,19 +84,13 @@ final class MissileAttack extends OperationProcessor
 
     public function processFailed(): void
     {
-        $troopsLost = intval($this->getSpecialOps() * 0.05);
-
-        foreach ($this->playerRegion->getWorldRegionUnits() as $worldRegionUnit) {
-            if ($worldRegionUnit->getGameUnit()->getId() === self::GAME_UNIT_SPECIAL_OPS_ID) {
-                $worldRegionUnit->setAmount(intval($worldRegionUnit->getAmount() - $troopsLost));
-                $this->worldRegionUnitRepository->save($worldRegionUnit);
-            }
-        }
-
-        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a missile attack against region {$this->region->getX()}, {$this->region->getY()} but failed.";
+        $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a missile attack"
+            . " against region {$this->region->getX()}, {$this->region->getY()} but failed.";
         $this->reportCreator->createReport($this->getTargetRegionPlayer(), time(), $reportText);
 
-        $this->addToOperationLog("We failed our Missile Attack and lost {$troopsLost} Special Ops");
+        $this->addToOperationLog(
+            "We failed our Missile Attack - the missiles were intercepted before reaching the target"
+        );
     }
 
     public function processPostOperation(): void

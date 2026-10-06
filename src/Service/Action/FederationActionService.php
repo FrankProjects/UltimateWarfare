@@ -174,7 +174,10 @@ final class FederationActionService
             throw new RuntimeException("Player is not in Federation!");
         }
 
-        if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_RECRUIT || $player->getFederationHierarchy() === Player::FEDERATION_HIERARCHY_GENERAL) {
+        if (
+            $player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_RECRUIT
+            || $player->getFederationHierarchy() === Player::FEDERATION_HIERARCHY_GENERAL
+        ) {
             throw new RuntimeException("You are not allowed to leave the Federation with this rank!");
         }
 
@@ -291,7 +294,8 @@ final class FederationActionService
          * <form action="" method="post" />
          * <tr><td>
          * <b>Are you sure you wanna do this?<br />
-         * By accepting this you will give the federation to another player, and will lower your rank to Staff General!<br /><br />
+         * By accepting this you will give the federation to another player,
+         * and will lower your rank to Staff General!<br /><br />
          *
          * <input type="hidden" name="rank" value="<?php echo"$rank"; ?>">
          * <input type="hidden" name="player" value="<?php echo"$fed_player"; ?>">

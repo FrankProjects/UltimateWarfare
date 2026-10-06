@@ -16,10 +16,28 @@ interface ResearchPlayerRepository
     public function getNonActiveCompletedResearch(int $timestamp): array;
 
     /**
+     * @return ResearchPlayer[]
+     */
+    public function getAllNonActiveResearch(): array;
+
+    /**
      * @param Player $player
      * @return ResearchPlayer[]
      */
     public function findFinishedByPlayer(Player $player): array;
+
+    /**
+     * @param Player $player
+     * @return ResearchPlayer[]
+     */
+    public function findOngoingByPlayer(Player $player): array;
+
+    /**
+     * Returns the highest completed level per research slug for a player.
+     *
+     * @return array<string, int>
+     */
+    public function getCompletedLevelsBySlug(Player $player): array;
 
     public function remove(ResearchPlayer $researchPlayer): void;
 

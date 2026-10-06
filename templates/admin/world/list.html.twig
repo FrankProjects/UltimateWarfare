@@ -7,74 +7,79 @@
         <a class="btn btn-primary" href="{{ path('Admin/World/Create') }}"><b>Create world</b></a>
     </p>
 
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="3"><b>World list</b></td>
-        </tr>
-        {% for world in worlds %}
-            <tr>
-                <td width="400">
-                    <b>{{ world.name }}</b>
-                    {% if world.status == 0 %}
-                        (<span class="bad">Created</span>)
-                    {% elseif world.status == 1 %}
-                        (<span class="good">Running</span>)
-                    {% elseif world.status == 2 %}
-                        (<span class="bad">Finished</span>)
-                    {% endif %}
+    <div class="uw-card">
+        <div class="uw-card-header">World list</div>
+        <div class="uw-card-body">
+            <table class="table text-center">
+                {% for world in worlds %}
+                    <tr>
+                        <td width="400">
+                            <b>{{ world.name }}</b>
+                            {% if world.status == 0 %}
+                                (<span class="bad">Created</span>)
+                            {% elseif world.status == 1 %}
+                                (<span class="good">Running</span>)
+                            {% elseif world.status == 2 %}
+                                (<span class="bad">Finished</span>)
+                            {% endif %}
 
-                    <div>
-                        <img src="{{ asset('images/world/' ~ world.image) }}" alt="{{ world.name }}">
-                    </div>
-                </td>
-                <td class="text-start" width="300">
-                    <p>
-                        <b>Players:</b> {{ world.players|length }}/{{ world.maxplayers }}<br />
-                    </p>
-                    <p>
-                        <b>Info:</b><br />
-                        {{ world.description }}
-                    </p>
-                    <p>
-                        <b>At start:</b><br />
-                        Cash: {{ world.resources.cash }}<br />
-                        Wood: {{ world.resources.wood }}<br />
-                        Steel: {{ world.resources.steel }}<br />
-                        Food: {{ world.resources.food }}
-                    </p>
-                    <p>
-                        <b>Settings:</b><br />
-                        Public: {{ world.public }}<br />
-                        Start: {{ world.startTimestamp }}<br />
-                        End: {{ world.endTimestamp }}<br />
-                        Market: {{ world.market }}<br />
-                        Federation: {{ world.federation }}<br />
-                        Federation limit: {{ world.federationLimit }}
-                    </p>
-                    <p>
-                        WorldSectors: {{ world.worldSectors|length }}<br />
-                        WorldRegions: {{ world.worldRegions|length }}
-                    </p>
-                </td>
-                <td class="text-start" width="50">
-                    <p>
-                        <a class="btn btn-primary" href="{{ path('Admin/World/Edit', {'worldId': world.id}) }}">Edit</a>
-                    </p>
-                    <p>
-                        <a class="btn btn-primary" href="{{ path('Admin/World/Generate', {'worldId': world.id}) }}">Generate Map</a>
-                    </p>
-                    <p>
-                        <a class="btn btn-danger" href="{{ path('Admin/World/Reset', {'worldId': world.id}) }}">Reset</a>
-                    </p>
-                    <p>
-                        <a class="btn btn-danger" href="{{ path('Admin/World/Remove', {'worldId': world.id}) }}">Remove</a>
-                    </p>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">No worlds....</td>
-            </tr>
-        {% endfor %}
-    </table>
+                            <div>
+                                <img src="{{ path('Game/World/Image', {'worldId': world.id}) }}" alt="{{ world.name }}">
+                            </div>
+                        </td>
+                        <td class="text-start" width="300">
+                            <p>
+                                <b>Players:</b> {{ world.players|length }}/{{ world.maxplayers }}<br />
+                            </p>
+                            <p>
+                                <b>Info:</b><br />
+                                {{ world.description }}
+                            </p>
+                            <p>
+                                <b>At start:</b><br />
+                                Cash: {{ world.resources.cash }}<br />
+                                Wood: {{ world.resources.wood }}<br />
+                                Steel: {{ world.resources.steel }}<br />
+                                Food: {{ world.resources.food }}
+                            </p>
+                            <p>
+                                <b>Settings:</b><br />
+                                Public: {{ world.public }}<br />
+                                Start: {{ world.startTimestamp }}<br />
+                                End: {{ world.endTimestamp }}<br />
+                                Market: {{ world.market }}<br />
+                                Federation: {{ world.federation }}<br />
+                                Federation limit: {{ world.federationLimit }}
+                            </p>
+                            <p>
+                                WorldRegions: {{ world.worldRegions|length }}
+                            </p>
+                        </td>
+                        <td class="text-start" width="50">
+                            <p>
+                                <a class="btn btn-primary" href="{{ path('Admin/World/Edit', {'worldId': world.id}) }}">Edit</a>
+                            </p>
+                            <p>
+                                <a class="btn btn-primary" href="{{ path('Admin/World/Generate', {'worldId': world.id}) }}">Generate Map</a>
+                            </p>
+                            <p>
+                                <form method="POST" action="{{ path('Admin/World/Reset', {'worldId': world.id}) }}" style="display:inline">
+                                    <button type="submit" class="btn btn-danger">Reset</button>
+                                </form>
+                            </p>
+                            <p>
+                                <form method="POST" action="{{ path('Admin/World/Remove', {'worldId': world.id}) }}" style="display:inline">
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                </form>
+                            </p>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">No worlds....</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock %}

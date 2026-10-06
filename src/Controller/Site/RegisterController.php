@@ -33,7 +33,8 @@ final class RegisterController extends AbstractController
                 $this->registerActionService->register($user);
                 $this->addFlash(
                     'success',
-                    "You successfully created an account! An e-mail has been sent to {$user->getEmail()} with your activation code..."
+                    "You successfully created an account!"
+                    . " An e-mail has been sent to {$user->getEmail()} with your email verification link..."
                 );
             } catch (Throwable $e) {
                 $this->addFlash('error', $e->getMessage());
@@ -44,16 +45,15 @@ final class RegisterController extends AbstractController
             'site/register.html.twig',
             [
                 'form' => $form->createView(),
-                'gg_recaptcha_site_key' => $this->getParameter('app.gg_recaptcha_site_key')
             ]
         );
     }
 
-    public function activateUser(string $token): Response
+    public function verifyEmail(string $token): Response
     {
         try {
-            $this->registerActionService->activateUser($token);
-            $this->addFlash('success', 'You successfully activated your account!');
+            $this->registerActionService->verifyEmail($token);
+            $this->addFlash('success', 'You successfully verified your email address!');
         } catch (Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }

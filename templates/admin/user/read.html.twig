@@ -3,120 +3,176 @@
 {% block title %}ADMIN - User{% endblock title %}
 
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="2"><b>User information</b></td>
-        </tr>
-        <tr>
-            <td>Username</td>
-            <td>{{ user.username }}</td>
-        </tr>
-        <tr>
-            <td>Email</td>
-            <td>{{ user.email }}</td>
-        </tr>
-        <tr>
-            <td>Sign-up date</td>
-            <td>{{ user.signup|date("Y-m-d H:i:s") }}</td>
-        </tr>
-        <tr>
-            <td>Last login</td>
-            <td>
-                {% if user.lastLogin is not empty %}
-                    {{ user.lastLogin|date("Y-m-d H:i:s") }}
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td>Enabled</td>
-            <td>
-                {% if user.enabled == 1 %}
-                    <span class="good">Yes</span>
-                {% else %}
-                    <span class="bad">No</span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td>Status</td>
-            <td>
-                {% if user.active == 1 %}
-                    <span class="good">Active</span>
-                {% else %}
-                    <span class="bad">Banned/De-activated</span>
-                {% endif %}
-            </td>
-        </tr>
-        {% if uw_forum_enabled == true %}
-            <tr>
-                <td>Forum</td>
-                <td>
-                    {% if user.forumBan == 1 %}
-                        <span class="bad">Banned</span>
-                    {% else %}
-                        <span class="good">Active</span>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endif %}
-        <tr>
-            <td>Roles</td>
-            <td>
-                {% for role in user.roles %}
-                    <p>{{ role }}</p>
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <p>
-                    {% if user.active == 1 %}
-                        <a class="btn btn-danger" href="{{ path('Admin/User/Ban', {'userId': user.id}) }}">Ban</a>
-                    {% else %}
-                        <a class="btn btn-danger" href="{{ path('Admin/User/Unban', {'userId': user.id}) }}">Unban</a>
-                    {% endif %}
-                </p>
-                {% if uw_forum_enabled == true %}
-                    <p>
-                        {% if user.forumBan == 1 %}
-                            <a class="btn btn-danger" href="{{ path('Admin/User/ForumUnban', {'userId': user.id}) }}">Forum unban</a>
-                        {% else %}
-                            <a class="btn btn-danger" href="{{ path('Admin/User/ForumBan', {'userId': user.id}) }}">Forum ban</a>
+    <div class="uw-card">
+        <div class="uw-card-header">User information</div>
+        <div class="uw-card-body">
+            <table class="table text-center">
+                <tr>
+                    <td>Username</td>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <td>Sign-up date</td>
+                    <td>{{ user.signedUpAt|date("Y-m-d H:i:s") }}</td>
+                </tr>
+                <tr>
+                    <td>Last seen</td>
+                    <td>
+                        {% if user.lastSeenAt is not empty %}
+                            {{ user.lastSeenAt|date("Y-m-d H:i:s") }}
                         {% endif %}
-                    </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Email verified</td>
+                    <td>
+                        {% if user.emailVerified %}
+                            <span class="good">Yes</span>
+                        {% else %}
+                            <span class="bad">No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Banned</td>
+                    <td>
+                        {% if user.banned %}
+                            <span class="bad">Yes</span>
+                        {% else %}
+                            <span class="good">No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if uw_forum_enabled == true %}
+                    <tr>
+                        <td>Forum banned</td>
+                        <td>
+                            {% if user.forumBanned %}
+                                <span class="bad">Yes</span>
+                            {% else %}
+                                <span class="good">No</span>
+                            {% endif %}
+                        </td>
+                    </tr>
                 {% endif %}
-                {% if user.enabled == 0 %}
-                    <p>
-                        <a class="btn btn-danger" href="{{ path('Admin/User/Enable', {'userId': user.id}) }}">Enable account</a>
-                    </p>
-                {% endif %}
-                <p>
-                    <a class="btn btn-danger" href="{{ path('Admin/User/MakeAdmin', {'userId': user.id}) }}">Make Admin</a>
-                </p>
-                <p>
-                    <a class="btn btn-danger" href="{{ path('Admin/User/RemoveAdmin', {'userId': user.id}) }}">Remove Admin</a>
-                </p>
-                <p>
-                    XXX TODO: Check IP against other users
-                </p>
-            </td>
-        </tr>
-    </table>
+                <tr>
+                    <td>Roles</td>
+                    <td>
+                        {% for role in user.roles %}
+                            <p>{{ role }}</p>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p>
+                            {% if not user.banned %}
+                                <form method="POST" action="{{ path('Admin/User/Ban', {'userId': user.id}) }}" style="display:inline">
+                                    <button type="submit" class="btn btn-danger">Ban</button>
+                                </form>
+                            {% else %}
+                                <form method="POST" action="{{ path('Admin/User/Unban', {'userId': user.id}) }}" style="display:inline">
+                                    <button type="submit" class="btn btn-danger">Unban</button>
+                                </form>
+                            {% endif %}
+                        </p>
+                        {% if uw_forum_enabled == true %}
+                            <p>
+                                {% if user.forumBanned %}
+                                    <form method="POST" action="{{ path('Admin/User/ForumUnban', {'userId': user.id}) }}" style="display:inline">
+                                        <button type="submit" class="btn btn-danger">Forum unban</button>
+                                    </form>
+                                {% else %}
+                                    <form method="POST" action="{{ path('Admin/User/ForumBan', {'userId': user.id}) }}" style="display:inline">
+                                        <button type="submit" class="btn btn-danger">Forum ban</button>
+                                    </form>
+                                {% endif %}
+                            </p>
+                        {% endif %}
+                        {% if not user.emailVerified %}
+                            <p>
+                                <form method="POST" action="{{ path('Admin/User/VerifyEmail', {'userId': user.id}) }}" style="display:inline">
+                                    <button type="submit" class="btn btn-danger">Mark email as verified</button>
+                                </form>
+                            </p>
+                        {% endif %}
+                        {% if 'ROLE_ADMIN' not in user.roles %}
+                            <p>
+                                <form method="POST" action="{{ path('Admin/User/MakeAdmin', {'userId': user.id}) }}" style="display:inline">
+                                    <button type="submit" class="btn btn-danger">Make Admin</button>
+                                </form>
+                            </p>
+                        {% else %}
+                            <p>
+                                <form method="POST" action="{{ path('Admin/User/RemoveAdmin', {'userId': user.id}) }}" style="display:inline">
+                                    <button type="submit" class="btn btn-danger">Remove Admin</button>
+                                </form>
+                            </p>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="2"><b>Players</b></td>
-        </tr>
-        <tr>
-            <td>Player name</td>
-            <td>World</td>
-        </tr>
-        {% for player in user.players %}
-            <tr>
-                <td>{{ player.name }}</td>
-                <td>{{ player.world.name }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Players</div>
+        <div class="uw-card-body">
+            <table class="table text-center">
+                <tr>
+                    <td>Player name</td>
+                    <td>World</td>
+                </tr>
+                {% for player in user.players %}
+                    <tr>
+                        <td>{{ player.name }}</td>
+                        <td>{{ player.world.name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="uw-card">
+        <div class="uw-card-header">Possible multi accounts (same IP: {{ user.lastSeenIp ?? 'Unknown' }})</div>
+        <div class="uw-card-body">
+            <table class="table text-center">
+                {% if sameIpUsers|length > 0 %}
+                    <tr>
+                        <td>Username</td>
+                        <td>Email</td>
+                        <td>Last seen</td>
+                        <td>Banned</td>
+                    </tr>
+                    {% for sameIpUser in sameIpUsers %}
+                        <tr>
+                            <td><a href="{{ path('Admin/User/Read', {'userId': sameIpUser.id}) }}">{{ sameIpUser.username }}</a></td>
+                            <td>{{ sameIpUser.email }}</td>
+                            <td>
+                                {% if sameIpUser.lastSeenAt is not empty %}
+                                    {{ sameIpUser.lastSeenAt|date("Y-m-d H:i:s") }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if sameIpUser.banned %}
+                                    <span class="bad">Yes</span>
+                                {% else %}
+                                    <span class="good">No</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4">No other users found with the same IP</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
 
 {% endblock %}

@@ -9,16 +9,10 @@
         <a class="nav-link" href="{{ path('Admin/World/List') }}">World list</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ path('Admin/Contact/List') }}">Contact list</a>
+        <a class="nav-link" href="{{ path('Admin/Contact/List') }}">Contact list {% set contact_count = admin_contact_count() %}{% if contact_count > 0 %}<span class="badge bg-primary">{{ contact_count }}</span>{% endif %}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ path('Admin/UnbanRequest/List') }}">Unban requests</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ path('Admin/GameNews/List') }}">Game news</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ path('Admin/GameUnit/List') }}">Game units</a>
+        <a class="nav-link" href="{{ path('Admin/UnbanRequest/List') }}">Unban requests {% set unban_count = admin_unban_request_count() %}{% if unban_count > 0 %}<span class="badge bg-danger">{{ unban_count }}</span>{% endif %}</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ path('Admin/ServerLogs') }}">Server Logs</a>

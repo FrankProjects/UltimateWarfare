@@ -1,21 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <main class="col-sm-12 justify-content-center">
-        <table class="table text">
-            <tr class="tabletop">
-                <td class="text-center"><b>Internal Server Error</b></td>
-            </tr>
-            <tr>
-                <td class="text-center">
-                    <p>
-                        The server encountered an error and could not complete your request.
-                    </p>
-                    <p>
-                        If the problem persists, please contact us and mention this error message and the query that caused it.
-                    </p>
-                </td>
-            </tr>
-        </table>
-    </main>
+    <div class="uw-card">
+        <div class="uw-card-header">Internal Server Error</div>
+        <div class="uw-card-body text-center">
+            <p>The server encountered an error and could not complete your request.</p>
+            <p>If the problem persists, please contact us and mention this error message and the query that caused it.</p>
+        </div>
+    </div>
 {% endblock %}

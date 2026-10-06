@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\MarketItem;
-use FrankProjects\UltimateWarfare\Form\DTO\MarketOrderFormDTO;
-use FrankProjects\UltimateWarfare\Form\Game\MarketOrderType;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Service\Action\MarketActionService;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 final class MarketController extends BaseGameController
@@ -28,17 +24,11 @@ final class MarketController extends BaseGameController
         $this->marketActionService = $marketActionService;
     }
 
-    public function buy(): Response
+    public function marketBuyListApi(): JsonResponse
     {
         $player = $this->getPlayer();
-        $world = $player->getWorld();
-        if (!$world->getMarket()) {
-            return $this->render(
-                'game/market/disabled.html.twig',
-                [
-                    'player' => $player
-                ]
-            );
+        if (!$player->getWorld()->getMarket()) {
+            return new JsonResponse(['success' => false, 'message' => 'Market not enabled']);
         }
 
         $marketItems = $this->marketItemRepository->findByWorldMarketItemType(
@@ -46,38 +36,26 @@ final class MarketController extends BaseGameController
             MarketItem::TYPE_SELL
         );
 
-        return $this->render(
-            'game/market/buy.html.twig',
-            [
-                'player' => $player,
-                'marketItems' => $marketItems
-            ]
-        );
-    }
-
-    public function buyOrder(int $marketItemId): RedirectResponse
-    {
-        try {
-            $this->marketActionService->buyOrder($this->getPlayer(), $marketItemId);
-            $this->addFlash('success', 'You bought something on the market!');
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
+        $items = [];
+        foreach ($marketItems as $item) {
+            $items[] = [
+                'id' => $item->getId(),
+                'resource' => $item->getGameResource(),
+                'amount' => $item->getAmount(),
+                'price' => $item->getPrice(),
+                'playerName' => $item->getPlayer()->getName(),
+                'isOwn' => $item->getPlayer()->getId() === $player->getId(),
+            ];
         }
 
-        return $this->redirectToRoute('Game/Market');
+        return new JsonResponse(['success' => true, 'items' => $items]);
     }
 
-    public function sell(): Response
+    public function marketSellListApi(): JsonResponse
     {
         $player = $this->getPlayer();
-        $world = $player->getWorld();
-        if (!$world->getMarket()) {
-            return $this->render(
-                'game/market/disabled.html.twig',
-                [
-                    'player' => $player
-                ]
-            );
+        if (!$player->getWorld()->getMarket()) {
+            return new JsonResponse(['success' => false, 'message' => 'Market not enabled']);
         }
 
         $marketItems = $this->marketItemRepository->findByWorldMarketItemType(
@@ -85,103 +63,75 @@ final class MarketController extends BaseGameController
             MarketItem::TYPE_BUY
         );
 
-        return $this->render(
-            'game/market/sell.html.twig',
-            [
-                'player' => $player,
-                'marketItems' => $marketItems
-            ]
-        );
-    }
-
-    public function sellOrder(int $marketItemId): RedirectResponse
-    {
-        try {
-            $this->marketActionService->sellOrder($this->getPlayer(), $marketItemId);
-            $this->addFlash('success', 'You sold something on the market!');
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
+        $items = [];
+        foreach ($marketItems as $item) {
+            $items[] = [
+                'id' => $item->getId(),
+                'resource' => $item->getGameResource(),
+                'amount' => $item->getAmount(),
+                'price' => $item->getPrice(),
+                'playerName' => $item->getPlayer()->getName(),
+                'isOwn' => $item->getPlayer()->getId() === $player->getId(),
+            ];
         }
 
-        return $this->redirectToRoute('Game/Market/Sell');
+        return new JsonResponse(['success' => true, 'items' => $items]);
     }
 
-    public function listOrders(): Response
+    public function marketMyOrdersApi(): JsonResponse
     {
         $player = $this->getPlayer();
-        $world = $player->getWorld();
-        if (!$world->getMarket()) {
-            return $this->render(
-                'game/market/disabled.html.twig',
-                [
-                    'player' => $player
-                ]
-            );
+        if (!$player->getWorld()->getMarket()) {
+            return new JsonResponse(['success' => false, 'message' => 'Market not enabled']);
         }
 
-        return $this->render(
-            'game/market/listOrders.html.twig',
-            [
-                'player' => $player,
-                'marketItems' => $player->getMarketItems()
-            ]
-        );
+        $items = [];
+        foreach ($player->getMarketItems() as $item) {
+            $items[] = [
+                'id' => $item->getId(),
+                'resource' => $item->getGameResource(),
+                'amount' => $item->getAmount(),
+                'price' => $item->getPrice(),
+                'type' => $item->getType(),
+            ];
+        }
+
+        return new JsonResponse(['success' => true, 'items' => $items]);
     }
 
-    public function cancelOrder(int $marketItemId): RedirectResponse
+    public function marketActionApi(string $action, int $marketItemId): JsonResponse
     {
         try {
-            $this->marketActionService->cancelOrder($this->getPlayer(), $marketItemId);
-            $this->addFlash('success', 'You cancelled your order!');
-        } catch (Throwable $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
+            $player = $this->getPlayer();
+            match ($action) {
+                'buy' => $this->marketActionService->buyOrder($player, $marketItemId),
+                'sell' => $this->marketActionService->sellOrder($player, $marketItemId),
+                'cancel' => $this->marketActionService->cancelOrder($player, $marketItemId),
+            };
 
-        return $this->redirectToRoute('Game/Market/ListOrders');
+            return new JsonResponse(['success' => true, 'message' => 'Order processed successfully']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 
-    public function createOrder(Request $request): Response
+    public function marketCreateOrderApi(Request $request): JsonResponse
     {
-        $player = $this->getPlayer();
-        $world = $player->getWorld();
-        if (!$world->getMarket()) {
-            return $this->render(
-                'game/market/disabled.html.twig',
-                [
-                    'player' => $player
-                ]
-            );
-        }
-
-        $marketOrderDTO = new MarketOrderFormDTO();
-        $form = $this->createForm(MarketOrderType::class, $marketOrderDTO);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                /** @var MarketOrderFormDTO $marketOrderDTO */
-                $marketOrderDTO = $form->getData();
-                $this->marketActionService->createOrder(
-                    $player,
-                    $marketOrderDTO->getResource(),
-                    $marketOrderDTO->getPrice(),
-                    $marketOrderDTO->getAmount(),
-                    $marketOrderDTO->getOption(),
-                );
-                $this->addFlash('success', 'Created new market order');
-            } catch (Throwable $e) {
-                $this->addFlash('error', $e->getMessage());
+        try {
+            $player = $this->getPlayer();
+            $data = json_decode($request->getContent(), true);
+            if (!is_array($data)) {
+                throw new \RuntimeException('Invalid request data');
             }
-        }
+            $resource = isset($data['resource']) && is_string($data['resource']) ? $data['resource'] : '';
+            $price = isset($data['price']) && is_int($data['price']) ? $data['price'] : 0;
+            $amount = isset($data['amount']) && is_int($data['amount']) ? $data['amount'] : 0;
+            $type = isset($data['type']) && is_string($data['type']) ? $data['type'] : '';
+            $this->marketActionService->createOrder($player, $resource, $price, $amount, $type);
 
-        return $this->render(
-            'game/market/createOrder.html.twig',
-            [
-                'player' => $player,
-                'form' => $form->createView(),
-                'gameResources' => GameResource::getAll()
-            ]
-        );
+            return new JsonResponse(['success' => true, 'message' => 'Order created successfully']);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 }

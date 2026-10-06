@@ -41,10 +41,6 @@
         <join-column name="edit_user_id"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="category" target-entity="FrankProjects\UltimateWarfare\Entity\Category" inversed-by="topics">
-      <join-columns>
-        <join-column name="category_id" nullable="false"/>
-      </join-columns>
-    </many-to-one>
+    <field name="category" type="integer" column="category_id" enum-type="FrankProjects\UltimateWarfare\Entity\Category"/>
   </entity>
 </doctrine-mapping>

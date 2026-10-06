@@ -4,40 +4,69 @@
 
 {% block content %}
     <form action="{{ path('Game/StartWorld', {'worldId': world.id}) }}" method="POST">
-        <table class="table text-center">
-            <tr class="tabletop">
-                <td><b>Select your Name</b></td>
-            </tr>
-            <tr>
-                <td>
-                    <div>
-                        <label for="name">Name:</label>
+        <div class="form-card-wrapper">
+            <div class="uw-card">
+                <div class="uw-card-header">Select your Name</div>
+                <div class="uw-card-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
                         <input type="text" class="form-control" id="name" name="name"/>
                     </div>
-                    <input class="btn btn-primary" type="submit" name="submit" value="Play">
-                </td>
-            </tr>
-        </table>
-        <br />
-        <br />
+                    <button class="btn btn-primary w-100" type="submit">Play</button>
+                </div>
+            </div>
+        </div>
 
-        <table class="table">
-            <tr>
-                <td width="400">
-                    <b>{{ world.name }}</b><br />
-                    <img src="{{ asset('images/world/' ~ world.image) }}" alt="{{ world.name }}">
-                </td>
-                <td width="300">
-                    <b>Max players:</b> {{ world.maxplayers }}<br /><br />
-                    <b>Info:</b><br />
-                    {{ world.description }}<br /><br />
-                    <b>At start:</b><br />
-                    Cash: {{ world.resources.cash }}<br />
-                    Wood: {{ world.resources.wood }}<br />
-                    Steel: {{ world.resources.steel }}<br />
-                    Food: {{ world.resources.food }}<br /><br />
-                </td>
-            </tr>
-        </table>
+        <div class="uw-card" style="margin-top: 20px;">
+            <div class="uw-card-body" style="padding: 0; overflow-x: auto;">
+                <table class="table uw-world-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>World Name</th>
+                            <th>Status</th>
+                            <th>Start Date</th>
+                            <th>Players</th>
+                            <th>Max Players</th>
+                            <th>Start Resources</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <img src="{{ path('Game/World/Image', {'worldId': world.id}) }}"
+                                     alt="{{ world.name }}"
+                                     class="world-thumb">
+                            </td>
+                            <td>{{ world.name }}</td>
+                            <td>
+                                {% if world.status == 0 %}
+                                    <span class="status-created">Created</span>
+                                {% elseif world.status == 1 %}
+                                    <span class="status-running">Running</span>
+                                {% else %}
+                                    <span class="status-finished">Finished</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if world.startTimestamp > 0 %}
+                                    {{ world.startTimestamp|date('Y-m-d') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ world.players|length }}</td>
+                            <td>{{ world.maxPlayers }}</td>
+                            <td class="start-resources">
+                                <img src="{{ asset('images/icons/resource_cash.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Cash"> {{ world.resources.cash }}
+                                <img src="{{ asset('images/icons/resource_wood.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Wood"> {{ world.resources.wood }}
+                                <img src="{{ asset('images/icons/resource_steel.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Steel"> {{ world.resources.steel }}
+                                <img src="{{ asset('images/icons/resource_grain_wheat.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Food"> {{ world.resources.food }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </form>
 {% endblock %}

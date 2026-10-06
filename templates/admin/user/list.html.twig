@@ -5,61 +5,72 @@
 {% block content %}
     <p class="text-center btn-group">
         <a href="{{ path('Admin/User/List') }}" class="btn btn-primary {{ app.request.attributes.get('filter') == '' ? 'active' : '' }}">All</a>
-        <a href="{{ path('Admin/User/List', {'filter': 'active'}) }}" class="btn btn-primary {{ app.request.attributes.get('filter') == 'active' ? 'active' : '' }}">Active</a>
-        <a href="{{ path('Admin/User/List', {'filter': 'disabled'}) }}" class="btn btn-primary {{ app.request.attributes.get('filter') == 'disabled' ? 'active' : '' }}">Disabled</a>
+        <a href="{{ path('Admin/User/List', {'filter': 'email-verified'}) }}" class="btn btn-primary {{ app.request.attributes.get('filter') == 'email-verified' ? 'active' : '' }}">Email verified</a>
+        <a href="{{ path('Admin/User/List', {'filter': 'email-unverified'}) }}" class="btn btn-primary {{ app.request.attributes.get('filter') == 'email-unverified' ? 'active' : '' }}">Email unverified</a>
         <a href="{{ path('Admin/User/List', {'filter': 'banned'}) }}" class="btn btn-primary {{ app.request.attributes.get('filter') == 'banned' ? 'active' : '' }}">Banned</a>
     </p>
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="8"><b>User list</b></td>
-        </tr>
-        <tr>
-            <td width="150">Username</td>
-            <td width="450">Email</td>
-            <td width="50">Enabled</td>
-            <td width="450">Players</td>
-            <td width="450">Signup</td>
-            <td width="450">LastLogin</td>
-            <td width="100">Action</td>
-        </tr>
-        {% for user in users %}
-            <tr>
-                <td>
-                    {{ user.username }}
-                </td>
-                <td>
-                    {{ user.email }}
-                </td>
-                <td>
-                    {% if user.enabled == 1 %}
-                        <span class="good">Yes</span>
-                    {% else %}
-                        <span class="bad">No</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% for player in user.players %}
-                        <p>
-                            {{ player.name }} ({{ player.world.name }})
-                        </p>
-                    {% endfor %}
-                </td>
-                <td>
-                    {{ user.signup|date("Y-m-d H:i:s") }}
-                </td>
-                <td>
-                    {% if user.lastLogin is not null %}
-                        {{ user.lastLogin|date("Y-m-d H:i:s") }}
-                    {% endif %}
-                </td>
-                <td>
-                    <a class="btn btn-primary" href="{{ path('Admin/User/Read', {'userId': user.id}) }}">View</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">No users....</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">User list</div>
+        <div class="uw-card-body">
+            <table class="table text-center" style="table-layout: fixed; width: 100%;">
+                <colgroup>
+                    <col style="width: 14%;">
+                    <col style="width: 22%;">
+                    <col style="width: 7%;">
+                    <col style="width: 19%;">
+                    <col style="width: 13%;">
+                    <col style="width: 13%;">
+                    <col style="width: 12%;">
+                </colgroup>
+                <tr>
+                    <td>Username</td>
+                    <td>Email</td>
+                    <td>Email verified</td>
+                    <td>Players</td>
+                    <td>Signup</td>
+                    <td>Last seen</td>
+                    <td>Action</td>
+                </tr>
+                {% for user in users %}
+                    <tr>
+                        <td style="overflow-wrap: break-word;">
+                            {{ user.username }}
+                        </td>
+                        <td style="overflow-wrap: break-word;">
+                            {{ user.email }}
+                        </td>
+                        <td>
+                            {% if user.emailVerified %}
+                                <span class="good">Yes</span>
+                            {% else %}
+                                <span class="bad">No</span>
+                            {% endif %}
+                        </td>
+                        <td style="overflow-wrap: break-word;">
+                            {% for player in user.players %}
+                                <p>
+                                    {{ player.name }} ({{ player.world.name }})
+                                </p>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {{ user.signedUpAt|date("Y-m-d") }}
+                        </td>
+                        <td>
+                            {% if user.lastSeenAt is not null %}
+                                {{ user.lastSeenAt|date("Y-m-d") }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" href="{{ path('Admin/User/Read', {'userId': user.id}) }}">View</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">No users....</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock %}

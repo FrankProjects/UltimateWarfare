@@ -1,84 +1,78 @@
 {% extends 'site/guideBase.html.twig' %}
 {% block content %}
-    <table class="table text-center">
-        <tr class="tabletop">
-            <td colspan="4"><b>Construction</b></td>
-        </tr>
-        <tr class="tabletop">
-            <td width="350" colspan="2"><b>Building construction summary</b></td>
-            <td width="350" colspan="2"><b>Unit construction summary</b></td>
-        </tr>
-        <tr>
-            <td width="200"> Economic Centers:</td>
-            <td width="150">0</td>
-            <td width="200"> Soldiers:</td>
-            <td width="150">0</td>
-        </tr>
-        <tr>
-            <td width="200"> Farms:</td>
-            <td width="150">0</td>
-            <td width="200"> Tanks:</td>
-            <td width="150">0</td>
-        </tr>
-        <tr>
-            <td width="200"> Mines:</td>
-            <td width="150">0</td>
-            <td width="200"> Planes:</td>
-            <td width="150">0</td>
-        </tr>
-        <tr>
-            <td width="200"> Woodcutters:</td>
-            <td width="150">0</td>
-            <td width="200"> Ships:</td>
-            <td width="150">0</td>
-        </tr>
-        <tr>
-            <td width="200">Houses:</td>
-            <td width="150">0</td>
-            <td width="200"> Mine Sweepers:</td>
-            <td width="150">0</td>
-        </tr>
-        <tr class="tabletop">
-            <td width="350" colspan="2"><b>Special building construction summary</b></td>
-            <td width="350" colspan="2"><b>Defensive buildings construction summary</b></td>
-        </tr>
-        <tr>
-            <td width="200"> Airfields:</td>
-            <td width="150">0</td>
-            <td width="200"> Sea Mines:</td>
-            <td width="150">0</td>
-        </tr>
-        <tr>
-            <td width="200"> Harbors:</td>
-            <td width="150">0</td>
-            <td width="200"> Land Mines:</td>
-            <td width="150">0</td>
-        </tr>
-        <tr>
-            <td width="200"> Train Stations:</td>
-            <td width="150">0</td>
-            <td width="200"> Bunkers:</td>
-            <td width="150">0</td>
-        </tr>
-        <tr>
-            <td width="200"></td>
-            <td width="150"></td>
-            <td width="150"> Anti Air Missiles:</td>
-            <td width="150">0</td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Construction</div>
+        <div class="uw-card-body">
+            <p>
+                To construct buildings or train units, click on one of your regions on the <a href="{{ url('Guide/World') }}">world map</a>.
+                This opens the region panel where you can select what to build.
+            </p>
+            <p>
+                Each region has a limited amount of building space (default 1000). Buildings and units take up space,
+                cost resources (Cash, Wood, Steel, Food), and take time to complete. You can cancel constructions in progress.
+            </p>
+        </div>
+    </div>
 
     <br/>
-    <br/>
 
-    <table class="table text-start">
-        <tr>
-            <td>
-                <p>
-                    This is your constuction page, you will see a full list of things that are under construction at the
-                    present time. By clicking on a link you will see more accurate information about the constructions.
-                </p>
-            </td>
-        </tr>
-    </table>
+    <div class="uw-card">
+        <div class="uw-card-header">Unit Categories</div>
+        <div class="uw-card-body">
+            <p>There are several categories of buildings and units you can construct:</p>
+
+            <b>Buildings</b>
+            <ul>
+                <li>Economic Center &mdash; Generates cash income</li>
+                <li>Farm &mdash; Generates food</li>
+                <li>Iron Mine &mdash; Generates steel</li>
+                <li>Woodcutter &mdash; Generates wood</li>
+                <li>House &mdash; Provides population</li>
+            </ul>
+
+            <b>Special Buildings</b>
+            <p>These buildings unlock the ability to train advanced units:</p>
+            <ul>
+                <li>Barrack &mdash; Required for training troops</li>
+                <li>Factory &mdash; Required for Tanks and Artillery</li>
+                <li>Airfield &mdash; Required for air units (Fighter, Bomber, Strategic Bomber)</li>
+                <li>Harbor &mdash; Required for naval units (region must be coastal)</li>
+                <li>Missile Factory &mdash; Required for missiles</li>
+                <li>Radar Station, Train Station &mdash; Special purpose buildings</li>
+            </ul>
+
+            <b>Defense Buildings</b>
+            <ul>
+                <li>Bunker, Mine Fields, Sea Mine, Anti Aircraft Gun &mdash; Protect your region from attacks</li>
+            </ul>
+
+            <b>Troops</b>
+            <ul>
+                <li>Soldier, Sniper, Mine Sweeper &mdash; Infantry (attack range: 1 tile)</li>
+                <li>Tank, Artillery &mdash; Heavy ground units (attack range: 2 tiles, requires Factory)</li>
+            </ul>
+
+            <b>Air Units</b> (require Airfield)
+            <ul>
+                <li>Fighter &mdash; Attack range: 3 tiles</li>
+                <li>Bomber &mdash; Attack range: 5 tiles</li>
+                <li>Strategic Bomber &mdash; Attack range: 7 tiles</li>
+            </ul>
+
+            <b>Naval Units</b> (require Harbor on a coastal region)
+            <ul>
+                <li>Patrol Boat, Destroyer, Cruiser, Submarine, Mine Countermeasures Ship</li>
+                <li>Naval units can only attack coastal targets (range: 1 tile)</li>
+            </ul>
+
+            <b>Missiles</b> (require Missile Factory)
+            <ul>
+                <li>Rocket, Chemical Rocket, Nuclear Missile</li>
+            </ul>
+
+            <p>
+                For detailed stats, costs, and requirements for each unit, see the <a href="{{ url('Guide/ListUnits') }}">Game Units</a> page.
+            </p>
+        </div>
+    </div>
 {% endblock %}

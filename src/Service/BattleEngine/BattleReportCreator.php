@@ -29,16 +29,19 @@ final class BattleReportCreator
         $reportString = "You took region {$targetWorldRegion->getRegionName()} from {$targetPlayer->getName()}";
         $this->createReport($fleet->getPlayer(), $timestamp, $reportString);
 
-        $reportString = "Your region {$targetWorldRegion->getRegionName()} have been attacked by {$fleet->getPlayer()->getName()}, their forces were to big and we have lost the fight!";
+        $reportString = "Your region {$targetWorldRegion->getRegionName()} have been attacked"
+            . " by {$fleet->getPlayer()->getName()}, their forces were to big and we have lost the fight!";
         $this->createReport($targetPlayer, $timestamp, $reportString);
 
         if ($targetPlayer->getFederation() !== null) {
-            $reportString = "{$targetPlayer->getName()} lost region {$targetWorldRegion->getRegionName()} to {$fleet->getPlayer()->getName()}";
+            $reportString = "{$targetPlayer->getName()} lost region {$targetWorldRegion->getRegionName()}"
+                . " to {$fleet->getPlayer()->getName()}";
             $this->createReport($targetPlayer, $timestamp, $reportString);
         }
 
         if ($fleet->getPlayer()->getFederation() !== null) {
-            $reportString = "{$fleet->getPlayer()->getName()} took region {$targetWorldRegion->getRegionName()} from {$targetPlayer->getName()}";
+            $reportString = "{$fleet->getPlayer()->getName()} took region {$targetWorldRegion->getRegionName()}"
+                . " from {$targetPlayer->getName()}";
             $this->createReport($fleet->getPlayer(), $timestamp, $reportString);
         }
     }
@@ -48,19 +51,23 @@ final class BattleReportCreator
         $targetWorldRegion = $fleet->getTargetWorldRegion();
         $targetPlayer = $this->getWorldRegionPlayer($targetWorldRegion);
 
-        $reportString = "You attacked region {$targetWorldRegion->getRegionName()} but the defending forces were too strong.";
+        $reportString = "You attacked region {$targetWorldRegion->getRegionName()}"
+            . " but the defending forces were too strong.";
         $this->createReport($fleet->getPlayer(), $timestamp, $reportString);
 
-        $reportString = "Your region {$targetWorldRegion->getRegionName()} have been attacked by {$fleet->getPlayer()->getName()} and won the fight!";
+        $reportString = "Your region {$targetWorldRegion->getRegionName()} have been attacked"
+            . " by {$fleet->getPlayer()->getName()} and won the fight!";
         $this->createReport($targetPlayer, $timestamp, $reportString);
 
         if ($targetPlayer->getFederation() !== null) {
-            $reportString = "{$targetPlayer->getName()} was attacked by {$fleet->getPlayer()->getName()} on region {$targetWorldRegion->getRegionName()} but the defending troops won the fight.";
+            $reportString = "{$targetPlayer->getName()} was attacked by {$fleet->getPlayer()->getName()}"
+                . " on region {$targetWorldRegion->getRegionName()} but the defending troops won the fight.";
             $this->createReport($targetPlayer, $timestamp, $reportString);
         }
 
         if ($fleet->getPlayer()->getFederation() !== null) {
-            $reportString = "{$fleet->getPlayer()->getName()} attacked region {$targetWorldRegion->getRegionName()} but the defender was too strong.";
+            $reportString = "{$fleet->getPlayer()->getName()} attacked region {$targetWorldRegion->getRegionName()}"
+                . " but the defender was too strong.";
             $this->createReport($fleet->getPlayer(), $timestamp, $reportString);
         }
     }

@@ -99,6 +99,11 @@ class Topic
         $this->category = $category;
     }
 
+    public function getCategoryId(): int
+    {
+        return $this->category->value;
+    }
+
     public function getUser(): User
     {
         return $this->user;
