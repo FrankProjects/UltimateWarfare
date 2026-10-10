@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Service\Action\FederationActionService;
@@ -59,12 +60,18 @@ final class FederationController extends BaseGameController
             ];
         }
 
+        $applicationCount = 0;
+        if ($player->getFederationHierarchy() >= Player::FEDERATION_HIERARCHY_GENERAL) {
+            $applicationCount = $federation->getFederationApplications()->count();
+        }
+
         return new JsonResponse([
             'success' => true,
             'hasFederation' => true,
             'federationEnabled' => true,
             'playerId' => $player->getId(),
             'hierarchy' => $player->getFederationHierarchy(),
+            'applicationCount' => $applicationCount,
             'federation' => [
                 'id' => $federation->getId(),
                 'name' => $federation->getName(),

@@ -57,11 +57,11 @@
                 renderReports(result.reports);
                 updateReportsPagination(result.pagination);
             } else {
-                reportsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load reports</div>';
+                reportsContainer.innerHTML = '<div class="build-loading text-negative">Failed to load reports</div>';
             }
         } catch (error) {
             console.error('Error loading reports:', error);
-            reportsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load reports</div>';
+            reportsContainer.innerHTML = '<div class="build-loading text-negative">Failed to load reports</div>';
         }
     }
 
@@ -82,16 +82,16 @@
             return;
         }
 
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 10px; text-align: left; width: 150px;">Date</th>';
-        html += '<th style="padding: 10px; text-align: left;">Report</th>';
+        let html = '<table class="uw-table uw-table-relaxed">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-start reports-col-date">Date</th>';
+        html += '<th class="text-start">Report</th>';
         html += '</tr>';
 
         reports.forEach(function (report) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 10px; color: #aaa; font-size: 12px; vertical-align: top;">' + report.date + '</td>';
-            html += '<td style="padding: 10px;">' + report.report + '</td>';
+            html += '<tr>';
+            html += '<td class="uw-cell-meta">' + report.date + '</td>';
+            html += '<td>' + report.report + '</td>';
             html += '</tr>';
         });
 
@@ -109,8 +109,6 @@
         reportsPageInfo.textContent = 'Page ' + pagination.currentPage + ' of ' + pagination.totalPages + ' (' + pagination.totalReports + ' reports)';
         reportsPrevBtn.disabled = pagination.currentPage <= 1;
         reportsNextBtn.disabled = pagination.currentPage >= pagination.totalPages;
-        reportsPrevBtn.style.opacity = pagination.currentPage <= 1 ? '0.5' : '1';
-        reportsNextBtn.style.opacity = pagination.currentPage >= pagination.totalPages ? '0.5' : '1';
     }
 
     window.WorldReports = {

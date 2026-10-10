@@ -8,30 +8,31 @@
         <div class="uw-card-body">
             <table class="table text-center">
                 <tr>
-                    <td width="150">Name</td>
-                    <td width="150">Email</td>
-                    <td width="300">Subject</td>
-                    <td width="50">Date</td>
-                    <td width="50">Action</td>
+                    <td>Name</td>
+                    <td>Email</td>
+                    <td>Subject</td>
+                    <td>Date</td>
+                    <td>Action</td>
                 </tr>
                 {% for contact in contacts %}
                     <tr>
-                        <td>
+                        <td class="text-break">
                             {{ contact.name }}
                         </td>
-                        <td>
+                        <td class="text-break">
                             {{ contact.email }}
                         </td>
-                        <td>
+                        <td class="text-break">
                             {{ contact.subject }}
                         </td>
                         <td>
                             {{ contact.createDateTime|date("Y-m-d H:i:s") }}
                         </td>
                         <td>
-                            <a class="btn btn-primary" href="{{ path('Admin/Contact/Read', {'contactId': contact.id}) }}"><b>Read</b></a><br />
-                            <form method="POST" action="{{ path('Admin/Contact/Remove', {'contactId': contact.id}) }}" style="display:inline">
-                                <button type="submit" class="btn btn-danger"><b>Remove</b></button>
+                            <a class="btn btn-primary btn-sm mb-1" href="{{ path('Admin/Contact/Read', {'contactId': contact.id}) }}"><b>Read</b></a><br />
+                            <form method="POST" action="{{ path('Admin/Contact/Remove', {'contactId': contact.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_contact_remove_' ~ contact.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm"><b>Remove</b></button>
                             </form>
                         </td>
                     </tr>

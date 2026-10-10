@@ -107,7 +107,7 @@
             const result = await response.json();
 
             if (!result.success) {
-                container.innerHTML = '<div class="build-loading" style="color: #f44336;">' + result.message + '</div>';
+                container.innerHTML = '<div class="build-loading text-negative">' + result.message + '</div>';
                 return;
             }
             if (result.units.length === 0) {
@@ -117,7 +117,7 @@
             renderAttackUnits(result.units);
         } catch (error) {
             console.error('Error loading attack units:', error);
-            container.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load units</div>';
+            container.innerHTML = '<div class="build-loading text-negative">Failed to load units</div>';
         }
     }
 
@@ -135,11 +135,11 @@
                     '<div>' +
                         '<div class="build-unit-name">' + unit.name + '</div>' +
                         '<div class="build-unit-owned">Available: <strong>' + unit.amount + '</strong></div>' +
-                        '<div style="font-size: 10px; color: #aaa;">' + unit.category + '</div>' +
+                        '<div class="unit-card-category">' + unit.category + '</div>' +
                     '</div>' +
                 '</div>' +
                 '<div class="build-unit-input">' +
-                    '<input type="number" min="0" max="' + unit.amount + '" value="0" data-unit-id="' + unit.gameUnitId + '" class="attack-quantity-input" placeholder="0 / ' + unit.amount + '">' +
+                    '<input type="number" min="0" max="' + unit.amount + '" value="0" data-unit-id="' + unit.gameUnitId + '" class="form-control form-control-sm attack-quantity-input" placeholder="0 / ' + unit.amount + '">' +
                 '</div>';
             container.appendChild(card);
         });

@@ -57,10 +57,10 @@
                 renderTabs();
                 renderCurrentTab();
             } else {
-                profileContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load profile</div>';
+                profileContainer.innerHTML = '<div class="build-loading text-negative">Failed to load profile</div>';
             }
         } catch (error) {
-            profileContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Error loading profile</div>';
+            profileContainer.innerHTML = '<div class="build-loading text-negative">Error loading profile</div>';
         }
     }
 
@@ -78,14 +78,14 @@
 
     function renderInfoTab() {
         const status = profileData.banned ? 'Banned' : 'Active';
-        const statusColor = profileData.banned ? '#f44336' : '#4caf50';
+        const statusClass = profileData.banned ? 'text-negative' : 'text-positive';
 
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Username</td><td style="padding: 8px;">' + escapeHtml(profileData.username) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Email</td><td style="padding: 8px;">' + escapeHtml(profileData.email) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Signup Date</td><td style="padding: 8px;">' + escapeHtml(profileData.signedUpAt) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Account Type</td><td style="padding: 8px;">' + escapeHtml(profileData.accountType) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Status</td><td style="padding: 8px; color: ' + statusColor + ';">' + status + '</td></tr>';
+        let html = '<table class="uw-table uw-table-plain">';
+        html += '<tr><td class="uw-table-label">Username</td><td>' + escapeHtml(profileData.username) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Email</td><td>' + escapeHtml(profileData.email) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Signup Date</td><td>' + escapeHtml(profileData.signedUpAt) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Account Type</td><td>' + escapeHtml(profileData.accountType) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Status</td><td class="' + statusClass + '">' + status + '</td></tr>';
         html += '</table>';
 
         profileContainer.innerHTML = html;
@@ -93,14 +93,14 @@
     }
 
     function renderPasswordTab() {
-        let html = '<div style="max-width: 400px; margin: 0 auto;">';
-        html += '<div style="margin-bottom: 12px;"><label style="display: block; color: #aaa; margin-bottom: 4px;">Current Password</label>';
-        html += '<input type="password" id="profileOldPassword" style="width: 100%; padding: 8px; background: #1a1a2e; border: 1px solid #444; color: #eee; border-radius: 4px;"></div>';
-        html += '<div style="margin-bottom: 12px;"><label style="display: block; color: #aaa; margin-bottom: 4px;">New Password</label>';
-        html += '<input type="password" id="profileNewPassword" style="width: 100%; padding: 8px; background: #1a1a2e; border: 1px solid #444; color: #eee; border-radius: 4px;"></div>';
-        html += '<div style="margin-bottom: 12px;"><label style="display: block; color: #aaa; margin-bottom: 4px;">Confirm New Password</label>';
-        html += '<input type="password" id="profileNewPasswordRepeat" style="width: 100%; padding: 8px; background: #1a1a2e; border: 1px solid #444; color: #eee; border-radius: 4px;"></div>';
-        html += '<div id="profilePasswordMessage" style="margin-top: 8px;"></div>';
+        let html = '<div class="profile-form">';
+        html += '<div class="uw-field"><label class="uw-label">Current Password</label>';
+        html += '<input type="password" id="profileOldPassword" class="form-control"></div>';
+        html += '<div class="uw-field"><label class="uw-label">New Password</label>';
+        html += '<input type="password" id="profileNewPassword" class="form-control"></div>';
+        html += '<div class="uw-field"><label class="uw-label">Confirm New Password</label>';
+        html += '<input type="password" id="profileNewPasswordRepeat" class="form-control"></div>';
+        html += '<div id="profilePasswordMessage" class="profile-message"></div>';
         html += '</div>';
 
         profileContainer.innerHTML = html;
@@ -115,12 +115,12 @@
         const messageDiv = document.getElementById('profilePasswordMessage');
 
         if (!oldPassword || !newPassword || !newPasswordRepeat) {
-            messageDiv.innerHTML = '<span style="color: #f44336;">All fields are required.</span>';
+            messageDiv.innerHTML = '<span class="text-negative">All fields are required.</span>';
             return;
         }
 
         if (newPassword !== newPasswordRepeat) {
-            messageDiv.innerHTML = '<span style="color: #f44336;">New passwords do not match.</span>';
+            messageDiv.innerHTML = '<span class="text-negative">New passwords do not match.</span>';
             return;
         }
 
@@ -141,21 +141,21 @@
                 document.getElementById('profileOldPassword').value = '';
                 document.getElementById('profileNewPassword').value = '';
                 document.getElementById('profileNewPasswordRepeat').value = '';
-                messageDiv.innerHTML = '<span style="color: #4caf50;">' + escapeHtml(result.message) + '</span>';
+                messageDiv.innerHTML = '<span class="text-positive">' + escapeHtml(result.message) + '</span>';
             } else {
-                messageDiv.innerHTML = '<span style="color: #f44336;">' + escapeHtml(result.message) + '</span>';
+                messageDiv.innerHTML = '<span class="text-negative">' + escapeHtml(result.message) + '</span>';
             }
         } catch (error) {
-            messageDiv.innerHTML = '<span style="color: #f44336;">An error occurred.</span>';
+            messageDiv.innerHTML = '<span class="text-negative">An error occurred.</span>';
         }
     }
 
     function renderDangerTab() {
-        let html = '<div style="max-width: 400px; margin: 0 auto;">';
-        html += '<h3 style="color: #f44336; margin-top: 0;">Danger Zone</h3>';
+        let html = '<div class="profile-form">';
+        html += '<h3 class="text-negative">Danger Zone</h3>';
 
         if (!profileData.canSurrender) {
-            html += '<p style="color: #aaa;">You cannot surrender for the first 48 hours after joining a world.</p>';
+            html += '<p class="text-muted-uw">You cannot surrender for the first 48 hours after joining a world.</p>';
             html += '</div>';
             profileContainer.innerHTML = html;
             profileFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
@@ -163,17 +163,17 @@
         }
 
         if (profileData.isFederationFounder) {
-            html += '<p style="color: #aaa;">You cannot surrender while you are a Federation founder. Please disband your Federation first.</p>';
+            html += '<p class="text-muted-uw">You cannot surrender while you are a Federation founder. Please disband your Federation first.</p>';
             html += '</div>';
             profileContainer.innerHTML = html;
             profileFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
             return;
         }
 
-        html += '<p style="color: #aaa;">Surrendering will permanently delete your empire from this world. This action cannot be undone.</p>';
-        html += '<div style="margin-bottom: 12px;"><label style="display: block; color: #aaa; margin-bottom: 4px;">Confirm Password</label>';
-        html += '<input type="password" id="surrenderPassword" style="width: 100%; padding: 8px; background: #1a1a2e; border: 1px solid #444; color: #eee; border-radius: 4px;"></div>';
-        html += '<div id="surrenderMessage" style="margin-top: 8px;"></div>';
+        html += '<p class="text-muted-uw">Surrendering will permanently delete your empire from this world. This action cannot be undone.</p>';
+        html += '<div class="uw-field"><label class="uw-label">Confirm Password</label>';
+        html += '<input type="password" id="surrenderPassword" class="form-control"></div>';
+        html += '<div id="surrenderMessage" class="profile-message"></div>';
         html += '</div>';
 
         profileContainer.innerHTML = html;
@@ -181,19 +181,21 @@
         document.getElementById('surrenderBtn').onclick = surrender;
     }
 
-    async function surrender() {
+    function surrender() {
         const password = document.getElementById('surrenderPassword').value;
         const messageDiv = document.getElementById('surrenderMessage');
 
         if (!password) {
-            messageDiv.innerHTML = '<span style="color: #f44336;">Password is required.</span>';
+            messageDiv.innerHTML = '<span class="text-negative">Password is required.</span>';
             return;
         }
 
-        if (!confirm('Are you sure you want to surrender? Your empire will be permanently deleted. This cannot be undone!')) {
-            return;
-        }
+        showConfirm('Are you sure you want to surrender? Your empire will be permanently deleted. This cannot be undone!', function () {
+            submitSurrender(password, messageDiv);
+        }, { title: 'Surrender', confirmText: 'Surrender' });
+    }
 
+    async function submitSurrender(password, messageDiv) {
         try {
             const response = await fetch('/game/api/profile/surrender', {
                 method: 'POST',
@@ -206,10 +208,10 @@
                 showNotification(result.message, 'success');
                 window.location.href = result.redirect;
             } else {
-                messageDiv.innerHTML = '<span style="color: #f44336;">' + escapeHtml(result.message) + '</span>';
+                messageDiv.innerHTML = '<span class="text-negative">' + escapeHtml(result.message) + '</span>';
             }
         } catch (error) {
-            messageDiv.innerHTML = '<span style="color: #f44336;">An error occurred.</span>';
+            messageDiv.innerHTML = '<span class="text-negative">An error occurred.</span>';
         }
     }
 

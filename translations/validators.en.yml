@@ -1,2 +1,2 @@
 captcha:
-  invalid: The captcha answer is incorrect. Please try again.
+  invalid: Verification failed. Please complete the security check and try again.

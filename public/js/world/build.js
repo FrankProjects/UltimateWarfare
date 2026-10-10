@@ -290,11 +290,11 @@
             if (result.success) {
                 renderFromCache(result);
             } else {
-                container.innerHTML = '<div class="build-loading" style="color: #f44336;">' + result.message + '</div>';
+                container.innerHTML = '<div class="build-loading text-negative">' + result.message + '</div>';
             }
         } catch (error) {
             console.error('Error loading build data:', error);
-            container.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load build data</div>';
+            container.innerHTML = '<div class="build-loading text-negative">Failed to load build data</div>';
         }
     }
 
@@ -327,7 +327,7 @@
 
         if (data.gameUnitCategory.id === 1) {
             spaceInfo.style.display = 'block';
-            spaceInfo.innerHTML = 'You have <span style="color: #4CAF50;">' + data.spaceLeft + '</span> building space left on this region.';
+            spaceInfo.innerHTML = 'You have <span class="text-positive">' + data.spaceLeft + '</span> building space left on this region.';
         } else {
             spaceInfo.style.display = 'none';
         }
@@ -405,7 +405,7 @@
                 const constructionText = unit.inConstruction > 0 ? ' (' + unit.inConstruction + ')' : '';
                 statusHtml = '<div class="build-unit-owned">You have: ' + unit.owned + constructionText + '</div>';
                 actionHtml = '<div class="build-unit-input">' +
-                    '<input type="number" min="0" value="0" data-unit-id="' + unit.gameUnitEnum + '" class="build-quantity-input">' +
+                    '<input type="number" min="0" value="0" data-unit-id="' + unit.gameUnitEnum + '" class="form-control form-control-sm build-quantity-input">' +
                 '</div>';
             }
 

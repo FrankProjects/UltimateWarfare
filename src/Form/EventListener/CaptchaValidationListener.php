@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Form\EventListener;
 
-use FrankProjects\UltimateWarfare\Service\CaptchaGenerator;
+use FrankProjects\UltimateWarfare\Service\TurnstileVerifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -12,12 +12,13 @@ use Symfony\Component\Form\FormEvents;
 
 class CaptchaValidationListener implements EventSubscriberInterface
 {
-    private CaptchaGenerator $captchaGenerator;
-    private string $invalidMessage = 'The captcha answer is incorrect.';
+    private TurnstileVerifier $turnstileVerifier;
+    private string $expectedAction = '';
+    private string $invalidMessage = 'Verification failed.';
 
-    public function __construct(CaptchaGenerator $captchaGenerator)
+    public function __construct(TurnstileVerifier $turnstileVerifier)
     {
-        $this->captchaGenerator = $captchaGenerator;
+        $this->turnstileVerifier = $turnstileVerifier;
     }
 
     /**
@@ -28,6 +29,13 @@ class CaptchaValidationListener implements EventSubscriberInterface
         return [
             FormEvents::POST_SUBMIT => 'onPostSubmit',
         ];
+    }
+
+    public function setExpectedAction(string $action): self
+    {
+        $this->expectedAction = $action;
+
+        return $this;
     }
 
     public function setInvalidMessage(string $message): self
@@ -46,7 +54,7 @@ class CaptchaValidationListener implements EventSubscriberInterface
             return;
         }
 
-        if (!$this->captchaGenerator->validateAnswer($data)) {
+        if (!$this->turnstileVerifier->verify($data, $this->expectedAction)) {
             $event->getForm()->addError(new FormError($this->invalidMessage));
         }
     }

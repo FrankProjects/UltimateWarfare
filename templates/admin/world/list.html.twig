@@ -63,12 +63,12 @@
                                 <a class="btn btn-primary" href="{{ path('Admin/World/Generate', {'worldId': world.id}) }}">Generate Map</a>
                             </p>
                             <p>
-                                <form method="POST" action="{{ path('Admin/World/Reset', {'worldId': world.id}) }}" style="display:inline">
+                                <form method="POST" action="{{ path('Admin/World/Reset', {'worldId': world.id}) }}" class="d-inline">
                                     <button type="submit" class="btn btn-danger">Reset</button>
                                 </form>
                             </p>
                             <p>
-                                <form method="POST" action="{{ path('Admin/World/Remove', {'worldId': world.id}) }}" style="display:inline">
+                                <form method="POST" action="{{ path('Admin/World/Remove', {'worldId': world.id}) }}" class="d-inline">
                                     <button type="submit" class="btn btn-danger">Remove</button>
                                 </form>
                             </p>

@@ -69,35 +69,35 @@
                     renderOrdersTable(result.items);
                 }
             } else {
-                marketContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">' + escapeHtml(result.message || 'Failed to load market data') + '</div>';
+                marketContainer.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message || 'Failed to load market data') + '</div>';
             }
         } catch (error) {
             console.error('Error loading market data:', error);
-            marketContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load market data</div>';
+            marketContainer.innerHTML = '<div class="build-loading text-negative">Failed to load market data</div>';
         }
     }
 
     function renderBuyTable(items) {
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 8px; text-align: center;">Resource</th>';
-        html += '<th style="padding: 8px; text-align: center;">Amount</th>';
-        html += '<th style="padding: 8px; text-align: center;">Price</th>';
-        html += '<th style="padding: 8px; text-align: center;">Seller</th>';
-        html += '<th style="padding: 8px; text-align: center;">Action</th>';
+        let html = '<table class="uw-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-center">Resource</th>';
+        html += '<th class="text-center">Amount</th>';
+        html += '<th class="text-center">Price</th>';
+        html += '<th class="text-center">Seller</th>';
+        html += '<th class="text-center">Action</th>';
         html += '</tr>';
 
         items.forEach(function (item) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(item.resource) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + item.amount.toLocaleString('en-US') + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">$' + item.price.toLocaleString('en-US') + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(item.playerName) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">';
+            html += '<tr>';
+            html += '<td class="text-center">' + escapeHtml(item.resource) + '</td>';
+            html += '<td class="text-center">' + item.amount.toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center">$' + item.price.toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center">' + escapeHtml(item.playerName) + '</td>';
+            html += '<td class="text-center">';
             if (!item.isOwn) {
                 html += '<button class="market-action-btn" data-id="' + item.id + '" data-action="buy">Buy</button>';
             } else {
-                html += '<span style="color: #888;">Your order</span>';
+                html += '<span class="text-faded">Your order</span>';
             }
             html += '</td>';
             html += '</tr>';
@@ -109,26 +109,26 @@
     }
 
     function renderSellTable(items) {
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 8px; text-align: center;">Resource</th>';
-        html += '<th style="padding: 8px; text-align: center;">Amount</th>';
-        html += '<th style="padding: 8px; text-align: center;">Price</th>';
-        html += '<th style="padding: 8px; text-align: center;">Buyer</th>';
-        html += '<th style="padding: 8px; text-align: center;">Action</th>';
+        let html = '<table class="uw-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-center">Resource</th>';
+        html += '<th class="text-center">Amount</th>';
+        html += '<th class="text-center">Price</th>';
+        html += '<th class="text-center">Buyer</th>';
+        html += '<th class="text-center">Action</th>';
         html += '</tr>';
 
         items.forEach(function (item) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(item.resource) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + item.amount.toLocaleString('en-US') + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">$' + item.price.toLocaleString('en-US') + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(item.playerName) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">';
+            html += '<tr>';
+            html += '<td class="text-center">' + escapeHtml(item.resource) + '</td>';
+            html += '<td class="text-center">' + item.amount.toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center">$' + item.price.toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center">' + escapeHtml(item.playerName) + '</td>';
+            html += '<td class="text-center">';
             if (!item.isOwn) {
                 html += '<button class="market-action-btn" data-id="' + item.id + '" data-action="sell">Sell</button>';
             } else {
-                html += '<span style="color: #888;">Your order</span>';
+                html += '<span class="text-faded">Your order</span>';
             }
             html += '</td>';
             html += '</tr>';
@@ -140,23 +140,23 @@
     }
 
     function renderOrdersTable(items) {
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 8px; text-align: center;">Type</th>';
-        html += '<th style="padding: 8px; text-align: center;">Resource</th>';
-        html += '<th style="padding: 8px; text-align: center;">Amount</th>';
-        html += '<th style="padding: 8px; text-align: center;">Price</th>';
-        html += '<th style="padding: 8px; text-align: center;">Action</th>';
+        let html = '<table class="uw-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-center">Type</th>';
+        html += '<th class="text-center">Resource</th>';
+        html += '<th class="text-center">Amount</th>';
+        html += '<th class="text-center">Price</th>';
+        html += '<th class="text-center">Action</th>';
         html += '</tr>';
 
         items.forEach(function (item) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(item.type) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(item.resource) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + item.amount.toLocaleString('en-US') + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">$' + item.price.toLocaleString('en-US') + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">';
-            html += '<button class="market-action-btn" data-id="' + item.id + '" data-action="cancel" style="background-color: #f44336;">Cancel</button>';
+            html += '<tr>';
+            html += '<td class="text-center">' + escapeHtml(item.type) + '</td>';
+            html += '<td class="text-center">' + escapeHtml(item.resource) + '</td>';
+            html += '<td class="text-center">' + item.amount.toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center">$' + item.price.toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center">';
+            html += '<button class="market-action-btn market-action-btn-danger" data-id="' + item.id + '" data-action="cancel">Cancel</button>';
             html += '</td>';
             html += '</tr>';
         });
@@ -205,35 +205,35 @@
     }
 
     function renderPlaceOrderForm() {
-        let html = '<div style="max-width: 400px; margin: 0 auto; padding: 10px;">';
-        html += '<div style="margin-bottom: 15px;">';
-        html += '<label style="display: block; margin-bottom: 5px; color: #f3e6c1;">What do you want to do?</label>';
-        html += '<select id="marketOrderType" style="width: 100%; padding: 8px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px;">';
+        let html = '<div class="uw-form">';
+        html += '<div class="uw-field">';
+        html += '<label class="uw-label">What do you want to do?</label>';
+        html += '<select id="marketOrderType" class="form-select">';
         html += '<option value="buy">Buy</option>';
         html += '<option value="sell">Sell</option>';
         html += '</select>';
         html += '</div>';
 
-        html += '<div style="margin-bottom: 15px;">';
-        html += '<label style="display: block; margin-bottom: 5px; color: #f3e6c1;">Resource</label>';
-        html += '<select id="marketOrderResource" style="width: 100%; padding: 8px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px;">';
+        html += '<div class="uw-field">';
+        html += '<label class="uw-label">Resource</label>';
+        html += '<select id="marketOrderResource" class="form-select">';
         html += '<option value="wood">Wood</option>';
         html += '<option value="food">Food</option>';
         html += '<option value="steel">Steel</option>';
         html += '</select>';
         html += '</div>';
 
-        html += '<div style="margin-bottom: 15px;">';
-        html += '<label style="display: block; margin-bottom: 5px; color: #f3e6c1;">Amount</label>';
-        html += '<input type="number" id="marketOrderAmount" min="1" value="1" style="width: 100%; padding: 8px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px; box-sizing: border-box;">';
+        html += '<div class="uw-field">';
+        html += '<label class="uw-label">Amount</label>';
+        html += '<input type="number" id="marketOrderAmount" min="1" value="1" class="form-control">';
         html += '</div>';
 
-        html += '<div style="margin-bottom: 15px;">';
-        html += '<label style="display: block; margin-bottom: 5px; color: #f3e6c1;">Price (cash)</label>';
-        html += '<input type="number" id="marketOrderPrice" min="1" value="1" style="width: 100%; padding: 8px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px; box-sizing: border-box;">';
+        html += '<div class="uw-field">';
+        html += '<label class="uw-label">Price (cash)</label>';
+        html += '<input type="number" id="marketOrderPrice" min="1" value="1" class="form-control">';
         html += '</div>';
 
-        html += '<button id="marketSubmitOrder" style="width: 100%; padding: 10px; background: #8B7355; color: #f3e6c1; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">Place Order</button>';
+        html += '<button id="marketSubmitOrder" class="market-action-btn uw-btn-block">Place Order</button>';
         html += '</div>';
 
         marketContainer.innerHTML = html;

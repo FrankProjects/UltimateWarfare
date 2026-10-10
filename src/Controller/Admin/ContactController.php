@@ -7,6 +7,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Admin;
 use FrankProjects\UltimateWarfare\Repository\ContactRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ContactController extends AbstractController
@@ -31,16 +32,27 @@ final class ContactController extends AbstractController
 
     public function read(int $contactId): Response
     {
+        $contact = $this->contactRepository->find($contactId);
+        if ($contact === null) {
+            $this->addFlash('error', 'Contact does not exist');
+            return $this->redirectToRoute('Admin/Contact/List', [], 302);
+        }
+
         return $this->render(
             'admin/contact/read.html.twig',
             [
-                'contact' => $this->contactRepository->find($contactId)
+                'contact' => $contact
             ]
         );
     }
 
-    public function remove(int $contactId): RedirectResponse
+    public function remove(Request $request, int $contactId): RedirectResponse
     {
+        if (!$this->isCsrfTokenValid('admin_contact_remove_' . $contactId, (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token');
+            return $this->redirectToRoute('Admin/Contact/List', [], 302);
+        }
+
         $contact = $this->contactRepository->find($contactId);
         if ($contact === null) {
             $this->addFlash('error', 'Contact does not exist');

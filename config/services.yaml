@@ -42,6 +42,14 @@ services:
             $researchRegistry: '@FrankProjects\UltimateWarfare\Repository\ResearchRegistry'
             $researchTimeOverride: '%app.uw_research_time_override%'
 
+    FrankProjects\UltimateWarfare\Form\CaptchaType:
+        arguments:
+            $siteKey: '%env(TURNSTILE_SITE_KEY)%'
+
+    FrankProjects\UltimateWarfare\Service\TurnstileVerifier:
+        arguments:
+            $secretKey: '%env(TURNSTILE_SECRET_KEY)%'
+
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - '%env(DATABASE_URL)%'

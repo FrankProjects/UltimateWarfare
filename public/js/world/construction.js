@@ -36,11 +36,11 @@
                 renderConstructions();
                 startTimers();
             } else {
-                constructionContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load construction data</div>';
+                constructionContainer.innerHTML = '<div class="build-loading text-negative">Failed to load construction data</div>';
             }
         } catch (error) {
             console.error('Error loading constructions:', error);
-            constructionContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load construction data</div>';
+            constructionContainer.innerHTML = '<div class="build-loading text-negative">Failed to load construction data</div>';
         }
     }
 
@@ -79,22 +79,22 @@
             return;
         }
 
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 8px; text-align: left;">Unit</th>';
-        html += '<th style="padding: 8px; text-align: center;">Count</th>';
-        html += '<th style="padding: 8px; text-align: center;">Region</th>';
-        html += '<th style="padding: 8px; text-align: center;">Time Left</th>';
-        html += '<th style="padding: 8px; text-align: center;">Action</th>';
+        let html = '<table class="uw-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-start">Unit</th>';
+        html += '<th class="text-center">Count</th>';
+        html += '<th class="text-center">Region</th>';
+        html += '<th class="text-center">Time Left</th>';
+        html += '<th class="text-center">Action</th>';
         html += '</tr>';
 
         filtered.forEach(function (c) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 8px;">' + escapeHtml(c.unitName) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + c.number + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + c.regionX + ', ' + c.regionY + '</td>';
-            html += '<td style="padding: 8px; text-align: center;"><span class="construction-timer" data-timeleft="' + c.timeLeft + '">' + formatTime(c.timeLeft) + '</span></td>';
-            html += '<td style="padding: 8px; text-align: center;"><button class="construction-cancel-btn" data-id="' + c.id + '">Cancel</button></td>';
+            html += '<tr>';
+            html += '<td>' + escapeHtml(c.unitName) + '</td>';
+            html += '<td class="text-center">' + c.number + '</td>';
+            html += '<td class="text-center">' + c.regionX + ', ' + c.regionY + '</td>';
+            html += '<td class="text-center"><span class="construction-timer" data-timeleft="' + c.timeLeft + '">' + formatTime(c.timeLeft) + '</span></td>';
+            html += '<td class="text-center"><button class="construction-cancel-btn" data-id="' + c.id + '">Cancel</button></td>';
             html += '</tr>';
         });
 

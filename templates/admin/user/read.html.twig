@@ -71,11 +71,11 @@
                     <td colspan="2">
                         <p>
                             {% if not user.banned %}
-                                <form method="POST" action="{{ path('Admin/User/Ban', {'userId': user.id}) }}" style="display:inline">
+                                <form method="POST" action="{{ path('Admin/User/Ban', {'userId': user.id}) }}" class="d-inline">
                                     <button type="submit" class="btn btn-danger">Ban</button>
                                 </form>
                             {% else %}
-                                <form method="POST" action="{{ path('Admin/User/Unban', {'userId': user.id}) }}" style="display:inline">
+                                <form method="POST" action="{{ path('Admin/User/Unban', {'userId': user.id}) }}" class="d-inline">
                                     <button type="submit" class="btn btn-danger">Unban</button>
                                 </form>
                             {% endif %}
@@ -83,11 +83,11 @@
                         {% if uw_forum_enabled == true %}
                             <p>
                                 {% if user.forumBanned %}
-                                    <form method="POST" action="{{ path('Admin/User/ForumUnban', {'userId': user.id}) }}" style="display:inline">
+                                    <form method="POST" action="{{ path('Admin/User/ForumUnban', {'userId': user.id}) }}" class="d-inline">
                                         <button type="submit" class="btn btn-danger">Forum unban</button>
                                     </form>
                                 {% else %}
-                                    <form method="POST" action="{{ path('Admin/User/ForumBan', {'userId': user.id}) }}" style="display:inline">
+                                    <form method="POST" action="{{ path('Admin/User/ForumBan', {'userId': user.id}) }}" class="d-inline">
                                         <button type="submit" class="btn btn-danger">Forum ban</button>
                                     </form>
                                 {% endif %}
@@ -95,20 +95,20 @@
                         {% endif %}
                         {% if not user.emailVerified %}
                             <p>
-                                <form method="POST" action="{{ path('Admin/User/VerifyEmail', {'userId': user.id}) }}" style="display:inline">
+                                <form method="POST" action="{{ path('Admin/User/VerifyEmail', {'userId': user.id}) }}" class="d-inline">
                                     <button type="submit" class="btn btn-danger">Mark email as verified</button>
                                 </form>
                             </p>
                         {% endif %}
                         {% if 'ROLE_ADMIN' not in user.roles %}
                             <p>
-                                <form method="POST" action="{{ path('Admin/User/MakeAdmin', {'userId': user.id}) }}" style="display:inline">
+                                <form method="POST" action="{{ path('Admin/User/MakeAdmin', {'userId': user.id}) }}" class="d-inline">
                                     <button type="submit" class="btn btn-danger">Make Admin</button>
                                 </form>
                             </p>
                         {% else %}
                             <p>
-                                <form method="POST" action="{{ path('Admin/User/RemoveAdmin', {'userId': user.id}) }}" style="display:inline">
+                                <form method="POST" action="{{ path('Admin/User/RemoveAdmin', {'userId': user.id}) }}" class="d-inline">
                                     <button type="submit" class="btn btn-danger">Remove Admin</button>
                                 </form>
                             </p>

@@ -41,7 +41,7 @@
             const result = await response.json();
 
             if (!result.success) {
-                federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">' + escapeHtml(result.message || 'Failed to load federation data') + '</div>';
+                federationContainer.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message || 'Failed to load federation data') + '</div>';
                 return;
             }
 
@@ -63,7 +63,7 @@
             loadTab();
         } catch (error) {
             console.error('Error loading federation status:', error);
-            federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load federation data</div>';
+            federationContainer.innerHTML = '<div class="build-loading text-negative">Failed to load federation data</div>';
         }
     }
 
@@ -94,6 +94,12 @@
             const tab = document.createElement('div');
             tab.className = 'build-tab' + (currentTab === t.id ? ' active' : '');
             tab.textContent = t.name;
+            if (t.id === 'applications' && cachedStatus.applicationCount > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'build-tab-badge';
+                badge.textContent = cachedStatus.applicationCount;
+                tab.appendChild(badge);
+            }
             tab.onclick = function () {
                 currentTab = t.id;
                 renderTabs();
@@ -125,7 +131,7 @@
             const result = await response.json();
 
             if (!result.success) {
-                federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">' + escapeHtml(result.message) + '</div>';
+                federationContainer.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message) + '</div>';
                 return;
             }
 
@@ -134,29 +140,29 @@
                 return;
             }
 
-            let html = '<table style="width: 100%; border-collapse: collapse;">';
-            html += '<tr style="border-bottom: 2px solid #8B7355;">';
-            html += '<th style="padding: 8px; text-align: center;">#</th>';
-            html += '<th style="padding: 8px; text-align: center;">Name</th>';
-            html += '<th style="padding: 8px; text-align: center;">Founder</th>';
-            html += '<th style="padding: 8px; text-align: center;">Players</th>';
-            html += '<th style="padding: 8px; text-align: center;">Regions</th>';
-            html += '<th style="padding: 8px; text-align: center;">NetWorth</th>';
+            let html = '<table class="uw-table">';
+            html += '<tr class="uw-table-head">';
+            html += '<th class="text-center">#</th>';
+            html += '<th class="text-center">Name</th>';
+            html += '<th class="text-center">Founder</th>';
+            html += '<th class="text-center">Players</th>';
+            html += '<th class="text-center">Regions</th>';
+            html += '<th class="text-center">NetWorth</th>';
             if (!result.hasFederation) {
-                html += '<th style="padding: 8px; text-align: center;">Action</th>';
+                html += '<th class="text-center">Action</th>';
             }
             html += '</tr>';
 
             result.federations.forEach(function (fed, index) {
-                html += '<tr style="border-bottom: 1px solid #555;">';
-                html += '<td style="padding: 8px; text-align: center;">' + (index + 1) + '</td>';
-                html += '<td style="padding: 8px; text-align: center;"><a href="#" class="fed-view-link" data-id="' + fed.id + '" style="color: #6bafff; text-decoration: underline; cursor: pointer;">' + escapeHtml(fed.name) + '</a></td>';
-                html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(fed.founder) + '</td>';
-                html += '<td style="padding: 8px; text-align: center;">' + fed.players + '</td>';
-                html += '<td style="padding: 8px; text-align: center;">' + fed.regions.toLocaleString('en-US') + '</td>';
-                html += '<td style="padding: 8px; text-align: center;">' + fed.netWorth.toLocaleString('en-US') + '</td>';
+                html += '<tr>';
+                html += '<td class="text-center">' + (index + 1) + '</td>';
+                html += '<td class="text-center"><a href="#" class="fed-view-link uw-link text-own" data-id="' + fed.id + '">' + escapeHtml(fed.name) + '</a></td>';
+                html += '<td class="text-center">' + escapeHtml(fed.founder) + '</td>';
+                html += '<td class="text-center">' + fed.players + '</td>';
+                html += '<td class="text-center">' + fed.regions.toLocaleString('en-US') + '</td>';
+                html += '<td class="text-center">' + fed.netWorth.toLocaleString('en-US') + '</td>';
                 if (!result.hasFederation) {
-                    html += '<td style="padding: 8px; text-align: center;"><button class="market-action-btn fed-apply-btn" data-id="' + fed.id + '">Apply</button></td>';
+                    html += '<td class="text-center"><button class="market-action-btn fed-apply-btn" data-id="' + fed.id + '">Apply</button></td>';
                 }
                 html += '</tr>';
             });
@@ -178,7 +184,7 @@
             });
         } catch (error) {
             console.error('Error loading federation list:', error);
-            federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load federations</div>';
+            federationContainer.innerHTML = '<div class="build-loading text-negative">Failed to load federations</div>';
         }
     }
 
@@ -191,61 +197,51 @@
             const result = await response.json();
 
             if (!result.success) {
-                federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">' + escapeHtml(result.message) + '</div>';
+                federationContainer.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message) + '</div>';
                 return;
             }
 
-            let html = '<div style="margin-bottom: 15px;">';
-            html += '<button class="market-action-btn" id="fedBackToListBtn" style="margin-bottom: 10px;">Back to list</button>';
-            html += '<h3 style="color: #f3e6c1; margin: 0;">' + escapeHtml(result.federation.name) + '</h3>';
+            let html = '<div class="uw-field">';
+            html += '<h3 class="fed-title">' + escapeHtml(result.federation.name) + '</h3>';
             html += '</div>';
 
-            html += '<table style="width: 100%; border-collapse: collapse;">';
-            html += '<tr style="border-bottom: 2px solid #8B7355;">';
-            html += '<th style="padding: 8px; text-align: center;">Name</th>';
-            html += '<th style="padding: 8px; text-align: center;">Rank</th>';
-            html += '<th style="padding: 8px; text-align: center;">Regions</th>';
-            html += '<th style="padding: 8px; text-align: center;">NetWorth</th>';
+            html += '<table class="uw-table">';
+            html += '<tr class="uw-table-head">';
+            html += '<th class="text-center">Name</th>';
+            html += '<th class="text-center">Rank</th>';
+            html += '<th class="text-center">Regions</th>';
+            html += '<th class="text-center">NetWorth</th>';
             html += '</tr>';
 
             result.members.forEach(function (member) {
-                html += '<tr style="border-bottom: 1px solid #555;">';
-                html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(member.name) + '</td>';
-                html += '<td style="padding: 8px; text-align: center;">' + (RANK_NAMES[member.hierarchy] || member.hierarchy) + '</td>';
-                html += '<td style="padding: 8px; text-align: center;">' + member.regions + '</td>';
-                html += '<td style="padding: 8px; text-align: center;">' + member.netWorth.toLocaleString('en-US') + '</td>';
+                html += '<tr>';
+                html += '<td class="text-center">' + escapeHtml(member.name) + '</td>';
+                html += '<td class="text-center">' + (RANK_NAMES[member.hierarchy] || member.hierarchy) + '</td>';
+                html += '<td class="text-center">' + member.regions + '</td>';
+                html += '<td class="text-center">' + member.netWorth.toLocaleString('en-US') + '</td>';
                 html += '</tr>';
             });
 
             html += '</table>';
             federationContainer.innerHTML = html;
-
-            document.getElementById('fedBackToListBtn').onclick = function () {
-                renderFederationList();
-            };
         } catch (error) {
             console.error('Error loading federation:', error);
-            federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load federation</div>';
+            federationContainer.innerHTML = '<div class="build-loading text-negative">Failed to load federation</div>';
         }
     }
 
     // ===== Send Application =====
     function renderSendApplication(federationId) {
-        let html = '<div style="max-width: 400px; margin: 0 auto; padding: 10px;">';
-        html += '<button class="market-action-btn" id="fedBackToListBtn2" style="margin-bottom: 15px;">Back to list</button>';
-        html += '<h3 style="color: #f3e6c1; margin: 0 0 15px 0;">Apply to Join Federation</h3>';
-        html += '<div style="margin-bottom: 15px;">';
-        html += '<label style="display: block; margin-bottom: 5px; color: #f3e6c1;">Your application message:</label>';
-        html += '<textarea id="fedApplicationText" rows="5" style="width: 100%; padding: 8px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px; box-sizing: border-box; resize: vertical;"></textarea>';
+        let html = '<div class="uw-form">';
+        html += '<h3 class="uw-form-title">Apply to Join Federation</h3>';
+        html += '<div class="uw-field">';
+        html += '<label class="uw-label">Your application message:</label>';
+        html += '<textarea id="fedApplicationText" rows="5" class="form-control"></textarea>';
         html += '</div>';
-        html += '<button id="fedSubmitApplicationBtn" class="market-action-btn" style="width: 100%; padding: 10px;">Send Application</button>';
+        html += '<button id="fedSubmitApplicationBtn" class="market-action-btn uw-btn-block">Send Application</button>';
         html += '</div>';
 
         federationContainer.innerHTML = html;
-
-        document.getElementById('fedBackToListBtn2').onclick = function () {
-            renderFederationList();
-        };
 
         document.getElementById('fedSubmitApplicationBtn').onclick = async function () {
             const text = document.getElementById('fedApplicationText').value.trim();
@@ -285,13 +281,13 @@
 
     // ===== Create Federation =====
     function renderCreateForm() {
-        let html = '<div style="max-width: 400px; margin: 0 auto; padding: 10px;">';
-        html += '<h3 style="color: #f3e6c1; margin: 0 0 15px 0;">Create Federation</h3>';
-        html += '<div style="margin-bottom: 15px;">';
-        html += '<label style="display: block; margin-bottom: 5px; color: #f3e6c1;">Federation name:</label>';
-        html += '<input type="text" id="fedCreateName" maxlength="25" style="width: 100%; padding: 8px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px; box-sizing: border-box;">';
+        let html = '<div class="uw-form">';
+        html += '<h3 class="uw-form-title">Create Federation</h3>';
+        html += '<div class="uw-field">';
+        html += '<label class="uw-label">Federation name:</label>';
+        html += '<input type="text" id="fedCreateName" maxlength="25" class="form-control">';
         html += '</div>';
-        html += '<button id="fedCreateBtn" class="market-action-btn" style="width: 100%; padding: 10px;">Create Federation</button>';
+        html += '<button id="fedCreateBtn" class="market-action-btn uw-btn-block">Create Federation</button>';
         html += '</div>';
 
         federationContainer.innerHTML = html;
@@ -340,46 +336,46 @@
         const fed = cachedStatus.federation;
         let html = '';
 
-        html += '<h3 style="color: #f3e6c1; margin: 0 0 10px 0;">' + escapeHtml(fed.name) + '</h3>';
+        html += '<h3 class="uw-section-title">' + escapeHtml(fed.name) + '</h3>';
 
         if (fed.leaderMessage) {
-            html += '<div style="margin-bottom: 15px; padding: 10px; background: #2a2a2a; border: 1px solid #8B7355; border-radius: 4px;">';
-            html += '<strong style="color: #f3e6c1;">Leader Message:</strong><br>';
-            html += '<span style="color: #ccc;">' + escapeHtml(fed.leaderMessage) + '</span>';
+            html += '<div class="uw-panel">';
+            html += '<strong class="text-light-uw">Leader Message:</strong><br>';
+            html += '<div class="text-soft fed-multiline">' + escapeHtml(fed.leaderMessage) + '</div>';
             html += '</div>';
         }
 
         // Leave button for non-generals
         if (cachedStatus.hierarchy < 10 && cachedStatus.hierarchy >= 1) {
-            html += '<div style="margin-bottom: 15px;">';
-            html += '<button class="market-action-btn" id="fedLeaveBtn" style="background-color: #f44336;">Leave Federation</button>';
+            html += '<div class="uw-field">';
+            html += '<button class="market-action-btn market-action-btn-danger" id="fedLeaveBtn">Leave Federation</button>';
             html += '</div>';
         }
 
         // Members table
-        html += '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 8px; text-align: center;">Name</th>';
-        html += '<th style="padding: 8px; text-align: center;">Rank</th>';
-        html += '<th style="padding: 8px; text-align: center;">Regions</th>';
-        html += '<th style="padding: 8px; text-align: center;">NetWorth</th>';
+        html += '<table class="uw-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-center">Name</th>';
+        html += '<th class="text-center">Rank</th>';
+        html += '<th class="text-center">Regions</th>';
+        html += '<th class="text-center">NetWorth</th>';
         if (cachedStatus.hierarchy >= 10) {
-            html += '<th style="padding: 8px; text-align: center;">Action</th>';
+            html += '<th class="text-center">Action</th>';
         }
         html += '</tr>';
 
         fed.members.forEach(function (member) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 8px; text-align: center;">' + escapeHtml(member.name) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + (RANK_NAMES[member.hierarchy] || member.hierarchy) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + member.regions + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + member.netWorth.toLocaleString('en-US') + '</td>';
+            html += '<tr>';
+            html += '<td class="text-center">' + escapeHtml(member.name) + '</td>';
+            html += '<td class="text-center">' + (RANK_NAMES[member.hierarchy] || member.hierarchy) + '</td>';
+            html += '<td class="text-center">' + member.regions + '</td>';
+            html += '<td class="text-center">' + member.netWorth.toLocaleString('en-US') + '</td>';
             if (cachedStatus.hierarchy >= 10 && member.id !== cachedStatus.playerId) {
-                html += '<td style="padding: 8px; text-align: center;">';
-                html += '<button class="market-action-btn fed-kick-btn" data-id="' + member.id + '" style="background-color: #f44336;">Kick</button>';
+                html += '<td class="text-center">';
+                html += '<button class="market-action-btn market-action-btn-danger fed-kick-btn" data-id="' + member.id + '">Kick</button>';
                 html += '</td>';
             } else if (cachedStatus.hierarchy >= 10) {
-                html += '<td style="padding: 8px; text-align: center;"></td>';
+                html += '<td class="text-center"></td>';
             }
             html += '</tr>';
         });
@@ -391,12 +387,12 @@
         const leaveBtn = document.getElementById('fedLeaveBtn');
         if (leaveBtn) {
             leaveBtn.onclick = function () {
-                if (confirm('Are you sure you want to leave the federation?')) {
+                showConfirm('Are you sure you want to leave the federation?', function () {
                     doPost('/game/api/federation/leave', {}, function () {
                         cachedStatus = null;
                         loadStatus();
                     });
-                }
+                }, { title: 'Leave Federation', confirmText: 'Leave' });
             };
         }
 
@@ -404,12 +400,12 @@
         federationContainer.querySelectorAll('.fed-kick-btn').forEach(function (btn) {
             btn.onclick = function () {
                 const playerId = parseInt(btn.getAttribute('data-id'), 10);
-                if (confirm('Are you sure you want to kick this player?')) {
+                showConfirm('Are you sure you want to kick this player?', function () {
                     doPost('/game/api/federation/kick/' + playerId, {}, function () {
                         cachedStatus = null;
                         loadStatus();
                     });
-                }
+                }, { title: 'Kick Player', confirmText: 'Kick' });
             };
         });
     }
@@ -423,7 +419,7 @@
             const result = await response.json();
 
             if (!result.success) {
-                federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">' + escapeHtml(result.message) + '</div>';
+                federationContainer.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message) + '</div>';
                 return;
             }
 
@@ -432,16 +428,16 @@
                 return;
             }
 
-            let html = '<table style="width: 100%; border-collapse: collapse;">';
-            html += '<tr style="border-bottom: 2px solid #8B7355;">';
-            html += '<th style="padding: 8px; text-align: center; width: 150px;">Date</th>';
-            html += '<th style="padding: 8px; text-align: left;">Report</th>';
+            let html = '<table class="uw-table">';
+            html += '<tr class="uw-table-head">';
+            html += '<th class="text-center reports-col-date">Date</th>';
+            html += '<th class="text-start">Report</th>';
             html += '</tr>';
 
             result.news.forEach(function (item) {
-                html += '<tr style="border-bottom: 1px solid #555;">';
-                html += '<td style="padding: 8px; text-align: center;">' + new Date(item.timestamp * 1000).toLocaleString() + '</td>';
-                html += '<td style="padding: 8px; text-align: left;">' + escapeHtml(item.news) + '</td>';
+                html += '<tr>';
+                html += '<td class="text-center">' + new Date(item.timestamp * 1000).toLocaleString() + '</td>';
+                html += '<td class="text-start">' + escapeHtml(item.news) + '</td>';
                 html += '</tr>';
             });
 
@@ -449,7 +445,7 @@
             federationContainer.innerHTML = html;
         } catch (error) {
             console.error('Error loading federation news:', error);
-            federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load news</div>';
+            federationContainer.innerHTML = '<div class="build-loading text-negative">Failed to load news</div>';
         }
     }
 
@@ -463,33 +459,33 @@
         const playerRes = cachedStatus.playerResources;
         const canWithdraw = cachedStatus.hierarchy >= 5;
 
-        let html = '<div style="text-align: center; margin-bottom: 15px;">';
-        html += '<button class="market-action-btn' + (bankMode === 'deposit' ? '' : '') + '" id="fedBankDepositTab" style="margin-right: 5px;' + (bankMode === 'deposit' ? ' background: #8B7355;' : '') + '">Deposit</button>';
+        let html = '<div class="fed-bank-tabs">';
+        html += '<button class="market-action-btn" id="fedBankDepositTab">Deposit</button>';
         if (canWithdraw) {
-            html += '<button class="market-action-btn" id="fedBankWithdrawTab" style="' + (bankMode === 'withdraw' ? ' background: #8B7355;' : '') + '">Withdraw</button>';
+            html += '<button class="market-action-btn" id="fedBankWithdrawTab">Withdraw</button>';
         }
         html += '</div>';
 
-        html += '<table style="width: 100%; border-collapse: collapse; max-width: 500px; margin: 0 auto;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 8px; text-align: center;">Resource</th>';
-        html += '<th style="padding: 8px; text-align: center;">You</th>';
-        html += '<th style="padding: 8px; text-align: center;">Bank</th>';
-        html += '<th style="padding: 8px; text-align: center;">Amount</th>';
+        html += '<table class="uw-table fed-bank-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-center">Resource</th>';
+        html += '<th class="text-center">You</th>';
+        html += '<th class="text-center">Bank</th>';
+        html += '<th class="text-center">Amount</th>';
         html += '</tr>';
 
         const resources = ['cash', 'wood', 'steel', 'food'];
         resources.forEach(function (res) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 8px; text-align: center;">' + res.charAt(0).toUpperCase() + res.slice(1) + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + (res === 'cash' ? '$ ' : '') + playerRes[res].toLocaleString('en-US') + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + (res === 'cash' ? '$ ' : '') + fed.bank[res].toLocaleString('en-US') + '</td>';
-            html += '<td style="padding: 8px; text-align: center;"><input type="number" id="fedBank_' + res + '" min="0" value="0" style="width: 100px; padding: 4px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px; text-align: center;"></td>';
+            html += '<tr>';
+            html += '<td class="text-center">' + res.charAt(0).toUpperCase() + res.slice(1) + '</td>';
+            html += '<td class="text-center">' + (res === 'cash' ? '$ ' : '') + playerRes[res].toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center">' + (res === 'cash' ? '$ ' : '') + fed.bank[res].toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center"><input type="number" id="fedBank_' + res + '" min="0" value="0" class="form-control form-control-sm fed-bank-input"></td>';
             html += '</tr>';
         });
 
-        html += '<tr><td colspan="4" style="padding: 10px; text-align: center;">';
-        html += '<button id="fedBankSubmitBtn" class="market-action-btn" style="padding: 8px 20px;">' + (bankMode === 'deposit' ? 'Deposit' : 'Withdraw') + '</button>';
+        html += '<tr><td colspan="4" class="text-center fed-bank-submit-cell">';
+        html += '<button id="fedBankSubmitBtn" class="market-action-btn fed-bank-submit">' + (bankMode === 'deposit' ? 'Deposit' : 'Withdraw') + '</button>';
         html += '</td></tr>';
         html += '</table>';
 
@@ -532,30 +528,44 @@
         const members = cachedStatus.federation.members;
         const playerRes = cachedStatus.playerResources;
 
-        let html = '<div style="max-width: 500px; margin: 0 auto; padding: 10px;">';
-        html += '<h3 style="color: #f3e6c1; margin: 0 0 15px 0;">Send Aid</h3>';
+        const recipients = members.filter(function (m) {
+            return m.id !== cachedStatus.playerId;
+        });
 
-        html += '<div style="margin-bottom: 15px;">';
-        html += '<label style="display: block; margin-bottom: 5px; color: #f3e6c1;">To Player:</label>';
-        html += '<select id="fedAidPlayer" style="width: 100%; padding: 8px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px;">';
-        members.forEach(function (m) {
-            if (m.id === cachedStatus.playerId) return;
+        if (recipients.length === 0) {
+            federationContainer.innerHTML = '<div class="build-loading">There are no other members to send aid to</div>';
+            return;
+        }
+
+        let html = '<div class="fed-aid-recipient">';
+        html += '<label for="fedAidPlayer" class="uw-label">Send to</label>';
+        html += '<select id="fedAidPlayer" class="form-select form-select-sm">';
+        recipients.forEach(function (m) {
             html += '<option value="' + m.id + '">' + escapeHtml(m.name) + '</option>';
         });
         html += '</select>';
         html += '</div>';
 
+        html += '<table class="uw-table fed-bank-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-center">Resource</th>';
+        html += '<th class="text-center">You</th>';
+        html += '<th class="text-center">Amount</th>';
+        html += '</tr>';
+
         const resources = ['cash', 'wood', 'steel', 'food'];
         resources.forEach(function (res) {
-            html += '<div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">';
-            html += '<label style="width: 60px; color: #f3e6c1;">' + res.charAt(0).toUpperCase() + res.slice(1) + ':</label>';
-            html += '<span style="width: 80px; color: #ccc;">(' + playerRes[res].toLocaleString('en-US') + ')</span>';
-            html += '<input type="number" id="fedAid_' + res + '" min="0" value="0" style="flex: 1; padding: 6px; background: #2a2a2a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px;">';
-            html += '</div>';
+            html += '<tr>';
+            html += '<td class="text-center">' + res.charAt(0).toUpperCase() + res.slice(1) + '</td>';
+            html += '<td class="text-center">' + (res === 'cash' ? '$ ' : '') + playerRes[res].toLocaleString('en-US') + '</td>';
+            html += '<td class="text-center"><input type="number" id="fedAid_' + res + '" min="0" value="0" class="form-control form-control-sm fed-bank-input"></td>';
+            html += '</tr>';
         });
 
-        html += '<button id="fedAidSubmitBtn" class="market-action-btn" style="width: 100%; padding: 10px; margin-top: 10px;">Send Aid</button>';
-        html += '</div>';
+        html += '<tr><td colspan="3" class="text-center fed-bank-submit-cell">';
+        html += '<button id="fedAidSubmitBtn" class="market-action-btn fed-bank-submit">Send Aid</button>';
+        html += '</td></tr>';
+        html += '</table>';
 
         federationContainer.innerHTML = html;
 
@@ -583,33 +593,33 @@
         const fed = cachedStatus.federation;
         const members = fed.members;
 
-        let html = '<div style="max-width: 500px; margin: 0 auto; padding: 10px;">';
+        let html = '<div class="uw-form uw-form-wide">';
 
         // Change Name
-        html += '<div style="margin-bottom: 20px; padding: 10px; background: #2a2a2a; border: 1px solid #8B7355; border-radius: 4px;">';
-        html += '<h4 style="color: #f3e6c1; margin: 0 0 10px 0;">Change Federation Name</h4>';
-        html += '<div style="display: flex; gap: 10px;">';
-        html += '<input type="text" id="fedNewName" maxlength="25" value="' + escapeHtml(fed.name) + '" style="flex: 1; padding: 6px; background: #1a1a1a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px;">';
+        html += '<div class="uw-panel uw-panel-spaced">';
+        html += '<h4 class="uw-section-title">Change Federation Name</h4>';
+        html += '<div class="uw-row">';
+        html += '<input type="text" id="fedNewName" maxlength="25" value="' + escapeHtml(fed.name) + '" class="form-control">';
         html += '<button class="market-action-btn" id="fedChangeNameBtn">Change</button>';
         html += '</div></div>';
 
         // Update Message
-        html += '<div style="margin-bottom: 20px; padding: 10px; background: #2a2a2a; border: 1px solid #8B7355; border-radius: 4px;">';
-        html += '<h4 style="color: #f3e6c1; margin: 0 0 10px 0;">Leader Message</h4>';
-        html += '<textarea id="fedNewMessage" rows="4" style="width: 100%; padding: 6px; background: #1a1a1a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px; box-sizing: border-box; resize: vertical;">' + escapeHtml(fed.leaderMessage) + '</textarea>';
-        html += '<button class="market-action-btn" id="fedUpdateMessageBtn" style="margin-top: 10px;">Update Message</button>';
+        html += '<div class="uw-panel uw-panel-spaced">';
+        html += '<h4 class="uw-section-title">Leader Message</h4>';
+        html += '<textarea id="fedNewMessage" rows="4" class="form-control">' + escapeHtml(fed.leaderMessage) + '</textarea>';
+        html += '<button class="market-action-btn uw-btn-spaced" id="fedUpdateMessageBtn">Update Message</button>';
         html += '</div>';
 
         // Change Ranks
-        html += '<div style="margin-bottom: 20px; padding: 10px; background: #2a2a2a; border: 1px solid #8B7355; border-radius: 4px;">';
-        html += '<h4 style="color: #f3e6c1; margin: 0 0 10px 0;">Change Player Ranks</h4>';
-        html += '<div style="display: flex; gap: 10px; margin-bottom: 10px;">';
-        html += '<select id="fedRolePlayer" style="flex: 1; padding: 6px; background: #1a1a1a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px;">';
+        html += '<div class="uw-panel uw-panel-spaced">';
+        html += '<h4 class="uw-section-title">Change Player Ranks</h4>';
+        html += '<div class="uw-row uw-row-spaced">';
+        html += '<select id="fedRolePlayer" class="form-select">';
         members.forEach(function (m) {
             html += '<option value="' + m.id + '">' + escapeHtml(m.name) + '</option>';
         });
         html += '</select>';
-        html += '<select id="fedRoleRank" style="flex: 1; padding: 6px; background: #1a1a1a; color: #f3e6c1; border: 1px solid #8B7355; border-radius: 4px;">';
+        html += '<select id="fedRoleRank" class="form-select">';
         for (let rank = 10; rank >= 1; rank--) {
             html += '<option value="' + rank + '">' + RANK_NAMES[rank] + '</option>';
         }
@@ -618,9 +628,9 @@
         html += '</div></div>';
 
         // Remove Federation
-        html += '<div style="padding: 10px; background: #2a2a2a; border: 1px solid #f44336; border-radius: 4px;">';
-        html += '<h4 style="color: #f44336; margin: 0 0 10px 0;">Danger Zone</h4>';
-        html += '<button class="market-action-btn" id="fedRemoveBtn" style="background-color: #f44336;">Delete Federation</button>';
+        html += '<div class="uw-panel uw-panel-danger">';
+        html += '<h4 class="uw-section-title text-negative">Danger Zone</h4>';
+        html += '<button class="market-action-btn market-action-btn-danger" id="fedRemoveBtn">Delete Federation</button>';
         html += '</div>';
 
         html += '</div>';
@@ -652,12 +662,12 @@
         };
 
         document.getElementById('fedRemoveBtn').onclick = function () {
-            if (confirm('Are you sure you want to DELETE this federation? This cannot be undone!')) {
+            showConfirm('Are you sure you want to DELETE this federation? This cannot be undone!', function () {
                 doPost('/game/api/federation/remove', {}, function () {
                     cachedStatus = null;
                     loadStatus();
                 });
-            }
+            }, { title: 'Delete Federation', confirmText: 'Delete' });
         };
     }
 
@@ -670,8 +680,13 @@
             const result = await response.json();
 
             if (!result.success) {
-                federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">' + escapeHtml(result.message) + '</div>';
+                federationContainer.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message) + '</div>';
                 return;
+            }
+
+            if (cachedStatus && cachedStatus.applicationCount !== result.applications.length) {
+                cachedStatus.applicationCount = result.applications.length;
+                renderTabs();
             }
 
             if (result.applications.length === 0) {
@@ -681,12 +696,13 @@
 
             let html = '';
             result.applications.forEach(function (app) {
-                html += '<div style="margin-bottom: 15px; padding: 10px; background: #2a2a2a; border: 1px solid #8B7355; border-radius: 4px;">';
-                html += '<p><strong style="color: #f3e6c1;">Player:</strong> ' + escapeHtml(app.playerName) + '</p>';
-                html += '<p><strong style="color: #f3e6c1;">Application:</strong><br>' + escapeHtml(app.application) + '</p>';
-                html += '<div style="margin-top: 10px;">';
-                html += '<button class="market-action-btn fed-accept-btn" data-id="' + app.id + '" style="margin-right: 10px;">Accept</button>';
-                html += '<button class="market-action-btn fed-reject-btn" data-id="' + app.id + '" style="background-color: #f44336;">Reject</button>';
+                html += '<div class="uw-panel">';
+                html += '<p><strong class="text-light-uw">Player:</strong> ' + escapeHtml(app.playerName) + '</p>';
+                html += '<p><strong class="text-light-uw">Application:</strong></p>';
+                html += '<p class="fed-multiline">' + escapeHtml(app.application) + '</p>';
+                html += '<div class="fed-application-actions">';
+                html += '<button class="market-action-btn fed-accept-btn" data-id="' + app.id + '">Accept</button>';
+                html += '<button class="market-action-btn market-action-btn-danger fed-reject-btn" data-id="' + app.id + '">Reject</button>';
                 html += '</div></div>';
             });
 
@@ -712,7 +728,7 @@
             });
         } catch (error) {
             console.error('Error loading applications:', error);
-            federationContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load applications</div>';
+            federationContainer.innerHTML = '<div class="build-loading text-negative">Failed to load applications</div>';
         }
     }
 

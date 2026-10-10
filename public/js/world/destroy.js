@@ -28,11 +28,11 @@
             if (result.success) {
                 renderCategories(result);
             } else {
-                container.innerHTML = '<div class="build-loading" style="color: #f44336;">' + result.message + '</div>';
+                container.innerHTML = '<div class="build-loading text-negative">' + result.message + '</div>';
             }
         } catch (error) {
             console.error('Error loading destroy data:', error);
-            container.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load data</div>';
+            container.innerHTML = '<div class="build-loading text-negative">Failed to load data</div>';
         }
     }
 
@@ -98,7 +98,7 @@
                     '</div>' +
                 '</div>' +
                 '<div class="build-unit-input">' +
-                    '<input type="number" min="0" max="' + unit.owned + '" value="0" data-unit-id="' + unit.gameUnitEnum + '" class="destroy-quantity-input">' +
+                    '<input type="number" min="0" max="' + unit.owned + '" value="0" data-unit-id="' + unit.gameUnitEnum + '" class="form-control form-control-sm destroy-quantity-input">' +
                 '</div>';
 
             container.appendChild(card);

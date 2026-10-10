@@ -294,9 +294,9 @@ class FleetManager {
         // Build unit details HTML
         let unitsHtml = '';
         if (fleet.units && fleet.units.length > 0) {
-            unitsHtml = '<div style="text-align: left; font-size: 9px; margin-bottom: 4px; max-height: 60px; overflow-y: auto;">';
+            unitsHtml = '<div class="fleet-widget-units">';
             fleet.units.forEach(unit => {
-                unitsHtml += `<div style="padding: 1px 0;">${unit.amount}x ${unit.name}</div>`;
+                unitsHtml += `<div>${unit.amount}x ${unit.name}</div>`;
             });
             unitsHtml += '</div>';
         }
@@ -313,7 +313,6 @@ class FleetManager {
 
         widget.style.left = posX + 'px';
         widget.style.top = posY + 'px';
-        widget.style.transform = 'translate(-50%, -100%) translateY(-30px)';
 
         // Attach event listeners based on button type
         if (isReinforcement) {
@@ -353,7 +352,7 @@ class FleetManager {
         const buttonsDiv = widget.querySelector('.fleet-widget-buttons');
 
         // Disable buttons and show loading
-        buttonsDiv.innerHTML = '<div style="color: #ffcc00;">🔄 Recalling...</div>';
+        buttonsDiv.innerHTML = '<div class="text-yellow">🔄 Recalling...</div>';
 
         try {
             const response = await fetch(`/game/api/fleet/recall/${fleet.id}`, {
@@ -382,14 +381,14 @@ class FleetManager {
                 this.map.render();
             } else {
                 // Show error in widget
-                buttonsDiv.innerHTML = `<div style="color: #ff6b6b;">Error: ${result.message}</div>`;
+                buttonsDiv.innerHTML = `<div class="text-enemy">Error: ${result.message}</div>`;
                 setTimeout(() => {
                     this.map.render();
                 }, 3000);
             }
         } catch (error) {
             console.error('Recall failed:', error);
-            buttonsDiv.innerHTML = '<div style="color: #ff6b6b;">Network error</div>';
+            buttonsDiv.innerHTML = '<div class="text-enemy">Network error</div>';
             setTimeout(() => {
                 this.map.render();
             }, 3000);
@@ -403,7 +402,7 @@ class FleetManager {
         const buttonsDiv = widget.querySelector('.fleet-widget-buttons');
 
         // Disable buttons and show loading
-        buttonsDiv.innerHTML = '<div style="color: #4CAF50;">🛡 Reinforcing...</div>';
+        buttonsDiv.innerHTML = '<div class="text-positive">🛡 Reinforcing...</div>';
 
         try {
             const response = await fetch(`/game/api/fleet/reinforce/${fleet.id}`, {
@@ -432,14 +431,14 @@ class FleetManager {
                 this.map.render();
             } else {
                 // Show error in widget
-                buttonsDiv.innerHTML = `<div style="color: #ff6b6b;">Error: ${result.message}</div>`;
+                buttonsDiv.innerHTML = `<div class="text-enemy">Error: ${result.message}</div>`;
                 setTimeout(() => {
                     this.map.render();
                 }, 3000);
             }
         } catch (error) {
             console.error('Reinforce failed:', error);
-            buttonsDiv.innerHTML = '<div style="color: #ff6b6b;">Network error</div>';
+            buttonsDiv.innerHTML = '<div class="text-enemy">Network error</div>';
             setTimeout(() => {
                 this.map.render();
             }, 3000);
@@ -472,7 +471,7 @@ class FleetManager {
         const buttonsDiv = widget.querySelector('.fleet-widget-buttons');
 
         // Disable buttons and show loading
-        buttonsDiv.innerHTML = '<div style="color: #ffcc00;">⚔ Attacking...</div>';
+        buttonsDiv.innerHTML = '<div class="text-yellow">⚔ Attacking...</div>';
 
         try {
             const response = await fetch(`/game/api/fleet/attack/${fleet.id}`, {
@@ -492,14 +491,14 @@ class FleetManager {
                 this.showBattleReportModal(result);
             } else {
                 // Show error in widget
-                buttonsDiv.innerHTML = `<div style="color: #ff6b6b;">Error: ${result.message}</div>`;
+                buttonsDiv.innerHTML = `<div class="text-enemy">Error: ${result.message}</div>`;
                 setTimeout(() => {
                     this.map.render();
                 }, 3000);
             }
         } catch (error) {
             console.error('Attack failed:', error);
-            buttonsDiv.innerHTML = '<div style="color: #ff6b6b;">Network error</div>';
+            buttonsDiv.innerHTML = '<div class="text-enemy">Network error</div>';
             setTimeout(() => {
                 this.map.render();
             }, 3000);
@@ -549,23 +548,23 @@ class FleetManager {
         }
 
         // Build battle report content
-        const resultClass = result.hasWon ? 'color: #4CAF50;' : 'color: #f44336;';
+        const resultClass = result.hasWon ? 'text-positive' : 'text-negative';
         const resultIcon = result.hasWon ? '🏆' : '💀';
 
         let battleLogHtml = '';
         if (result.battleLog && result.battleLog.length > 0) {
-            battleLogHtml = '<div style="max-height: 300px; overflow-y: auto; background: #1a1a1a; padding: 10px; border-radius: 4px; margin-top: 10px;">';
+            battleLogHtml = '<div class="battle-log">';
             result.battleLog.forEach(line => {
-                battleLogHtml += `<p style="margin: 5px 0; font-size: 12px;">${line}</p>`;
+                battleLogHtml += `<p>${line}</p>`;
             });
             battleLogHtml += '</div>';
         }
 
         const body = modal.querySelector('#battleReportBody');
         body.innerHTML = `
-            <div style="text-align: center; margin-bottom: 15px;">
-                <span style="font-size: 48px;">${resultIcon}</span>
-                <h3 style="${resultClass} margin: 10px 0;">${result.hasWon ? 'VICTORY!' : 'DEFEAT'}</h3>
+            <div class="battle-result">
+                <span class="battle-result-icon">${resultIcon}</span>
+                <h3 class="battle-result-title ${resultClass}">${result.hasWon ? 'VICTORY!' : 'DEFEAT'}</h3>
                 <p>${result.message}</p>
             </div>
             ${battleLogHtml}
@@ -583,25 +582,12 @@ class FleetManager {
         const notification = document.createElement('div');
         notification.className = `fleet-notification fleet-notification-${type}`;
         notification.innerHTML = message;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 6px;
-            color: #fff;
-            font-weight: bold;
-            z-index: 10002;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            animation: slideIn 0.3s ease;
-            background: ${type === 'success' ? '#4CAF50' : (type === 'error' ? '#f44336' : '#2196F3')};
-        `;
 
         document.body.appendChild(notification);
 
         // Auto-remove after 3 seconds
         setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease';
+            notification.classList.add('is-leaving');
             setTimeout(() => notification.remove(), 300);
         }, 3000);
     }
@@ -614,26 +600,10 @@ class FleetManager {
         label.className = 'fleet-eta-label';
         label.setAttribute('data-fleet-id', fleet.id);
         label.innerHTML = '🕐 ETA: ' + this.formatETA(fleet.eta);
-        label.style.cssText = `
-            position: absolute;
-            background: rgba(255, 204, 0, 0.95);
-            border: 2px solid #ffcc00;
-            border-radius: 6px;
-            padding: 4px 8px;
-            color: #000;
-            font-size: 11px;
-            font-weight: bold;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-            white-space: nowrap;
-            text-align: center;
-            pointer-events: none;
-        `;
         container.appendChild(label);
 
         label.style.left = posX + 'px';
         label.style.top = posY + 'px';
-        label.style.transform = 'translate(-50%, -100%) translateY(-35px)';
 
         return label;
     }

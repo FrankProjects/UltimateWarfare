@@ -40,11 +40,11 @@
                 allRegions = result.regions;
                 renderRegions();
             } else {
-                regionContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load region data</div>';
+                regionContainer.innerHTML = '<div class="build-loading text-negative">Failed to load region data</div>';
             }
         } catch (error) {
             console.error('Error loading regions:', error);
-            regionContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load region data</div>';
+            regionContainer.innerHTML = '<div class="build-loading text-negative">Failed to load region data</div>';
         }
     }
 
@@ -93,20 +93,20 @@
 
         sortRegions();
 
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 6px; text-align: center; cursor: pointer;" data-sort="position">Pos' + getSortArrow('position') + '</th>';
+        let html = '<table class="uw-table uw-table-compact">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="region-pos-col text-center uw-sortable" data-sort="position">Pos' + getSortArrow('position') + '</th>';
 
         categories.forEach(function (cat) {
-            html += '<th style="padding: 6px; text-align: center; cursor: pointer; font-size: 0.85em;" data-sort="' + cat.key + '">' + cat.label + getSortArrow(cat.key) + '</th>';
+            html += '<th class="text-center uw-sortable uw-cell-small" data-sort="' + cat.key + '">' + cat.label + getSortArrow(cat.key) + '</th>';
         });
 
-        html += '<th style="padding: 6px; text-align: center;">Actions</th>';
+        html += '<th class="region-actions-col text-center">Actions</th>';
         html += '</tr>';
 
         allRegions.forEach(function (region) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 6px; text-align: center;">' + region.x + ', ' + region.y + '</td>';
+            html += '<tr>';
+            html += '<td class="region-pos-col text-center">' + region.x + ', ' + region.y + '</td>';
 
             categories.forEach(function (cat) {
                 const data = region.categoryCounts[cat.key];
@@ -119,10 +119,10 @@
                 if (cat.key === 1) {
                     text += ' / ' + region.space;
                 }
-                html += '<td style="padding: 6px; text-align: center; font-size: 0.85em;">' + escapeHtml(text) + '</td>';
+                html += '<td class="text-center uw-cell-small">' + escapeHtml(text) + '</td>';
             });
 
-            html += '<td style="padding: 6px; text-align: center; white-space: nowrap;">';
+            html += '<td class="region-actions-col text-center">';
             html += '<button class="fleet-action-btn reinforce region-build-btn" data-id="' + region.id + '">Build</button>';
             html += ' <button class="fleet-action-btn attack region-destroy-btn" data-id="' + region.id + '">Destroy</button>';
             html += '</td>';

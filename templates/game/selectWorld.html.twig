@@ -5,7 +5,7 @@
 {% block content %}
     <div class="uw-card">
         <div class="uw-card-header">Select your World</div>
-        <div class="uw-card-body" style="padding: 0; overflow-x: auto;">
+        <div class="uw-card-body p-0 overflow-x-auto">
             {% if worlds|length > 0 %}
                 <table class="table uw-world-table" id="world-table">
                     <thead>
@@ -50,10 +50,10 @@
                                 </td>
                                 <td data-sort="{{ world.maxPlayers }}">{{ world.maxPlayers }}</td>
                                 <td class="start-resources">
-                                    <img src="{{ asset('images/icons/resource_cash.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Cash"> {{ world.resources.cash }}
-                                    <img src="{{ asset('images/icons/resource_wood.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Wood"> {{ world.resources.wood }}
-                                    <img src="{{ asset('images/icons/resource_steel.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Steel"> {{ world.resources.steel }}
-                                    <img src="{{ asset('images/icons/resource_grain_wheat.svg') }}" height="16" style="width:auto;vertical-align:middle" alt="Food"> {{ world.resources.food }}
+                                    <img src="{{ asset('images/icons/resource_cash.svg') }}" height="16" class="resource-icon" alt="Cash"> {{ world.resources.cash }}
+                                    <img src="{{ asset('images/icons/resource_wood.svg') }}" height="16" class="resource-icon" alt="Wood"> {{ world.resources.wood }}
+                                    <img src="{{ asset('images/icons/resource_steel.svg') }}" height="16" class="resource-icon" alt="Steel"> {{ world.resources.steel }}
+                                    <img src="{{ asset('images/icons/resource_grain_wheat.svg') }}" height="16" class="resource-icon" alt="Food"> {{ world.resources.food }}
                                 </td>
                                 <td>
                                     <a class="btn btn-primary btn-sm"
@@ -64,7 +64,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <div class="text-center" style="padding: 20px;">
+                <div class="text-center p-4">
                     <p>No active worlds to join. Create a new game world!</p>
                     <a class="btn btn-primary" href="{{ path('Game/World/Create') }}">
                         <strong>Create new world</strong>

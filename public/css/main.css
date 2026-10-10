@@ -73,6 +73,10 @@ a:hover {
     opacity: 1;
 }
 
+.navbar-container {
+    max-width: 960px;
+}
+
 /* ===== Content Container ===== */
 .site-content {
     max-width: 960px;
@@ -137,6 +141,7 @@ a:hover {
     margin-bottom: 30px;
     overflow: hidden;
     background-color: #2a2a2a;
+    background-image: url('../images/uw_background.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -285,6 +290,12 @@ a:hover {
 
 .form-check-label {
     color: #f3e6c1;
+}
+
+.form-help-text {
+    margin-top: 12px;
+    color: #999;
+    font-size: 13px;
 }
 
 /* ===== Buttons ===== */
@@ -655,6 +666,39 @@ a:hover {
     background: #8b2e2e;
 }
 
+/* ===== Admin World Generator ===== */
+.terrain-deep-water {
+    background-color: #143278;
+}
+
+.terrain-water {
+    background-color: #2350a5;
+}
+
+.terrain-shallow-water {
+    background-color: #4696c3;
+}
+
+.terrain-sand {
+    background-color: #d2be8c;
+}
+
+.terrain-grassland {
+    background-color: #4b8c3c;
+}
+
+.terrain-forest {
+    background-color: #235523;
+}
+
+.terrain-hills {
+    background-color: #6e914b;
+}
+
+.terrain-mountain {
+    background-color: #808080;
+}
+
 /* ===== World Select Table ===== */
 .uw-world-table {
     margin-bottom: 0;
@@ -752,6 +796,19 @@ a:hover {
 
 .bad {
     color: #f44336;
+}
+
+.resource-icon {
+    width: auto;
+    vertical-align: middle;
+}
+
+.story-image {
+    border-radius: 6px;
+}
+
+.forum-sticky-label {
+    color: #CC0000;
 }
 
 hr {
@@ -879,6 +936,12 @@ hr {
     background: #d63838;
     color: #f3e6c1;
 }
+
+.guide-difficulty-bar-fill.tier-0 { width: 10%; }
+.guide-difficulty-bar-fill.tier-1 { width: 25%; }
+.guide-difficulty-bar-fill.tier-2 { width: 45%; }
+.guide-difficulty-bar-fill.tier-3 { width: 65%; }
+.guide-difficulty-bar-fill.tier-4 { width: 95%; }
 
 /* ===== Guide Research ===== */
 .guide-research-section {

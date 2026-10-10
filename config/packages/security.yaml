@@ -26,6 +26,7 @@ security:
             user_checker: FrankProjects\UltimateWarfare\Security\UserChecker
             form_login:
                 provider: frankprojects
+                enable_csrf: true
                 default_target_path: /game/login
                 login_path: /login
                 check_path: /login

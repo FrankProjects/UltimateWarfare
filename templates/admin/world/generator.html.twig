@@ -14,21 +14,21 @@
                 {% for mapItem in mapRow %}
                     <td>
                         {% if mapItem < form.deepWaterLevel.vars.value / 100 %}
-                            <span style="background-color:#143278">&nbsp;</span>
+                            <span class="terrain-deep-water">&nbsp;</span>
                         {% elseif mapItem < form.waterLevel.vars.value / 100 %}
-                            <span style="background-color:#2350a5">&nbsp;</span>
+                            <span class="terrain-water">&nbsp;</span>
                         {% elseif mapItem < form.shallowWaterLevel.vars.value / 100 %}
-                            <span style="background-color:#4696c3">&nbsp;</span>
+                            <span class="terrain-shallow-water">&nbsp;</span>
                         {% elseif mapItem < form.sandLevel.vars.value / 100 %}
-                            <span style="background-color:#d2be8c">&nbsp;</span>
+                            <span class="terrain-sand">&nbsp;</span>
                         {% elseif mapItem < form.grasslandLevel.vars.value / 100 %}
-                            <span style="background-color:#4b8c3c">&nbsp;</span>
+                            <span class="terrain-grassland">&nbsp;</span>
                         {% elseif mapItem < form.forestLevel.vars.value / 100 %}
-                            <span style="background-color:#235523">&nbsp;</span>
+                            <span class="terrain-forest">&nbsp;</span>
                         {% elseif mapItem < form.hillsLevel.vars.value / 100 %}
-                            <span style="background-color:#6e914b">&nbsp;</span>
+                            <span class="terrain-hills">&nbsp;</span>
                         {% else %}
-                            <span style="background-color:#808080">&nbsp;</span>
+                            <span class="terrain-mountain">&nbsp;</span>
                         {% endif %}
                     </td>
                 {% endfor %}

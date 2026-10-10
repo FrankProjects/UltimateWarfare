@@ -20,7 +20,7 @@
                 {% if user != null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}
                     <br/>
                     <br/>
-                    <form method="POST" action="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" style="display:inline">
+                    <form method="POST" action="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" class="d-inline">
                         <button type="submit" class="btn btn-primary" title="Delete">Delete</button>
                     </form>
                     - <a class="btn btn-primary" href="{{ path('Forum/Post/Edit', {'postId': post.id}) }}" title="Edit">Edit</a>

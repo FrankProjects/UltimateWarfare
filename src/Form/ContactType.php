@@ -76,6 +76,7 @@ class ContactType extends AbstractType
                 CaptchaType::class,
                 [
                     'mapped' => false,
+                    'turnstile_action' => 'contact',
                 ]
             )
             ->add(

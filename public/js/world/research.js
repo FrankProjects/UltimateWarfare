@@ -85,13 +85,13 @@
             const data = await response.json();
 
             if (!data.success) {
-                researchTreeContainer.innerHTML = '<div style="color: #c44; padding: 20px;">Failed to load research tree.</div>';
+                researchTreeContainer.innerHTML = '<div class="uw-error">Failed to load research tree.</div>';
                 return;
             }
 
             renderTree(data.research);
         } catch (e) {
-            researchTreeContainer.innerHTML = '<div style="color: #c44; padding: 20px;">Error loading research tree.</div>';
+            researchTreeContainer.innerHTML = '<div class="uw-error">Error loading research tree.</div>';
         }
     }
 
@@ -179,6 +179,11 @@
         if (timerInterval) {
             clearInterval(timerInterval);
             timerInterval = null;
+        }
+
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            renderList(researchList);
+            return;
         }
 
         const itemBySlug = buildItemMap(researchList);
@@ -270,6 +275,37 @@
         startTimers();
     }
 
+    // Stacked layout for narrow screens: tiers top to bottom, categories in lane order, no lines.
+    function renderList(researchList) {
+        const itemBySlug = buildItemMap(researchList);
+        const tiers = [FOUNDATION_TIER].concat(TIERS);
+
+        let html = '<div class="research-list">';
+        for (let t = 0; t < tiers.length; t++) {
+            const tier = tiers[t];
+            const isFoundation = tier.id === FOUNDATION_TIER.id;
+            html += '<div class="research-tier-header' + (isFoundation ? ' research-tier-header-foundation' : '') + '">';
+            html += '<span class="research-tier-label">' + escapeHtml(tier.label) + '</span>';
+            html += '<span class="research-tier-gate">' + escapeHtml(tier.gateLabel) + '</span>';
+            html += '</div>';
+
+            const categoryKeys = isFoundation ? ['foundation'] : Object.keys(CATEGORIES);
+            for (let c = 0; c < categoryKeys.length; c++) {
+                for (const slug in TREE_LAYOUT) {
+                    const layout = TREE_LAYOUT[slug];
+                    const item = itemBySlug[slug];
+                    if (!item || layout.tier !== tier.id || (layout.category || 'foundation') !== categoryKeys[c]) continue;
+                    html += renderNode(item, null, categoryKeys[c], isFoundation);
+                }
+            }
+        }
+        html += '</div>';
+        researchTreeContainer.innerHTML = html;
+
+        bindNodeHandlers();
+        startTimers();
+    }
+
     function renderNode(item, pos, categoryKey, isFoundation) {
         const showsLevels = item.maxLevel > 1;
         const isMaxed = item.status === 'maxed';
@@ -278,8 +314,11 @@
         let cls = 'research-node research-' + item.status;
         if (isFoundation) cls += ' research-foundation';
 
-        let html = '<div class="' + cls + '" data-category="' + categoryKey + '" ';
-        html += 'style="left: ' + pos.x + 'px; top: ' + pos.y + 'px;">';
+        let html = '<div class="' + cls + '" data-category="' + categoryKey + '"';
+        if (pos) {
+            html += ' style="left: ' + pos.x + 'px; top: ' + pos.y + 'px;"';
+        }
+        html += '>';
         html += '<img class="research-node-image" src="' + WorldApp.imageBasePath + '/research/' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '">';
         html += '<div class="research-node-name">' + escapeHtml(item.name) + '</div>';
 

@@ -89,6 +89,7 @@ class RegistrationType extends AbstractType
                 CaptchaType::class,
                 [
                     'mapped' => false,
+                    'turnstile_action' => 'register',
                 ]
             )
             ->add(

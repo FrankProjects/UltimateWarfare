@@ -56,10 +56,10 @@
                 renderTabs();
                 renderCurrentTab();
             } else {
-                statisticsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load statistics</div>';
+                statisticsContainer.innerHTML = '<div class="build-loading text-negative">Failed to load statistics</div>';
             }
         } catch (error) {
-            statisticsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Error loading statistics</div>';
+            statisticsContainer.innerHTML = '<div class="build-loading text-negative">Error loading statistics</div>';
         }
     }
 
@@ -89,7 +89,7 @@
 
         for (let i = 0; i < warnings.length; i++) {
             const w = warnings[i];
-            html += '<div style="background: #3a1a1a; border: 1px solid #f44336; border-radius: 4px; padding: 10px; margin-bottom: 10px; color: #f44336;">';
+            html += '<div class="stats-warning">';
             if (w.type === 'food') {
                 if (w.seconds === 0) {
                     html += '<strong>You don\'t have enough food to feed your Population</strong><br>';
@@ -112,13 +112,13 @@
             html += '</div>';
         }
 
-        html += '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Cash</td><td style="padding: 8px;">$ ' + formatNumber(status.cash) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Wood</td><td style="padding: 8px;">' + formatNumber(status.wood) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Steel</td><td style="padding: 8px;">' + formatNumber(status.steel) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Food</td><td style="padding: 8px;">' + formatNumber(status.food) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Regions</td><td style="padding: 8px;">' + formatNumber(status.regions) + '</td></tr>';
-        html += '<tr><td style="padding: 8px; color: #aaa;">Net Worth</td><td style="padding: 8px;">' + formatNumber(status.netWorth) + '</td></tr>';
+        html += '<table class="uw-table uw-table-plain">';
+        html += '<tr><td class="uw-table-label">Cash</td><td>$ ' + formatNumber(status.cash) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Wood</td><td>' + formatNumber(status.wood) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Steel</td><td>' + formatNumber(status.steel) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Food</td><td>' + formatNumber(status.food) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Regions</td><td>' + formatNumber(status.regions) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Net Worth</td><td>' + formatNumber(status.netWorth) + '</td></tr>';
         html += '</table>';
 
         statisticsContainer.innerHTML = html;
@@ -129,24 +129,24 @@
         const inc = cachedData.income;
         let html = '';
 
-        html += '<h3 style="margin-top: 0; color: #ccc;">Cash Income</h3>';
-        html += '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr><td style="padding: 6px; color: #aaa;">Income</td><td style="padding: 6px;">' + formatNumber(inc.cashIncome) + '</td></tr>';
-        html += '<tr><td style="padding: 6px; color: #aaa;">Upkeep</td><td style="padding: 6px;">-' + formatNumber(inc.cashUpkeep) + '</td></tr>';
-        html += '<tr><td style="padding: 6px; color: #aaa;">Net Income</td><td style="padding: 6px; color: ' + (inc.cashNet < 0 ? '#f44336' : '#4caf50') + ';">' + (inc.cashNet >= 0 ? '+' : '') + formatNumber(inc.cashNet) + '</td></tr>';
+        html += '<h3 class="stats-heading">Cash Income</h3>';
+        html += '<table class="uw-table uw-table-compact uw-table-plain">';
+        html += '<tr><td class="uw-table-label">Income</td><td>' + formatNumber(inc.cashIncome) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Upkeep</td><td>-' + formatNumber(inc.cashUpkeep) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Net Income</td><td class="' + (inc.cashNet < 0 ? 'text-negative' : 'text-positive') + '">' + (inc.cashNet >= 0 ? '+' : '') + formatNumber(inc.cashNet) + '</td></tr>';
         html += '</table>';
 
-        html += '<h3 style="color: #ccc;">Food Production</h3>';
-        html += '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr><td style="padding: 6px; color: #aaa;">Production</td><td style="padding: 6px;">' + formatNumber(inc.foodProduction) + '</td></tr>';
-        html += '<tr><td style="padding: 6px; color: #aaa;">Consumption</td><td style="padding: 6px;">-' + formatNumber(inc.foodConsumption) + '</td></tr>';
-        html += '<tr><td style="padding: 6px; color: #aaa;">Net</td><td style="padding: 6px; color: ' + (inc.foodNet < 0 ? '#f44336' : '#4caf50') + ';">' + (inc.foodNet >= 0 ? '+' : '') + formatNumber(inc.foodNet) + '</td></tr>';
+        html += '<h3 class="stats-heading">Food Production</h3>';
+        html += '<table class="uw-table uw-table-compact uw-table-plain">';
+        html += '<tr><td class="uw-table-label">Production</td><td>' + formatNumber(inc.foodProduction) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Consumption</td><td>-' + formatNumber(inc.foodConsumption) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Net</td><td class="' + (inc.foodNet < 0 ? 'text-negative' : 'text-positive') + '">' + (inc.foodNet >= 0 ? '+' : '') + formatNumber(inc.foodNet) + '</td></tr>';
         html += '</table>';
 
-        html += '<h3 style="color: #ccc;">Resources</h3>';
-        html += '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr><td style="padding: 6px; color: #aaa;">Steel</td><td style="padding: 6px;">' + formatNumber(inc.steelIncome) + '</td></tr>';
-        html += '<tr><td style="padding: 6px; color: #aaa;">Wood</td><td style="padding: 6px;">' + formatNumber(inc.woodIncome) + '</td></tr>';
+        html += '<h3 class="stats-heading">Resources</h3>';
+        html += '<table class="uw-table uw-table-compact uw-table-plain">';
+        html += '<tr><td class="uw-table-label">Steel</td><td>' + formatNumber(inc.steelIncome) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Wood</td><td>' + formatNumber(inc.woodIncome) + '</td></tr>';
         html += '</table>';
 
         statisticsContainer.innerHTML = html;
@@ -159,15 +159,15 @@
 
         for (let i = 0; i < army.length; i++) {
             const group = army[i];
-            html += '<h3 style="' + (i === 0 ? 'margin-top: 0; ' : '') + 'color: #ccc;">' + escapeHtml(group.category) + '</h3>';
+            html += '<h3 class="stats-heading">' + escapeHtml(group.category) + '</h3>';
 
             if (group.units.length === 0) {
-                html += '<p style="color: #666;">You don\'t have any ' + escapeHtml(group.category) + '</p>';
+                html += '<p class="text-faint">You don\'t have any ' + escapeHtml(group.category) + '</p>';
             } else {
-                html += '<table style="width: 100%; border-collapse: collapse;">';
+                html += '<table class="uw-table uw-table-compact uw-table-plain">';
                 for (let j = 0; j < group.units.length; j++) {
                     const unit = group.units[j];
-                    html += '<tr><td style="padding: 6px; color: #aaa;">' + escapeHtml(unit.name) + '</td><td style="padding: 6px;">' + formatNumber(unit.amount) + '</td></tr>';
+                    html += '<tr><td class="uw-table-label">' + escapeHtml(unit.name) + '</td><td>' + formatNumber(unit.amount) + '</td></tr>';
                 }
                 html += '</table>';
             }
@@ -183,15 +183,15 @@
 
         for (let i = 0; i < infra.length; i++) {
             const group = infra[i];
-            html += '<h3 style="' + (i === 0 ? 'margin-top: 0; ' : '') + 'color: #ccc;">' + escapeHtml(group.category) + '</h3>';
+            html += '<h3 class="stats-heading">' + escapeHtml(group.category) + '</h3>';
 
             if (group.units.length === 0) {
-                html += '<p style="color: #666;">You don\'t have any ' + escapeHtml(group.category) + '</p>';
+                html += '<p class="text-faint">You don\'t have any ' + escapeHtml(group.category) + '</p>';
             } else {
-                html += '<table style="width: 100%; border-collapse: collapse;">';
+                html += '<table class="uw-table uw-table-compact uw-table-plain">';
                 for (let j = 0; j < group.units.length; j++) {
                     const unit = group.units[j];
-                    html += '<tr><td style="padding: 6px; color: #aaa;">' + escapeHtml(unit.name) + '</td><td style="padding: 6px;">' + formatNumber(unit.amount) + '</td></tr>';
+                    html += '<tr><td class="uw-table-label">' + escapeHtml(unit.name) + '</td><td>' + formatNumber(unit.amount) + '</td></tr>';
                 }
                 html += '</table>';
             }

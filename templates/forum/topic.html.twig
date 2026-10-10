@@ -9,11 +9,11 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         {% if topic.sticky %}
-            <form method="POST" action="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}" style="display:inline">
+            <form method="POST" action="{{ path('Forum/Topic/Unsticky', {'topicId': topic.id}) }}" class="d-inline">
                 <button type="submit" class="btn btn-primary">{{ 'action.topic.unsticky'|trans }}</button>
             </form>
         {% else %}
-            <form method="POST" action="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}" style="display:inline">
+            <form method="POST" action="{{ path('Forum/Topic/Sticky', {'topicId': topic.id}) }}" class="d-inline">
                 <button type="submit" class="btn btn-primary">{{ 'action.topic.sticky'|trans }}</button>
             </form>
         {% endif %}
@@ -22,7 +22,7 @@
     <div class="uw-card">
         <div class="uw-card-header">
             {% if topic.sticky == 1 %}
-                <span style="color:#CC0000">Sticky </span>{{ topic.title }}
+                <span class="forum-sticky-label">Sticky </span>{{ topic.title }}
             {% else %}
                 {{ topic.title }}
             {% endif %}
@@ -49,7 +49,7 @@
                     {% if user != null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}
                         <br />
                         <br />
-                        <form method="POST" action="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}" style="display:inline">
+                        <form method="POST" action="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}" class="d-inline">
                             <button type="submit" class="btn btn-primary">{{ 'action.topic.delete'|trans }}</button>
                         </form> -
                         <a class="btn btn-primary" href="{{ path('Forum/Topic/Edit', {'topicId': topic.id}) }}">{{ 'action.topic.edit'|trans }}</a>

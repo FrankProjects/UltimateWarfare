@@ -100,16 +100,22 @@ class CameraController {
 
     setupTouchEvents() {
         let lastTouchDistance = 0;
+        let touchStartPos = { x: 0, y: 0 };
+        let wasPinch = false;
+        const tapTolerance = 10;
 
         this.canvas.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) {
                 this.isDragging = true;
                 this.hasDragged = false;
+                wasPinch = false;
                 this.lastMousePos = {
                     x: e.touches[0].clientX,
                     y: e.touches[0].clientY
                 };
+                touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
             } else if (e.touches.length === 2) {
+                wasPinch = true;
                 lastTouchDistance = this.getTouchDistance(e.touches);
             }
             e.preventDefault();
@@ -120,7 +126,8 @@ class CameraController {
                 const dx = e.touches[0].clientX - this.lastMousePos.x;
                 const dy = e.touches[0].clientY - this.lastMousePos.y;
 
-                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+                if (Math.abs(e.touches[0].clientX - touchStartPos.x) > tapTolerance ||
+                    Math.abs(e.touches[0].clientY - touchStartPos.y) > tapTolerance) {
                     this.hasDragged = true;
                 }
 
@@ -147,8 +154,17 @@ class CameraController {
             e.preventDefault();
         }, { passive: false });
 
-        this.canvas.addEventListener('touchend', () => {
+        // touchstart calls preventDefault, which suppresses the synthetic click,
+        // so a tap has to be translated into a tile click here
+        this.canvas.addEventListener('touchend', (e) => {
             this.isDragging = false;
+            if (e.touches.length > 0) {
+                return;
+            }
+            if (!this.hasDragged && !wasPinch && this.onTileClick) {
+                this.onTileClick(e.changedTouches[0]);
+            }
+            this.hasDragged = false;
         });
     }
 

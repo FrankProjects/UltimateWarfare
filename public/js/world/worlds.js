@@ -56,10 +56,10 @@
                 renderTabs();
                 renderCurrentTab();
             } else {
-                worldsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load worlds</div>';
+                worldsContainer.innerHTML = '<div class="build-loading text-negative">Failed to load worlds</div>';
             }
         } catch (error) {
-            worldsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Error loading worlds</div>';
+            worldsContainer.innerHTML = '<div class="build-loading text-negative">Error loading worlds</div>';
         }
     }
 
@@ -77,18 +77,18 @@
         const worlds = worldsData.myWorlds;
 
         if (worlds.length === 0) {
-            worldsContainer.innerHTML = '<div style="text-align: center; color: #aaa; padding: 20px;">You are not playing in any worlds yet.</div>';
+            worldsContainer.innerHTML = '<div class="uw-empty">You are not playing in any worlds yet.</div>';
             return;
         }
 
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 1px solid #333;"><th style="padding: 8px; text-align: left; color: #aaa;">World</th><th style="padding: 8px; text-align: left; color: #aaa;">Player Name</th><th style="padding: 8px; text-align: right;"></th></tr>';
+        let html = '<table class="uw-table worlds-table">';
+        html += '<tr class="uw-table-head"><th>World</th><th>Player Name</th><th class="text-end"></th></tr>';
 
         worlds.forEach(function (w) {
-            html += '<tr style="border-bottom: 1px solid #222;">';
-            html += '<td style="padding: 8px;">' + escapeHtml(w.worldName) + '</td>';
-            html += '<td style="padding: 8px;">' + escapeHtml(w.playerName) + '</td>';
-            html += '<td style="padding: 8px; text-align: right;"><a href="/game/login/player/' + w.playerId + '" style="background: #2196F3; color: #fff; padding: 5px 15px; border-radius: 4px; text-decoration: none; font-size: 13px;">Play</a></td>';
+            html += '<tr>';
+            html += '<td>' + escapeHtml(w.worldName) + '</td>';
+            html += '<td>' + escapeHtml(w.playerName) + '</td>';
+            html += '<td class="text-end"><a href="/game/login/player/' + w.playerId + '" class="world-action-btn">Play</a></td>';
             html += '</tr>';
         });
 
@@ -100,19 +100,19 @@
         const worlds = worldsData.joinableWorlds;
 
         if (worlds.length === 0) {
-            worldsContainer.innerHTML = '<div style="text-align: center; color: #aaa; padding: 20px;">No worlds available to join at this time.</div>';
+            worldsContainer.innerHTML = '<div class="uw-empty">No worlds available to join at this time.</div>';
             return;
         }
 
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 1px solid #333;"><th style="padding: 8px; text-align: left; color: #aaa;">World</th><th style="padding: 8px; text-align: left; color: #aaa;">Players</th><th style="padding: 8px; text-align: left; color: #aaa;">Description</th><th style="padding: 8px; text-align: right;"></th></tr>';
+        let html = '<table class="uw-table worlds-table">';
+        html += '<tr class="uw-table-head"><th>World</th><th>Players</th><th>Description</th><th class="text-end"></th></tr>';
 
         worlds.forEach(function (w) {
-            html += '<tr style="border-bottom: 1px solid #222;">';
-            html += '<td style="padding: 8px;">' + escapeHtml(w.worldName) + '</td>';
-            html += '<td style="padding: 8px;">' + w.currentPlayers + ' / ' + w.maxPlayers + '</td>';
-            html += '<td style="padding: 8px; color: #aaa; font-size: 12px;">' + escapeHtml(w.description) + '</td>';
-            html += '<td style="padding: 8px; text-align: right;"><a href="/game/select-name/' + w.worldId + '" style="background: #4caf50; color: #fff; padding: 5px 15px; border-radius: 4px; text-decoration: none; font-size: 13px;">Join</a></td>';
+            html += '<tr>';
+            html += '<td>' + escapeHtml(w.worldName) + '</td>';
+            html += '<td>' + w.currentPlayers + ' / ' + w.maxPlayers + '</td>';
+            html += '<td class="uw-cell-meta">' + escapeHtml(w.description) + '</td>';
+            html += '<td class="text-end"><a href="/game/select-name/' + w.worldId + '" class="world-action-btn world-join-btn">Join</a></td>';
             html += '</tr>';
         });
 

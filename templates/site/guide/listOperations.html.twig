@@ -2,19 +2,19 @@
 
 {% macro difficulty_cell(difficulty) %}
     {% if difficulty < 0.05 %}
-        {% set tier_label = 'Guaranteed' %}{% set tier_class = 'tier-0' %}{% set tier_pct = 10 %}
+        {% set tier_label = 'Guaranteed' %}{% set tier_class = 'tier-0' %}
     {% elseif difficulty < 0.2 %}
-        {% set tier_label = 'Easy' %}{% set tier_class = 'tier-1' %}{% set tier_pct = 25 %}
+        {% set tier_label = 'Easy' %}{% set tier_class = 'tier-1' %}
     {% elseif difficulty < 0.4 %}
-        {% set tier_label = 'Moderate' %}{% set tier_class = 'tier-2' %}{% set tier_pct = 45 %}
+        {% set tier_label = 'Moderate' %}{% set tier_class = 'tier-2' %}
     {% elseif difficulty < 0.6 %}
-        {% set tier_label = 'Hard' %}{% set tier_class = 'tier-3' %}{% set tier_pct = 65 %}
+        {% set tier_label = 'Hard' %}{% set tier_class = 'tier-3' %}
     {% else %}
-        {% set tier_label = 'Extreme' %}{% set tier_class = 'tier-4' %}{% set tier_pct = 95 %}
+        {% set tier_label = 'Extreme' %}{% set tier_class = 'tier-4' %}
     {% endif %}
     <span class="guide-difficulty-badge {{ tier_class }}">{{ tier_label }}</span>
     <div class="guide-difficulty-bar">
-        <div class="guide-difficulty-bar-fill {{ tier_class }}" style="width: {{ tier_pct }}%"></div>
+        <div class="guide-difficulty-bar-fill {{ tier_class }}"></div>
     </div>
 {% endmacro %}
 

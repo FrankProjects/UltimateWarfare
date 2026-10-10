@@ -18,7 +18,7 @@
                 {% for topic in topics %}
                     <tr>
                         {% if topic.sticky == 1 %}
-                            <td class="text-start"><a href="{{ path('Forum/Topic', {'topicId': topic.id}) }}"><b><span style="color:#CC0000">Sticky </span></b>{{ topic.title }}</a></td>
+                            <td class="text-start"><a href="{{ path('Forum/Topic', {'topicId': topic.id}) }}"><b><span class="forum-sticky-label">Sticky </span></b>{{ topic.title }}</a></td>
                         {% else %}
                             <td class="text-start"><a href="{{ path('Forum/Topic', {'topicId': topic.id}) }}">{{ topic.title }}</a></td>
                         {% endif %}

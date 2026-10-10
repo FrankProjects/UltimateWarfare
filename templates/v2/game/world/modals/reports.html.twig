@@ -7,13 +7,13 @@
             </div>
             <div class="modal-body">
                 <div class="build-tabs" id="reportsTabs"></div>
-                <div id="reportsContainer" style="max-height: 400px; overflow-y: auto;">
+                <div id="reportsContainer" class="modal-scroll">
                     <div class="build-loading">Loading reports...</div>
                 </div>
-                <div id="reportsPagination" style="margin-top: 15px; text-align: center; display: none;">
-                    <button type="button" id="reportsPrevBtn" class="legend-toggle" style="margin-right: 10px;">&larr; Previous</button>
-                    <span id="reportsPageInfo" style="color: #f3e6c1;"></span>
-                    <button type="button" id="reportsNextBtn" class="legend-toggle" style="margin-left: 10px;">Next &rarr;</button>
+                <div id="reportsPagination" class="reports-pagination">
+                    <button type="button" id="reportsPrevBtn" class="legend-toggle me-2">&larr; Previous</button>
+                    <span id="reportsPageInfo"></span>
+                    <button type="button" id="reportsNextBtn" class="legend-toggle ms-2">Next &rarr;</button>
                 </div>
             </div>
             <div class="modal-footer">

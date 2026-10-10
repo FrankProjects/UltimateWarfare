@@ -1,2 +1,2 @@
 captcha:
-  invalid: Het antwoord op de captcha is onjuist. Probeer het opnieuw.
+  invalid: Verificatie mislukt. Voltooi de beveiligingscontrole en probeer het opnieuw.

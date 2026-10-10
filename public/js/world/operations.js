@@ -44,7 +44,7 @@
             const result = await response.json();
 
             if (!result.success) {
-                operationsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">' + escapeHtml(result.message) + '</div>';
+                operationsContainer.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message) + '</div>';
                 return;
             }
 
@@ -56,7 +56,7 @@
             renderOperationsList(result.operations);
         } catch (error) {
             console.error('Error loading operations:', error);
-            operationsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load operations</div>';
+            operationsContainer.innerHTML = '<div class="build-loading text-negative">Failed to load operations</div>';
         }
     }
 
@@ -205,14 +205,14 @@
             const result = await response.json();
 
             if (!result.success) {
-                container.innerHTML = '<div class="build-loading" style="color: #f44336;">' + escapeHtml(result.message) + '</div>';
+                container.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message) + '</div>';
                 return;
             }
 
             renderOperationUnits(result);
         } catch (error) {
             console.error('Error loading operation units:', error);
-            container.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load unit data</div>';
+            container.innerHTML = '<div class="build-loading text-negative">Failed to load unit data</div>';
         }
     }
 
@@ -237,13 +237,13 @@
         html += '<p>Cost: $' + data.costPerUnit.toLocaleString('en-US') + ' per unit</p>';
         html += '<p>Your cash: $' + data.playerCash.toLocaleString('en-US') + '</p>';
         if (maxAffordable < data.available) {
-            html += '<p style="color: #ffa500; font-size: 12px;">You can afford up to ' + maxAffordable + ' units</p>';
+            html += '<p class="text-orange uw-hint">You can afford up to ' + maxAffordable + ' units</p>';
         }
-        html += '<div class="message-form-group" style="margin-top: 10px;">';
+        html += '<div class="message-form-group uw-actions">';
         html += '<label for="operationAmount">Amount (max ' + maxSend + ')</label>';
-        html += '<input type="number" id="operationAmount" min="1" max="' + maxSend + '" value="1">';
+        html += '<input type="number" id="operationAmount" class="form-control" min="1" max="' + maxSend + '" value="1">';
         html += '</div>';
-        html += '<p id="operationTotalCost" style="font-size: 13px;">Total cost: $' + data.costPerUnit.toLocaleString('en-US') + '</p>';
+        html += '<p id="operationTotalCost" class="operation-total-cost">Total cost: $' + data.costPerUnit.toLocaleString('en-US') + '</p>';
         html += '</div>';
 
         container.innerHTML = html;

@@ -32,11 +32,11 @@
                 renderFleets();
                 startTimers();
             } else {
-                fleetContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load fleet data</div>';
+                fleetContainer.innerHTML = '<div class="build-loading text-negative">Failed to load fleet data</div>';
             }
         } catch (error) {
             console.error('Error loading fleets:', error);
-            fleetContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load fleet data</div>';
+            fleetContainer.innerHTML = '<div class="build-loading text-negative">Failed to load fleet data</div>';
         }
     }
 
@@ -46,14 +46,14 @@
             return;
         }
 
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 8px; text-align: center;">From</th>';
-        html += '<th style="padding: 8px; text-align: center;">To</th>';
-        html += '<th style="padding: 8px; text-align: center;">Owner</th>';
-        html += '<th style="padding: 8px; text-align: left;">Fleet</th>';
-        html += '<th style="padding: 8px; text-align: center;">Time Left</th>';
-        html += '<th style="padding: 8px; text-align: center;">Actions</th>';
+        let html = '<table class="uw-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-center">From</th>';
+        html += '<th class="text-center">To</th>';
+        html += '<th class="text-center">Owner</th>';
+        html += '<th class="text-start">Fleet</th>';
+        html += '<th class="text-center">Time Left</th>';
+        html += '<th class="text-center">Actions</th>';
         html += '</tr>';
 
         allFleets.forEach(function (fleet) {
@@ -63,7 +63,7 @@
 
             let timeHtml;
             if (fleet.hasArrived) {
-                timeHtml = '<b style="color: #4CAF50;">Arrived!</b>';
+                timeHtml = '<b class="text-positive">Arrived!</b>';
             } else {
                 timeHtml = '<span class="fleet-timer" data-timeleft="' + fleet.timeLeft + '">' + formatTime(fleet.timeLeft) + '</span>';
             }
@@ -73,19 +73,19 @@
                 actionsHtml = '<button class="fleet-action-btn recall" data-id="' + fleet.id + '" data-action="recall">Recall</button>';
             } else if (fleet.targetIsYours) {
                 actionsHtml = '<button class="fleet-action-btn reinforce" data-id="' + fleet.id + '" data-action="reinforce">Reinforce</button>';
-                actionsHtml += '<br><button class="fleet-action-btn recall" data-id="' + fleet.id + '" data-action="recall" style="margin-top: 4px;">Recall</button>';
+                actionsHtml += '<br><button class="fleet-action-btn recall fleet-action-btn-below" data-id="' + fleet.id + '" data-action="recall">Recall</button>';
             } else {
                 actionsHtml = '<button class="fleet-action-btn attack" data-id="' + fleet.id + '" data-action="attack">Attack</button>';
-                actionsHtml += '<br><button class="fleet-action-btn recall" data-id="' + fleet.id + '" data-action="recall" style="margin-top: 4px;">Recall</button>';
+                actionsHtml += '<br><button class="fleet-action-btn recall fleet-action-btn-below" data-id="' + fleet.id + '" data-action="recall">Recall</button>';
             }
 
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 8px; text-align: center;">' + fleet.sourceX + ', ' + fleet.sourceY + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + fleet.targetX + ', ' + fleet.targetY + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + (fleet.targetIsYours ? '<span style="color: #6bafff;">You</span>' : escapeHtml(fleet.targetOwner || 'Nobody')) + '</td>';
-            html += '<td style="padding: 8px; font-size: 12px;">' + unitsHtml + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + timeHtml + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + actionsHtml + '</td>';
+            html += '<tr>';
+            html += '<td class="text-center">' + fleet.sourceX + ', ' + fleet.sourceY + '</td>';
+            html += '<td class="text-center">' + fleet.targetX + ', ' + fleet.targetY + '</td>';
+            html += '<td class="text-center">' + (fleet.targetIsYours ? '<span class="text-own">You</span>' : escapeHtml(fleet.targetOwner || 'Nobody')) + '</td>';
+            html += '<td class="fleet-overview-units">' + unitsHtml + '</td>';
+            html += '<td class="text-center">' + timeHtml + '</td>';
+            html += '<td class="text-center">' + actionsHtml + '</td>';
             html += '</tr>';
         });
 

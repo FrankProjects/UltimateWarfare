@@ -12,16 +12,7 @@
     <div class="uw-card">
         <div class="uw-card-header">User list</div>
         <div class="uw-card-body">
-            <table class="table text-center" style="table-layout: fixed; width: 100%;">
-                <colgroup>
-                    <col style="width: 14%;">
-                    <col style="width: 22%;">
-                    <col style="width: 7%;">
-                    <col style="width: 19%;">
-                    <col style="width: 13%;">
-                    <col style="width: 13%;">
-                    <col style="width: 12%;">
-                </colgroup>
+            <table class="table text-center">
                 <tr>
                     <td>Username</td>
                     <td>Email</td>
@@ -33,10 +24,10 @@
                 </tr>
                 {% for user in users %}
                     <tr>
-                        <td style="overflow-wrap: break-word;">
+                        <td class="text-break">
                             {{ user.username }}
                         </td>
-                        <td style="overflow-wrap: break-word;">
+                        <td class="text-break">
                             {{ user.email }}
                         </td>
                         <td>
@@ -46,7 +37,7 @@
                                 <span class="bad">No</span>
                             {% endif %}
                         </td>
-                        <td style="overflow-wrap: break-word;">
+                        <td class="text-break">
                             {% for player in user.players %}
                                 <p>
                                     {{ player.name }} ({{ player.world.name }})

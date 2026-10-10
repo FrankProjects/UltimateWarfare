@@ -29,11 +29,11 @@
                 allRankings = result.rankings;
                 renderRankings();
             } else {
-                rankingsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load rankings</div>';
+                rankingsContainer.innerHTML = '<div class="build-loading text-negative">Failed to load rankings</div>';
             }
         } catch (error) {
             console.error('Error loading rankings:', error);
-            rankingsContainer.innerHTML = '<div class="build-loading" style="color: #f44336;">Failed to load rankings</div>';
+            rankingsContainer.innerHTML = '<div class="build-loading text-negative">Failed to load rankings</div>';
         }
     }
 
@@ -71,24 +71,24 @@
 
         sortRankings();
 
-        let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<tr style="border-bottom: 2px solid #8B7355;">';
-        html += '<th style="padding: 8px; text-align: center; width: 60px;">Rank</th>';
-        html += '<th style="padding: 8px; text-align: left;">Player</th>';
-        html += '<th style="padding: 8px; text-align: center; cursor: pointer;" data-sort="regions">Regions' + getSortArrow('regions') + '</th>';
-        html += '<th style="padding: 8px; text-align: center; cursor: pointer;" data-sort="netWorth">Net Worth' + getSortArrow('netWorth') + '</th>';
+        let html = '<table class="uw-table">';
+        html += '<tr class="uw-table-head">';
+        html += '<th class="text-center rankings-col-rank">Rank</th>';
+        html += '<th class="text-start">Player</th>';
+        html += '<th class="text-center uw-sortable" data-sort="regions">Regions' + getSortArrow('regions') + '</th>';
+        html += '<th class="text-center uw-sortable" data-sort="netWorth">Net Worth' + getSortArrow('netWorth') + '</th>';
         html += '</tr>';
 
         allRankings.forEach(function (player, index) {
-            html += '<tr style="border-bottom: 1px solid #555;">';
-            html += '<td style="padding: 8px; text-align: center;">' + (index + 1) + '</td>';
-            html += '<td style="padding: 8px; text-align: left;"><a href="#" class="player-link" data-player="' + escapeHtml(player.name) + '" style="color: #f3e6c1; text-decoration: underline; cursor: pointer;">' + escapeHtml(player.name) + '</a>';
+            html += '<tr>';
+            html += '<td class="text-center">' + (index + 1) + '</td>';
+            html += '<td class="text-start"><a href="#" class="player-link uw-link text-light-uw" data-player="' + escapeHtml(player.name) + '">' + escapeHtml(player.name) + '</a>';
             if (player.federation) {
-                html += ' <i style="color: #aaa;">(' + escapeHtml(player.federation) + ')</i>';
+                html += ' <i class="text-muted-uw">(' + escapeHtml(player.federation) + ')</i>';
             }
             html += '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + player.regions + '</td>';
-            html += '<td style="padding: 8px; text-align: center;">' + player.netWorth + '</td>';
+            html += '<td class="text-center">' + player.regions + '</td>';
+            html += '<td class="text-center">' + player.netWorth + '</td>';
             html += '</tr>';
         });
 

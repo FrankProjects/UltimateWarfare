@@ -57,9 +57,9 @@
             '<div class="region-details">' +
             '<p><strong>Coordinates:</strong> ' + region.x + ', ' + region.y + '</p>' +
             '<p><strong>Type:</strong> ' + region.type + '</p>' +
-            '<p style="margin-top: 15px;"><strong>Price:</strong> $' + currentRegionPrice.toLocaleString('en-US') + '</p>' +
-            '<p style="margin-top: 10px;">Do you want to buy this region?</p>' +
-            '<p style="color: #ffa500; font-size: 11px; margin-top: 5px;">Note: The price increases with each region you own.</p>' +
+            '<p class="buy-region-price"><strong>Price:</strong> $' + currentRegionPrice.toLocaleString('en-US') + '</p>' +
+            '<p class="uw-actions">Do you want to buy this region?</p>' +
+            '<p class="text-orange uw-hint-small">Note: The price increases with each region you own.</p>' +
             '</div></div>';
         bootstrap.Modal.getOrCreateInstance(modal).show();
     }
@@ -140,7 +140,7 @@
             '<div class="region-details">' +
             '<p><strong>Coordinates:</strong> ' + region.x + ', ' + region.y + '</p>' +
             '<p><strong>Type:</strong> ' + region.type + '</p>' +
-            '<p><strong>Owner:</strong> <a href="#" id="enemyOwnerLink" style="color: #ff6b6b; text-decoration: underline; cursor: pointer;">' + region.ownerName + '</a></p>' +
+            '<p><strong>Owner:</strong> <a href="#" id="enemyOwnerLink" class="uw-link text-enemy">' + region.ownerName + '</a></p>' +
             '</div></div>';
         bootstrap.Modal.getOrCreateInstance(enemyModal).show();
 
@@ -216,8 +216,6 @@
             if (result.success) {
                 showNotification(result.message, 'success');
                 bootstrap.Modal.getInstance(sendMessageModal).hide();
-                const enemyInstance = bootstrap.Modal.getInstance(enemyModal);
-                if (enemyInstance) enemyInstance.hide();
             } else {
                 showNotification(result.message || 'Failed to send message', 'error');
             }
@@ -232,7 +230,13 @@
     };
 
     document.getElementById('sendMessageBtn').onclick = function () {
-        if (selectedEnemyRegion) showSendMessageModal(selectedEnemyRegion.ownerName);
+        if (!selectedEnemyRegion) return;
+        const ownerName = selectedEnemyRegion.ownerName;
+        bootstrap.Modal.getInstance(enemyModal).hide();
+        enemyModal.addEventListener('hidden.bs.modal', function handler() {
+            enemyModal.removeEventListener('hidden.bs.modal', handler);
+            showSendMessageModal(ownerName);
+        });
     };
     document.getElementById('attackBtn').onclick = function () {
         if (selectedEnemyRegion) WorldAttack.startAttackFromSelection(selectedEnemyRegion);
@@ -255,7 +259,7 @@
             '<div class="region-details">' +
             '<p><strong>Coordinates:</strong> ' + region.x + ', ' + region.y + '</p>' +
             '<p><strong>Type:</strong> ' + region.type + '</p>' +
-            '<p><strong>Owner:</strong> <span style="color: #6bafff;">You</span></p>' +
+            '<p><strong>Owner:</strong> <span class="text-own">You</span></p>' +
             '</div></div>';
         bootstrap.Modal.getOrCreateInstance(yourModal).show();
     }

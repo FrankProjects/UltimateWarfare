@@ -793,11 +793,6 @@ Site/ResetPassword:
     controller: FrankProjects\UltimateWarfare\Controller\Site\ResetPasswordController::requestPasswordReset
     methods:   [GET, POST]
 
-Site/Captcha:
-    path:      /captcha
-    controller: FrankProjects\UltimateWarfare\Controller\Site\CaptchaController::captcha
-    methods:   [GET]
-
 Site/Register:
     path:      /register
     controller: FrankProjects\UltimateWarfare\Controller\Site\RegisterController::register

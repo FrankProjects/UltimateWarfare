@@ -7,16 +7,34 @@ function showNotification(message, type) {
     const notification = document.createElement('div');
     notification.className = 'fleet-notification fleet-notification-' + type;
     notification.innerHTML = message;
-    notification.style.cssText =
-        'position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 6px; ' +
-        'color: #fff; font-weight: bold; z-index: 10002; box-shadow: 0 4px 12px rgba(0,0,0,0.4); ' +
-        'animation: slideIn 0.3s ease; ' +
-        'background: ' + (type === 'success' ? '#4CAF50' : (type === 'error' ? '#f44336' : '#2196F3')) + ';';
 
     document.body.appendChild(notification);
 
     setTimeout(function () {
-        notification.style.animation = 'slideOut 0.3s ease';
+        notification.classList.add('is-leaving');
         setTimeout(function () { notification.remove(); }, 300);
     }, 3000);
+}
+
+/**
+ * Styled confirmation dialog, replacement for window.confirm().
+ * Renders on top of any open modal and calls onConfirm when accepted.
+ */
+function showConfirm(message, onConfirm, options) {
+    options = options || {};
+
+    const modal = document.getElementById('confirmModal');
+    const confirmBtn = document.getElementById('confirmModalBtn');
+
+    document.getElementById('confirmModalLabel').textContent = options.title || 'Confirm';
+    document.getElementById('confirmModalBody').textContent = message;
+    confirmBtn.textContent = options.confirmText || 'Confirm';
+
+    const instance = bootstrap.Modal.getOrCreateInstance(modal);
+    confirmBtn.onclick = function () {
+        confirmBtn.onclick = null;
+        instance.hide();
+        onConfirm();
+    };
+    instance.show();
 }
