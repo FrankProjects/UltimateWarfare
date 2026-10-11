@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
+use SortDirection;
 
 final class DoctrineReportRepository implements ReportRepository
 {
@@ -102,7 +103,7 @@ final class DoctrineReportRepository implements ReportRepository
             ->andWhere('r.timestamp < :timestamp')
             ->setParameter('player', $player)
             ->setParameter('timestamp', time())
-            ->orderBy('r.timestamp', 'DESC')
+            ->orderBy('r.timestamp', SortDirection::Descending)
             ->setMaxResults($limit)
             ->setFirstResult($offset);
 

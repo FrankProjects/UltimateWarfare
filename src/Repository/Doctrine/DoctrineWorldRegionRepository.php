@@ -80,7 +80,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->createQuery(
                 'SELECT IDENTITY(wrsu.worldRegion) as regionId, wrsu.gameUnit, sum(wrsu.amount) as total
               FROM ' . WorldRegionStackableUnit::class . ' wrsu
-              JOIN ' . WorldRegion::class . ' wr WITH wrsu.worldRegion = wr
+              JOIN ' . WorldRegion::class . ' wr ON wrsu.worldRegion = wr
               WHERE wr.player = :player
               GROUP BY regionId, wrsu.gameUnit'
             )->setParameter('player', $player)
