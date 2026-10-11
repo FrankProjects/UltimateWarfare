@@ -11,6 +11,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Service\Action\WorldActionService;
 use FrankProjects\UltimateWarfare\Service\WorldGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -129,9 +130,15 @@ final class WorldController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $save = (bool)$form->get('save')->getData();
+            $saveButton = $form->get('save');
+            $save = $saveButton instanceof ClickableInterface && $saveButton->isClicked();
             $map = $this->worldGeneratorService->generate($world, $save);
-            $this->addFlash('success', 'Generated new map!');
+            if ($save) {
+                $this->addFlash('success', 'Saved generated map!');
+            }
+
+            // Rebuild the form so the (possibly randomly picked) seed is shown and reused on save
+            $form = $this->createForm(MapConfigurationType::class, $mapConfiguration);
         }
 
         return $this->render(

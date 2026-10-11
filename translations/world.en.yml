@@ -19,5 +19,8 @@ label:
   forestLevel: Forest level
   hillsLevel: Hills level
   generate: Generate
+  generatePreview: Generate preview
+  regenerate: Regenerate
+  seedHelp: Leave empty or 0 for a random seed
   size: Size
   seed: Seed

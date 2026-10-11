@@ -6,35 +6,53 @@
     <div class="uw-card">
         <div class="uw-card-header">World Generator</div>
         <div class="uw-card-body">
-            {{ form(form) }}
+            {{ form_start(form) }}
+                {{ form_row(form.seed) }}
+                {{ form_row(form.size) }}
+                {{ form_row(form.deepWaterLevel) }}
+                {{ form_row(form.waterLevel) }}
+                {{ form_row(form.shallowWaterLevel) }}
+                {{ form_row(form.sandLevel) }}
+                {{ form_row(form.grasslandLevel) }}
+                {{ form_row(form.forestLevel) }}
+                {{ form_row(form.hillsLevel) }}
 
-            <table class="table-world-generator text-center">
-            {% for mapRow in map %}
-                <tr>
-                {% for mapItem in mapRow %}
-                    <td>
+                <div class="world-generator-actions">
+                    {% if map is empty %}
+                        {{ form_widget(form.generate) }}
+                        {% do form.save.setRendered() %}
+                    {% else %}
+                        {{ form_widget(form.generate, {label: 'label.regenerate'}) }}
+                        {{ form_widget(form.save) }}
+                    {% endif %}
+                </div>
+            {{ form_end(form) }}
+
+            {% if map is not empty %}
+                <div class="world-generator-map" style="--map-size: {{ map|length }};">
+                {% for mapRow in map %}
+                    {% for mapItem in mapRow %}
                         {% if mapItem < form.deepWaterLevel.vars.value / 100 %}
-                            <span class="terrain-deep-water">&nbsp;</span>
+                            <div class="terrain-deep-water"></div>
                         {% elseif mapItem < form.waterLevel.vars.value / 100 %}
-                            <span class="terrain-water">&nbsp;</span>
+                            <div class="terrain-water"></div>
                         {% elseif mapItem < form.shallowWaterLevel.vars.value / 100 %}
-                            <span class="terrain-shallow-water">&nbsp;</span>
+                            <div class="terrain-shallow-water"></div>
                         {% elseif mapItem < form.sandLevel.vars.value / 100 %}
-                            <span class="terrain-sand">&nbsp;</span>
+                            <div class="terrain-sand"></div>
                         {% elseif mapItem < form.grasslandLevel.vars.value / 100 %}
-                            <span class="terrain-grassland">&nbsp;</span>
+                            <div class="terrain-grassland"></div>
                         {% elseif mapItem < form.forestLevel.vars.value / 100 %}
-                            <span class="terrain-forest">&nbsp;</span>
+                            <div class="terrain-forest"></div>
                         {% elseif mapItem < form.hillsLevel.vars.value / 100 %}
-                            <span class="terrain-hills">&nbsp;</span>
+                            <div class="terrain-hills"></div>
                         {% else %}
-                            <span class="terrain-mountain">&nbsp;</span>
+                            <div class="terrain-mountain"></div>
                         {% endif %}
-                    </td>
+                    {% endfor %}
                 {% endfor %}
-                </tr>
-            {% endfor %}
-            </table>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

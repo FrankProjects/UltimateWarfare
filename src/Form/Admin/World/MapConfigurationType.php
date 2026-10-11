@@ -6,7 +6,6 @@ namespace FrankProjects\UltimateWarfare\Form\Admin\World;
 
 use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,6 +25,7 @@ class MapConfigurationType extends AbstractType
                 IntegerType::class,
                 [
                     'label' => 'label.seed',
+                    'help' => 'label.seedHelp',
                     'required' => false,
                     'constraints' => [
                         new PositiveOrZero()
@@ -137,19 +137,18 @@ class MapConfigurationType extends AbstractType
                 ]
             )
             ->add(
-                'save',
-                CheckboxType::class,
+                'generate',
+                SubmitType::class,
                 [
-                    'label' => 'label.save',
-                    'mapped' => false,
-                    'required' => false
+                    'label' => 'label.generatePreview',
+                    'attr' => ['class' => 'btn-secondary']
                 ]
             )
             ->add(
-                'submit',
+                'save',
                 SubmitType::class,
                 [
-                    'label' => 'label.generate'
+                    'label' => 'label.save'
                 ]
             );
     }
