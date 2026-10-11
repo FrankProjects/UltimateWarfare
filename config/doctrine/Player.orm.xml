@@ -50,6 +50,8 @@
     <one-to-many field="toMessages" target-entity="FrankProjects\UltimateWarfare\Entity\Message" mapped-by="toPlayer"/>
     <one-to-many field="fromMessages" target-entity="FrankProjects\UltimateWarfare\Entity\Message" mapped-by="fromPlayer"/>
     <one-to-many field="federationApplications" target-entity="FrankProjects\UltimateWarfare\Entity\FederationApplication" mapped-by="player"/>
+    <one-to-many field="attackerBattleSummaries" target-entity="FrankProjects\UltimateWarfare\Entity\BattleSummary" mapped-by="attacker"/>
+    <one-to-many field="defenderBattleSummaries" target-entity="FrankProjects\UltimateWarfare\Entity\BattleSummary" mapped-by="defender"/>
     <many-to-one field="user" target-entity="FrankProjects\UltimateWarfare\Entity\User" inversed-by="players">
       <join-columns>
         <join-column name="user_id" nullable="false"/>

@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Entity;
 
-/**
- * XXX TODO: Fix model to use correct relationships
- */
-class BattleDetails
+class BattleSummary
 {
     private int $id;
-    private int $worldId;
-    private int $attacker;
-    private int $defender;
+    private World $world;
+    private Player $attacker;
+    private Player $defender;
     private string $battleLog;
-    private bool $type;
+    private bool $attackerWon;
     private int $timestamp;
 
     public function setId(int $id): void
@@ -27,32 +24,32 @@ class BattleDetails
         return $this->id;
     }
 
-    public function setWorldId(int $worldId): void
+    public function setWorld(World $world): void
     {
-        $this->worldId = $worldId;
+        $this->world = $world;
     }
 
-    public function getWorldId(): int
+    public function getWorld(): World
     {
-        return $this->worldId;
+        return $this->world;
     }
 
-    public function setAttacker(int $attacker): void
+    public function setAttacker(Player $attacker): void
     {
         $this->attacker = $attacker;
     }
 
-    public function getAttacker(): int
+    public function getAttacker(): Player
     {
         return $this->attacker;
     }
 
-    public function setDefender(int $defender): void
+    public function setDefender(Player $defender): void
     {
         $this->defender = $defender;
     }
 
-    public function getDefender(): int
+    public function getDefender(): Player
     {
         return $this->defender;
     }
@@ -67,14 +64,14 @@ class BattleDetails
         return $this->battleLog;
     }
 
-    public function setType(bool $type): void
+    public function setAttackerWon(bool $attackerWon): void
     {
-        $this->type = $type;
+        $this->attackerWon = $attackerWon;
     }
 
-    public function getType(): bool
+    public function hasAttackerWon(): bool
     {
-        return $this->type;
+        return $this->attackerWon;
     }
 
     public function setTimestamp(int $timestamp): void

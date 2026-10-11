@@ -137,6 +137,14 @@ final class DoctrinePlayerRepository implements PlayerRepository
             $this->entityManager->remove($message);
         }
 
+        foreach ($player->getAttackerBattleSummaries() as $battleSummary) {
+            $this->entityManager->remove($battleSummary);
+        }
+
+        foreach ($player->getDefenderBattleSummaries() as $battleSummary) {
+            $this->entityManager->remove($battleSummary);
+        }
+
         $this->entityManager->remove($player);
         $this->entityManager->flush();
     }
