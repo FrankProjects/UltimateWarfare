@@ -77,11 +77,13 @@ final class ResetPasswordController extends AbstractController
         $user = $this->userRepository->findByPasswordResetToken($token);
 
         if ($user !== null) {
-            $form = $this->createForm(ResetPasswordType::class, $user);
+            $form = $this->createForm(ResetPasswordType::class);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $password = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
+                /** @var string $plainPassword */
+                $plainPassword = $form->get('plainPassword')->getData();
+                $password = $this->passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($password);
                 $user->setPasswordResetToken(null);
                 $this->userRepository->save($user);

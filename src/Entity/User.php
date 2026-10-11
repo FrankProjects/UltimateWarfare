@@ -23,7 +23,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     /** Set once the user clicked the verification link sent to their email address; required to log in */
     private bool $emailVerified = false;
     private string $password = '';
-    private string $plainPassword = '';
     /** Updated on every request, not only on login */
     private ?DateTime $lastSeenAt = null;
     private ?string $lastSeenIp = null;
@@ -126,16 +125,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         $this->password = $password;
     }
 
-    public function getPlainPassword(): string
-    {
-        return $this->plainPassword;
-    }
-
-    public function setPlainPassword(string $plainPassword): void
-    {
-        $this->plainPassword = $plainPassword;
-    }
-
     /**
      * @return null
      */
@@ -152,11 +141,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function setUsername(string $username): void
     {
         $this->username = $username;
-    }
-
-    public function eraseCredentials(): void
-    {
-        $this->plainPassword = '';
     }
 
     public function isEqualTo(UserInterface $user): bool

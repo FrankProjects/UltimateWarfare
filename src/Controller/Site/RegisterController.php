@@ -29,8 +29,11 @@ final class RegisterController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var string $plainPassword */
+            $plainPassword = $form->get('plainPassword')->getData();
+
             try {
-                $this->registerActionService->register($user);
+                $this->registerActionService->register($user, $plainPassword);
                 $this->addFlash(
                     'success',
                     "You successfully created an account!"
