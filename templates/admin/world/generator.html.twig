@@ -30,8 +30,10 @@
 
             {% if map is not empty %}
                 <div class="world-generator-map" style="--map-size: {{ map|length }};">
-                {% for mapRow in map %}
-                    {% for mapItem in mapRow %}
+                {# map is indexed as map[x][y]; render y as rows and x as columns, like the world image #}
+                {% for y in map|first|keys %}
+                    {% for x in map|keys %}
+                        {% set mapItem = map[x][y] %}
                         {% if mapItem < form.deepWaterLevel.vars.value / 100 %}
                             <div class="terrain-deep-water"></div>
                         {% elseif mapItem < form.waterLevel.vars.value / 100 %}
