@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Form\Admin;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 /** @extends AbstractType<null> */
 abstract class AbstractGameResourcesType extends AbstractType
@@ -16,30 +17,46 @@ abstract class AbstractGameResourcesType extends AbstractType
         $builder
             ->add(
                 'cash',
-                NumberType::class,
+                IntegerType::class,
                 [
-                    'label' => 'label.cash'
+                    'label' => 'label.cash',
+                    'constraints' => [
+                        new PositiveOrZero()
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'food',
-                NumberType::class,
+                IntegerType::class,
                 [
-                    'label' => 'label.food'
+                    'label' => 'label.food',
+                    'constraints' => [
+                        new PositiveOrZero()
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'wood',
-                NumberType::class,
+                IntegerType::class,
                 [
-                    'label' => 'label.wood'
+                    'label' => 'label.wood',
+                    'constraints' => [
+                        new PositiveOrZero()
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'steel',
-                NumberType::class,
+                IntegerType::class,
                 [
-                    'label' => 'label.steel'
+                    'label' => 'label.steel',
+                    'constraints' => [
+                        new PositiveOrZero()
+                    ],
+                    'empty_data' => '0'
                 ]
             );
     }

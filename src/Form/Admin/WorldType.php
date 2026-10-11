@@ -9,13 +9,14 @@ use FrankProjects\UltimateWarfare\Form\Admin\World\ResourcesType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Positive;
 
 /** @extends AbstractType<null> */
 class WorldType extends AbstractType
@@ -55,7 +56,8 @@ class WorldType extends AbstractType
                         'label.created' => 0,
                         'label.running' => 1,
                         'label.finished' => 2
-                    ]
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
@@ -68,9 +70,13 @@ class WorldType extends AbstractType
             )
             ->add(
                 'maxPlayers',
-                NumberType::class,
+                IntegerType::class,
                 [
-                    'label' => 'label.maxPlayers'
+                    'label' => 'label.maxPlayers',
+                    'constraints' => [
+                        new Positive()
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
@@ -91,9 +97,13 @@ class WorldType extends AbstractType
             )
             ->add(
                 'federationLimit',
-                NumberType::class,
+                IntegerType::class,
                 [
-                    'label' => 'label.federationLimit'
+                    'label' => 'label.federationLimit',
+                    'constraints' => [
+                        new Positive()
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
