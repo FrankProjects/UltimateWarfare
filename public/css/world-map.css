@@ -348,7 +348,6 @@ body {
 
 .reports-pagination {
     display: none;
-    margin-top: 15px;
     text-align: center;
 }
 
@@ -403,7 +402,7 @@ body {
     gap: 10px;
 }
 
-.market-action-btn {
+.uw-btn {
     padding: 5px 15px;
     background: #8B7355;
     color: #f3e6c1;
@@ -412,7 +411,7 @@ body {
     cursor: pointer;
 }
 
-.market-action-btn:hover {
+.uw-btn:hover {
     background: #a08365;
 }
 
@@ -1738,11 +1737,11 @@ body {
     margin-top: 10px;
 }
 
-.market-action-btn.market-action-btn-danger {
+.uw-btn.uw-btn-danger {
     background-color: #f44336;
 }
 
-.fed-bank-tabs .market-action-btn + .market-action-btn {
+.fed-bank-tabs .uw-btn + .uw-btn {
     margin-left: 5px;
 }
 
@@ -1755,7 +1754,7 @@ body {
     margin-top: 10px;
 }
 
-.fed-application-actions .market-action-btn + .market-action-btn {
+.fed-application-actions .uw-btn + .uw-btn {
     margin-left: 10px;
 }
 
@@ -1795,7 +1794,7 @@ body {
     white-space: nowrap;
 }
 
-.messages-col-actions .market-action-btn + .market-action-btn {
+.messages-col-actions .uw-btn + .uw-btn {
     margin-left: 5px;
 }
 
@@ -1819,8 +1818,10 @@ body {
 }
 
 /* Reports pagination */
-.reports-pagination button:disabled {
+.reports-pagination .uw-btn:disabled {
+    background: #8B7355;
     opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Worlds */
@@ -2068,7 +2069,7 @@ body {
         font-size: 12px;
     }
 
-    .messages-col-actions .market-action-btn {
+    .messages-col-actions .uw-btn {
         padding: 3px 8px;
     }
 

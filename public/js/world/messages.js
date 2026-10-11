@@ -92,8 +92,8 @@
             html += '<td><a href="#" class="message-subject-link" data-id="' + msg.id + '">' + adminTag + escapeHtml(msg.subject) + '</a></td>';
             html += '<td class="messages-col-date">' + msg.date + '</td>';
             html += '<td class="messages-col-actions">';
-            html += '<button class="market-action-btn message-read-btn" data-id="' + msg.id + '">Read</button>';
-            html += '<button class="market-action-btn market-action-btn-danger message-delete-btn" data-id="' + msg.id + '">Delete</button>';
+            html += '<button class="uw-btn message-read-btn" data-id="' + msg.id + '">Read</button>';
+            html += '<button class="uw-btn uw-btn-danger message-delete-btn" data-id="' + msg.id + '">Delete</button>';
             html += '</td>';
             html += '</tr>';
         });

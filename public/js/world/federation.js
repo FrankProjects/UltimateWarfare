@@ -162,7 +162,7 @@
                 html += '<td class="text-center">' + fed.regions.toLocaleString('en-US') + '</td>';
                 html += '<td class="text-center">' + fed.netWorth.toLocaleString('en-US') + '</td>';
                 if (!result.hasFederation) {
-                    html += '<td class="text-center"><button class="market-action-btn fed-apply-btn" data-id="' + fed.id + '">Apply</button></td>';
+                    html += '<td class="text-center"><button class="uw-btn fed-apply-btn" data-id="' + fed.id + '">Apply</button></td>';
                 }
                 html += '</tr>';
             });
@@ -238,7 +238,7 @@
         html += '<label class="uw-label">Your application message:</label>';
         html += '<textarea id="fedApplicationText" rows="5" class="form-control"></textarea>';
         html += '</div>';
-        html += '<button id="fedSubmitApplicationBtn" class="market-action-btn uw-btn-block">Send Application</button>';
+        html += '<button id="fedSubmitApplicationBtn" class="uw-btn uw-btn-block">Send Application</button>';
         html += '</div>';
 
         federationContainer.innerHTML = html;
@@ -287,7 +287,7 @@
         html += '<label class="uw-label">Federation name:</label>';
         html += '<input type="text" id="fedCreateName" maxlength="25" class="form-control">';
         html += '</div>';
-        html += '<button id="fedCreateBtn" class="market-action-btn uw-btn-block">Create Federation</button>';
+        html += '<button id="fedCreateBtn" class="uw-btn uw-btn-block">Create Federation</button>';
         html += '</div>';
 
         federationContainer.innerHTML = html;
@@ -348,7 +348,7 @@
         // Leave button for non-generals
         if (cachedStatus.hierarchy < 10 && cachedStatus.hierarchy >= 1) {
             html += '<div class="uw-field">';
-            html += '<button class="market-action-btn market-action-btn-danger" id="fedLeaveBtn">Leave Federation</button>';
+            html += '<button class="uw-btn uw-btn-danger" id="fedLeaveBtn">Leave Federation</button>';
             html += '</div>';
         }
 
@@ -372,7 +372,7 @@
             html += '<td class="text-center">' + member.netWorth.toLocaleString('en-US') + '</td>';
             if (cachedStatus.hierarchy >= 10 && member.id !== cachedStatus.playerId) {
                 html += '<td class="text-center">';
-                html += '<button class="market-action-btn market-action-btn-danger fed-kick-btn" data-id="' + member.id + '">Kick</button>';
+                html += '<button class="uw-btn uw-btn-danger fed-kick-btn" data-id="' + member.id + '">Kick</button>';
                 html += '</td>';
             } else if (cachedStatus.hierarchy >= 10) {
                 html += '<td class="text-center"></td>';
@@ -460,9 +460,9 @@
         const canWithdraw = cachedStatus.hierarchy >= 5;
 
         let html = '<div class="fed-bank-tabs">';
-        html += '<button class="market-action-btn" id="fedBankDepositTab">Deposit</button>';
+        html += '<button class="uw-btn" id="fedBankDepositTab">Deposit</button>';
         if (canWithdraw) {
-            html += '<button class="market-action-btn" id="fedBankWithdrawTab">Withdraw</button>';
+            html += '<button class="uw-btn" id="fedBankWithdrawTab">Withdraw</button>';
         }
         html += '</div>';
 
@@ -485,7 +485,7 @@
         });
 
         html += '<tr><td colspan="4" class="text-center fed-bank-submit-cell">';
-        html += '<button id="fedBankSubmitBtn" class="market-action-btn fed-bank-submit">' + (bankMode === 'deposit' ? 'Deposit' : 'Withdraw') + '</button>';
+        html += '<button id="fedBankSubmitBtn" class="uw-btn fed-bank-submit">' + (bankMode === 'deposit' ? 'Deposit' : 'Withdraw') + '</button>';
         html += '</td></tr>';
         html += '</table>';
 
@@ -563,7 +563,7 @@
         });
 
         html += '<tr><td colspan="3" class="text-center fed-bank-submit-cell">';
-        html += '<button id="fedAidSubmitBtn" class="market-action-btn fed-bank-submit">Send Aid</button>';
+        html += '<button id="fedAidSubmitBtn" class="uw-btn fed-bank-submit">Send Aid</button>';
         html += '</td></tr>';
         html += '</table>';
 
@@ -600,14 +600,14 @@
         html += '<h4 class="uw-section-title">Change Federation Name</h4>';
         html += '<div class="uw-row">';
         html += '<input type="text" id="fedNewName" maxlength="25" value="' + escapeHtml(fed.name) + '" class="form-control">';
-        html += '<button class="market-action-btn" id="fedChangeNameBtn">Change</button>';
+        html += '<button class="uw-btn" id="fedChangeNameBtn">Change</button>';
         html += '</div></div>';
 
         // Update Message
         html += '<div class="uw-panel uw-panel-spaced">';
         html += '<h4 class="uw-section-title">Leader Message</h4>';
         html += '<textarea id="fedNewMessage" rows="4" class="form-control">' + escapeHtml(fed.leaderMessage) + '</textarea>';
-        html += '<button class="market-action-btn uw-btn-spaced" id="fedUpdateMessageBtn">Update Message</button>';
+        html += '<button class="uw-btn uw-btn-spaced" id="fedUpdateMessageBtn">Update Message</button>';
         html += '</div>';
 
         // Change Ranks
@@ -624,13 +624,13 @@
             html += '<option value="' + rank + '">' + RANK_NAMES[rank] + '</option>';
         }
         html += '</select>';
-        html += '<button class="market-action-btn" id="fedChangeRoleBtn">Change</button>';
+        html += '<button class="uw-btn" id="fedChangeRoleBtn">Change</button>';
         html += '</div></div>';
 
         // Remove Federation
         html += '<div class="uw-panel uw-panel-danger">';
         html += '<h4 class="uw-section-title text-negative">Danger Zone</h4>';
-        html += '<button class="market-action-btn market-action-btn-danger" id="fedRemoveBtn">Delete Federation</button>';
+        html += '<button class="uw-btn uw-btn-danger" id="fedRemoveBtn">Delete Federation</button>';
         html += '</div>';
 
         html += '</div>';
@@ -701,8 +701,8 @@
                 html += '<p><strong class="text-light-uw">Application:</strong></p>';
                 html += '<p class="fed-multiline">' + escapeHtml(app.application) + '</p>';
                 html += '<div class="fed-application-actions">';
-                html += '<button class="market-action-btn fed-accept-btn" data-id="' + app.id + '">Accept</button>';
-                html += '<button class="market-action-btn market-action-btn-danger fed-reject-btn" data-id="' + app.id + '">Reject</button>';
+                html += '<button class="uw-btn fed-accept-btn" data-id="' + app.id + '">Accept</button>';
+                html += '<button class="uw-btn uw-btn-danger fed-reject-btn" data-id="' + app.id + '">Reject</button>';
                 html += '</div></div>';
             });
 
