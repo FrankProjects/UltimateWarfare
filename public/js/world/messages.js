@@ -8,8 +8,10 @@
     const messagesContainer = document.getElementById('messagesContainer');
     const messagesTabs = document.getElementById('messagesTabs');
     const messagesFooter = document.getElementById('messagesFooter');
+    const messagesModalBody = messagesModal.querySelector('.modal-body');
 
     let currentTab = 'inbox';
+    let currentPage = 1;
     let currentView = 'list'; // 'list' or 'read'
 
     document.getElementById('messagesBtn').addEventListener('click', function (e) {
@@ -23,6 +25,7 @@
     function showMessagesModal() {
         bootstrap.Modal.getOrCreateInstance(messagesModal).show();
         currentTab = 'inbox';
+        currentPage = 1;
         currentView = 'list';
         renderTabs();
         loadMessages();
@@ -41,6 +44,7 @@
             el.textContent = tab.name;
             el.onclick = function () {
                 currentTab = tab.id;
+                currentPage = 1;
                 currentView = 'list';
                 renderTabs();
                 loadMessages();
@@ -55,11 +59,20 @@
         messagesFooter.innerHTML = '';
 
         try {
-            const response = await fetch('/game/api/message/' + currentTab);
+            const response = await fetch('/game/api/message/' + currentTab + '?page=' + currentPage);
             const result = await response.json();
 
             if (result.success) {
+                // Page emptied (e.g. last message on the last page deleted): step back to the new last page
+                if (result.messages.length === 0 && currentPage > 1) {
+                    currentPage = Math.max(1, result.pagination.totalPages);
+                    loadMessages();
+                    return;
+                }
+
                 renderMessageList(result.messages);
+                renderPagination(result.pagination);
+                messagesModalBody.scrollTop = 0;
             } else {
                 messagesContainer.innerHTML = '<div class="build-loading text-negative">Failed to load messages</div>';
             }
@@ -115,6 +128,34 @@
                 deleteMessage(parseInt(this.getAttribute('data-id')));
             };
         });
+    }
+
+    function renderPagination(pagination) {
+        if (pagination.totalPages <= 1) {
+            messagesFooter.innerHTML = '';
+            return;
+        }
+
+        let html = '<div class="messages-pagination mx-auto">';
+        html += '<button type="button" id="messagesPrevBtn" class="uw-btn me-2">&larr; Previous</button>';
+        html += '<span>Page ' + pagination.currentPage + ' of ' + pagination.totalPages + ' (' + pagination.totalMessages + ' messages)</span>';
+        html += '<button type="button" id="messagesNextBtn" class="uw-btn ms-2">Next &rarr;</button>';
+        html += '</div>';
+        messagesFooter.innerHTML = html;
+
+        const prevBtn = document.getElementById('messagesPrevBtn');
+        const nextBtn = document.getElementById('messagesNextBtn');
+        prevBtn.disabled = pagination.currentPage <= 1;
+        nextBtn.disabled = pagination.currentPage >= pagination.totalPages;
+
+        prevBtn.onclick = function () {
+            currentPage--;
+            loadMessages();
+        };
+        nextBtn.onclick = function () {
+            currentPage++;
+            loadMessages();
+        };
     }
 
     async function readMessage(messageId) {

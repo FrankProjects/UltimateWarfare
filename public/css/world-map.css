@@ -355,7 +355,8 @@ body {
     justify-content: center;
 }
 
-.reports-pagination span {
+.reports-pagination span,
+.messages-pagination span {
     color: #f3e6c1;
 }
 
@@ -1822,7 +1823,8 @@ body {
 }
 
 /* Reports pagination */
-.reports-pagination .uw-btn:disabled {
+.reports-pagination .uw-btn:disabled,
+.messages-pagination .uw-btn:disabled {
     background: #8B7355;
     opacity: 0.5;
     cursor: not-allowed;

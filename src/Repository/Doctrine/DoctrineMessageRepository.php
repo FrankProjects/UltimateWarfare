@@ -33,9 +33,10 @@ final class DoctrineMessageRepository implements MessageRepository
     /**
      * @param Player $player
      * @param int $limit
+     * @param int $offset
      * @return Message[]
      */
-    public function findNonDeletedMessagesToPlayer(Player $player, int $limit = 100): array
+    public function findNonDeletedMessagesToPlayer(Player $player, int $limit = 100, int $offset = 0): array
     {
         return $this->entityManager->createQuery(
             'SELECT m
@@ -46,15 +47,29 @@ final class DoctrineMessageRepository implements MessageRepository
             'player',
             $player
         )->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getResult();
+    }
+
+    public function countNonDeletedMessagesToPlayer(Player $player): int
+    {
+        return (int) $this->entityManager->createQuery(
+            'SELECT COUNT(m.id)
+              FROM ' . Message::class . ' m
+              WHERE m.toPlayer = :player AND m.toDelete = false'
+        )->setParameter(
+            'player',
+            $player
+        )->getSingleScalarResult();
     }
 
     /**
      * @param Player $player
      * @param int $limit
+     * @param int $offset
      * @return Message[]
      */
-    public function findNonDeletedMessagesFromPlayer(Player $player, int $limit = 100): array
+    public function findNonDeletedMessagesFromPlayer(Player $player, int $limit = 100, int $offset = 0): array
     {
         return $this->entityManager->createQuery(
             'SELECT m
@@ -65,7 +80,20 @@ final class DoctrineMessageRepository implements MessageRepository
             'player',
             $player
         )->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getResult();
+    }
+
+    public function countNonDeletedMessagesFromPlayer(Player $player): int
+    {
+        return (int) $this->entityManager->createQuery(
+            'SELECT COUNT(m.id)
+              FROM ' . Message::class . ' m
+              WHERE m.fromPlayer = :player AND m.fromDelete = false'
+        )->setParameter(
+            'player',
+            $player
+        )->getSingleScalarResult();
     }
 
     public function remove(Message $message): void
