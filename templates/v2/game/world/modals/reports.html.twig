@@ -1,22 +1,22 @@
 <div class="modal fade" id="reportsModal" tabindex="-1" aria-labelledby="reportsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="reportsModalLabel">Reports</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="build-tabs mx-3 mt-3 mb-0" id="reportsTabs"></div>
             <div class="modal-body">
-                <div class="build-tabs" id="reportsTabs"></div>
-                <div id="reportsContainer" class="modal-scroll">
+                <div id="reportsContainer">
                     <div class="build-loading">Loading reports...</div>
-                </div>
-                <div id="reportsPagination" class="reports-pagination">
-                    <button type="button" id="reportsPrevBtn" class="legend-toggle me-2">&larr; Previous</button>
-                    <span id="reportsPageInfo"></span>
-                    <button type="button" id="reportsNextBtn" class="legend-toggle ms-2">Next &rarr;</button>
                 </div>
             </div>
             <div class="modal-footer">
+                <div id="reportsPagination" class="reports-pagination me-auto">
+                    <button type="button" id="reportsPrevBtn" class="uw-btn me-2">&larr; Previous</button>
+                    <span id="reportsPageInfo"></span>
+                    <button type="button" id="reportsNextBtn" class="uw-btn ms-2">Next &rarr;</button>
+                </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>

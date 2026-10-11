@@ -9,6 +9,7 @@
     const reportsPrevBtn = document.getElementById('reportsPrevBtn');
     const reportsNextBtn = document.getElementById('reportsNextBtn');
     const reportsPageInfo = document.getElementById('reportsPageInfo');
+    const reportsModalBody = reportsModal.querySelector('.modal-body');
 
     let currentReportsPage = 1;
     let currentReportsType = 'all';
@@ -56,6 +57,7 @@
                 renderReportsTabs();
                 renderReports(result.reports);
                 updateReportsPagination(result.pagination);
+                reportsModalBody.scrollTop = 0;
             } else {
                 reportsContainer.innerHTML = '<div class="build-loading text-negative">Failed to load reports</div>';
             }
