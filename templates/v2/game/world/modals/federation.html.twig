@@ -1,18 +1,15 @@
 <div class="modal fade" id="federationModal" tabindex="-1" aria-labelledby="federationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="federationModalLabel">Federation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="build-tabs mx-3 mt-3 mb-0" id="federationTabs"></div>
             <div class="modal-body">
-                <div class="build-tabs" id="federationTabs"></div>
-                <div id="federationContainer" class="modal-scroll">
+                <div id="federationContainer">
                     <div class="build-loading">Loading federation data...</div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

@@ -107,7 +107,7 @@
             return;
         }
 
-        reportsPagination.style.display = 'block';
+        reportsPagination.style.display = 'flex';
         reportsPageInfo.textContent = 'Page ' + pagination.currentPage + ' of ' + pagination.totalPages + ' (' + pagination.totalReports + ' reports)';
         reportsPrevBtn.disabled = pagination.currentPage <= 1;
         reportsNextBtn.disabled = pagination.currentPage >= pagination.totalPages;

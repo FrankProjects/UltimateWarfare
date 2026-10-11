@@ -6,7 +6,6 @@
     const statisticsModal = document.getElementById('statisticsModal');
     const statisticsTabs = document.getElementById('statisticsTabs');
     const statisticsContainer = document.getElementById('statisticsContainer');
-    const statisticsFooter = document.getElementById('statisticsFooter');
 
     let currentTab = 'overview';
     let cachedData = null;
@@ -122,7 +121,6 @@
         html += '</table>';
 
         statisticsContainer.innerHTML = html;
-        renderFooter();
     }
 
     function renderIncomeTab() {
@@ -150,7 +148,6 @@
         html += '</table>';
 
         statisticsContainer.innerHTML = html;
-        renderFooter();
     }
 
     function renderArmyTab() {
@@ -174,7 +171,6 @@
         }
 
         statisticsContainer.innerHTML = html;
-        renderFooter();
     }
 
     function renderInfrastructureTab() {
@@ -198,11 +194,6 @@
         }
 
         statisticsContainer.innerHTML = html;
-        renderFooter();
-    }
-
-    function renderFooter() {
-        statisticsFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
     }
 
     function escapeHtml(text) {

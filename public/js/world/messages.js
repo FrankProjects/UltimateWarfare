@@ -52,7 +52,7 @@
     async function loadMessages() {
         messagesContainer.innerHTML = '<div class="build-loading">Loading messages...</div>';
         messagesModalTitle.textContent = currentTab === 'inbox' ? 'Inbox' : 'Outbox';
-        messagesFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
+        messagesFooter.innerHTML = '';
 
         try {
             const response = await fetch('/game/api/message/' + currentTab);

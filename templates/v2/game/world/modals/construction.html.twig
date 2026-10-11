@@ -1,18 +1,15 @@
 <div class="modal fade" id="constructionModal" tabindex="-1" aria-labelledby="constructionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="constructionModalLabel">Construction Overview</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="build-tabs mx-3 mt-3 mb-0" id="constructionTabs"></div>
             <div class="modal-body">
-                <div class="build-tabs" id="constructionTabs"></div>
-                <div id="constructionContainer" class="modal-scroll">
+                <div id="constructionContainer">
                     <div class="build-loading">Loading construction data...</div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

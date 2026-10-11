@@ -319,6 +319,10 @@ body {
     border-top: none;
 }
 
+.modal-footer:empty {
+    display: none;
+}
+
 /* Confirmation dialog stacks above other open modals */
 .confirm-modal {
     z-index: 1065;
@@ -348,7 +352,7 @@ body {
 
 .reports-pagination {
     display: none;
-    text-align: center;
+    justify-content: center;
 }
 
 .reports-pagination span {
