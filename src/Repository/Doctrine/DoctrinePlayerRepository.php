@@ -128,7 +128,6 @@ final class DoctrinePlayerRepository implements PlayerRepository
             $this->entityManager->persist($worldRegion);
         }
 
-        // XXX TODO: Do we want to keep messages so other players don't lose messages from their in/outbox?
         foreach ($player->getFromMessages() as $message) {
             $this->entityManager->remove($message);
         }
