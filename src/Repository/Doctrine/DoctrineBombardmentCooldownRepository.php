@@ -7,6 +7,7 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\BombardmentCooldown;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\BombardmentCooldownRepository;
 
@@ -65,6 +66,15 @@ final class DoctrineBombardmentCooldownRepository implements BombardmentCooldown
             'DELETE FROM ' . BombardmentCooldown::class . ' bc WHERE bc.cooldownUntil <= :now'
         )
             ->setParameter('now', time())
+            ->execute();
+    }
+
+    public function removeForWorld(World $world): void
+    {
+        $this->entityManager->createQuery(
+            'DELETE FROM ' . BombardmentCooldown::class . ' bc WHERE bc.world = :world'
+        )
+            ->setParameter('world', $world)
             ->execute();
     }
 }

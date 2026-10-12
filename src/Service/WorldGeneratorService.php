@@ -86,6 +86,13 @@ final class WorldGeneratorService
             throw new RuntimeException("MapGenerator only supports size 25!");
         }
 
+        // Load existing regions once (when regenerating a map) instead of querying per region
+        $existingWorldRegions = [];
+        foreach ($world->getWorldRegions() as $worldRegion) {
+            $existingWorldRegions[$worldRegion->getX() . ',' . $worldRegion->getY()] = $worldRegion;
+        }
+
+        $worldRegions = [];
         foreach ($map as $x => $yData) {
             $x++;
             foreach ($yData as $y => $z) {
@@ -94,7 +101,7 @@ final class WorldGeneratorService
                 $type = $this->getTypeFromConfiguration($mapConfiguration, $z);
                 $space = $this->getRandomSpaceFromType($type);
 
-                $worldRegion = $this->worldRegionRepository->findByWorldXY($world, $x, $y);
+                $worldRegion = $existingWorldRegions[$x . ',' . $y] ?? null;
                 if ($worldRegion === null) {
                     $worldRegion = WorldRegion::createForWorld($world, $x, $y, $z, $type, $space);
                 } else {
@@ -103,9 +110,12 @@ final class WorldGeneratorService
                     $worldRegion->setSpace($space);
                     $worldRegion->setPopulation($space * 10);
                 }
-                $this->worldRegionRepository->save($worldRegion);
+                $worldRegions[] = $worldRegion;
             }
         }
+
+        // Single flush, so all regions are written in one transaction
+        $this->worldRegionRepository->saveAll($worldRegions);
     }
 
     private function getTypeFromConfiguration(MapConfiguration $mapConfiguration, int $z): string

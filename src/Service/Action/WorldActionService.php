@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
 use FrankProjects\UltimateWarfare\Entity\World;
+use FrankProjects\UltimateWarfare\Repository\BombardmentCooldownRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use RuntimeException;
 
@@ -15,15 +17,21 @@ final class WorldActionService
     private WorldRepository $worldRepository;
     private PlayerRepository $playerRepository;
     private FederationRepository $federationRepository;
+    private BombardmentCooldownRepository $bombardmentCooldownRepository;
+    private WorldRegionRepository $worldRegionRepository;
 
     public function __construct(
         WorldRepository $worldRepository,
         PlayerRepository $playerRepository,
-        FederationRepository $federationRepository
+        FederationRepository $federationRepository,
+        BombardmentCooldownRepository $bombardmentCooldownRepository,
+        WorldRegionRepository $worldRegionRepository
     ) {
         $this->worldRepository = $worldRepository;
         $this->playerRepository = $playerRepository;
         $this->federationRepository = $federationRepository;
+        $this->bombardmentCooldownRepository = $bombardmentCooldownRepository;
+        $this->worldRegionRepository = $worldRegionRepository;
     }
 
     public function remove(int $worldId): void
@@ -35,6 +43,7 @@ final class WorldActionService
         }
 
         $this->reset($worldId);
+        $this->worldRegionRepository->removeForWorld($world);
         $this->worldRepository->remove($world);
     }
 
@@ -52,6 +61,8 @@ final class WorldActionService
         foreach ($world->getPlayers() as $player) {
             $this->playerRepository->remove($player);
         }
+
+        $this->bombardmentCooldownRepository->removeForWorld($world);
     }
 
     private function getWorld(int $worldId): World

@@ -44,4 +44,13 @@ interface WorldRegionRepository
     public function findAdjacentRegions(int $x, int $y, World $world): array;
 
     public function save(WorldRegion $worldRegion): void;
+
+    /**
+     * Persist all given regions and flush once, in a single transaction
+     *
+     * @param WorldRegion[] $worldRegions
+     */
+    public function saveAll(array $worldRegions): void;
+
+    public function removeForWorld(World $world): void;
 }

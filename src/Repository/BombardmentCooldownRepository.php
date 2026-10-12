@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Repository;
 
 use FrankProjects\UltimateWarfare\Entity\BombardmentCooldown;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 
 interface BombardmentCooldownRepository
@@ -23,4 +24,6 @@ interface BombardmentCooldownRepository
     public function save(BombardmentCooldown $bombardmentCooldown): void;
 
     public function removeExpired(): void;
+
+    public function removeForWorld(World $world): void;
 }

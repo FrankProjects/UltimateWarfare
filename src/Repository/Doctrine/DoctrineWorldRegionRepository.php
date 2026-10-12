@@ -176,4 +176,24 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         $this->entityManager->persist($worldRegion);
         $this->entityManager->flush();
     }
+
+    /**
+     * @param WorldRegion[] $worldRegions
+     */
+    public function saveAll(array $worldRegions): void
+    {
+        foreach ($worldRegions as $worldRegion) {
+            $this->entityManager->persist($worldRegion);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    public function removeForWorld(World $world): void
+    {
+        $this->entityManager->createQuery(
+            'DELETE FROM ' . WorldRegion::class . ' wr WHERE wr.world = :world'
+        )->setParameter('world', $world)
+            ->execute();
+    }
 }
