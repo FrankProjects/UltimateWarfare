@@ -29,6 +29,21 @@ final class BattleResult
         return $this->battlePhases;
     }
 
+    /**
+     * @return array<string>
+     */
+    public function getBattleLog(): array
+    {
+        $battleLog = [];
+        foreach ($this->battlePhases as $battlePhase) {
+            foreach ($battlePhase->getBattleLog() as $line) {
+                $battleLog[] = $line;
+            }
+        }
+
+        return $battleLog;
+    }
+
     public function hasWon(): bool
     {
         $battlePhases = $this->getBattlePhases();

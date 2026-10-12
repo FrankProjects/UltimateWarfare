@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service;
 
+use FrankProjects\UltimateWarfare\Entity\BattleSummary;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
+use FrankProjects\UltimateWarfare\Repository\BattleSummaryRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattlePhase;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleReportCreator;
@@ -23,24 +25,26 @@ final class BattleEngine
     private NetWorthUpdaterService $netWorthUpdaterService;
     private IncomeUpdaterService $incomeUpdaterService;
     private GameUnitRegistry $gameUnitRegistry;
+    private BattleSummaryRepository $battleSummaryRepository;
 
     public function __construct(
         BattleUpdaterService $battleUpdaterService,
         BattleReportCreator $battleReportCreator,
         NetWorthUpdaterService $netWorthUpdaterService,
         IncomeUpdaterService $incomeUpdaterService,
-        GameUnitRegistry $gameUnitRegistry
+        GameUnitRegistry $gameUnitRegistry,
+        BattleSummaryRepository $battleSummaryRepository
     ) {
         $this->battleUpdaterService = $battleUpdaterService;
         $this->battleReportCreator = $battleReportCreator;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
         $this->incomeUpdaterService = $incomeUpdaterService;
         $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->battleSummaryRepository = $battleSummaryRepository;
     }
 
     /**
      * XXX TODO: Add train station/airfield/harbor support
-     * XXX TODO: Add battle report
      * XXX TODO: Add battle "lost units" summary
      *
      * @param Fleet $fleet
@@ -157,14 +161,23 @@ final class BattleEngine
             throw new RuntimeException("Target region has no owner");
         }
 
-        $timestamp = time();
+        // Created before updating the battle outcome, as a won battle transfers the region to the attacker
+        $battleSummary = BattleSummary::create(
+            $fleet->getPlayer()->getWorld(),
+            $fleet->getPlayer(),
+            $defendingPlayer,
+            $battleResults->getBattleLog(),
+            $battleResults->hasWon(),
+            time()
+        );
+        $this->battleSummaryRepository->save($battleSummary);
 
         if ($battleResults->hasWon()) {
             $this->battleUpdaterService->updateBattleWon($fleet, $attackerGameUnits);
-            $this->battleReportCreator->createBattleWonReports($fleet, $timestamp);
+            $this->battleReportCreator->createBattleWonReports($fleet, $battleSummary);
         } else {
             $this->battleUpdaterService->updateBattleLost($fleet, $attackerGameUnits, $defenderGameUnits);
-            $this->battleReportCreator->createBattleLostReports($fleet, $timestamp);
+            $this->battleReportCreator->createBattleLostReports($fleet, $battleSummary);
         }
 
         $this->netWorthUpdaterService->updateNetWorthForPlayer($fleet->getPlayer());

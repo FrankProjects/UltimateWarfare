@@ -1813,6 +1813,15 @@ body {
     width: 150px;
 }
 
+.reports-col-actions {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.battle-log-full {
+    max-height: none;
+}
+
 /* Buy region / operations */
 .buy-region-price {
     margin-top: 15px;

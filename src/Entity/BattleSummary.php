@@ -14,6 +14,28 @@ class BattleSummary
     private bool $attackerWon;
     private int $timestamp;
 
+    /**
+     * @param array<string> $battleLog
+     */
+    public static function create(
+        World $world,
+        Player $attacker,
+        Player $defender,
+        array $battleLog,
+        bool $attackerWon,
+        int $timestamp
+    ): self {
+        $battleSummary = new self();
+        $battleSummary->world = $world;
+        $battleSummary->attacker = $attacker;
+        $battleSummary->defender = $defender;
+        $battleSummary->battleLog = implode("\n", $battleLog);
+        $battleSummary->attackerWon = $attackerWon;
+        $battleSummary->timestamp = $timestamp;
+
+        return $battleSummary;
+    }
+
     public function setId(int $id): void
     {
         $this->id = $id;
@@ -62,6 +84,19 @@ class BattleSummary
     public function getBattleLog(): string
     {
         return $this->battleLog;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getBattleLogLines(): array
+    {
+        return explode("\n", $this->battleLog);
+    }
+
+    public function isParticipant(Player $player): bool
+    {
+        return $this->attacker->getId() === $player->getId() || $this->defender->getId() === $player->getId();
     }
 
     public function setAttackerWon(bool $attackerWon): void

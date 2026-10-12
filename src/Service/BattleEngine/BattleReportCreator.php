@@ -4,87 +4,100 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\BattleEngine;
 
+use FrankProjects\UltimateWarfare\Entity\BattleSummary;
+use FrankProjects\UltimateWarfare\Entity\Federation;
+use FrankProjects\UltimateWarfare\Entity\FederationNews;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
-use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
-use RuntimeException;
 
 final class BattleReportCreator
 {
     private ReportRepository $reportRepository;
+    private FederationNewsRepository $federationNewsRepository;
 
     public function __construct(
-        ReportRepository $reportRepository
+        ReportRepository $reportRepository,
+        FederationNewsRepository $federationNewsRepository
     ) {
         $this->reportRepository = $reportRepository;
+        $this->federationNewsRepository = $federationNewsRepository;
     }
 
-    public function createBattleWonReports(Fleet $fleet, int $timestamp): void
+    public function createBattleWonReports(Fleet $fleet, BattleSummary $battleSummary): void
     {
         $targetWorldRegion = $fleet->getTargetWorldRegion();
-        $targetPlayer = $this->getWorldRegionPlayer($targetWorldRegion);
+        $attacker = $battleSummary->getAttacker();
+        $defender = $battleSummary->getDefender();
 
-        $reportString = "You took region {$targetWorldRegion->getRegionName()} from {$targetPlayer->getName()}";
-        $this->createReport($fleet->getPlayer(), $timestamp, $reportString);
+        $reportString = "You took region {$targetWorldRegion->getRegionName()} from {$defender->getName()}";
+        $this->createReport($attacker, $battleSummary, $reportString);
 
         $reportString = "Your region {$targetWorldRegion->getRegionName()} have been attacked"
-            . " by {$fleet->getPlayer()->getName()}, their forces were to big and we have lost the fight!";
-        $this->createReport($targetPlayer, $timestamp, $reportString);
+            . " by {$attacker->getName()}, their forces were to big and we have lost the fight!";
+        $this->createReport($defender, $battleSummary, $reportString);
 
-        if ($targetPlayer->getFederation() !== null) {
-            $reportString = "{$targetPlayer->getName()} lost region {$targetWorldRegion->getRegionName()}"
-                . " to {$fleet->getPlayer()->getName()}";
-            $this->createReport($targetPlayer, $timestamp, $reportString);
+        $defenderFederation = $defender->getFederation();
+        if ($defenderFederation !== null) {
+            $news = "{$defender->getName()} lost region {$targetWorldRegion->getRegionName()}"
+                . " to {$attacker->getName()}";
+            $this->createFederationNews($defenderFederation, $news);
         }
 
-        if ($fleet->getPlayer()->getFederation() !== null) {
-            $reportString = "{$fleet->getPlayer()->getName()} took region {$targetWorldRegion->getRegionName()}"
-                . " from {$targetPlayer->getName()}";
-            $this->createReport($fleet->getPlayer(), $timestamp, $reportString);
+        $attackerFederation = $attacker->getFederation();
+        if ($attackerFederation !== null) {
+            $news = "{$attacker->getName()} took region {$targetWorldRegion->getRegionName()}"
+                . " from {$defender->getName()}";
+            $this->createFederationNews($attackerFederation, $news);
         }
     }
 
-    public function createBattleLostReports(Fleet $fleet, int $timestamp): void
+    public function createBattleLostReports(Fleet $fleet, BattleSummary $battleSummary): void
     {
         $targetWorldRegion = $fleet->getTargetWorldRegion();
-        $targetPlayer = $this->getWorldRegionPlayer($targetWorldRegion);
+        $attacker = $battleSummary->getAttacker();
+        $defender = $battleSummary->getDefender();
 
         $reportString = "You attacked region {$targetWorldRegion->getRegionName()}"
             . " but the defending forces were too strong.";
-        $this->createReport($fleet->getPlayer(), $timestamp, $reportString);
+        $this->createReport($attacker, $battleSummary, $reportString);
 
         $reportString = "Your region {$targetWorldRegion->getRegionName()} have been attacked"
-            . " by {$fleet->getPlayer()->getName()} and won the fight!";
-        $this->createReport($targetPlayer, $timestamp, $reportString);
+            . " by {$attacker->getName()} and won the fight!";
+        $this->createReport($defender, $battleSummary, $reportString);
 
-        if ($targetPlayer->getFederation() !== null) {
-            $reportString = "{$targetPlayer->getName()} was attacked by {$fleet->getPlayer()->getName()}"
+        $defenderFederation = $defender->getFederation();
+        if ($defenderFederation !== null) {
+            $news = "{$defender->getName()} was attacked by {$attacker->getName()}"
                 . " on region {$targetWorldRegion->getRegionName()} but the defending troops won the fight.";
-            $this->createReport($targetPlayer, $timestamp, $reportString);
+            $this->createFederationNews($defenderFederation, $news);
         }
 
-        if ($fleet->getPlayer()->getFederation() !== null) {
-            $reportString = "{$fleet->getPlayer()->getName()} attacked region {$targetWorldRegion->getRegionName()}"
+        $attackerFederation = $attacker->getFederation();
+        if ($attackerFederation !== null) {
+            $news = "{$attacker->getName()} attacked region {$targetWorldRegion->getRegionName()}"
                 . " but the defender was too strong.";
-            $this->createReport($fleet->getPlayer(), $timestamp, $reportString);
+            $this->createFederationNews($attackerFederation, $news);
         }
     }
 
-    private function createReport(Player $player, int $timestamp, string $report): void
+    private function createFederationNews(Federation $federation, string $news): void
     {
-        $report = Report::createForPlayer($player, $timestamp, Report::TYPE_ATTACKED, $report);
+        $federationNews = FederationNews::createForFederation($federation, $news);
+        $this->federationNewsRepository->save($federationNews);
+    }
+
+    private function createReport(Player $player, BattleSummary $battleSummary, string $message): void
+    {
+        $report = Report::createForPlayer(
+            $player,
+            $battleSummary->getTimestamp(),
+            Report::TYPE_ATTACKED,
+            $message
+        );
+        $report->setBattleSummary($battleSummary);
         $this->reportRepository->save($report);
-    }
-
-    private function getWorldRegionPlayer(WorldRegion $worldRegion): Player
-    {
-        $player = $worldRegion->getPlayer();
-        if ($player === null) {
-            throw new RuntimeException("Region has no owner");
-        }
-
-        return $player;
     }
 }

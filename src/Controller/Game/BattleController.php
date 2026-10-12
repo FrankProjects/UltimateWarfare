@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Repository\BattleSummaryRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Service\BattleEngine;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,13 +14,16 @@ final class BattleController extends BaseGameController
 {
     private BattleEngine $battleEngine;
     private FleetRepository $fleetRepository;
+    private BattleSummaryRepository $battleSummaryRepository;
 
     public function __construct(
         BattleEngine $battleEngine,
-        FleetRepository $fleetRepository
+        FleetRepository $fleetRepository,
+        BattleSummaryRepository $battleSummaryRepository
     ) {
         $this->battleEngine = $battleEngine;
         $this->fleetRepository = $fleetRepository;
+        $this->battleSummaryRepository = $battleSummaryRepository;
     }
 
     public function battleApi(int $fleetId): JsonResponse
@@ -37,18 +41,10 @@ final class BattleController extends BaseGameController
         try {
             $battleResults = $this->battleEngine->battle($fleet);
 
-            // Collect battle log from all phases
-            $battleLog = [];
-            foreach ($battleResults->getBattlePhases() as $battlePhase) {
-                foreach ($battlePhase->getBattleLog() as $line) {
-                    $battleLog[] = $line;
-                }
-            }
-
             return new JsonResponse([
                 'success' => true,
                 'hasWon' => $battleResults->hasWon(),
-                'battleLog' => $battleLog,
+                'battleLog' => $battleResults->getBattleLog(),
                 'message' => $battleResults->hasWon() ? 'Victory! You won the battle!' : 'Defeat! You lost the battle.'
             ]);
         } catch (Throwable $e) {
@@ -57,5 +53,37 @@ final class BattleController extends BaseGameController
                 'message' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function battleSummaryApi(int $battleSummaryId): JsonResponse
+    {
+        $player = $this->getPlayer();
+        $battleSummary = $this->battleSummaryRepository->find($battleSummaryId);
+
+        if (
+            $battleSummary === null ||
+            $battleSummary->getWorld()->getId() !== $player->getWorld()->getId() ||
+            !$battleSummary->isParticipant($player)
+        ) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Battle summary does not exist'
+            ], 404);
+        }
+
+        $isAttacker = $battleSummary->getAttacker()->getId() === $player->getId();
+
+        return new JsonResponse([
+            'success' => true,
+            'battleSummary' => [
+                'id' => $battleSummary->getId(),
+                'attacker' => $battleSummary->getAttacker()->getName(),
+                'defender' => $battleSummary->getDefender()->getName(),
+                'attackerWon' => $battleSummary->hasAttackerWon(),
+                'hasWon' => $isAttacker === $battleSummary->hasAttackerWon(),
+                'date' => date('M d, Y H:i', $battleSummary->getTimestamp()),
+                'battleLog' => $battleSummary->getBattleLogLines(),
+            ],
+        ]);
     }
 }

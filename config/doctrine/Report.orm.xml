@@ -27,5 +27,10 @@
         <join-column name="player_id" nullable="false"/>
       </join-columns>
     </many-to-one>
+    <many-to-one field="battleSummary" target-entity="FrankProjects\UltimateWarfare\Entity\BattleSummary">
+      <join-columns>
+        <join-column name="battle_summary_id" nullable="true" on-delete="SET NULL"/>
+      </join-columns>
+    </many-to-one>
   </entity>
 </doctrine-mapping>

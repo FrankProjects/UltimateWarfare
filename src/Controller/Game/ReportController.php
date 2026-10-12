@@ -50,6 +50,7 @@ final class ReportController extends BaseGameController
                 'timestamp' => $report->getTimestamp(),
                 'date' => date('M d, Y H:i', $report->getTimestamp()),
                 'report' => $report->getReport(),
+                'battleSummaryId' => $report->getBattleSummary()?->getId(),
             ];
         }
 
