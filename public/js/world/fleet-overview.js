@@ -128,17 +128,19 @@
                 showNotification(result.message, 'success');
 
                 if (window.WorldApp && WorldApp.worldMap) {
-                    // Remove fleet from worldmap fleet manager
-                    if (WorldApp.worldMap.fleetManager) {
-                        const fm = WorldApp.worldMap.fleetManager;
-                        fm.fleets = fm.fleets.filter(function (f) { return f.id !== fleetId; });
-                    }
+                    if (action === 'attack') {
+                        // Update the fleet and the target region on the map (ownership and units)
+                        WorldApp.worldMap.fleetManager.applyBattleResult(fleetId, result);
+                    } else {
+                        // Remove fleet from worldmap fleet manager
+                        WorldApp.worldMap.fleetManager.removeFleet(fleetId);
 
-                    // Update region units on map if returned
-                    if (result.regionId && result.units) {
-                        WorldApp.worldMap.fleetManager.updateRegionUnits(result.regionId, result.units);
-                        // Unit counts changed, so cached build data of this region is outdated
-                        WorldBuild.invalidateCache(result.regionId);
+                        // Update region units on map if returned
+                        if (result.regionId && result.units) {
+                            WorldApp.worldMap.fleetManager.updateRegionUnits(result.regionId, result.units);
+                            // Unit counts changed, so cached build data of this region is outdated
+                            WorldBuild.invalidateCache(result.regionId);
+                        }
                     }
 
                     WorldApp.worldMap.render();

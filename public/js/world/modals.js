@@ -40,6 +40,36 @@
         });
     }
 
+    /**
+     * Mark a region as yours on the map (after buying or conquering it) and reveal its neighbors.
+     * units: the region's own unit summary, or null to keep the current units.
+     */
+    function applyRegionOwnership(regionId, units, newlyVisibleEnemyUnits) {
+        const worldMap = WorldApp.worldMap;
+        const region = WorldApp.worldRegions.find(function (r) { return r.id === regionId; });
+        if (region) {
+            region.hasOwner = true;
+            region.isYours = true;
+            region.ownerName = WorldApp.playerName;
+            if (units) region.units = units;
+        }
+
+        // Recalculate fog of war with new ownership
+        recalculateVisibility(WorldApp.worldRegions);
+
+        // Apply masked enemy unit data for newly visible neighbors
+        if (newlyVisibleEnemyUnits) {
+            Object.keys(newlyVisibleEnemyUnits).forEach(function (id) {
+                const sector = WorldApp.worldRegions.find(function (s) { return s.id === parseInt(id); });
+                if (sector && !sector.isYours) {
+                    sector.units = newlyVisibleEnemyUnits[id];
+                }
+            });
+        }
+
+        return worldMap.setSectors(WorldApp.worldRegions).then(function () { worldMap.render(); });
+    }
+
     // ===== Buy Region Modal =====
     const modal = document.getElementById('buyRegionModal');
     const confirmBuyBtn = document.getElementById('confirmBuyBtn');
@@ -80,26 +110,7 @@
             const result = await response.json();
 
             if (result.success) {
-                const worldMap = WorldApp.worldMap;
-                const regionIndex = worldMap.sectors.findIndex(function (r) { return r.id === selectedRegion.id; });
-                if (regionIndex !== -1) {
-                    worldMap.sectors[regionIndex].hasOwner = true;
-                    worldMap.sectors[regionIndex].isYours = true;
-                    worldMap.sectors[regionIndex].ownerName = WorldApp.playerName;
-                }
-
-                // Recalculate fog of war with new ownership
-                recalculateVisibility(WorldApp.worldRegions);
-
-                // Apply masked enemy unit data for newly visible neighbors
-                if (result.newlyVisibleEnemyUnits) {
-                    Object.keys(result.newlyVisibleEnemyUnits).forEach(function (id) {
-                        const sector = WorldApp.worldRegions.find(function (s) { return s.id === parseInt(id); });
-                        if (sector && !sector.isYours) {
-                            sector.units = result.newlyVisibleEnemyUnits[id];
-                        }
-                    });
-                }
+                applyRegionOwnership(selectedRegion.id, null, result.newlyVisibleEnemyUnits);
 
                 if (result.newCash !== undefined) {
                     const cashElements = document.querySelectorAll('.resource-amount');
@@ -110,7 +121,6 @@
                     currentRegionPrice = result.newRegionPrice;
                 }
 
-                worldMap.setSectors(WorldApp.worldRegions).then(function () { worldMap.render(); });
                 showNotification(result.message, 'success');
                 bootstrap.Modal.getInstance(modal).hide();
             } else {
@@ -324,5 +334,10 @@
         } else {
             showEnemyRegionModal(region);
         }
+    };
+
+    // Expose globally
+    window.WorldModals = {
+        applyRegionOwnership: applyRegionOwnership
     };
 })();

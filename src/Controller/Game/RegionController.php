@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
-use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -43,7 +41,10 @@ final class RegionController extends BaseGameController
             $newlyVisibleEnemyUnits = [];
 
             if ($boughtRegion !== null) {
-                $newlyVisibleEnemyUnits = $this->getNeighborEnemyUnitPresence($boughtRegion, $player);
+                $newlyVisibleEnemyUnits = $this->regionActionService->getNeighborEnemyUnitPresence(
+                    $boughtRegion,
+                    $player
+                );
             }
 
             return new JsonResponse([
@@ -59,55 +60,6 @@ final class RegionController extends BaseGameController
                 'message' => $e->getMessage()
             ], 400);
         }
-    }
-
-    /**
-     * Get masked unit presence for enemy-owned hex neighbors of a region.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function getNeighborEnemyUnitPresence(
-        WorldRegion $region,
-        Player $player
-    ): array {
-        $x = $region->getX();
-        $y = $region->getY();
-        $world = $player->getWorld();
-
-        $neighborCoords = [[$x - 1, $y], [$x + 1, $y]];
-        if ($y % 2 === 0) {
-            $neighborCoords[] = [$x - 1, $y - 1];
-            $neighborCoords[] = [$x, $y - 1];
-            $neighborCoords[] = [$x - 1, $y + 1];
-            $neighborCoords[] = [$x, $y + 1];
-        } else {
-            $neighborCoords[] = [$x, $y - 1];
-            $neighborCoords[] = [$x + 1, $y - 1];
-            $neighborCoords[] = [$x, $y + 1];
-            $neighborCoords[] = [$x + 1, $y + 1];
-        }
-
-        $result = [];
-        foreach ($neighborCoords as [$nx, $ny]) {
-            $neighbor = $this->worldRegionRepository->findByWorldXY($world, $nx, $ny);
-            if ($neighbor === null || $neighbor->getPlayer() === null) {
-                continue;
-            }
-            if ($neighbor->getPlayer()->getId() === $player->getId()) {
-                continue;
-            }
-
-            $presence = $this->gameUnitRegistry->getRegionUnitCategoriesPresence($neighbor);
-            $masked = [];
-            foreach ($presence as $category => $hasUnits) {
-                $masked[$category] = $hasUnits ? -1 : 0;
-            }
-            $masked['details'] = null;
-            $masked['masked'] = true;
-            $result[$neighbor->getId()] = $masked;
-        }
-
-        return $result;
     }
 
     public function regionOverviewApi(): JsonResponse

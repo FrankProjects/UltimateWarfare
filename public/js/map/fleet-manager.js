@@ -484,8 +484,8 @@ class FleetManager {
             const result = await response.json();
 
             if (result.success) {
-                // Remove fleet from list
-                this.removeFleet(fleet.id);
+                // Update the fleet and the target region on the map (ownership and units)
+                this.applyBattleResult(fleet.id, result);
 
                 // Show battle report in modal
                 this.showBattleReportModal(result);
@@ -502,6 +502,51 @@ class FleetManager {
             setTimeout(() => {
                 this.map.render();
             }, 3000);
+        }
+    }
+
+    /**
+     * Update the map after a battle. A won battle makes the region yours with your surviving units,
+     * a lost battle only changes the (masked) defending units and keeps the survivors in the fleet.
+     */
+    applyBattleResult(fleetId, result) {
+        if (result.fleetUnits.length > 0) {
+            const fleet = this.fleets.find(f => f.id === fleetId);
+            if (fleet) {
+                fleet.units = result.fleetUnits;
+                fleet.unitCount = result.fleetUnits.reduce((sum, unit) => sum + unit.amount, 0);
+            }
+        } else {
+            this.removeFleet(fleetId);
+        }
+
+        if (result.hasWon) {
+            // Other fleets heading to the conquered region can now reinforce it
+            this.fleets.forEach(f => {
+                if (f.targetRegionId === result.regionId) {
+                    f.targetIsYours = true;
+                }
+            });
+        }
+
+        // Widgets of affected fleets are rebuilt on the next render with the new data
+        this.fleetUIMap.forEach((el, id) => {
+            const fleet = this.fleets.find(f => f.id === id);
+            if (id === fleetId || (fleet && fleet.targetRegionId === result.regionId)) {
+                el.remove();
+                this.fleetUIMap.delete(id);
+            }
+        });
+
+        if (window.WorldBuild) {
+            WorldBuild.invalidateCache(result.regionId);
+        }
+
+        if (result.hasWon && window.WorldModals) {
+            WorldModals.applyRegionOwnership(result.regionId, result.regionUnits, result.newlyVisibleEnemyUnits);
+        } else {
+            this.updateRegionUnits(result.regionId, result.regionUnits);
+            this.map.render();
         }
     }
 

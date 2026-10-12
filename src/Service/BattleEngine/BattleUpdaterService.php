@@ -8,6 +8,7 @@ use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
+use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
@@ -21,19 +22,22 @@ final class BattleUpdaterService
     private WorldRegionRepository $worldRegionRepository;
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository;
+    private ConstructionRepository $constructionRepository;
 
     public function __construct(
         FleetRepository $fleetRepository,
         FleetUnitRepository $fleetUnitRepository,
         WorldRegionRepository $worldRegionRepository,
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
-        WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository
+        WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
+        ConstructionRepository $constructionRepository
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
         $this->worldRegionRepository = $worldRegionRepository;
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->worldRegionLeveledUnitRepository = $worldRegionLeveledUnitRepository;
+        $this->constructionRepository = $constructionRepository;
     }
 
     /**
@@ -53,6 +57,10 @@ final class BattleUpdaterService
         }
         foreach ($targetWorldRegion->getWorldRegionLeveledUnits() as $leveledUnit) {
             $this->worldRegionLeveledUnitRepository->remove($leveledUnit);
+        }
+        // The construction queue of the previous owner is lost together with the region
+        foreach ($targetWorldRegion->getConstructions()->toArray() as $construction) {
+            $this->constructionRepository->remove($construction);
         }
 
         foreach ($attackerGameUnits as $fleetUnit) {
@@ -95,11 +103,22 @@ final class BattleUpdaterService
                 $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
             }
         }
-        foreach ($fleet->getFleetUnits() as $fleetUnit) {
-            $this->fleetUnitRepository->remove($fleetUnit);
+
+        // Attackers missing from $attackerGameUnits died in battle; survivors stay in the fleet at the target
+        foreach ($fleet->getFleetUnits()->toArray() as $fleetUnit) {
+            if (!in_array($fleetUnit, $attackerGameUnits, true)) {
+                $fleet->getFleetUnits()->removeElement($fleetUnit);
+                $this->fleetUnitRepository->remove($fleetUnit);
+            }
         }
-        foreach ($attackerGameUnits as $fleetUnit) {
-            $this->fleetUnitRepository->save($fleetUnit);
+
+        if ($fleet->getFleetUnits()->isEmpty()) {
+            // The whole fleet was destroyed
+            $this->fleetRepository->remove($fleet);
+        } else {
+            foreach ($attackerGameUnits as $fleetUnit) {
+                $this->fleetUnitRepository->save($fleetUnit);
+            }
         }
     }
 }

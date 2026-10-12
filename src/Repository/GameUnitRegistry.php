@@ -255,6 +255,23 @@ final class GameUnitRegistry
         return $presence;
     }
 
+    /**
+     * Unit summary of an enemy region: per category -1 when units are present (amount hidden), else 0.
+     *
+     * @return array<string, mixed>
+     */
+    public function getMaskedRegionUnitSummary(WorldRegion $region): array
+    {
+        $masked = [];
+        foreach ($this->getRegionUnitCategoriesPresence($region) as $category => $hasUnits) {
+            $masked[$category] = $hasUnits ? -1 : 0;
+        }
+        $masked['details'] = null;
+        $masked['masked'] = true;
+
+        return $masked;
+    }
+
     private function getSummaryKey(GameUnitCategory $gameUnitCategory): string
     {
         return match ($gameUnitCategory) {

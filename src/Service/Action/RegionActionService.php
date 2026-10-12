@@ -10,6 +10,7 @@ use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
@@ -24,19 +25,22 @@ final class RegionActionService
     private FederationRepository $federationRepository;
     private DistanceCalculator $distanceCalculator;
     private TimeCalculator $timeCalculator;
+    private GameUnitRegistry $gameUnitRegistry;
 
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         PlayerRepository $playerRepository,
         FederationRepository $federationRepository,
         DistanceCalculator $distanceCalculator,
-        TimeCalculator $timeCalculator
+        TimeCalculator $timeCalculator,
+        GameUnitRegistry $gameUnitRegistry
     ) {
         $this->worldRegionRepository = $worldRegionRepository;
         $this->playerRepository = $playerRepository;
         $this->federationRepository = $federationRepository;
         $this->distanceCalculator = $distanceCalculator;
         $this->timeCalculator = $timeCalculator;
+        $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
     /**
@@ -183,5 +187,47 @@ final class RegionActionService
 
 
         return $worldRegion;
+    }
+
+    /**
+     * Get masked unit presence for enemy-owned hex neighbors of a region.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getNeighborEnemyUnitPresence(
+        WorldRegion $region,
+        Player $player
+    ): array {
+        $x = $region->getX();
+        $y = $region->getY();
+        $world = $player->getWorld();
+
+        $neighborCoords = [[$x - 1, $y], [$x + 1, $y]];
+        if ($y % 2 === 0) {
+            $neighborCoords[] = [$x - 1, $y - 1];
+            $neighborCoords[] = [$x, $y - 1];
+            $neighborCoords[] = [$x - 1, $y + 1];
+            $neighborCoords[] = [$x, $y + 1];
+        } else {
+            $neighborCoords[] = [$x, $y - 1];
+            $neighborCoords[] = [$x + 1, $y - 1];
+            $neighborCoords[] = [$x, $y + 1];
+            $neighborCoords[] = [$x + 1, $y + 1];
+        }
+
+        $result = [];
+        foreach ($neighborCoords as [$nx, $ny]) {
+            $neighbor = $this->worldRegionRepository->findByWorldXY($world, $nx, $ny);
+            if ($neighbor === null || $neighbor->getPlayer() === null) {
+                continue;
+            }
+            if ($neighbor->getPlayer()->getId() === $player->getId()) {
+                continue;
+            }
+
+            $result[$neighbor->getId()] = $this->gameUnitRegistry->getMaskedRegionUnitSummary($neighbor);
+        }
+
+        return $result;
     }
 }

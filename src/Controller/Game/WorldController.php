@@ -245,9 +245,7 @@ final class WorldController extends BaseGameController
             if ($isYours) {
                 $regionData['units'] = $this->gameUnitRegistry->getRegionUnitSummary($region);
             } elseif ($isVisible && $region->getPlayer() !== null) {
-                $regionData['units'] = $this->buildMaskedUnits(
-                    $this->gameUnitRegistry->getRegionUnitCategoriesPresence($region)
-                );
+                $regionData['units'] = $this->gameUnitRegistry->getMaskedRegionUnitSummary($region);
             }
 
             $regions[] = $regionData;
@@ -366,24 +364,6 @@ final class WorldController extends BaseGameController
             }
             $frontier = $next;
         }
-    }
-
-    /**
-     * Build masked unit data that reveals category presence without counts.
-     *
-     * @param array<string, bool> $presence
-     * @return array<string, mixed>
-     */
-    private function buildMaskedUnits(array $presence): array
-    {
-        $masked = [];
-        foreach ($presence as $category => $hasUnits) {
-            $masked[$category] = $hasUnits ? -1 : 0;
-        }
-        $masked['details'] = null;
-        $masked['masked'] = true;
-
-        return $masked;
     }
 
     /**
