@@ -43,8 +43,6 @@ final class RegisterActionService
     }
 
     /**
-     * XXX TODO: Add captcha
-     *
      * @param User $user
      * @param string $plainPassword
      * @throws Exception
