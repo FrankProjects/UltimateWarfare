@@ -35,17 +35,14 @@ final class WorldController extends AbstractController
 
     public function create(Request $request): Response
     {
-        /**
-         * XXX TODO: Fix creating world sectors / regions
-         */
         $world = new World();
         $form = $this->createForm(WorldType::class, $world);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->worldRepository->save($world);
-            $this->addFlash('success', "You successfully created new world");
-            return $this->redirectToRoute('Admin/World/List', [], 302);
+            $this->addFlash('success', "You successfully created new world, now generate its map");
+            return $this->redirectToRoute('Admin/World/Generate', ['worldId' => $world->getId()], 302);
         }
 
         return $this->render(
