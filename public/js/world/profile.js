@@ -162,8 +162,8 @@
             return;
         }
 
-        if (profileData.isFederationFounder) {
-            html += '<p class="text-muted-uw">You cannot surrender while you are a Federation founder. Please disband your Federation first.</p>';
+        if (profileData.isFederationGeneral) {
+            html += '<p class="text-muted-uw">You cannot surrender while you are a Federation General. Please hand over or disband your Federation first.</p>';
             html += '</div>';
             profileContainer.innerHTML = html;
             profileFooter.innerHTML = '';

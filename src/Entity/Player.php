@@ -16,6 +16,7 @@ class Player
     private const int PRICE_PER_REGION = 10000;
     public const int FEDERATION_HIERARCHY_RECRUIT = 1;
     public const int FEDERATION_HIERARCHY_CAPTAIN = 3;
+    public const int FEDERATION_HIERARCHY_STAFF_GENERAL = 9;
     public const int FEDERATION_HIERARCHY_GENERAL = 10;
 
     private int $id;

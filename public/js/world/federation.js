@@ -144,7 +144,7 @@
             html += '<tr class="uw-table-head">';
             html += '<th class="text-center">#</th>';
             html += '<th class="text-center">Name</th>';
-            html += '<th class="text-center">Founder</th>';
+            html += '<th class="text-center">General</th>';
             html += '<th class="text-center">Players</th>';
             html += '<th class="text-center">Regions</th>';
             html += '<th class="text-center">NetWorth</th>';
@@ -157,7 +157,7 @@
                 html += '<tr>';
                 html += '<td class="text-center">' + (index + 1) + '</td>';
                 html += '<td class="text-center"><a href="#" class="fed-view-link uw-link text-own" data-id="' + fed.id + '">' + escapeHtml(fed.name) + '</a></td>';
-                html += '<td class="text-center">' + escapeHtml(fed.founder) + '</td>';
+                html += '<td class="text-center">' + escapeHtml(fed.general) + '</td>';
                 html += '<td class="text-center">' + fed.players + '</td>';
                 html += '<td class="text-center">' + fed.regions.toLocaleString('en-US') + '</td>';
                 html += '<td class="text-center">' + fed.netWorth.toLocaleString('en-US') + '</td>';
@@ -616,6 +616,7 @@
         html += '<div class="uw-row uw-row-spaced">';
         html += '<select id="fedRolePlayer" class="form-select">';
         members.forEach(function (m) {
+            if (m.id === cachedStatus.playerId) return;
             html += '<option value="' + m.id + '">' + escapeHtml(m.name) + '</option>';
         });
         html += '</select>';
@@ -655,10 +656,24 @@
         document.getElementById('fedChangeRoleBtn').onclick = function () {
             const playerId = parseInt(document.getElementById('fedRolePlayer').value, 10);
             const role = parseInt(document.getElementById('fedRoleRank').value, 10);
-            doPost('/game/api/federation/change-role', { playerId: playerId, role: role }, function () {
-                cachedStatus = null;
-                loadStatus();
-            });
+            const changeRole = function () {
+                doPost('/game/api/federation/change-role', { playerId: playerId, role: role }, function () {
+                    cachedStatus = null;
+                    loadStatus();
+                });
+            };
+
+            if (role === 10) {
+                showConfirm(
+                    'Are you sure? By accepting this you will give the federation to another player, ' +
+                    'and your rank will be lowered to ' + RANK_NAMES[9] + '!',
+                    changeRole,
+                    { title: 'Change Federation Owner', confirmText: 'Accept' }
+                );
+                return;
+            }
+
+            changeRole();
         };
 
         document.getElementById('fedRemoveBtn').onclick = function () {

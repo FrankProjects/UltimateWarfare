@@ -25,11 +25,6 @@
       </options>
     </field>
     <embedded name="resources" class="FrankProjects\UltimateWarfare\Entity\Federation\Resources"/>
-    <one-to-one field="founder" target-entity="FrankProjects\UltimateWarfare\Entity\Player">
-      <join-columns>
-        <join-column name="founder_player_id" nullable="false"/>
-      </join-columns>
-    </one-to-one>
     <one-to-many field="players" target-entity="FrankProjects\UltimateWarfare\Entity\Player" mapped-by="federation"/>
     <one-to-many field="federationNews" target-entity="FrankProjects\UltimateWarfare\Entity\FederationNews" mapped-by="federation"/>
     <one-to-many field="federationApplications" target-entity="FrankProjects\UltimateWarfare\Entity\FederationApplication" mapped-by="federation"/>
