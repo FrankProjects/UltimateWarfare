@@ -509,42 +509,10 @@ class FleetManager {
      * Show battle report in a modal
      */
     showBattleReportModal(result) {
-        // Create modal if it doesn't exist
-        let modal = document.getElementById('battleReportModal');
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'battleReportModal';
-            modal.className = 'modal';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span class="modal-title">Battle Report</span>
-                        <span class="close" id="closeBattleModal">&times;</span>
-                    </div>
-                    <div class="modal-body" id="battleReportBody">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="closeBattleBtn">Close</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-
-            // Add close handlers
-            modal.querySelector('#closeBattleModal').onclick = () => {
-                modal.style.display = 'none';
-                this.map.render();
-            };
-            modal.querySelector('#closeBattleBtn').onclick = () => {
-                modal.style.display = 'none';
-                this.map.render();
-            };
-            modal.onclick = (e) => {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                    this.map.render();
-                }
-            };
+        const modal = document.getElementById('battleReportModal');
+        if (!modal.dataset.bound) {
+            modal.addEventListener('hidden.bs.modal', () => this.map.render());
+            modal.dataset.bound = 'true';
         }
 
         // Build battle report content
@@ -570,8 +538,7 @@ class FleetManager {
             ${battleLogHtml}
         `;
 
-        // Show modal
-        modal.style.display = 'block';
+        bootstrap.Modal.getOrCreateInstance(modal).show();
     }
 
     /**
