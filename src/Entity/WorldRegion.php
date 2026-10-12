@@ -31,7 +31,7 @@ class WorldRegion
     private int $space = 1000;
     private int $population = 0;
     private World $world;
-    private ?Player $player;
+    private ?Player $player = null;
 
     /**
      * @var Collection<int, WorldRegionStackableUnit>
