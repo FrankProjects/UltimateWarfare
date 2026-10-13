@@ -9,7 +9,6 @@ use FrankProjects\UltimateWarfare\Entity\Federation\Resources as FederationResou
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Player\Resources as PlayerResources;
 use FrankProjects\UltimateWarfare\Entity\World;
-use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
@@ -38,7 +37,7 @@ class FederationBankActionServiceTest extends TestCase
             $this->federationRepository,
             $this->federationNewsRepository,
             $this->playerRepository,
-            $this->createGameEngine()
+            $this->createEntityLockRepository()
         );
     }
 
@@ -89,13 +88,11 @@ class FederationBankActionServiceTest extends TestCase
 
     public function testDepositFailsWhenFederationCanNotBeLocked(): void
     {
-        $entityLockRepository = $this->createMock(EntityLockRepository::class);
-        $entityLockRepository->method('lockForUpdate')->willReturn(false);
         $service = new FederationBankActionService(
             $this->federationRepository,
             $this->federationNewsRepository,
             $this->playerRepository,
-            $this->createGameEngine(null, null, null, $entityLockRepository)
+            $this->createEntityLockRepository(false)
         );
 
         $federation = $this->createFederation(5000, 2000, 1000, 1500);

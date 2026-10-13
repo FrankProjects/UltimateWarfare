@@ -51,6 +51,8 @@ vendor/bin/phpstan analyse               # Static analysis (level 10)
 - **Construction queue**: Buildings/research have completion timestamps; engine resolves them on tick
 - **Fleet travel**: Distance-based travel time; fleets are entities in transit with action types
 - **World map v2**: Interactive map in `public/js/world/` and `templates/v2/`; active development area
+- **Request transaction**: `GameEngineSubscriber` runs every state-changing (non-GET) player request in one DB transaction holding a row lock on the current player; it commits for responses < 400 and rolls back otherwise. Game actions must therefore be POST routes and report failures with a 4xx status. An action that also changes another player must call `GameEngine::syncPlayer()` on them first; shared rows (market orders, fleets, regions, federations) are locked with `EntityLockRepository::lockForUpdate()`
+- **Income accrual**: Resources are stored as a checkpoint (`timestampUpdate`) plus the income/upkeep rate; `ResourceAccrualCalculator` accrues exactly. Recalculate the rate with `IncomeUpdaterService` after any change to units, regions or research; read current values for display with `project()` / the `player_resources()` Twig function
 
 ### Database
 

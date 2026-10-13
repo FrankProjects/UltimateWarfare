@@ -13,7 +13,6 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 use RuntimeException;
 
@@ -32,22 +31,19 @@ final class LeveledUnitActionService
     private PlayerRepository $playerRepository;
     private WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository;
     private GameUnitBehaviorFactory $behaviorFactory;
-    private GameEngine $gameEngine;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
         GameUnitRegistry $gameUnitRegistry,
         PlayerRepository $playerRepository,
         WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
-        GameUnitBehaviorFactory $behaviorFactory,
-        GameEngine $gameEngine
+        GameUnitBehaviorFactory $behaviorFactory
     ) {
         $this->constructionRepository = $constructionRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->playerRepository = $playerRepository;
         $this->worldRegionLeveledUnitRepository = $worldRegionLeveledUnitRepository;
         $this->behaviorFactory = $behaviorFactory;
-        $this->gameEngine = $gameEngine;
     }
 
     /**
@@ -55,21 +51,19 @@ final class LeveledUnitActionService
      */
     public function build(WorldRegion $region, Player $player, GameUnitEnum $gameUnitEnum): void
     {
-        $this->gameEngine->transactional([$player], function () use ($region, $player, $gameUnitEnum): void {
-            $gameUnit = $this->resolveLeveledGameUnit($gameUnitEnum);
+        $gameUnit = $this->resolveLeveledGameUnit($gameUnitEnum);
 
-            if ($region->getLeveledUnit($gameUnitEnum) !== null) {
-                throw new RuntimeException("{$gameUnit->getName()} is already built on this region.");
-            }
-            if ($this->getQueuedCount($region, $gameUnitEnum) > 0) {
-                throw new RuntimeException("{$gameUnit->getName()} is already being built on this region.");
-            }
+        if ($region->getLeveledUnit($gameUnitEnum) !== null) {
+            throw new RuntimeException("{$gameUnit->getName()} is already built on this region.");
+        }
+        if ($this->getQueuedCount($region, $gameUnitEnum) > 0) {
+            throw new RuntimeException("{$gameUnit->getName()} is already being built on this region.");
+        }
 
-            $this->validateBuildable($gameUnit, $region, $player);
+        $this->validateBuildable($gameUnit, $region, $player);
 
-            $this->chargeResources($player, $gameUnit, 1);
-            $this->queueConstruction($region, $player, $gameUnit);
-        });
+        $this->chargeResources($player, $gameUnit, 1);
+        $this->queueConstruction($region, $player, $gameUnit);
     }
 
     /**
@@ -77,24 +71,22 @@ final class LeveledUnitActionService
      */
     public function upgrade(WorldRegion $region, Player $player, GameUnitEnum $gameUnitEnum): void
     {
-        $this->gameEngine->transactional([$player], function () use ($region, $player, $gameUnitEnum): void {
-            $gameUnit = $this->resolveLeveledGameUnit($gameUnitEnum);
+        $gameUnit = $this->resolveLeveledGameUnit($gameUnitEnum);
 
-            if ($region->getLeveledUnit($gameUnitEnum) === null) {
-                throw new RuntimeException("{$gameUnit->getName()} is not built on this region yet.");
-            }
+        if ($region->getLeveledUnit($gameUnitEnum) === null) {
+            throw new RuntimeException("{$gameUnit->getName()} is not built on this region yet.");
+        }
 
-            $this->validateBuildable($gameUnit, $region, $player);
+        $this->validateBuildable($gameUnit, $region, $player);
 
-            $targetLevel = $region->getUnitLevel($gameUnitEnum) + $this->getQueuedCount($region, $gameUnitEnum) + 1;
-            if ($targetLevel > self::MAX_BUILDING_LEVEL) {
-                throw new RuntimeException("{$gameUnit->getName()} is already at the maximum level.");
-            }
+        $targetLevel = $region->getUnitLevel($gameUnitEnum) + $this->getQueuedCount($region, $gameUnitEnum) + 1;
+        if ($targetLevel > self::MAX_BUILDING_LEVEL) {
+            throw new RuntimeException("{$gameUnit->getName()} is already at the maximum level.");
+        }
 
-            // Escalating cost: each level costs the base cost multiplied by the target level.
-            $this->chargeResources($player, $gameUnit, $targetLevel);
-            $this->queueConstruction($region, $player, $gameUnit);
-        });
+        // Escalating cost: each level costs the base cost multiplied by the target level.
+        $this->chargeResources($player, $gameUnit, $targetLevel);
+        $this->queueConstruction($region, $player, $gameUnit);
     }
 
     /**
@@ -103,30 +95,28 @@ final class LeveledUnitActionService
      */
     public function repair(WorldRegion $region, Player $player, GameUnitEnum $gameUnitEnum): void
     {
-        $this->gameEngine->transactional([$player], function () use ($region, $player, $gameUnitEnum): void {
-            $gameUnit = $this->resolveLeveledGameUnit($gameUnitEnum);
+        $gameUnit = $this->resolveLeveledGameUnit($gameUnitEnum);
 
-            $leveledUnit = $region->getLeveledUnit($gameUnitEnum);
-            if ($leveledUnit === null) {
-                throw new RuntimeException("{$gameUnit->getName()} is not built on this region.");
-            }
+        $leveledUnit = $region->getLeveledUnit($gameUnitEnum);
+        if ($leveledUnit === null) {
+            throw new RuntimeException("{$gameUnit->getName()} is not built on this region.");
+        }
 
-            $maxHealth = $gameUnit->getBattleStats()->getHealth() * $leveledUnit->getLevel();
-            $missingHealth = $maxHealth - $leveledUnit->getHealth();
-            if ($missingHealth <= 0) {
-                throw new RuntimeException("{$gameUnit->getName()} is already at full health.");
-            }
+        $maxHealth = $gameUnit->getBattleStats()->getHealth() * $leveledUnit->getLevel();
+        $missingHealth = $maxHealth - $leveledUnit->getHealth();
+        if ($missingHealth <= 0) {
+            throw new RuntimeException("{$gameUnit->getName()} is already at full health.");
+        }
 
-            $fraction = $missingHealth / $maxHealth;
-            $costCash = (int) ceil($gameUnit->getCost()->getCash() * $leveledUnit->getLevel() * $fraction);
-            $costWood = (int) ceil($gameUnit->getCost()->getWood() * $leveledUnit->getLevel() * $fraction);
-            $costSteel = (int) ceil($gameUnit->getCost()->getSteel() * $leveledUnit->getLevel() * $fraction);
+        $fraction = $missingHealth / $maxHealth;
+        $costCash = (int) ceil($gameUnit->getCost()->getCash() * $leveledUnit->getLevel() * $fraction);
+        $costWood = (int) ceil($gameUnit->getCost()->getWood() * $leveledUnit->getLevel() * $fraction);
+        $costSteel = (int) ceil($gameUnit->getCost()->getSteel() * $leveledUnit->getLevel() * $fraction);
 
-            $this->deductResources($player, $costCash, $costWood, $costSteel);
+        $this->deductResources($player, $costCash, $costWood, $costSteel);
 
-            $leveledUnit->setHealth($maxHealth);
-            $this->worldRegionLeveledUnitRepository->save($leveledUnit);
-        });
+        $leveledUnit->setHealth($maxHealth);
+        $this->worldRegionLeveledUnitRepository->save($leveledUnit);
     }
 
     private function resolveLeveledGameUnit(GameUnitEnum $gameUnitEnum): GameUnit

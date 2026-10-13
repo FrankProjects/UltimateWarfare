@@ -18,15 +18,12 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Service\Action\LeveledUnitActionService;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorInterface;
-use FrankProjects\UltimateWarfare\Tests\Service\CreatesGameEngine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class LeveledUnitActionServiceTest extends TestCase
 {
-    use CreatesGameEngine;
-
     private LeveledUnitActionService $service;
     private ConstructionRepository&MockObject $constructionRepository;
     private GameUnitRegistry $gameUnitRegistry;
@@ -52,8 +49,7 @@ class LeveledUnitActionServiceTest extends TestCase
             $this->gameUnitRegistry,
             $this->playerRepository,
             $this->leveledUnitRepository,
-            $this->behaviorFactory,
-            $this->createGameEngine()
+            $this->behaviorFactory
         );
     }
 

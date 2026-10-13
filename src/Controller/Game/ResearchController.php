@@ -73,7 +73,7 @@ final class ResearchController extends BaseGameController
             return new JsonResponse([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -90,7 +90,7 @@ final class ResearchController extends BaseGameController
             return new JsonResponse([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], 400);
         }
     }
 

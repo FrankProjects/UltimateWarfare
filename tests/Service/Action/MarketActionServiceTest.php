@@ -50,8 +50,7 @@ class MarketActionServiceTest extends TestCase
         $this->marketItemRepository->method('find')->willReturn($marketItem);
 
         // The order row is gone once the lock is acquired: another buyer got there first
-        $entityLockRepository = $this->createMock(EntityLockRepository::class);
-        $entityLockRepository->method('lockForUpdate')->willReturn(false);
+        $entityLockRepository = $this->createEntityLockRepository(false);
 
         $this->marketItemRepository->expects(self::never())->method('remove');
         $this->playerRepository->expects(self::never())->method('save');
@@ -79,8 +78,7 @@ class MarketActionServiceTest extends TestCase
         );
         $this->marketItemRepository->method('find')->willReturn($marketItem);
 
-        $entityLockRepository = $this->createMock(EntityLockRepository::class);
-        $entityLockRepository->method('lockForUpdate')->willReturn(false);
+        $entityLockRepository = $this->createEntityLockRepository(false);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Market order does not exist!');
@@ -149,7 +147,8 @@ class MarketActionServiceTest extends TestCase
             $this->marketItemRepository,
             $this->playerRepository,
             $this->createMock(ReportRepository::class),
-            $this->createGameEngine(null, null, null, $entityLockRepository)
+            $this->createGameEngine(),
+            $entityLockRepository ?? $this->createEntityLockRepository()
         );
     }
 

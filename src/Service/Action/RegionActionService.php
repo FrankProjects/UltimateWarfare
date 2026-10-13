@@ -13,7 +13,6 @@ use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use FrankProjects\UltimateWarfare\Util\TimeCalculator;
@@ -27,7 +26,6 @@ final class RegionActionService
     private DistanceCalculator $distanceCalculator;
     private TimeCalculator $timeCalculator;
     private GameUnitRegistry $gameUnitRegistry;
-    private GameEngine $gameEngine;
 
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
@@ -35,8 +33,7 @@ final class RegionActionService
         FederationRepository $federationRepository,
         DistanceCalculator $distanceCalculator,
         TimeCalculator $timeCalculator,
-        GameUnitRegistry $gameUnitRegistry,
-        GameEngine $gameEngine
+        GameUnitRegistry $gameUnitRegistry
     ) {
         $this->worldRegionRepository = $worldRegionRepository;
         $this->playerRepository = $playerRepository;
@@ -44,7 +41,6 @@ final class RegionActionService
         $this->distanceCalculator = $distanceCalculator;
         $this->timeCalculator = $timeCalculator;
         $this->gameUnitRegistry = $gameUnitRegistry;
-        $this->gameEngine = $gameEngine;
     }
 
     /**
@@ -116,40 +112,38 @@ final class RegionActionService
      */
     public function buyWorldRegion(int $worldRegionId, Player $player): void
     {
-        $this->gameEngine->transactional([$player], function () use ($worldRegionId, $player): void {
-            $worldRegion = $this->getWorldRegionByIdAndWorld($worldRegionId, $player->getWorld());
-            $resources = $player->getResources();
+        $worldRegion = $this->getWorldRegionByIdAndWorld($worldRegionId, $player->getWorld());
+        $resources = $player->getResources();
 
-            if ($worldRegion->getPlayer() !== null) {
-                throw new RuntimeException('Region is already owned by somebody!');
-            }
+        if ($worldRegion->getPlayer() !== null) {
+            throw new RuntimeException('Region is already owned by somebody!');
+        }
 
-            if ($resources->getCash() < $player->getRegionPrice()) {
-                throw new RuntimeException('You do not have enough money!');
-            }
+        if ($resources->getCash() < $player->getRegionPrice()) {
+            throw new RuntimeException('You do not have enough money!');
+        }
 
-            $resources->setCash($resources->getCash() - $player->getRegionPrice());
+        $resources->setCash($resources->getCash() - $player->getRegionPrice());
 
-            $player->setResources($resources);
-            $player->setNetWorth($player->getNetWorth() + NetWorthCalculator::NET_WORTH_CALCULATOR_REGION);
+        $player->setResources($resources);
+        $player->setNetWorth($player->getNetWorth() + NetWorthCalculator::NET_WORTH_CALCULATOR_REGION);
 
-            $worldRegion->setPlayer($player);
+        $worldRegion->setPlayer($player);
 
-            // Add the region to the player's collection to keep both sides in sync
-            // This fixes the new buy price for next regions
-            $player->getWorldRegions()->add($worldRegion);
+        // Add the region to the player's collection to keep both sides in sync
+        // This fixes the new buy price for next regions
+        $player->getWorldRegions()->add($worldRegion);
 
-            $federation = $player->getFederation();
+        $federation = $player->getFederation();
 
-            if ($federation !== null) {
-                $federation->setRegions($federation->getRegions() + 1);
-                $federation->setNetWorth($federation->getNetWorth() + NetWorthCalculator::NET_WORTH_CALCULATOR_REGION);
-                $this->federationRepository->save($federation);
-            }
+        if ($federation !== null) {
+            $federation->setRegions($federation->getRegions() + 1);
+            $federation->setNetWorth($federation->getNetWorth() + NetWorthCalculator::NET_WORTH_CALCULATOR_REGION);
+            $this->federationRepository->save($federation);
+        }
 
-            $this->playerRepository->save($player);
-            $this->worldRegionRepository->save($worldRegion);
-        });
+        $this->playerRepository->save($player);
+        $this->worldRegionRepository->save($worldRegion);
     }
 
     /**

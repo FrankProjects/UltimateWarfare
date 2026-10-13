@@ -10,7 +10,6 @@ use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
-use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ConstructionProcessor;
@@ -29,7 +28,6 @@ final class GameEngine
     private IncomeUpdaterService $incomeUpdaterService;
     private ResourceAccrualCalculator $resourceAccrualCalculator;
     private EntityManagerInterface $entityManager;
-    private EntityLockRepository $entityLockRepository;
     private int $constructionTimeOverride;
     private int $researchTimeOverride;
 
@@ -42,7 +40,6 @@ final class GameEngine
         IncomeUpdaterService $incomeUpdaterService,
         ResourceAccrualCalculator $resourceAccrualCalculator,
         EntityManagerInterface $entityManager,
-        EntityLockRepository $entityLockRepository,
         int $constructionTimeOverride,
         int $researchTimeOverride
     ) {
@@ -54,7 +51,6 @@ final class GameEngine
         $this->incomeUpdaterService = $incomeUpdaterService;
         $this->resourceAccrualCalculator = $resourceAccrualCalculator;
         $this->entityManager = $entityManager;
-        $this->entityLockRepository = $entityLockRepository;
         $this->constructionTimeOverride = $constructionTimeOverride;
         $this->researchTimeOverride = $researchTimeOverride;
     }
@@ -78,69 +74,13 @@ final class GameEngine
     }
 
     /**
-     * Runs an action that changes resources (or income/upkeep) of the given players in one transaction,
-     * holding row locks on those players until it commits. The players are synced first.
-     *
-     * Without the lock, a concurrent sync or action could read the same resource values and the last write
-     * would silently overwrite the other. Players are locked in id order to avoid deadlocks between actions
-     * of two players involving each other. Other rows the action depends on are locked from within the
-     * action with lockForUpdate(), so always after the players.
-     *
-     * @template T
-     * @param Player[] $players
-     * @param callable(): T $action
-     * @return T
-     */
-    public function transactional(array $players, callable $action): mixed
-    {
-        $playersById = [];
-        foreach ($players as $player) {
-            $playersById[$player->getId()] = $player;
-        }
-        ksort($playersById);
-
-        $timestamp = time();
-        $this->entityManager->beginTransaction();
-
-        try {
-            foreach ($playersById as $player) {
-                // Nested transaction: the row lock taken here is held until the commit below
-                $this->syncPlayer($player, $timestamp);
-            }
-
-            $result = $action();
-
-            $this->entityManager->flush();
-            $this->entityManager->commit();
-
-            return $result;
-        } catch (\Throwable $e) {
-            $this->entityManager->rollback();
-            throw $e;
-        }
-    }
-
-    /**
-     * Re-reads an entity from the database under a row lock, held until the surrounding transaction commits.
-     * Only call this inside a transactional() action.
-     *
-     * Detects a row that was deleted by a concurrent request, e.g. a market order that was just bought
-     * or a fleet that already attacked.
-     *
-     * @return bool False when the entity no longer exists
-     */
-    public function lockForUpdate(object $entity): bool
-    {
-        return $this->entityLockRepository->lockForUpdate($entity);
-    }
-
-    /**
      * Brings a player's state up to $timestamp: completes due queue items in chronological order and
      * accrues resources at the rate that was in effect during each interval.
      *
-     * Actions that change resources or the income/upkeep rate should use transactional() instead, which
-     * calls this and keeps the lock until the action is done. The player is refreshed from the database
-     * under a row lock, so unflushed changes to the player entity are discarded.
+     * The player is refreshed from the database under a row lock, so unflushed changes to the player entity
+     * are discarded. Inside an outer transaction (every POST request, see GameEngineSubscriber) the commit
+     * below is nested, so the lock is held until the request's transaction commits: call this before
+     * changing another player's resources or income/upkeep.
      */
     public function syncPlayer(Player $player, int $timestamp): void
     {

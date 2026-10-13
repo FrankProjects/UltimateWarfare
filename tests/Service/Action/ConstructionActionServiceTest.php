@@ -62,7 +62,6 @@ class ConstructionActionServiceTest extends TestCase
             $this->createMock(WorldRegionStackableUnitRepository::class),
             $netWorthUpdaterService,
             $behaviorFactory,
-            $this->createGameEngine($this->constructionRepository),
             $this->createIncomeUpdaterService()
         );
     }

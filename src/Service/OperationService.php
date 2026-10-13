@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\Operation;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\BombardmentCooldownRepository;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -33,6 +34,7 @@ final class OperationService
     private BombardmentCooldownRepository $bombardmentCooldownRepository;
     private GameUnitRegistry $gameUnitRegistry;
     private GameEngine $gameEngine;
+    private EntityLockRepository $entityLockRepository;
 
     public function __construct(
         ReportCreator $reportCreator,
@@ -45,7 +47,8 @@ final class OperationService
         ConstructionRepository $constructionRepository,
         BombardmentCooldownRepository $bombardmentCooldownRepository,
         GameUnitRegistry $gameUnitRegistry,
-        GameEngine $gameEngine
+        GameEngine $gameEngine,
+        EntityLockRepository $entityLockRepository
     ) {
         $this->reportCreator = $reportCreator;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
@@ -58,6 +61,7 @@ final class OperationService
         $this->bombardmentCooldownRepository = $bombardmentCooldownRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->gameEngine = $gameEngine;
+        $this->entityLockRepository = $entityLockRepository;
     }
 
     /**
@@ -74,62 +78,55 @@ final class OperationService
             throw new RuntimeException("Region has no owner");
         }
 
-        // Both players' resources and income/upkeep change: settle and lock them for the whole operation
+        // The attacker is locked for the whole request; settle and lock the target player as well
         $regionPlayer = $region->getPlayer();
-        $players = $regionPlayer !== null ? [$player, $regionPlayer] : [$player];
+        if ($regionPlayer !== null) {
+            $this->gameEngine->syncPlayer($regionPlayer, time());
+        }
 
-        return $this->gameEngine->transactional($players, function () use (
+        // A concurrent request may have taken one of the regions after we locked its owner
+        if (
+            !$this->entityLockRepository->lockForUpdate($playerRegion)
+            || $playerRegion->getPlayer() !== $player
+            || !$this->entityLockRepository->lockForUpdate($region)
+            || $region->getPlayer() !== $regionPlayer
+        ) {
+            throw new RuntimeException('A region changed owner, please try again.');
+        }
+
+        $this->ensureCanExecute($region, $operation, $playerRegion, $amount);
+        $this->hasWorldRegionGameUnitAmount($playerRegion, $operation, $amount);
+        $this->ensureNoBombardmentCooldown($playerRegion, $operation);
+
+        $player->getResources()->addCash(-$operation->calculateCost($region, $amount));
+        $this->playerRepository->save($player);
+
+        $operationProcessor = OperationProcessor::factory(
             $region,
             $operation,
             $playerRegion,
             $amount,
-            $player,
-            $regionPlayer
-        ): array {
-            // A concurrent request may have taken one of the regions after we decided whom to lock
-            if (
-                !$this->gameEngine->lockForUpdate($playerRegion)
-                || $playerRegion->getPlayer() !== $player
-                || !$this->gameEngine->lockForUpdate($region)
-                || $region->getPlayer() !== $regionPlayer
-            ) {
-                throw new RuntimeException('A region changed owner, please try again.');
-            }
+            $this->reportCreator,
+            $this->playerRepository,
+            $this->worldRegionStackableUnitRepository,
+            $this->worldRegionLeveledUnitRepository,
+            $this->worldRegionRepository,
+            $this->constructionRepository,
+            $this->gameUnitRegistry
+        );
+        $operationResults = $operationProcessor->execute();
 
-            $this->ensureCanExecute($region, $operation, $playerRegion, $amount);
-            $this->hasWorldRegionGameUnitAmount($playerRegion, $operation, $amount);
-            $this->ensureNoBombardmentCooldown($playerRegion, $operation);
+        $this->createBombardmentCooldown($region, $operation, $playerRegion);
 
-            $player->getResources()->addCash(-$operation->calculateCost($region, $amount));
-            $this->playerRepository->save($player);
+        if ($regionPlayer !== null) {
+            $this->netWorthUpdaterService->updateNetWorthForPlayer($regionPlayer);
+            $this->incomeUpdaterService->updateIncomeForPlayer($regionPlayer);
+        }
 
-            $operationProcessor = OperationProcessor::factory(
-                $region,
-                $operation,
-                $playerRegion,
-                $amount,
-                $this->reportCreator,
-                $this->playerRepository,
-                $this->worldRegionStackableUnitRepository,
-                $this->worldRegionLeveledUnitRepository,
-                $this->worldRegionRepository,
-                $this->constructionRepository,
-                $this->gameUnitRegistry
-            );
-            $operationResults = $operationProcessor->execute();
+        $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
+        $this->incomeUpdaterService->updateIncomeForPlayer($player);
 
-            $this->createBombardmentCooldown($region, $operation, $playerRegion);
-
-            if ($regionPlayer !== null) {
-                $this->netWorthUpdaterService->updateNetWorthForPlayer($regionPlayer);
-                $this->incomeUpdaterService->updateIncomeForPlayer($regionPlayer);
-            }
-
-            $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
-            $this->incomeUpdaterService->updateIncomeForPlayer($player);
-
-            return $operationResults;
-        });
+        return $operationResults;
     }
 
     private function ensureCanExecute(

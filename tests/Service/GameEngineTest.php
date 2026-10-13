@@ -8,16 +8,13 @@ use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
-use FrankProjects\UltimateWarfare\Entity\Federation;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
-use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\GameEngine;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class GameEngineTest extends TestCase
 {
@@ -53,58 +50,6 @@ class GameEngineTest extends TestCase
 
         self::assertEquals($once->getResources(), $often->getResources());
         self::assertSame(1000 + 167 * $this->getFarmFoodIncome(), $once->getResources()->getFood());
-    }
-
-    public function testTransactionalLocksPlayersInIdOrderBeforeOtherEntitiesAndCommits(): void
-    {
-        $first = $this->createPlayer(1);
-        $second = $this->createPlayer(2);
-        $federation = new Federation();
-
-        $locked = [];
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->method('refresh')->willReturnCallback(
-            function (object $entity, LockMode $lockMode) use (&$locked): void {
-                self::assertSame(LockMode::PESSIMISTIC_WRITE, $lockMode);
-                $locked[] = $entity;
-            }
-        );
-        // One outer transaction plus a nested one per synced player
-        $entityManager->expects(self::exactly(3))->method('beginTransaction');
-        $entityManager->expects(self::exactly(3))->method('commit');
-        $entityManager->expects(self::never())->method('rollback');
-
-        $entityLockRepository = $this->createMock(EntityLockRepository::class);
-        $entityLockRepository->method('lockForUpdate')->willReturnCallback(
-            function (object $entity) use (&$locked): bool {
-                $locked[] = $entity;
-                return true;
-            }
-        );
-
-        $gameEngine = $this->createGameEngine(null, null, $entityManager, $entityLockRepository);
-        $result = $gameEngine->transactional(
-            [$second, $first, $second],
-            fn(): bool => $gameEngine->lockForUpdate($federation)
-        );
-
-        self::assertTrue($result);
-        self::assertSame([$first, $second, $federation], $locked);
-    }
-
-    public function testTransactionalRollsBackWhenActionFails(): void
-    {
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects(self::once())->method('rollback');
-        $entityManager->expects(self::once())->method('commit'); // only the nested sync
-
-        $this->expectException(RuntimeException::class);
-        $this->createGameEngine(null, null, $entityManager)->transactional(
-            [$this->createPlayer(1)],
-            function (): void {
-                throw new RuntimeException('You do not have enough money!');
-            }
-        );
     }
 
     public function testRunSkipsCurrentPlayerWithoutDueItemsWhenSyncedRecently(): void

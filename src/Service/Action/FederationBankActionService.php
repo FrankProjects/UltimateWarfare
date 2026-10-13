@@ -7,10 +7,10 @@ namespace FrankProjects\UltimateWarfare\Service\Action;
 use FrankProjects\UltimateWarfare\Entity\FederationNews;
 use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
 use RuntimeException;
 
 final class FederationBankActionService
@@ -18,18 +18,18 @@ final class FederationBankActionService
     private FederationRepository $federationRepository;
     private FederationNewsRepository $federationNewsRepository;
     private PlayerRepository $playerRepository;
-    private GameEngine $gameEngine;
+    private EntityLockRepository $entityLockRepository;
 
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
         PlayerRepository $playerRepository,
-        GameEngine $gameEngine
+        EntityLockRepository $entityLockRepository
     ) {
         $this->federationRepository = $federationRepository;
         $this->federationNewsRepository = $federationNewsRepository;
         $this->playerRepository = $playerRepository;
-        $this->gameEngine = $gameEngine;
+        $this->entityLockRepository = $entityLockRepository;
     }
 
     /**
@@ -43,45 +43,43 @@ final class FederationBankActionService
             throw new RuntimeException("You are not in a Federation!");
         }
 
-        $this->gameEngine->transactional([$player], function () use ($player, $resources, $federation): void {
-            // The player was reloaded under lock; make sure the federation is still theirs, then lock it too
-            if ($player->getFederation() !== $federation || !$this->gameEngine->lockForUpdate($federation)) {
-                throw new RuntimeException("You are not in a Federation!");
+        // The player was reloaded under lock; make sure the federation is still theirs, then lock it too
+        if ($player->getFederation() !== $federation || !$this->entityLockRepository->lockForUpdate($federation)) {
+            throw new RuntimeException("You are not in a Federation!");
+        }
+
+        $resourceString = '';
+        foreach ($resources as $resourceName => $amount) {
+            if (!GameResource::isValid($resourceName)) {
+                continue;
             }
 
-            $resourceString = '';
-            foreach ($resources as $resourceName => $amount) {
-                if (!GameResource::isValid($resourceName)) {
-                    continue;
-                }
-
-                $amount = intval($amount);
-                if ($amount <= 0) {
-                    continue;
-                }
-                $resourceAmount = $player->getResources()->getValueByName($resourceName);
-                if ($amount > $resourceAmount) {
-                    throw new RuntimeException("You don't have enough {$resourceName}!");
-                }
-
-                $player->getResources()->setValueByName($resourceName, $resourceAmount - $amount);
-                $federationResourceAmount = $federation->getResources()->getValueByName($resourceName);
-                $federation->getResources()->setValueByName($resourceName, $federationResourceAmount + $amount);
-
-                $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);
+            $amount = intval($amount);
+            if ($amount <= 0) {
+                continue;
+            }
+            $resourceAmount = $player->getResources()->getValueByName($resourceName);
+            if ($amount > $resourceAmount) {
+                throw new RuntimeException("You don't have enough {$resourceName}!");
             }
 
-            if ($resourceString !== '') {
-                $news = "{$player->getName()} deposited {$resourceString} to the Federation Bank";
-                $federationNews = FederationNews::createForFederation($federation, $news);
-                $this->federationNewsRepository->save($federationNews);
+            $player->getResources()->setValueByName($resourceName, $resourceAmount - $amount);
+            $federationResourceAmount = $federation->getResources()->getValueByName($resourceName);
+            $federation->getResources()->setValueByName($resourceName, $federationResourceAmount + $amount);
 
-                $this->playerRepository->save($player);
-                $this->federationRepository->save($federation);
-            } else {
-                throw new RuntimeException("No resources selected to deposit");
-            }
-        });
+            $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);
+        }
+
+        if ($resourceString !== '') {
+            $news = "{$player->getName()} deposited {$resourceString} to the Federation Bank";
+            $federationNews = FederationNews::createForFederation($federation, $news);
+            $this->federationNewsRepository->save($federationNews);
+
+            $this->playerRepository->save($player);
+            $this->federationRepository->save($federation);
+        } else {
+            throw new RuntimeException("No resources selected to deposit");
+        }
     }
 
     /**
@@ -96,48 +94,46 @@ final class FederationBankActionService
             throw new RuntimeException("You are not in a Federation!");
         }
 
-        $this->gameEngine->transactional([$player], function () use ($player, $resources, $federation): void {
-            // The player was reloaded under lock; make sure the federation is still theirs, then lock it too
-            if ($player->getFederation() !== $federation || !$this->gameEngine->lockForUpdate($federation)) {
-                throw new RuntimeException("You are not in a Federation!");
+        // The player was reloaded under lock; make sure the federation is still theirs, then lock it too
+        if ($player->getFederation() !== $federation || !$this->entityLockRepository->lockForUpdate($federation)) {
+            throw new RuntimeException("You are not in a Federation!");
+        }
+
+        if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_CAPTAIN) {
+            throw new RuntimeException("You don't have permission to use the Federation Bank!");
+        }
+
+        $resourceString = '';
+        foreach ($resources as $resourceName => $amount) {
+            if (!GameResource::isValid($resourceName)) {
+                continue;
             }
 
-            if ($player->getFederationHierarchy() < Player::FEDERATION_HIERARCHY_CAPTAIN) {
-                throw new RuntimeException("You don't have permission to use the Federation Bank!");
+            $amount = intval($amount);
+            if ($amount <= 0) {
+                continue;
             }
 
-            $resourceString = '';
-            foreach ($resources as $resourceName => $amount) {
-                if (!GameResource::isValid($resourceName)) {
-                    continue;
-                }
-
-                $amount = intval($amount);
-                if ($amount <= 0) {
-                    continue;
-                }
-
-                $federationResourceAmount = $federation->getResources()->getValueByName($resourceName);
-                if ($amount > $federationResourceAmount) {
-                    throw new RuntimeException("Federation Bank doesn't have enough {$resourceName}!");
-                }
-
-                $resourceAmount = $player->getResources()->getValueByName($resourceName);
-                $player->getResources()->setValueByName($resourceName, $resourceAmount + $amount);
-                $federation->getResources()->setValueByName($resourceName, $federationResourceAmount - $amount);
-
-                $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);
+            $federationResourceAmount = $federation->getResources()->getValueByName($resourceName);
+            if ($amount > $federationResourceAmount) {
+                throw new RuntimeException("Federation Bank doesn't have enough {$resourceName}!");
             }
 
-            if ($resourceString !== '') {
-                $news = "{$player->getName()} withdrew {$resourceString} from the Federation Bank";
-                $federationNews = FederationNews::createForFederation($federation, $news);
-                $this->federationNewsRepository->save($federationNews);
+            $resourceAmount = $player->getResources()->getValueByName($resourceName);
+            $player->getResources()->setValueByName($resourceName, $resourceAmount + $amount);
+            $federation->getResources()->setValueByName($resourceName, $federationResourceAmount - $amount);
 
-                $this->playerRepository->save($player);
-                $this->federationRepository->save($federation);
-            }
-        });
+            $resourceString = $this->addToResourceString($resourceString, $amount, $resourceName);
+        }
+
+        if ($resourceString !== '') {
+            $news = "{$player->getName()} withdrew {$resourceString} from the Federation Bank";
+            $federationNews = FederationNews::createForFederation($federation, $news);
+            $this->federationNewsRepository->save($federationNews);
+
+            $this->playerRepository->save($player);
+            $this->federationRepository->save($federation);
+        }
     }
 
     private function ensureFederationEnabled(Player $player): void

@@ -11,6 +11,7 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\BattleSummaryRepository;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattlePhase;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleReportCreator;
@@ -27,6 +28,7 @@ final class BattleEngine
     private GameUnitRegistry $gameUnitRegistry;
     private BattleSummaryRepository $battleSummaryRepository;
     private GameEngine $gameEngine;
+    private EntityLockRepository $entityLockRepository;
 
     public function __construct(
         BattleUpdaterService $battleUpdaterService,
@@ -35,7 +37,8 @@ final class BattleEngine
         IncomeUpdaterService $incomeUpdaterService,
         GameUnitRegistry $gameUnitRegistry,
         BattleSummaryRepository $battleSummaryRepository,
-        GameEngine $gameEngine
+        GameEngine $gameEngine,
+        EntityLockRepository $entityLockRepository
     ) {
         $this->battleUpdaterService = $battleUpdaterService;
         $this->battleReportCreator = $battleReportCreator;
@@ -44,6 +47,7 @@ final class BattleEngine
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->battleSummaryRepository = $battleSummaryRepository;
         $this->gameEngine = $gameEngine;
+        $this->entityLockRepository = $entityLockRepository;
     }
 
     /**
@@ -55,61 +59,58 @@ final class BattleEngine
      */
     public function battle(Fleet $fleet): BattleResult
     {
-        // Both players' resources and income/upkeep change: settle and lock them for the whole battle
-        $players = [$fleet->getPlayer()];
+        // The attacker is locked for the whole request; settle and lock the defender as well
         $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
         if ($defendingPlayer !== null) {
-            $players[] = $defendingPlayer;
+            $this->gameEngine->syncPlayer($defendingPlayer, time());
         }
 
-        return $this->gameEngine->transactional($players, function () use ($fleet, $defendingPlayer): BattleResult {
-            // A concurrent request may have used this fleet, or taken the region after we decided whom to lock
-            if (!$this->gameEngine->lockForUpdate($fleet)) {
-                throw new RuntimeException('Fleet does not exist!');
-            }
-            $targetWorldRegion = $fleet->getTargetWorldRegion();
-            if (
-                !$this->gameEngine->lockForUpdate($targetWorldRegion)
-                || $targetWorldRegion->getPlayer() !== $defendingPlayer
-            ) {
-                throw new RuntimeException('The target region changed owner, please try again.');
-            }
+        // A concurrent request may have used this fleet, or taken the region after we locked its owner
+        if (!$this->entityLockRepository->lockForUpdate($fleet)) {
+            throw new RuntimeException('Fleet does not exist!');
+        }
+        $targetWorldRegion = $fleet->getTargetWorldRegion();
+        if (
+            !$this->entityLockRepository->lockForUpdate($targetWorldRegion)
+            || $targetWorldRegion->getPlayer() !== $defendingPlayer
+        ) {
+            throw new RuntimeException('The target region changed owner, please try again.');
+        }
 
-            $this->ensureCanAttack($fleet);
+        $this->ensureCanAttack($fleet);
 
-            $attackerGameUnits = $fleet->getFleetUnits()->toArray();
-            // Defenders are both stackable units and leveled buildings present in the region.
-            $defenderGameUnits = array_merge(
-                $fleet->getTargetWorldRegion()->getWorldRegionStackableUnits()->toArray(),
-                $fleet->getTargetWorldRegion()->getWorldRegionLeveledUnits()->toArray()
+        $attackerGameUnits = $fleet->getFleetUnits()->toArray();
+        // Defenders are both stackable units and leveled buildings present in the region.
+        $defenderGameUnits = array_merge(
+            $fleet->getTargetWorldRegion()->getWorldRegionStackableUnits()->toArray(),
+            $fleet->getTargetWorldRegion()->getWorldRegionLeveledUnits()->toArray()
+        );
+        $defenderDamageMultiplier = $this->getDefenderDamageMultiplier(
+            $fleet->getTargetWorldRegion()->getPlayer()
+        );
+
+        $battlePhaseResults = [];
+        foreach ($this->getBattlePhases() as $battlePhaseName) {
+            $battlePhase = BattlePhase::factory(
+                $battlePhaseName,
+                $attackerGameUnits,
+                $defenderGameUnits,
+                $this->gameUnitRegistry,
+                $defenderDamageMultiplier
             );
-            $defenderDamageMultiplier = $this->getDefenderDamageMultiplier(
-                $fleet->getTargetWorldRegion()->getPlayer()
-            );
+            $battlePhase->startBattlePhase();
 
-            $battlePhaseResults = [];
-            foreach ($this->getBattlePhases() as $battlePhaseName) {
-                $battlePhase = BattlePhase::factory(
-                    $battlePhaseName,
-                    $attackerGameUnits,
-                    $defenderGameUnits,
-                    $this->gameUnitRegistry,
-                    $defenderDamageMultiplier
-                );
-                $battlePhase->startBattlePhase();
+            $attackerGameUnits = $battlePhase->getAttackerGameUnits();
+            $defenderGameUnits = $battlePhase->getDefenderGameUnits();
 
-                $attackerGameUnits = $battlePhase->getAttackerGameUnits();
-                $defenderGameUnits = $battlePhase->getDefenderGameUnits();
+            $battlePhaseResults[] = $battlePhase;
+        }
 
-                $battlePhaseResults[] = $battlePhase;
-            }
+        $battleResults = new BattleResult($battlePhaseResults);
 
-            $battleResults = new BattleResult($battlePhaseResults);
+        $this->processResults($battleResults, $fleet, $attackerGameUnits, $defenderGameUnits);
 
-            $this->processResults($battleResults, $fleet, $attackerGameUnits, $defenderGameUnits);
-
-            return $battleResults;
-        });
+        return $battleResults;
     }
 
     /**

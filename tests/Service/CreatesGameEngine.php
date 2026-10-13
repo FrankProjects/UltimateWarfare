@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * GameEngine and its collaborators are final; build real instances on top of mocked repositories.
- * The mocked EntityManager and EntityLockRepository make transactions and row locks no-ops.
+ * The mocked EntityManager makes transactions and row locks no-ops.
  *
  * @mixin TestCase
  */
@@ -38,14 +38,8 @@ trait CreatesGameEngine
     protected function createGameEngine(
         ?ConstructionRepository $constructionRepository = null,
         ?WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository = null,
-        ?EntityManagerInterface $entityManager = null,
-        ?EntityLockRepository $entityLockRepository = null
+        ?EntityManagerInterface $entityManager = null
     ): GameEngine {
-        if ($entityLockRepository === null) {
-            // Every locked row still exists unless a test says otherwise
-            $entityLockRepository = $this->createMock(EntityLockRepository::class);
-            $entityLockRepository->method('lockForUpdate')->willReturn(true);
-        }
 
         $gameUnitRegistry = new GameUnitRegistry();
         $constructionRepository ??= $this->createMock(ConstructionRepository::class);
@@ -73,7 +67,6 @@ trait CreatesGameEngine
             $this->createIncomeUpdaterService($worldRegionStackableUnitRepository),
             new ResourceAccrualCalculator(),
             $entityManager ?? $this->createMock(EntityManagerInterface::class),
-            $entityLockRepository,
             0,
             0
         );
@@ -102,6 +95,17 @@ trait CreatesGameEngine
                 $fleetUnitRepository
             )
         );
+    }
+
+    /**
+     * Every locked row still exists, unless $exists says otherwise
+     */
+    protected function createEntityLockRepository(bool $exists = true): EntityLockRepository
+    {
+        $entityLockRepository = $this->createMock(EntityLockRepository::class);
+        $entityLockRepository->method('lockForUpdate')->willReturn($exists);
+
+        return $entityLockRepository;
     }
 
     protected function createNetWorthUpdaterService(): NetWorthUpdaterService
