@@ -286,10 +286,7 @@
 
             if (result.success) {
                 // Update cash display
-                if (result.newCash !== undefined) {
-                    const cashElements = document.querySelectorAll('.resource-amount');
-                    if (cashElements.length > 0) cashElements[0].textContent = result.newCash.toLocaleString('en-US');
-                }
+                ResourceTicker.set({ cash: result.newCash });
 
                 // Add bombardment cooldown arc if present
                 if (result.bombardmentCooldown && WorldApp.worldMap) {

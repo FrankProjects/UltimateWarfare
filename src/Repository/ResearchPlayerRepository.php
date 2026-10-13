@@ -16,9 +16,9 @@ interface ResearchPlayerRepository
     public function getNonActiveCompletedResearch(int $timestamp): array;
 
     /**
-     * @return ResearchPlayer[]
+     * @return ResearchPlayer[] Ordered by completion time
      */
-    public function getAllNonActiveResearch(): array;
+    public function getNonActiveCompletedResearchByPlayer(Player $player, int $timestamp): array;
 
     /**
      * @param Player $player

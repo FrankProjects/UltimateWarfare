@@ -5,111 +5,59 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
 
 use FrankProjects\UltimateWarfare\Entity\Construction;
-use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
-use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 
-final class ConstructionProcessor implements Processor
+final class ConstructionProcessor
 {
     private ConstructionRepository $constructionRepository;
-    private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository;
     private NetWorthUpdaterService $netWorthUpdaterService;
     private GameUnitRegistry $gameUnitRegistry;
-    private int $constructionTimeOverride;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
-        PlayerRepository $playerRepository,
         ReportRepository $reportRepository,
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
         NetWorthUpdaterService $netWorthUpdaterService,
-        GameUnitRegistry $gameUnitRegistry,
-        int $constructionTimeOverride
+        GameUnitRegistry $gameUnitRegistry
     ) {
         $this->constructionRepository = $constructionRepository;
-        $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->worldRegionLeveledUnitRepository = $worldRegionLeveledUnitRepository;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
         $this->gameUnitRegistry = $gameUnitRegistry;
-        $this->constructionTimeOverride = $constructionTimeOverride;
     }
 
-    public function run(int $timestamp): void
+    /**
+     * Completes a construction queue item. Income and upkeep are not touched here: the GameEngine
+     * accrues resources up to the completion time first and recalculates the rate afterwards.
+     *
+     * @return bool Whether the construction was completed (false when the region changed owner)
+     */
+    public function complete(Construction $construction): bool
     {
-        // Override construction time for testing purposes
-        if ($this->constructionTimeOverride > 0) {
-            $constructions = $this->constructionRepository->getAllConstructions();
-        } else {
-            $constructions = $this->constructionRepository->getCompletedConstructions($timestamp);
+        $worldRegion = $construction->getWorldRegion();
+
+        if (
+            $worldRegion->getPlayer() === null
+            || $worldRegion->getPlayer()->getId() !== $construction->getPlayer()->getId()
+        ) {
+            // Never process construction queue items for a region that no longer belongs to this player
+            $this->constructionRepository->remove($construction);
+            return false;
         }
-
-        foreach ($constructions as $construction) {
-            $worldRegion = $construction->getWorldRegion();
-
-            if (
-                $worldRegion->getPlayer() === null
-                || $worldRegion->getPlayer()->getId() !== $construction->getPlayer()->getId()
-            ) {
-                // Never process construction queue items for a region that no longer belongs to this player
-                $this->constructionRepository->remove($construction);
-                continue;
-            }
-
-            $this->processConstruction($construction);
-        }
-    }
-
-    private function updatePlayerResources(Player $player, Construction $construction): Player
-    {
-        $gameUnit = $this->gameUnitRegistry->find($construction->getGameUnit());
-        $upkeepCash = $construction->getNumber() * $gameUnit->getUpkeep()->getCash();
-        $upkeepFood = $construction->getNumber() * $gameUnit->getUpkeep()->getFood();
-        $upkeepWood = $construction->getNumber() * $gameUnit->getUpkeep()->getWood();
-        $upkeepSteel = $construction->getNumber() * $gameUnit->getUpkeep()->getSteel();
-
-        $incomeCash = $construction->getNumber() * $gameUnit->getIncome()->getCash();
-        $incomeFood = $construction->getNumber() * $gameUnit->getIncome()->getFood();
-        $incomeWood = $construction->getNumber() * $gameUnit->getIncome()->getWood();
-        $incomeSteel = $construction->getNumber() * $gameUnit->getIncome()->getSteel();
-
-        $income = $player->getIncome();
-        $upkeep = $player->getUpkeep();
-
-        $upkeep->addCash($upkeepCash);
-        $upkeep->addFood($upkeepFood);
-        $upkeep->addWood($upkeepWood);
-        $upkeep->addSteel($upkeepSteel);
-
-        $income->addCash($incomeCash);
-        $income->addFood($incomeFood);
-        $income->addWood($incomeWood);
-        $income->addSteel($incomeSteel);
-
-        $player->setIncome($income);
-        $player->setUpkeep($upkeep);
-
-        return $player;
-    }
-
-    private function processConstruction(Construction $construction): void
-    {
-        // XXX TODO: Process income before processing construction...
-        //$this->processPlayerIncome($construction->getPlayer(), $timestamp);
 
         $gameUnit = $this->gameUnitRegistry->find($construction->getGameUnit());
 
@@ -119,13 +67,12 @@ final class ConstructionProcessor implements Processor
             $this->processStackableConstruction($construction);
         }
 
-        $player = $this->updatePlayerResources($construction->getPlayer(), $construction);
         $this->createConstructionReport($construction);
-
-        $this->playerRepository->save($player);
         $this->constructionRepository->remove($construction);
 
-        $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
+        $this->netWorthUpdaterService->updateNetWorthForPlayer($construction->getPlayer());
+
+        return true;
     }
 
     /**

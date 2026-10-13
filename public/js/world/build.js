@@ -523,10 +523,7 @@
             const result = await response.json();
 
             if (result.success) {
-                const amounts = document.querySelectorAll('.resource-amount');
-                if (result.newCash !== undefined && amounts[0]) amounts[0].textContent = result.newCash.toLocaleString('en-US');
-                if (result.newWood !== undefined && amounts[1]) amounts[1].textContent = result.newWood.toLocaleString('en-US');
-                if (result.newSteel !== undefined && amounts[3]) amounts[3].textContent = result.newSteel.toLocaleString('en-US');
+                ResourceTicker.set({ cash: result.newCash, wood: result.newWood, steel: result.newSteel });
 
                 showNotification(result.message, 'success');
 
@@ -568,10 +565,7 @@
             const result = await response.json();
 
             if (result.success) {
-                const amounts = document.querySelectorAll('.resource-amount');
-                if (result.newCash !== undefined && amounts[0]) amounts[0].textContent = result.newCash.toLocaleString('en-US');
-                if (result.newWood !== undefined && amounts[1]) amounts[1].textContent = result.newWood.toLocaleString('en-US');
-                if (result.newSteel !== undefined && amounts[3]) amounts[3].textContent = result.newSteel.toLocaleString('en-US');
+                ResourceTicker.set({ cash: result.newCash, wood: result.newWood, steel: result.newSteel });
 
                 showNotification(result.message, 'success');
                 applyBuildData(result.buildData);

@@ -12,6 +12,7 @@ use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
+use FrankProjects\UltimateWarfare\Service\GameEngine;
 use RuntimeException;
 
 final class MarketActionService
@@ -19,15 +20,18 @@ final class MarketActionService
     private MarketItemRepository $marketItemRepository;
     private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
+    private GameEngine $gameEngine;
 
     public function __construct(
         MarketItemRepository $marketItemRepository,
         PlayerRepository $playerRepository,
-        ReportRepository $reportRepository
+        ReportRepository $reportRepository,
+        GameEngine $gameEngine
     ) {
         $this->marketItemRepository = $marketItemRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
+        $this->gameEngine = $gameEngine;
     }
 
     public function buyOrder(Player $player, int $marketItemId): void
@@ -36,36 +40,45 @@ final class MarketActionService
 
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
-        if ($marketItem->getType() !== MarketItem::TYPE_SELL) {
-            throw new RuntimeException('Market order is not a buy order!');
-        }
+        // Both the buyer's and the seller's resources change
+        $players = [$player, $marketItem->getPlayer()];
+        $this->gameEngine->transactional($players, function () use ($player, $marketItem): void {
+            // A concurrent request may have bought or cancelled this order in the meantime
+            if (!$this->gameEngine->lockForUpdate($marketItem)) {
+                throw new RuntimeException('Market order does not exist!');
+            }
 
-        $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
+            if ($marketItem->getType() !== MarketItem::TYPE_SELL) {
+                throw new RuntimeException('Market order is not a buy order!');
+            }
 
-        $resources = $player->getResources();
-        if ($marketItem->getPrice() > $resources->getCash()) {
-            throw new RuntimeException('You do not have enough cash!');
-        }
+            $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
 
-        $resources->setCash($resources->getCash() - $marketItem->getPrice());
-        $marketItemPlayer = $marketItem->getPlayer();
-        $marketItemPlayerResources = $marketItemPlayer->getResources();
-        $marketItemPlayerResources->setCash($marketItemPlayerResources->getCash() + $marketItem->getPrice());
+            $resources = $player->getResources();
+            if ($marketItem->getPrice() > $resources->getCash()) {
+                throw new RuntimeException('You do not have enough cash!');
+            }
 
-        $resources = $this->addGameResources($marketItem, $resources);
+            $resources->setCash($resources->getCash() - $marketItem->getPrice());
+            $marketItemPlayer = $marketItem->getPlayer();
+            $marketItemPlayerResources = $marketItemPlayer->getResources();
+            $marketItemPlayerResources->setCash($marketItemPlayerResources->getCash() + $marketItem->getPrice());
 
-        $marketItemPlayerNotifications = $marketItemPlayer->getNotifications();
-        $marketItemPlayerNotifications->setMarket(true);
+            $resources = $this->addGameResources($marketItem, $resources);
 
-        $player->setResources($resources);
-        $marketItemPlayer->setResources($marketItemPlayerResources);
-        $marketItemPlayer->setNotifications($marketItemPlayerNotifications);
+            $marketItemPlayerNotifications = $marketItemPlayer->getNotifications();
+            $marketItemPlayerNotifications->setMarket(true);
 
-        $this->playerRepository->save($player);
-        $this->playerRepository->save($marketItemPlayer);
-        $this->marketItemRepository->remove($marketItem);
+            $player->setResources($resources);
+            $marketItemPlayer->setResources($marketItemPlayerResources);
+            $marketItemPlayer->setNotifications($marketItemPlayerNotifications);
 
-        $this->createBuyReports($marketItem, $player);
+            $this->playerRepository->save($player);
+            $this->playerRepository->save($marketItemPlayer);
+            $this->marketItemRepository->remove($marketItem);
+
+            $this->createBuyReports($marketItem, $player);
+        });
     }
 
     private function createBuyReports(MarketItem $marketItem, Player $player): void
@@ -79,24 +92,31 @@ final class MarketActionService
 
     public function cancelOrder(Player $player, int $marketItemId): void
     {
-        $this->ensureMarketEnabled($player);
+        $this->gameEngine->transactional([$player], function () use ($player, $marketItemId): void {
+            $this->ensureMarketEnabled($player);
 
-        $marketItem = $this->getMarketItem($player, $marketItemId);
+            $marketItem = $this->getMarketItem($player, $marketItemId);
 
-        if ($marketItem->getPlayer()->getId() !== $player->getId()) {
-            throw new RuntimeException('You can not cancel orders that do not belong to you!\'');
-        }
+            // A concurrent request may have bought or cancelled this order in the meantime
+            if (!$this->gameEngine->lockForUpdate($marketItem)) {
+                throw new RuntimeException('Market order does not exist!');
+            }
 
-        $resources = $player->getResources();
-        if ($marketItem->getType() === MarketItem::TYPE_BUY) {
-            $resources->setCash($resources->getCash() + $marketItem->getPrice());
-        } else {
-            $resources = $this->addGameResources($marketItem, $resources);
-        }
+            if ($marketItem->getPlayer()->getId() !== $player->getId()) {
+                throw new RuntimeException('You can not cancel orders that do not belong to you!\'');
+            }
 
-        $player->setResources($resources);
-        $this->playerRepository->save($player);
-        $this->marketItemRepository->remove($marketItem);
+            $resources = $player->getResources();
+            if ($marketItem->getType() === MarketItem::TYPE_BUY) {
+                $resources->setCash($resources->getCash() + $marketItem->getPrice());
+            } else {
+                $resources = $this->addGameResources($marketItem, $resources);
+            }
+
+            $player->setResources($resources);
+            $this->playerRepository->save($player);
+            $this->marketItemRepository->remove($marketItem);
+        });
     }
 
     public function sellOrder(Player $player, int $marketItemId): void
@@ -105,31 +125,43 @@ final class MarketActionService
 
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
-        if ($marketItem->getType() !== MarketItem::TYPE_BUY) {
-            throw new RuntimeException('Market order is not a sell order!');
-        }
+        // Both the buyer's and the seller's resources change
+        $players = [$player, $marketItem->getPlayer()];
+        $this->gameEngine->transactional($players, function () use ($player, $marketItem): void {
+            // A concurrent request may have bought or cancelled this order in the meantime
+            if (!$this->gameEngine->lockForUpdate($marketItem)) {
+                throw new RuntimeException('Market order does not exist!');
+            }
 
-        $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
+            if ($marketItem->getType() !== MarketItem::TYPE_BUY) {
+                throw new RuntimeException('Market order is not a sell order!');
+            }
 
-        $resources = $player->getResources();
-        $resources->setCash($resources->getCash() + $marketItem->getPrice());
-        $marketItemPlayer = $marketItem->getPlayer();
-        $marketItemPlayerResources = $marketItemPlayer->getResources();
-        $marketItemPlayerResources->setCash($marketItemPlayerResources->getCash() - $marketItem->getPrice());
+            $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
 
-        $resources = $this->substractGameResources($marketItem, $resources);
+            $resources = $this->substractAndValidateGameResources(
+                $marketItem->getGameResource(),
+                $player->getResources(),
+                $marketItem->getAmount()
+            );
+            $resources->setCash($resources->getCash() + $marketItem->getPrice());
 
-        $marketItemPlayerNotifications = $marketItemPlayer->getNotifications();
-        $marketItemPlayerNotifications->setMarket(true);
+            // The buyer's cash was already taken when the buy order was created; they receive the resources
+            $marketItemPlayer = $marketItem->getPlayer();
+            $marketItemPlayerResources = $this->addGameResources($marketItem, $marketItemPlayer->getResources());
 
-        $player->setResources($resources);
-        $marketItemPlayer->setResources($marketItemPlayerResources);
-        $marketItemPlayer->setNotifications($marketItemPlayerNotifications);
-        $this->playerRepository->save($player);
-        $this->playerRepository->save($marketItemPlayer);
-        $this->marketItemRepository->remove($marketItem);
+            $marketItemPlayerNotifications = $marketItemPlayer->getNotifications();
+            $marketItemPlayerNotifications->setMarket(true);
 
-        $this->createSellReports($marketItem, $player);
+            $player->setResources($resources);
+            $marketItemPlayer->setResources($marketItemPlayerResources);
+            $marketItemPlayer->setNotifications($marketItemPlayerNotifications);
+            $this->playerRepository->save($player);
+            $this->playerRepository->save($marketItemPlayer);
+            $this->marketItemRepository->remove($marketItem);
+
+            $this->createSellReports($marketItem, $player);
+        });
     }
 
     private function createSellReports(MarketItem $marketItem, Player $player): void
@@ -143,34 +175,42 @@ final class MarketActionService
 
     public function createOrder(Player $player, string $gameResource, int $price, int $amount, string $action): void
     {
-        $this->ensureValidGameResource($gameResource);
+        $this->gameEngine->transactional([$player], function () use (
+            $player,
+            $gameResource,
+            $price,
+            $amount,
+            $action
+        ): void {
+            $this->ensureValidGameResource($gameResource);
 
-        if ($price < 1) {
-            throw new RuntimeException("Price can not be less than 1");
-        }
-
-        if ($amount < 1) {
-            throw new RuntimeException("Amount can not be less than 1");
-        }
-
-        $resources = $player->getResources();
-
-        if ($action === MarketItem::TYPE_BUY) {
-            if ($price > $resources->getCash()) {
-                throw new RuntimeException("You do not have enough cash!");
+            if ($price < 1) {
+                throw new RuntimeException("Price can not be less than 1");
             }
 
-            $resources->setCash($resources->getCash() - $price);
-        } elseif ($action === MarketItem::TYPE_SELL) {
-            $resources = $this->substractAndValidateGameResources($gameResource, $resources, $amount);
-        } else {
-            throw new RuntimeException("Invalid option!");
-        }
+            if ($amount < 1) {
+                throw new RuntimeException("Amount can not be less than 1");
+            }
 
-        $player->setResources($resources);
-        $marketItem = MarketItem::createForPlayer($player, $gameResource, $amount, $price, $action);
-        $this->marketItemRepository->save($marketItem);
-        $this->playerRepository->save($player);
+            $resources = $player->getResources();
+
+            if ($action === MarketItem::TYPE_BUY) {
+                if ($price > $resources->getCash()) {
+                    throw new RuntimeException("You do not have enough cash!");
+                }
+
+                $resources->setCash($resources->getCash() - $price);
+            } elseif ($action === MarketItem::TYPE_SELL) {
+                $resources = $this->substractAndValidateGameResources($gameResource, $resources, $amount);
+            } else {
+                throw new RuntimeException("Invalid option!");
+            }
+
+            $player->setResources($resources);
+            $marketItem = MarketItem::createForPlayer($player, $gameResource, $amount, $price, $action);
+            $this->marketItemRepository->save($marketItem);
+            $this->playerRepository->save($player);
+        });
     }
 
     private function ensureMarketEnabled(Player $player): void
@@ -221,25 +261,6 @@ final class MarketActionService
                 break;
             case GameResource::GAME_RESOURCE_STEEL:
                 $resources->setSteel($resources->getSteel() + $marketItem->getAmount());
-                break;
-            default:
-                throw new RuntimeException('Unknown resource type!');
-        }
-
-        return $resources;
-    }
-
-    private function substractGameResources(MarketItem $marketItem, Resources $resources): Resources
-    {
-        switch ($marketItem->getGameResource()) {
-            case GameResource::GAME_RESOURCE_WOOD:
-                $resources->setWood($resources->getWood() - $marketItem->getAmount());
-                break;
-            case GameResource::GAME_RESOURCE_FOOD:
-                $resources->setFood($resources->getFood() - $marketItem->getAmount());
-                break;
-            case GameResource::GAME_RESOURCE_STEEL:
-                $resources->setSteel($resources->getSteel() - $marketItem->getAmount());
                 break;
             default:
                 throw new RuntimeException('Unknown resource type!');

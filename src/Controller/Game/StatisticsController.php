@@ -7,19 +7,23 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
+use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class StatisticsController extends BaseGameController
 {
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private GameUnitRegistry $gameUnitRegistry;
+    private ResourceAccrualCalculator $resourceAccrualCalculator;
 
     public function __construct(
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
-        GameUnitRegistry $gameUnitRegistry
+        GameUnitRegistry $gameUnitRegistry,
+        ResourceAccrualCalculator $resourceAccrualCalculator
     ) {
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->resourceAccrualCalculator = $resourceAccrualCalculator;
     }
 
     public function statisticsApi(): JsonResponse
@@ -28,7 +32,7 @@ final class StatisticsController extends BaseGameController
 
         $income = $player->getIncome();
         $upkeep = $player->getUpkeep();
-        $resources = $player->getResources();
+        $resources = $this->resourceAccrualCalculator->project($player, time());
 
         $warnings = [];
         $netFood = $income->getFood() - $upkeep->getFood();

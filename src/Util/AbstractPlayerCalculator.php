@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Util;
 
 use FrankProjects\UltimateWarfare\Entity\AbstractGameResources;
-use FrankProjects\UltimateWarfare\Entity\Fleet;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\GameUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
-use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use RuntimeException;
 
 /**
+ * Unit totals are aggregated in the database (a fixed number of queries regardless of the amount of regions
+ * and fleets), so unit changes must be flushed before calculating.
+ *
  * @property AbstractGameResources $abstractGameResources
  */
 abstract class AbstractPlayerCalculator
@@ -23,46 +28,41 @@ abstract class AbstractPlayerCalculator
     protected AbstractGameResources $abstractGameResources;
 
     public function __construct(
-        private readonly GameUnitRegistry $gameUnitRegistry
+        private readonly GameUnitRegistry $gameUnitRegistry,
+        private readonly WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
+        private readonly WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
+        private readonly FleetUnitRepository $fleetUnitRepository
     ) {
     }
 
     protected function calculateForFleets(Player $player, string $type): void
     {
-        foreach ($player->getFleets() as $fleet) {
-            $this->calculateForFleetUnits($fleet, $type);
-        }
-    }
-
-    private function calculateForFleetUnits(Fleet $fleet, string $type): void
-    {
-        foreach ($fleet->getFleetUnits() as $fleetUnit) {
-            $gameUnit = $this->gameUnitRegistry->find($fleetUnit->getGameUnit());
-            $gameUnitResource = $this->getAbstractGameResources($gameUnit, $type);
-            $this->updateAbstractGameResource($fleetUnit->getAmount(), $gameUnitResource);
-        }
+        $this->calculateForGameUnitTotals($this->fleetUnitRepository->getAmountSumByPlayer($player), $type);
     }
 
     protected function calculateForWorldRegions(Player $player, string $type): void
     {
-        foreach ($player->getWorldRegions() as $worldRegion) {
-            $this->calculateForWorldRegionStackableUnits($worldRegion, $type);
-        }
-    }
-
-    private function calculateForWorldRegionStackableUnits(WorldRegion $worldRegion, string $type): void
-    {
-        foreach ($worldRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
-            $gameUnit = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit());
-            $gameUnitResource = $this->getAbstractGameResources($gameUnit, $type);
-            $this->updateAbstractGameResource($worldRegionStackableUnit->getAmount(), $gameUnitResource);
-        }
+        $this->calculateForGameUnitTotals(
+            $this->worldRegionStackableUnitRepository->getAmountSumByPlayer($player),
+            $type
+        );
 
         // Leveled buildings (Defense / Special) scale their income/upkeep by their level.
-        foreach ($worldRegion->getWorldRegionLeveledUnits() as $leveledUnit) {
-            $gameUnit = $this->gameUnitRegistry->find($leveledUnit->getGameUnit());
+        $this->calculateForGameUnitTotals(
+            $this->worldRegionLeveledUnitRepository->getLevelSumByPlayer($player),
+            $type
+        );
+    }
+
+    /**
+     * @param array<int, int> $gameUnitTotals Amount (or level) per game unit id
+     */
+    private function calculateForGameUnitTotals(array $gameUnitTotals, string $type): void
+    {
+        foreach ($gameUnitTotals as $gameUnitId => $total) {
+            $gameUnit = $this->gameUnitRegistry->find(GameUnitEnum::from($gameUnitId));
             $gameUnitResource = $this->getAbstractGameResources($gameUnit, $type);
-            $this->updateAbstractGameResource($leveledUnit->getLevel(), $gameUnitResource);
+            $this->updateAbstractGameResource($total, $gameUnitResource);
         }
     }
 

@@ -9,16 +9,20 @@ use FrankProjects\UltimateWarfare\Entity\Federation\Resources as FederationResou
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Player\Resources as PlayerResources;
 use FrankProjects\UltimateWarfare\Entity\World;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\Action\FederationBankActionService;
+use FrankProjects\UltimateWarfare\Tests\Service\CreatesGameEngine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class FederationBankActionServiceTest extends TestCase
 {
+    use CreatesGameEngine;
+
     private FederationBankActionService $service;
     private FederationRepository&MockObject $federationRepository;
     private FederationNewsRepository&MockObject $federationNewsRepository;
@@ -33,7 +37,8 @@ class FederationBankActionServiceTest extends TestCase
         $this->service = new FederationBankActionService(
             $this->federationRepository,
             $this->federationNewsRepository,
-            $this->playerRepository
+            $this->playerRepository,
+            $this->createGameEngine()
         );
     }
 
@@ -81,6 +86,34 @@ class FederationBankActionServiceTest extends TestCase
     }
 
     // ========== DEPOSIT TESTS ==========
+
+    public function testDepositFailsWhenFederationCanNotBeLocked(): void
+    {
+        $entityLockRepository = $this->createMock(EntityLockRepository::class);
+        $entityLockRepository->method('lockForUpdate')->willReturn(false);
+        $service = new FederationBankActionService(
+            $this->federationRepository,
+            $this->federationNewsRepository,
+            $this->playerRepository,
+            $this->createGameEngine(null, null, null, $entityLockRepository)
+        );
+
+        $federation = $this->createFederation(5000, 2000, 1000, 1500);
+        $player = $this->createPlayer(1000, 500, 200, 300);
+        $player->method('getFederation')->willReturn($federation);
+
+        $this->federationRepository->expects(self::never())->method('save');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('You are not in a Federation!');
+
+        try {
+            $service->deposit($player, ['cash' => '400']);
+        } finally {
+            self::assertEquals(1000, $player->getResources()->getCash());
+            self::assertEquals(5000, $federation->getResources()->getCash());
+        }
+    }
 
     public function testDepositTransfersResources(): void
     {

@@ -32,6 +32,7 @@ final class OperationService
     private ConstructionRepository $constructionRepository;
     private BombardmentCooldownRepository $bombardmentCooldownRepository;
     private GameUnitRegistry $gameUnitRegistry;
+    private GameEngine $gameEngine;
 
     public function __construct(
         ReportCreator $reportCreator,
@@ -43,7 +44,8 @@ final class OperationService
         WorldRegionRepository $worldRegionRepository,
         ConstructionRepository $constructionRepository,
         BombardmentCooldownRepository $bombardmentCooldownRepository,
-        GameUnitRegistry $gameUnitRegistry
+        GameUnitRegistry $gameUnitRegistry,
+        GameEngine $gameEngine
     ) {
         $this->reportCreator = $reportCreator;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
@@ -55,6 +57,7 @@ final class OperationService
         $this->constructionRepository = $constructionRepository;
         $this->bombardmentCooldownRepository = $bombardmentCooldownRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->gameEngine = $gameEngine;
     }
 
     /**
@@ -66,45 +69,67 @@ final class OperationService
         WorldRegion $playerRegion,
         int $amount
     ): array {
-        $this->ensureCanExecute($region, $operation, $playerRegion, $amount);
-        $this->hasWorldRegionGameUnitAmount($playerRegion, $operation, $amount);
-        $this->ensureNoBombardmentCooldown($playerRegion, $operation);
-
         $player = $playerRegion->getPlayer();
         if ($player === null) {
             throw new RuntimeException("Region has no owner");
         }
 
-        $player->getResources()->addCash(-$operation->calculateCost($region, $amount));
-        $this->playerRepository->save($player);
+        // Both players' resources and income/upkeep change: settle and lock them for the whole operation
+        $regionPlayer = $region->getPlayer();
+        $players = $regionPlayer !== null ? [$player, $regionPlayer] : [$player];
 
-        $operationProcessor = OperationProcessor::factory(
+        return $this->gameEngine->transactional($players, function () use (
             $region,
             $operation,
             $playerRegion,
             $amount,
-            $this->reportCreator,
-            $this->playerRepository,
-            $this->worldRegionStackableUnitRepository,
-            $this->worldRegionLeveledUnitRepository,
-            $this->worldRegionRepository,
-            $this->constructionRepository,
-            $this->gameUnitRegistry
-        );
-        $operationResults = $operationProcessor->execute();
+            $player,
+            $regionPlayer
+        ): array {
+            // A concurrent request may have taken one of the regions after we decided whom to lock
+            if (
+                !$this->gameEngine->lockForUpdate($playerRegion)
+                || $playerRegion->getPlayer() !== $player
+                || !$this->gameEngine->lockForUpdate($region)
+                || $region->getPlayer() !== $regionPlayer
+            ) {
+                throw new RuntimeException('A region changed owner, please try again.');
+            }
 
-        $this->createBombardmentCooldown($region, $operation, $playerRegion);
+            $this->ensureCanExecute($region, $operation, $playerRegion, $amount);
+            $this->hasWorldRegionGameUnitAmount($playerRegion, $operation, $amount);
+            $this->ensureNoBombardmentCooldown($playerRegion, $operation);
 
-        $regionPlayer = $region->getPlayer();
-        if ($regionPlayer !== null) {
-            $this->netWorthUpdaterService->updateNetWorthForPlayer($regionPlayer);
-            $this->incomeUpdaterService->updateIncomeForPlayer($regionPlayer);
-        }
+            $player->getResources()->addCash(-$operation->calculateCost($region, $amount));
+            $this->playerRepository->save($player);
 
-        $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
-        $this->incomeUpdaterService->updateIncomeForPlayer($player);
+            $operationProcessor = OperationProcessor::factory(
+                $region,
+                $operation,
+                $playerRegion,
+                $amount,
+                $this->reportCreator,
+                $this->playerRepository,
+                $this->worldRegionStackableUnitRepository,
+                $this->worldRegionLeveledUnitRepository,
+                $this->worldRegionRepository,
+                $this->constructionRepository,
+                $this->gameUnitRegistry
+            );
+            $operationResults = $operationProcessor->execute();
 
-        return $operationResults;
+            $this->createBombardmentCooldown($region, $operation, $playerRegion);
+
+            if ($regionPlayer !== null) {
+                $this->netWorthUpdaterService->updateNetWorthForPlayer($regionPlayer);
+                $this->incomeUpdaterService->updateIncomeForPlayer($regionPlayer);
+            }
+
+            $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
+            $this->incomeUpdaterService->updateIncomeForPlayer($player);
+
+            return $operationResults;
+        });
     }
 
     private function ensureCanExecute(

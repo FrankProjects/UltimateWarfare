@@ -10,6 +10,7 @@ use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
+use FrankProjects\UltimateWarfare\Service\GameEngine;
 use RuntimeException;
 
 final class ResearchActionService
@@ -17,35 +18,40 @@ final class ResearchActionService
     private ResearchRegistry $researchRegistry;
     private ResearchPlayerRepository $researchPlayerRepository;
     private PlayerRepository $playerRepository;
+    private GameEngine $gameEngine;
 
     public function __construct(
         ResearchRegistry $researchRegistry,
         ResearchPlayerRepository $researchPlayerRepository,
-        PlayerRepository $playerRepository
+        PlayerRepository $playerRepository,
+        GameEngine $gameEngine
     ) {
         $this->researchRegistry = $researchRegistry;
         $this->researchPlayerRepository = $researchPlayerRepository;
         $this->playerRepository = $playerRepository;
+        $this->gameEngine = $gameEngine;
     }
 
     public function performResearch(string $researchSlug, Player $player): void
     {
-        $research = $this->getResearchBySlug($researchSlug);
-        $targetLevel = $this->resolveTargetLevel($research, $player);
+        $this->gameEngine->transactional([$player], function () use ($researchSlug, $player): void {
+            $research = $this->getResearchBySlug($researchSlug);
+            $targetLevel = $this->resolveTargetLevel($research, $player);
 
-        $researchPlayer = new ResearchPlayer();
-        $researchPlayer->setPlayer($player);
-        $researchPlayer->setResearchSlug($research->getSlug());
-        $researchPlayer->setLevel($targetLevel);
-        $researchPlayer->setTimestamp(time());
-        $researchPlayer->setCompletionTimestamp(time() + $research->getTimestamp($targetLevel));
+            $researchPlayer = new ResearchPlayer();
+            $researchPlayer->setPlayer($player);
+            $researchPlayer->setResearchSlug($research->getSlug());
+            $researchPlayer->setLevel($targetLevel);
+            $researchPlayer->setTimestamp(time());
+            $researchPlayer->setCompletionTimestamp(time() + $research->getTimestamp($targetLevel));
 
-        $resources = $player->getResources();
-        $resources->setCash($resources->getCash() - $research->getCost($targetLevel));
+            $resources = $player->getResources();
+            $resources->setCash($resources->getCash() - $research->getCost($targetLevel));
 
-        $player->setResources($resources);
-        $this->playerRepository->save($player);
-        $this->researchPlayerRepository->save($researchPlayer);
+            $player->setResources($resources);
+            $this->playerRepository->save($player);
+            $this->researchPlayerRepository->save($researchPlayer);
+        });
     }
 
     public function performCancel(string $researchSlug, Player $player): void

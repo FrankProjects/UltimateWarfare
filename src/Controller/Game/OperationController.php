@@ -11,6 +11,7 @@ use FrankProjects\UltimateWarfare\Repository\OperationRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\RegionActionService;
 use FrankProjects\UltimateWarfare\Service\OperationService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
+use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Throwable;
@@ -23,6 +24,7 @@ final class OperationController extends BaseGameController
     private OperationService $operationService;
     private DistanceCalculator $distanceCalculator;
     private BombardmentCooldownRepository $bombardmentCooldownRepository;
+    private ResourceAccrualCalculator $resourceAccrualCalculator;
 
     public function __construct(
         OperationRegistry $operationRegistry,
@@ -30,7 +32,8 @@ final class OperationController extends BaseGameController
         RegionActionService $regionActionService,
         OperationService $operationService,
         DistanceCalculator $distanceCalculator,
-        BombardmentCooldownRepository $bombardmentCooldownRepository
+        BombardmentCooldownRepository $bombardmentCooldownRepository,
+        ResourceAccrualCalculator $resourceAccrualCalculator
     ) {
         $this->operationRegistry = $operationRegistry;
         $this->gameUnitRegistry = $gameUnitRegistry;
@@ -38,6 +41,7 @@ final class OperationController extends BaseGameController
         $this->operationService = $operationService;
         $this->distanceCalculator = $distanceCalculator;
         $this->bombardmentCooldownRepository = $bombardmentCooldownRepository;
+        $this->resourceAccrualCalculator = $resourceAccrualCalculator;
     }
 
     public function operationsApi(int $regionId): JsonResponse
@@ -207,7 +211,7 @@ final class OperationController extends BaseGameController
             'available' => $availableAmount,
             'costPerUnit' => $operation->getCost(),
             'totalCost' => $operation->calculateCost($worldRegion, 1),
-            'playerCash' => $player->getResources()->getCash(),
+            'playerCash' => $this->resourceAccrualCalculator->project($player, time())->getCash(),
         ]);
     }
 

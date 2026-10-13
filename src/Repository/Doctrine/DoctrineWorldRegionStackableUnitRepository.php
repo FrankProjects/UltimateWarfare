@@ -105,6 +105,30 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
         return $gameUnits;
     }
 
+    /**
+     * @return array<int, int>
+     */
+    public function getAmountSumByPlayer(Player $player): array
+    {
+        $results = $this->entityManager
+            ->createQuery(
+                'SELECT wrsu.gameUnit, sum(wrsu.amount) as total
+              FROM ' . WorldRegionStackableUnit::class . ' wrsu
+              JOIN ' . WorldRegion::class . ' wr ON wrsu.worldRegion = wr
+              WHERE wr.player = :player
+              GROUP BY wrsu.gameUnit'
+            )->setParameter('player', $player)
+            ->getArrayResult();
+
+        $gameUnits = [];
+        /** @var array{gameUnit: GameUnitEnum, total: int|string} $result */
+        foreach ($results as $result) {
+            $gameUnits[$result['gameUnit']->value] = (int) $result['total'];
+        }
+
+        return $gameUnits;
+    }
+
     public function remove(WorldRegionStackableUnit $worldRegionStackableUnit): void
     {
         // Keep an already loaded collection in sync; an unloaded one is fetched fresh from the database when accessed

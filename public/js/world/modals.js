@@ -112,10 +112,7 @@
             if (result.success) {
                 applyRegionOwnership(selectedRegion.id, null, result.newlyVisibleEnemyUnits);
 
-                if (result.newCash !== undefined) {
-                    const cashElements = document.querySelectorAll('.resource-amount');
-                    if (cashElements.length > 0) cashElements[0].textContent = result.newCash.toLocaleString('en-US');
-                }
+                ResourceTicker.set({ cash: result.newCash });
 
                 if (result.newRegionPrice !== undefined) {
                     currentRegionPrice = result.newRegionPrice;

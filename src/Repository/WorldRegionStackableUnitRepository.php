@@ -24,6 +24,11 @@ interface WorldRegionStackableUnitRepository
      */
     public function getGameUnitSumByPlayerAndGameUnitCategories(Player $player, array $gameUnitCategories): array;
 
+    /**
+     * @return array<int, int> Total amount per game unit id, over all regions of the player
+     */
+    public function getAmountSumByPlayer(Player $player): array;
+
     public function remove(WorldRegionStackableUnit $worldRegionStackableUnit): void;
 
     public function save(WorldRegionStackableUnit $worldRegionStackableUnit): void;

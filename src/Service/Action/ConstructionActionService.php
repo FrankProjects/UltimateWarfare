@@ -14,7 +14,9 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
+use FrankProjects\UltimateWarfare\Service\GameEngine;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
+use FrankProjects\UltimateWarfare\Service\IncomeUpdaterService;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 use RuntimeException;
 
@@ -26,6 +28,8 @@ final class ConstructionActionService
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private NetWorthUpdaterService $netWorthUpdaterService;
     private GameUnitBehaviorFactory $behaviorFactory;
+    private GameEngine $gameEngine;
+    private IncomeUpdaterService $incomeUpdaterService;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
@@ -33,7 +37,9 @@ final class ConstructionActionService
         PlayerRepository $playerRepository,
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         NetWorthUpdaterService $netWorthUpdaterService,
-        GameUnitBehaviorFactory $behaviorFactory
+        GameUnitBehaviorFactory $behaviorFactory,
+        GameEngine $gameEngine,
+        IncomeUpdaterService $incomeUpdaterService
     ) {
         $this->constructionRepository = $constructionRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
@@ -41,6 +47,8 @@ final class ConstructionActionService
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
         $this->behaviorFactory = $behaviorFactory;
+        $this->gameEngine = $gameEngine;
+        $this->incomeUpdaterService = $incomeUpdaterService;
     }
 
     /**
@@ -52,114 +60,121 @@ final class ConstructionActionService
         GameUnitCategory $gameUnitCategory,
         array $constructionData
     ): void {
-        if ($gameUnitCategory->isLeveled()) {
-            throw new RuntimeException(
-                'Leveled buildings must be built through the dedicated building endpoints.'
-            );
-        }
-
-        $this->validateCategoryAllowed($region, $gameUnitCategory);
-
-        $priceCash = 0;
-        $priceWood = 0;
-        $priceSteel = 0;
-        $totalBuild = 0;
-        /** @var list<array{gameUnit: GameUnit, amount: int, duration: int}> $queue */
-        $queue = [];
-
-        foreach ($constructionData as $gameUnitId => $amount) {
-            $amount = intval($amount);
-            if ($amount < 1) {
-                continue;
-            }
-
-            $gameUnitEnum = GameUnitEnum::tryFrom($gameUnitId);
-            if ($gameUnitEnum === null) {
-                continue;
-            }
-
-            $gameUnit = $this->gameUnitRegistry->find($gameUnitEnum);
-            if ($gameUnit->getGameUnitCategory() !== $gameUnitCategory) {
-                continue;
-            }
-
-            $this->validateUnitAllowed($gameUnit, $region);
-
-            $behavior = $this->behaviorFactory->create($gameUnit);
-            if (!$behavior->canBuild($region, $player)) {
+        $this->gameEngine->transactional([$player], function () use (
+            $region,
+            $player,
+            $gameUnitCategory,
+            $constructionData
+        ): void {
+            if ($gameUnitCategory->isLeveled()) {
                 throw new RuntimeException(
-                    "Cannot build {$gameUnit->getName()}: " .
-                    $behavior->getBuildRequirementDescription()
+                    'Leveled buildings must be built through the dedicated building endpoints.'
                 );
             }
 
-            $researchSlug = $gameUnit->getResearchSlug();
-            if ($researchSlug !== null && !$this->playerHasResearch($player, $researchSlug)) {
-                throw new RuntimeException(
-                    "Cannot build {$gameUnit->getName()}: requires {$gameUnit->getResearchName()} research"
-                );
+            $this->validateCategoryAllowed($region, $gameUnitCategory);
+
+            $priceCash = 0;
+            $priceWood = 0;
+            $priceSteel = 0;
+            $totalBuild = 0;
+            /** @var list<array{gameUnit: GameUnit, amount: int, duration: int}> $queue */
+            $queue = [];
+
+            foreach ($constructionData as $gameUnitId => $amount) {
+                $amount = intval($amount);
+                if ($amount < 1) {
+                    continue;
+                }
+
+                $gameUnitEnum = GameUnitEnum::tryFrom($gameUnitId);
+                if ($gameUnitEnum === null) {
+                    continue;
+                }
+
+                $gameUnit = $this->gameUnitRegistry->find($gameUnitEnum);
+                if ($gameUnit->getGameUnitCategory() !== $gameUnitCategory) {
+                    continue;
+                }
+
+                $this->validateUnitAllowed($gameUnit, $region);
+
+                $behavior = $this->behaviorFactory->create($gameUnit);
+                if (!$behavior->canBuild($region, $player)) {
+                    throw new RuntimeException(
+                        "Cannot build {$gameUnit->getName()}: " .
+                        $behavior->getBuildRequirementDescription()
+                    );
+                }
+
+                $researchSlug = $gameUnit->getResearchSlug();
+                if ($researchSlug !== null && !$this->playerHasResearch($player, $researchSlug)) {
+                    throw new RuntimeException(
+                        "Cannot build {$gameUnit->getName()}: requires {$gameUnit->getResearchName()} research"
+                    );
+                }
+
+                $costMultiplier = $amount;
+                $duration = $this->calculateBuildDuration($gameUnit, $region);
+
+                $priceCash = $priceCash + ($costMultiplier * $gameUnit->getCost()->getCash());
+                $priceWood = $priceWood + ($costMultiplier * $gameUnit->getCost()->getWood());
+                $priceSteel = $priceSteel + ($costMultiplier * $gameUnit->getCost()->getSteel());
+
+                if ($gameUnitCategory === GameUnitCategory::BUILDINGS) {
+                    $totalBuild = $totalBuild + $amount;
+                }
+
+                $queue[] = ['gameUnit' => $gameUnit, 'amount' => $amount, 'duration' => $duration];
             }
-
-            $costMultiplier = $amount;
-            $duration = $this->calculateBuildDuration($gameUnit, $region);
-
-            $priceCash = $priceCash + ($costMultiplier * $gameUnit->getCost()->getCash());
-            $priceWood = $priceWood + ($costMultiplier * $gameUnit->getCost()->getWood());
-            $priceSteel = $priceSteel + ($costMultiplier * $gameUnit->getCost()->getSteel());
 
             if ($gameUnitCategory === GameUnitCategory::BUILDINGS) {
-                $totalBuild = $totalBuild + $amount;
+                $buildingsInConstruction = $this->getCountGameUnitsInConstruction($region, $gameUnitCategory);
+                $regionBuildings = $this->getCountGameUnitsInWorldRegion($region, $gameUnitCategory);
+                $totalSpace = $this->getEffectiveSpace($region, $player) - $regionBuildings - $buildingsInConstruction;
+
+                if ($totalBuild > $totalSpace) {
+                    throw new RuntimeException('You do not have that much building space.');
+                }
             }
 
-            $queue[] = ['gameUnit' => $gameUnit, 'amount' => $amount, 'duration' => $duration];
-        }
+            $resources = $player->getResources();
 
-        if ($gameUnitCategory === GameUnitCategory::BUILDINGS) {
-            $buildingsInConstruction = $this->getCountGameUnitsInConstruction($region, $gameUnitCategory);
-            $regionBuildings = $this->getCountGameUnitsInWorldRegion($region, $gameUnitCategory);
-            $totalSpace = $this->getEffectiveSpace($region, $player) - $regionBuildings - $buildingsInConstruction;
-
-            if ($totalBuild > $totalSpace) {
-                throw new RuntimeException('You do not have that much building space.');
+            if ($priceCash > $resources->getCash()) {
+                throw new RuntimeException("You don't have enough cash to build that.");
             }
-        }
+            if ($priceWood > $resources->getWood()) {
+                throw new RuntimeException("You don't have enough wood to build that.");
+            }
+            if ($priceSteel > $resources->getSteel()) {
+                throw new RuntimeException("You don't have enough steel to build that.");
+            }
 
-        $resources = $player->getResources();
+            if (count($queue) === 0) {
+                throw new RuntimeException("You didn't select anything to build.");
+            }
 
-        if ($priceCash > $resources->getCash()) {
-            throw new RuntimeException("You don't have enough cash to build that.");
-        }
-        if ($priceWood > $resources->getWood()) {
-            throw new RuntimeException("You don't have enough wood to build that.");
-        }
-        if ($priceSteel > $resources->getSteel()) {
-            throw new RuntimeException("You don't have enough steel to build that.");
-        }
+            $resources->setCash($resources->getCash() - $priceCash);
+            $resources->setWood($resources->getWood() - $priceWood);
+            $resources->setSteel($resources->getSteel() - $priceSteel);
 
-        if (count($queue) === 0) {
-            throw new RuntimeException("You didn't select anything to build.");
-        }
+            $player->setResources($resources);
+            $this->playerRepository->save($player);
 
-        $resources->setCash($resources->getCash() - $priceCash);
-        $resources->setWood($resources->getWood() - $priceWood);
-        $resources->setSteel($resources->getSteel() - $priceSteel);
+            // Constructions are only created once validation passed, as creating one adds it to the region
+            foreach ($queue as $item) {
+                $construction = Construction::create(
+                    $region,
+                    $player,
+                    $item['gameUnit']->getGameUnitEnum(),
+                    $item['amount'],
+                    $item['duration']
+                );
+                $this->constructionRepository->save($construction);
 
-        $player->setResources($resources);
-        $this->playerRepository->save($player);
-
-        // Constructions are only created once validation passed, as creating one adds it to the region
-        foreach ($queue as $item) {
-            $construction = Construction::create(
-                $region,
-                $player,
-                $item['gameUnit']->getGameUnitEnum(),
-                $item['amount'],
-                $item['duration']
-            );
-            $this->constructionRepository->save($construction);
-
-            $this->behaviorFactory->create($item['gameUnit'])->onBuild($region, $item['amount']);
-        }
+                $this->behaviorFactory->create($item['gameUnit'])->onBuild($region, $item['amount']);
+            }
+        });
     }
 
     /**
@@ -274,36 +289,44 @@ final class ConstructionActionService
         GameUnitCategory $gameUnitCategory,
         array $destroyData
     ): void {
-        if ($gameUnitCategory->isLeveled()) {
-            throw new RuntimeException('Leveled buildings cannot be destroyed.');
-        }
-
-        $isRemoving = false;
-        foreach ($destroyData as $gameUnitId => $amount) {
-            $amount = intval($amount);
-            if ($amount < 1) {
-                continue;
+        $this->gameEngine->transactional([$player], function () use (
+            $region,
+            $player,
+            $gameUnitCategory,
+            $destroyData
+        ): void {
+            if ($gameUnitCategory->isLeveled()) {
+                throw new RuntimeException('Leveled buildings cannot be destroyed.');
             }
 
-            $gameUnitEnum = GameUnitEnum::tryFrom($gameUnitId);
-            if ($gameUnitEnum === null) {
-                continue;
+            $isRemoving = false;
+            foreach ($destroyData as $gameUnitId => $amount) {
+                $amount = intval($amount);
+                if ($amount < 1) {
+                    continue;
+                }
+
+                $gameUnitEnum = GameUnitEnum::tryFrom($gameUnitId);
+                if ($gameUnitEnum === null) {
+                    continue;
+                }
+
+                $gameUnit = $this->gameUnitRegistry->find($gameUnitEnum);
+                if ($gameUnit->getGameUnitCategory() !== $gameUnitCategory) {
+                    continue;
+                }
+
+                $this->removeGameUnitsFromWorldRegion($region, $gameUnit, $amount);
+                $isRemoving = true;
             }
 
-            $gameUnit = $this->gameUnitRegistry->find($gameUnitEnum);
-            if ($gameUnit->getGameUnitCategory() !== $gameUnitCategory) {
-                continue;
+            if ($isRemoving === true) {
+                $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
+                $this->incomeUpdaterService->updateIncomeForPlayer($player);
+            } else {
+                throw new RuntimeException("You didn't select anything to remove.");
             }
-
-            $this->removeGameUnitsFromWorldRegion($region, $gameUnit, $amount);
-            $isRemoving = true;
-        }
-
-        if ($isRemoving === true) {
-            $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
-        } else {
-            throw new RuntimeException("You didn't select anything to remove.");
-        }
+        });
     }
 
     /**

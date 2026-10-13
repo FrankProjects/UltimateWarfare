@@ -16,6 +16,11 @@ interface WorldRegionLeveledUnitRepository
      */
     public function findLevelAndNetWorthByPlayer(Player $player): array;
 
+    /**
+     * @return array<int, int> Total level per game unit id, over all regions of the player
+     */
+    public function getLevelSumByPlayer(Player $player): array;
+
     public function remove(WorldRegionLeveledUnit $worldRegionLeveledUnit): void;
 
     public function save(WorldRegionLeveledUnit $worldRegionLeveledUnit): void;

@@ -420,12 +420,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
-                if (result.newCash !== undefined) {
-                    const cashEl = document.getElementById('resourceCash');
-                    if (cashEl) {
-                        cashEl.textContent = formatNumber(result.newCash);
-                    }
-                }
+                ResourceTicker.set({ cash: result.newCash });
                 loadResearchTree();
             } else {
                 showNotification(result.message, 'error');

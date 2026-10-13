@@ -66,6 +66,30 @@ final class DoctrineWorldRegionLeveledUnitRepository implements WorldRegionLevel
         return $data;
     }
 
+    /**
+     * @return array<int, int>
+     */
+    public function getLevelSumByPlayer(Player $player): array
+    {
+        $results = $this->entityManager
+            ->createQuery(
+                'SELECT wrlu.gameUnit, sum(wrlu.level) as total
+              FROM ' . WorldRegionLeveledUnit::class . ' wrlu
+              JOIN ' . WorldRegion::class . ' wr ON wrlu.worldRegion = wr
+              WHERE wr.player = :player
+              GROUP BY wrlu.gameUnit'
+            )->setParameter('player', $player)
+            ->getArrayResult();
+
+        $gameUnits = [];
+        /** @var array{gameUnit: GameUnitEnum, total: int|string} $result */
+        foreach ($results as $result) {
+            $gameUnits[$result['gameUnit']->value] = (int) $result['total'];
+        }
+
+        return $gameUnits;
+    }
+
     public function remove(WorldRegionLeveledUnit $worldRegionLeveledUnit): void
     {
         // Keep an already loaded collection in sync; an unloaded one is fetched fresh from the database when accessed

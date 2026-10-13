@@ -12,12 +12,15 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\ResearchActionService;
+use FrankProjects\UltimateWarfare\Tests\Service\CreatesGameEngine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class ResearchActionServiceTest extends TestCase
 {
+    use CreatesGameEngine;
+
     private ResearchActionService $service;
     private ResearchRegistry $researchRegistry;
     private ResearchPlayerRepository&MockObject $researchPlayerRepository;
@@ -32,7 +35,8 @@ class ResearchActionServiceTest extends TestCase
         $this->service = new ResearchActionService(
             $this->researchRegistry,
             $this->researchPlayerRepository,
-            $this->playerRepository
+            $this->playerRepository,
+            $this->createGameEngine()
         );
     }
 

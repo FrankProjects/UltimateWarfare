@@ -48,9 +48,9 @@ interface ConstructionRepository
     public function getCompletedConstructions(int $timestamp): array;
 
     /**
-     * @return Construction[]
+     * @return Construction[] Ordered by completion time
      */
-    public function getAllConstructions(): array;
+    public function getCompletedConstructionsByPlayer(Player $player, int $timestamp): array;
 
     public function remove(Construction $construction): void;
 

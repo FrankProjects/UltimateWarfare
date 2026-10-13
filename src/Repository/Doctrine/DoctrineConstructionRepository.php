@@ -160,9 +160,20 @@ final class DoctrineConstructionRepository implements ConstructionRepository
     /**
      * @return Construction[]
      */
-    public function getAllConstructions(): array
+    public function getCompletedConstructionsByPlayer(Player $player, int $timestamp): array
     {
-        return $this->repository->findAll();
+        /** @var Construction[] $completed */
+        $completed = $this->entityManager
+            ->createQuery(
+                'SELECT c
+              FROM ' . Construction::class . ' c
+              WHERE c.player = :player AND c.timestamp + c.duration < :timestamp
+              ORDER BY c.timestamp + c.duration ASC, c.id ASC'
+            )->setParameter('player', $player)
+            ->setParameter('timestamp', $timestamp)
+            ->getResult();
+
+        return $completed;
     }
 
     public function remove(Construction $construction): void

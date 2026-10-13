@@ -13,6 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
+use FrankProjects\UltimateWarfare\Service\GameEngine;
 use RuntimeException;
 
 final class FederationActionService
@@ -21,17 +22,20 @@ final class FederationActionService
     private FederationNewsRepository $federationNewsRepository;
     private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
+    private GameEngine $gameEngine;
 
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
         PlayerRepository $playerRepository,
-        ReportRepository $reportRepository
+        ReportRepository $reportRepository,
+        GameEngine $gameEngine
     ) {
         $this->federationRepository = $federationRepository;
         $this->federationNewsRepository = $federationNewsRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
+        $this->gameEngine = $gameEngine;
     }
 
     public function createFederation(Player $player, string $federationName): void
@@ -75,56 +79,63 @@ final class FederationActionService
             throw new RuntimeException("Aid player does not exist!");
         }
 
-        $aidPlayerFederation = $aidPlayer->getFederation();
-        if ($aidPlayerFederation === null || $aidPlayerFederation->getId() !== $federation->getId()) {
-            throw new RuntimeException("Player is not in your Federation!");
-        }
-
-        $resourceString = '';
-        foreach ($resources as $resourceName => $amount) {
-            if (!GameResource::isValid($resourceName)) {
-                continue;
+        $this->gameEngine->transactional([$player, $aidPlayer], function () use (
+            $player,
+            $resources,
+            $federation,
+            $aidPlayer
+        ): void {
+            $aidPlayerFederation = $aidPlayer->getFederation();
+            if ($aidPlayerFederation === null || $aidPlayerFederation->getId() !== $federation->getId()) {
+                throw new RuntimeException("Player is not in your Federation!");
             }
 
-            $amount = intval($amount);
-            if ($amount <= 0) {
-                continue;
-            }
+            $resourceString = '';
+            foreach ($resources as $resourceName => $amount) {
+                if (!GameResource::isValid($resourceName)) {
+                    continue;
+                }
 
-            $resourceAmount = $player->getResources()->getValueByName($resourceName);
-            if ($amount > $resourceAmount) {
-                throw new RuntimeException("You don't have enough {$resourceName}!");
-            }
+                $amount = intval($amount);
+                if ($amount <= 0) {
+                    continue;
+                }
 
-            $player->getResources()->setValueByName($resourceName, $resourceAmount - $amount);
-            $aidPlayerResourceAmount = $aidPlayer->getResources()->getValueByName($resourceName);
-            $aidPlayer->getResources()->setValueByName($resourceName, $aidPlayerResourceAmount + $amount);
+                $resourceAmount = $player->getResources()->getValueByName($resourceName);
+                if ($amount > $resourceAmount) {
+                    throw new RuntimeException("You don't have enough {$resourceName}!");
+                }
+
+                $player->getResources()->setValueByName($resourceName, $resourceAmount - $amount);
+                $aidPlayerResourceAmount = $aidPlayer->getResources()->getValueByName($resourceName);
+                $aidPlayer->getResources()->setValueByName($resourceName, $aidPlayerResourceAmount + $amount);
+
+                if ($resourceString !== '') {
+                    $resourceString .= ', ';
+                }
+                $resourceString .= $amount . ' ' . $resourceName;
+            }
 
             if ($resourceString !== '') {
-                $resourceString .= ', ';
+                $news = "{$player->getName()} has sent {$resourceString} to {$aidPlayer->getName()}";
+                $federationNews = FederationNews::createForFederation($federation, $news);
+                $this->federationNewsRepository->save($federationNews);
+
+                $aidPlayerNotifications = $aidPlayer->getNotifications();
+                $aidPlayerNotifications->setAid(true);
+                $aidPlayer->setNotifications($aidPlayerNotifications);
+                $this->playerRepository->save($aidPlayer);
+                $this->playerRepository->save($player);
+
+                $reportString = "{$player->getName()} has sent {$resourceString} to you";
+                $report = Report::createForPlayer($aidPlayer, time(), Report::TYPE_AID, $reportString);
+                $this->reportRepository->save($report);
+
+                $reportString = "You have send {$resourceString} to {$aidPlayer->getName()}";
+                $report = Report::createForPlayer($player, time(), Report::TYPE_AID, $reportString);
+                $this->reportRepository->save($report);
             }
-            $resourceString .= $amount . ' ' . $resourceName;
-        }
-
-        if ($resourceString !== '') {
-            $news = "{$player->getName()} has sent {$resourceString} to {$aidPlayer->getName()}";
-            $federationNews = FederationNews::createForFederation($federation, $news);
-            $this->federationNewsRepository->save($federationNews);
-
-            $aidPlayerNotifications = $aidPlayer->getNotifications();
-            $aidPlayerNotifications->setAid(true);
-            $aidPlayer->setNotifications($aidPlayerNotifications);
-            $this->playerRepository->save($aidPlayer);
-            $this->playerRepository->save($player);
-
-            $reportString = "{$player->getName()} has sent {$resourceString} to you";
-            $report = Report::createForPlayer($aidPlayer, time(), Report::TYPE_AID, $reportString);
-            $this->reportRepository->save($report);
-
-            $reportString = "You have send {$resourceString} to {$aidPlayer->getName()}";
-            $report = Report::createForPlayer($player, time(), Report::TYPE_AID, $reportString);
-            $this->reportRepository->save($report);
-        }
+        });
     }
 
     public function removeFederation(Player $player): void
