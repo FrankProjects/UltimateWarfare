@@ -190,6 +190,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                ResourceTicker.refresh();
                 loadTab();
             } else {
                 showNotification(result.message || 'Action failed', 'error');
@@ -277,6 +278,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                ResourceTicker.refresh();
                 currentTab = 'orders';
                 renderTabs();
                 loadTab();

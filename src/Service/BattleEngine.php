@@ -27,7 +27,7 @@ final class BattleEngine
     private IncomeUpdaterService $incomeUpdaterService;
     private GameUnitRegistry $gameUnitRegistry;
     private BattleSummaryRepository $battleSummaryRepository;
-    private GameEngine $gameEngine;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
     private EntityLockRepository $entityLockRepository;
 
     public function __construct(
@@ -37,7 +37,7 @@ final class BattleEngine
         IncomeUpdaterService $incomeUpdaterService,
         GameUnitRegistry $gameUnitRegistry,
         BattleSummaryRepository $battleSummaryRepository,
-        GameEngine $gameEngine,
+        PlayerStateUpdaterService $playerStateUpdaterService,
         EntityLockRepository $entityLockRepository
     ) {
         $this->battleUpdaterService = $battleUpdaterService;
@@ -46,7 +46,7 @@ final class BattleEngine
         $this->incomeUpdaterService = $incomeUpdaterService;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->battleSummaryRepository = $battleSummaryRepository;
-        $this->gameEngine = $gameEngine;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
         $this->entityLockRepository = $entityLockRepository;
     }
 
@@ -62,7 +62,7 @@ final class BattleEngine
         // The attacker is locked for the whole request; settle and lock the defender as well
         $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
         if ($defendingPlayer !== null) {
-            $this->gameEngine->syncPlayer($defendingPlayer, time());
+            $this->playerStateUpdaterService->updateStateForPlayer($defendingPlayer, time());
         }
 
         // A concurrent request may have used this fleet, or taken the region after we locked its owner

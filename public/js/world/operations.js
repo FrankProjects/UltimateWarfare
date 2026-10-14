@@ -287,6 +287,7 @@
             if (result.success) {
                 // Update cash display
                 ResourceTicker.set({ cash: result.newCash });
+                ResourceTicker.refresh();
 
                 // Add bombardment cooldown arc if present
                 if (result.bombardmentCooldown && WorldApp.worldMap) {

@@ -47,7 +47,7 @@ final class ConstructionController extends BaseGameController
             $unitName = $construction->getNumber() === 1
                 ? $gameUnit->getName()
                 : $gameUnit->getNameMulti();
-            $timeLeft = ($construction->getTimestamp() + $construction->getDuration()) - time();
+            $timeLeft = $construction->getCompletionTimestamp() - time();
 
             $items[] = [
                 'id' => $construction->getId(),

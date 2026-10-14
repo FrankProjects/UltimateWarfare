@@ -13,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use RuntimeException;
 
 final class FederationActionService
@@ -22,20 +22,20 @@ final class FederationActionService
     private FederationNewsRepository $federationNewsRepository;
     private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
-    private GameEngine $gameEngine;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
 
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
         PlayerRepository $playerRepository,
         ReportRepository $reportRepository,
-        GameEngine $gameEngine
+        PlayerStateUpdaterService $playerStateUpdaterService
     ) {
         $this->federationRepository = $federationRepository;
         $this->federationNewsRepository = $federationNewsRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
-        $this->gameEngine = $gameEngine;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
     }
 
     public function createFederation(Player $player, string $federationName): void
@@ -80,7 +80,7 @@ final class FederationActionService
         }
 
         // The sender is locked for the whole request; settle and lock the receiver as well
-        $this->gameEngine->syncPlayer($aidPlayer, time());
+        $this->playerStateUpdaterService->updateStateForPlayer($aidPlayer, time());
 
         $aidPlayerFederation = $aidPlayer->getFederation();
         if ($aidPlayerFederation === null || $aidPlayerFederation->getId() !== $federation->getId()) {

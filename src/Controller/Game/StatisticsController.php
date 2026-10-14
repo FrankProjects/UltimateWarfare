@@ -7,6 +7,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -15,15 +16,48 @@ final class StatisticsController extends BaseGameController
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private GameUnitRegistry $gameUnitRegistry;
     private ResourceAccrualCalculator $resourceAccrualCalculator;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
 
     public function __construct(
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         GameUnitRegistry $gameUnitRegistry,
-        ResourceAccrualCalculator $resourceAccrualCalculator
+        ResourceAccrualCalculator $resourceAccrualCalculator,
+        PlayerStateUpdaterService $playerStateUpdaterService
     ) {
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->resourceAccrualCalculator = $resourceAccrualCalculator;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
+    }
+
+    /**
+     * Current resources and rates for the live resource ticker, plus when they next change by a completion
+     */
+    public function resourcesApi(): JsonResponse
+    {
+        $player = $this->getPlayer();
+        $now = time();
+        $resources = $this->resourceAccrualCalculator->project($player, $now);
+        $income = $player->getIncome();
+        $upkeep = $player->getUpkeep();
+
+        return new JsonResponse([
+            'success' => true,
+            'serverTime' => $now,
+            'resources' => [
+                'cash' => $resources->getCash(),
+                'wood' => $resources->getWood(),
+                'food' => $resources->getFood(),
+                'steel' => $resources->getSteel(),
+            ],
+            'rates' => [
+                'cash' => $income->getCash() - $upkeep->getCash(),
+                'wood' => $income->getWood() - $upkeep->getWood(),
+                'food' => $income->getFood() - $upkeep->getFood(),
+                'steel' => $income->getSteel() - $upkeep->getSteel(),
+            ],
+            'nextCompletion' => $this->playerStateUpdaterService->getNextCompletionTimestamp($player),
+        ]);
     }
 
     public function statisticsApi(): JsonResponse

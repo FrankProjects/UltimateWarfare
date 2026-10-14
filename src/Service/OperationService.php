@@ -33,7 +33,7 @@ final class OperationService
     private ConstructionRepository $constructionRepository;
     private BombardmentCooldownRepository $bombardmentCooldownRepository;
     private GameUnitRegistry $gameUnitRegistry;
-    private GameEngine $gameEngine;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
     private EntityLockRepository $entityLockRepository;
 
     public function __construct(
@@ -47,7 +47,7 @@ final class OperationService
         ConstructionRepository $constructionRepository,
         BombardmentCooldownRepository $bombardmentCooldownRepository,
         GameUnitRegistry $gameUnitRegistry,
-        GameEngine $gameEngine,
+        PlayerStateUpdaterService $playerStateUpdaterService,
         EntityLockRepository $entityLockRepository
     ) {
         $this->reportCreator = $reportCreator;
@@ -60,7 +60,7 @@ final class OperationService
         $this->constructionRepository = $constructionRepository;
         $this->bombardmentCooldownRepository = $bombardmentCooldownRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
-        $this->gameEngine = $gameEngine;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
         $this->entityLockRepository = $entityLockRepository;
     }
 
@@ -81,7 +81,7 @@ final class OperationService
         // The attacker is locked for the whole request; settle and lock the target player as well
         $regionPlayer = $region->getPlayer();
         if ($regionPlayer !== null) {
-            $this->gameEngine->syncPlayer($regionPlayer, time());
+            $this->playerStateUpdaterService->updateStateForPlayer($regionPlayer, time());
         }
 
         // A concurrent request may have taken one of the regions after we locked its owner

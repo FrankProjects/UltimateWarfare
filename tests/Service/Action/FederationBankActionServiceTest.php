@@ -13,14 +13,14 @@ use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\Action\FederationBankActionService;
-use FrankProjects\UltimateWarfare\Tests\Service\CreatesGameEngine;
+use FrankProjects\UltimateWarfare\Tests\Service\CreatesPlayerStateUpdaterService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class FederationBankActionServiceTest extends TestCase
 {
-    use CreatesGameEngine;
+    use CreatesPlayerStateUpdaterService;
 
     private FederationBankActionService $service;
     private FederationRepository&MockObject $federationRepository;

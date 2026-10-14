@@ -104,7 +104,7 @@ final class RegionBuildDataService
         $constructionTimeLeft = [];
         foreach ($worldRegion->getConstructions() as $construction) {
             $key = $construction->getGameUnit()->value;
-            $left = max(0, ($construction->getTimestamp() + $construction->getDuration()) - time());
+            $left = max(0, $construction->getCompletionTimestamp() - time());
             $constructionData[$key] = ($constructionData[$key] ?? 0) + $construction->getNumber();
             $constructionTimeLeft[$key] = max($constructionTimeLeft[$key] ?? 0, $left);
         }

@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -18,34 +18,34 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Runs the game engine for every request of a player.
- *
- * Requests that change state (POST, DELETE, ...) run in one database transaction that holds a row lock on the
- * current player from the start of the request until the response: concurrent requests of the same player
+ * Requests of a player that change state (POST, DELETE, ...) run in one database transaction that holds a row
+ * lock on the current player from the start of the request until the response: concurrent requests of the player
  * can't read the same resources and overwrite each other's changes. The transaction commits for successful
  * responses (status < 400) and rolls back for error responses and exceptions, so a failed action never leaves
  * half of its changes behind. Actions that also change another player or shared row lock those explicitly
- * (GameEngine::syncPlayer(), EntityLockRepository::lockForUpdate()).
+ * (PlayerStateUpdaterService::updateStateForPlayer(), EntityLockRepository::lockForUpdate()).
  *
- * Safe requests (GET) only read, so they don't take the lock and run in parallel.
+ * Safe requests (GET) only read: they don't take the lock, run in parallel and don't update player state.
+ * Completed construction and research are processed by the queue worker (game:queue:work);
+ * the state update at the start of a state-changing request completes the player's own due items in any case.
  */
-final class GameEngineSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
+final class PlayerRequestSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
-    private GameEngine $gameEngine;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
     private RequestStack $requestStack;
     private PlayerRepository $playerRepository;
     private EntityManagerInterface $entityManager;
     private bool $transactionStarted = false;
 
     public function __construct(
-        GameEngine $gameEngine,
+        PlayerStateUpdaterService $playerStateUpdaterService,
         RequestStack $requestStack,
         TokenStorageInterface $tokenStorage,
         PlayerRepository $playerRepository,
         EntityManagerInterface $entityManager
     ) {
         parent::__construct($tokenStorage);
-        $this->gameEngine = $gameEngine;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
         $this->requestStack = $requestStack;
         $this->playerRepository = $playerRepository;
         $this->entityManager = $entityManager;
@@ -53,7 +53,8 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        // Safe requests only read: resources are projected for display and the queue worker completes queue items
+        if (!$event->isMainRequest() || $event->getRequest()->isMethodSafe()) {
             return;
         }
 
@@ -67,19 +68,11 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
             return;
         }
 
-        if ($event->getRequest()->isMethodSafe()) {
-            $this->runGameEngine($player);
-            return;
-        }
-
-        // Complete other players' due queue items first; each is synced in its own transaction
-        $this->runGameEngine(null);
-
         $this->entityManager->beginTransaction();
         $this->transactionStarted = true;
 
         // Nested in the request transaction: the row lock on the player is held until the response
-        $this->gameEngine->syncPlayer($player, time());
+        $this->playerStateUpdaterService->updateStateForPlayer($player, time());
     }
 
     public function onKernelResponse(ResponseEvent $event): void
@@ -136,15 +129,6 @@ final class GameEngineSubscriber extends AbstractUserSubscriber implements Event
         }
 
         return $player;
-    }
-
-    private function runGameEngine(?Player $player): void
-    {
-        try {
-            $this->gameEngine->run($player);
-        } catch (\Exception $exception) {
-            // Do nothing...
-        }
     }
 
     public static function getSubscribedEvents(): array

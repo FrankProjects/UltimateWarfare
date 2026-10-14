@@ -52,6 +52,8 @@ interface ConstructionRepository
      */
     public function getCompletedConstructionsByPlayer(Player $player, int $timestamp): array;
 
+    public function getNextCompletionTimestampByPlayer(Player $player): ?int;
+
     public function remove(Construction $construction): void;
 
     public function save(Construction $construction): void;

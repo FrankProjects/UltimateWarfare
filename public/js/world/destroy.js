@@ -132,6 +132,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                ResourceTicker.refresh();
                 bootstrap.Modal.getInstance(destroyModal).hide();
 
                 // Update the build data cache and the worldmap unit display

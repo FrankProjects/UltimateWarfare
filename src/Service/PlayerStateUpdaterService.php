@@ -12,16 +12,20 @@ use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ConstructionProcessor;
-use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ResearchProcessor;
+use FrankProjects\UltimateWarfare\Service\PlayerState\ConstructionCompleter;
+use FrankProjects\UltimateWarfare\Service\PlayerState\ResearchCompleter;
 use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
 
-final class GameEngine
+/**
+ * A player's state (resources, units, research) is stored as it was at Player::timestampUpdate. This service
+ * brings it up to a later moment: queued construction and research complete at their completion time, in
+ * chronological order, and resources accrue at the income/upkeep rate that applied in each interval.
+ * The result is the same however often, and however late, it runs.
+ */
+final class PlayerStateUpdaterService
 {
-    private const int SYNC_INTERVAL_SECONDS = 60;
-
-    private ConstructionProcessor $constructionProcessor;
-    private ResearchProcessor $researchProcessor;
+    private ConstructionCompleter $constructionCompleter;
+    private ResearchCompleter $researchCompleter;
     private ConstructionRepository $constructionRepository;
     private ResearchPlayerRepository $researchPlayerRepository;
     private PlayerRepository $playerRepository;
@@ -32,8 +36,8 @@ final class GameEngine
     private int $researchTimeOverride;
 
     public function __construct(
-        ConstructionProcessor $constructionProcessor,
-        ResearchProcessor $researchProcessor,
+        ConstructionCompleter $constructionCompleter,
+        ResearchCompleter $researchCompleter,
         ConstructionRepository $constructionRepository,
         ResearchPlayerRepository $researchPlayerRepository,
         PlayerRepository $playerRepository,
@@ -43,8 +47,8 @@ final class GameEngine
         int $constructionTimeOverride,
         int $researchTimeOverride
     ) {
-        $this->constructionProcessor = $constructionProcessor;
-        $this->researchProcessor = $researchProcessor;
+        $this->constructionCompleter = $constructionCompleter;
+        $this->researchCompleter = $researchCompleter;
         $this->constructionRepository = $constructionRepository;
         $this->researchPlayerRepository = $researchPlayerRepository;
         $this->playerRepository = $playerRepository;
@@ -55,34 +59,27 @@ final class GameEngine
         $this->researchTimeOverride = $researchTimeOverride;
     }
 
-    public function run(?Player $player): void
+    /**
+     * Updates the state of every player with due construction or research up to $timestamp, each in its own
+     * transaction. Run continuously by the queue worker (game:queue:work).
+     */
+    public function updateDuePlayers(int $timestamp): void
     {
-        $timestamp = time();
-
-        $players = $this->getPlayersWithCompletedQueueItems($timestamp);
-
-        // Accrual is exact however often it runs, so skip the locking write when nothing is due and it ran recently
-        if ($player !== null && $player->getTimestampUpdate() + self::SYNC_INTERVAL_SECONDS <= $timestamp) {
-            $players[$player->getId()] = $player;
+        foreach ($this->getPlayersWithCompletedQueueItems($timestamp) as $player) {
+            $this->updateStateForPlayer($player, $timestamp);
         }
-
-        foreach ($players as $playerToSync) {
-            $this->syncPlayer($playerToSync, $timestamp);
-        }
-
-        $this->processPopulationGrowth($timestamp);
     }
 
     /**
-     * Brings a player's state up to $timestamp: completes due queue items in chronological order and
+     * Brings a player's stored state up to $timestamp: completes due queue items in chronological order and
      * accrues resources at the rate that was in effect during each interval.
      *
      * The player is refreshed from the database under a row lock, so unflushed changes to the player entity
-     * are discarded. Inside an outer transaction (every POST request, see GameEngineSubscriber) the commit
+     * are discarded. Inside an outer transaction (every POST request, see PlayerRequestSubscriber) the commit
      * below is nested, so the lock is held until the request's transaction commits: call this before
      * changing another player's resources or income/upkeep.
      */
-    public function syncPlayer(Player $player, int $timestamp): void
+    public function updateStateForPlayer(Player $player, int $timestamp): void
     {
         $this->entityManager->beginTransaction();
 
@@ -95,11 +92,11 @@ final class GameEngine
                 $this->resourceAccrualCalculator->accrue($player, min($completedAt, $timestamp));
 
                 if ($queueItem instanceof Construction) {
-                    if (!$this->constructionProcessor->complete($queueItem)) {
+                    if (!$this->constructionCompleter->complete($queueItem)) {
                         continue;
                     }
                 } else {
-                    $this->researchProcessor->complete($queueItem);
+                    $this->researchCompleter->complete($queueItem);
                 }
 
                 $this->incomeUpdaterService->updateIncomeForPlayer($player);
@@ -113,6 +110,23 @@ final class GameEngine
             $this->entityManager->rollback();
             throw $e;
         }
+    }
+
+    /**
+     * When the player's income/upkeep rate may next change through a completing queue item, or null if nothing
+     * is queued. Lets clients refresh shortly after, instead of polling.
+     */
+    public function getNextCompletionTimestamp(Player $player): ?int
+    {
+        $timestamps = array_filter(
+            [
+                $this->constructionRepository->getNextCompletionTimestampByPlayer($player),
+                $this->researchPlayerRepository->getNextCompletionTimestampByPlayer($player),
+            ],
+            fn(?int $timestamp): bool => $timestamp !== null
+        );
+
+        return $timestamps !== [] ? min($timestamps) : null;
     }
 
     /**
@@ -149,7 +163,7 @@ final class GameEngine
             $this->getConstructionCutoff($timestamp)
         );
         foreach ($constructions as $construction) {
-            $queueItems[] = [$construction->getTimestamp() + $construction->getDuration(), $construction];
+            $queueItems[] = [$construction->getCompletionTimestamp(), $construction];
         }
 
         $researches = $this->researchPlayerRepository->getNonActiveCompletedResearchByPlayer(
@@ -179,43 +193,5 @@ final class GameEngine
     private function getResearchCutoff(int $timestamp): int
     {
         return $this->researchTimeOverride > 0 ? PHP_INT_MAX : $timestamp;
-    }
-
-    public function processPopulationGrowth(int $timestamp): void
-    {
-        /**
-         * //income
-         * $constant_income_pop = 0.1;
-         *
-         * //units
-         * $constant_house_pop = 500;
-         * $constant_house_pop_growth = 10;
-         *
-         * $income_pop_increase = 0;
-         *
-         * $query = "SELECT id, pop, (SELECT ifnull(amount,0) FROM world_region_units WHERE region_id = world_region.id
-         * AND unit_id = 5) as house FROM world_region WHERE owner = $player_id";
-         * $result = $db->query($query);
-         * if ($db->num_rows($result) > 0) {
-         * while ($arr = $db->fetch_assoc($result)) {
-         * //Set to 0 if NULL is found
-         * $arr['house'] = $arr['house'] == "" ? "0" : "".$arr['house']."";
-         *
-         * if(round($arr['pop']) < ($arr['house'] * $constant_house_pop)){
-         * //update pop
-         * $pop_growth = (($constant_house_pop_growth / 3600) * $arr['house']) * $time_diff;
-         * if(($pop_growth + $arr['pop']) > ($arr['house'] * $constant_house_pop)){
-         * $pop_growth = ($arr['house'] * $constant_house_pop) - $arr['pop'];
-         * }
-         * $pop_growth = round($pop_growth, 3);
-         * //update region pop
-         * $db->query("UPDATE world_region SET pop = pop + $pop_growth WHERE id = ".$arr['id']."");
-         * $income_pop_increase = round($income_pop_increase + ($pop_growth * $constant_income_pop), 3);
-         * }
-         * }
-         * }
-         * //update player income
-         * $db->query("UPDATE player SET income_cash = income_cash + $income_pop_increase WHERE id = $player_id");
-         */
     }
 }

@@ -103,6 +103,19 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
         return $levels;
     }
 
+    public function getNextCompletionTimestampByPlayer(Player $player): ?int
+    {
+        /** @var int|string|null $next */
+        $next = $this->entityManager->createQuery(
+            'SELECT MIN(rp.completionTimestamp)
+              FROM ' . ResearchPlayer::class . ' rp
+              WHERE rp.player = :player AND rp.active = 0'
+        )->setParameter('player', $player)
+            ->getSingleScalarResult();
+
+        return $next !== null ? (int) $next : null;
+    }
+
     public function remove(ResearchPlayer $researchPlayer): void
     {
         $this->entityManager->remove($researchPlayer);

@@ -13,14 +13,14 @@ use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 use FrankProjects\UltimateWarfare\Service\Action\MarketActionService;
-use FrankProjects\UltimateWarfare\Tests\Service\CreatesGameEngine;
+use FrankProjects\UltimateWarfare\Tests\Service\CreatesPlayerStateUpdaterService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class MarketActionServiceTest extends TestCase
 {
-    use CreatesGameEngine;
+    use CreatesPlayerStateUpdaterService;
 
     private MarketItemRepository&MockObject $marketItemRepository;
     private PlayerRepository&MockObject $playerRepository;
@@ -147,7 +147,7 @@ class MarketActionServiceTest extends TestCase
             $this->marketItemRepository,
             $this->playerRepository,
             $this->createMock(ReportRepository::class),
-            $this->createGameEngine(),
+            $this->createPlayerStateUpdaterService(),
             $entityLockRepository ?? $this->createEntityLockRepository()
         );
     }

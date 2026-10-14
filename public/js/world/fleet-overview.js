@@ -126,6 +126,9 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                if (action === 'attack') {
+                    ResourceTicker.refresh();
+                }
 
                 if (window.WorldApp && WorldApp.worldMap) {
                     if (action === 'attack') {

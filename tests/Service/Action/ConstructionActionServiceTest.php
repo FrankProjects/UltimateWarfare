@@ -21,7 +21,7 @@ use FrankProjects\UltimateWarfare\Service\Action\ConstructionActionService;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorInterface;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
-use FrankProjects\UltimateWarfare\Tests\Service\CreatesGameEngine;
+use FrankProjects\UltimateWarfare\Tests\Service\CreatesPlayerStateUpdaterService;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ use RuntimeException;
 
 class ConstructionActionServiceTest extends TestCase
 {
-    use CreatesGameEngine;
+    use CreatesPlayerStateUpdaterService;
 
     private ConstructionActionService $service;
     private ConstructionRepository&MockObject $constructionRepository;

@@ -16,11 +16,11 @@ use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
-use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ConstructionProcessor;
-use FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ResearchProcessor;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use FrankProjects\UltimateWarfare\Service\IncomeUpdaterService;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
+use FrankProjects\UltimateWarfare\Service\PlayerState\ConstructionCompleter;
+use FrankProjects\UltimateWarfare\Service\PlayerState\ResearchCompleter;
 use FrankProjects\UltimateWarfare\Util\IncomeCalculator;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
@@ -28,26 +28,27 @@ use FrankProjects\UltimateWarfare\Util\UpkeepCalculator;
 use PHPUnit\Framework\TestCase;
 
 /**
- * GameEngine and its collaborators are final; build real instances on top of mocked repositories.
+ * PlayerStateUpdaterService and its collaborators are final; build real instances on top of mocked repositories.
  * The mocked EntityManager makes transactions and row locks no-ops.
  *
  * @mixin TestCase
  */
-trait CreatesGameEngine
+trait CreatesPlayerStateUpdaterService
 {
-    protected function createGameEngine(
+    protected function createPlayerStateUpdaterService(
         ?ConstructionRepository $constructionRepository = null,
         ?WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository = null,
-        ?EntityManagerInterface $entityManager = null
-    ): GameEngine {
+        ?EntityManagerInterface $entityManager = null,
+        ?ResearchPlayerRepository $researchPlayerRepository = null
+    ): PlayerStateUpdaterService {
 
         $gameUnitRegistry = new GameUnitRegistry();
         $constructionRepository ??= $this->createMock(ConstructionRepository::class);
         $worldRegionStackableUnitRepository ??= $this->createMock(WorldRegionStackableUnitRepository::class);
         $netWorthUpdaterService = $this->createNetWorthUpdaterService();
 
-        return new GameEngine(
-            new ConstructionProcessor(
+        return new PlayerStateUpdaterService(
+            new ConstructionCompleter(
                 $constructionRepository,
                 $this->createMock(ReportRepository::class),
                 $worldRegionStackableUnitRepository,
@@ -55,14 +56,14 @@ trait CreatesGameEngine
                 $netWorthUpdaterService,
                 $gameUnitRegistry
             ),
-            new ResearchProcessor(
+            new ResearchCompleter(
                 $this->createMock(ResearchPlayerRepository::class),
                 $this->createMock(ReportRepository::class),
                 $netWorthUpdaterService,
                 new ResearchRegistry()
             ),
             $constructionRepository,
-            $this->createMock(ResearchPlayerRepository::class),
+            $researchPlayerRepository ?? $this->createMock(ResearchPlayerRepository::class),
             $this->createMock(PlayerRepository::class),
             $this->createIncomeUpdaterService($worldRegionStackableUnitRepository),
             new ResourceAccrualCalculator(),

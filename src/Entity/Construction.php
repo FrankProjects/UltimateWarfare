@@ -10,8 +10,13 @@ class Construction
 {
     private int $id;
     private int $number;
-    private int $timestamp;
-    private int $duration;
+    private int $timestamp = 0;
+    private int $duration = 0;
+
+    /**
+     * Stored (timestamp + duration), so finding completed constructions can use an index
+     */
+    private int $completionTimestamp = 0;
     private Player $player;
     private WorldRegion $worldRegion;
     private GameUnitEnum $gameUnit;
@@ -39,6 +44,7 @@ class Construction
     public function setTimestamp(int $timestamp): void
     {
         $this->timestamp = $timestamp;
+        $this->completionTimestamp = $this->timestamp + $this->duration;
     }
 
     public function getTimestamp(): int
@@ -49,6 +55,7 @@ class Construction
     public function setDuration(int $duration): void
     {
         $this->duration = $duration;
+        $this->completionTimestamp = $this->timestamp + $this->duration;
     }
 
     /**
@@ -58,6 +65,11 @@ class Construction
     public function getDuration(): int
     {
         return $this->duration;
+    }
+
+    public function getCompletionTimestamp(): int
+    {
+        return $this->completionTimestamp;
     }
 
     public function getPlayer(): Player

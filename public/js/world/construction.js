@@ -115,12 +115,27 @@
 
         timerInterval = setInterval(function () {
             const timers = constructionContainer.querySelectorAll('.construction-timer');
+            let completed = false;
             timers.forEach(function (el) {
                 let timeLeft = parseInt(el.getAttribute('data-timeleft'), 10) - 1;
-                if (timeLeft < 0) { timeLeft = 0; }
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                    completed = true;
+                }
                 el.setAttribute('data-timeleft', String(timeLeft));
                 el.textContent = formatTime(timeLeft);
             });
+
+            // A construction finished: reload the list once the queue worker has processed it
+            if (completed) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                setTimeout(function () {
+                    if (constructionModal.classList.contains('show')) {
+                        loadConstruction();
+                    }
+                }, ResourceTicker.completionDelaySeconds * 1000);
+            }
         }, 1000);
     }
 
@@ -152,6 +167,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                ResourceTicker.refresh();
                 loadConstruction();
                 // Update the build data cache and the worldmap unit display
                 WorldBuild.applyBuildData(result.buildData);

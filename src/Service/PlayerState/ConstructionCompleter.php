@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
+namespace FrankProjects\UltimateWarfare\Service\PlayerState;
 
 use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Report;
@@ -15,7 +15,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 
-final class ConstructionProcessor
+final class ConstructionCompleter
 {
     private ConstructionRepository $constructionRepository;
     private ReportRepository $reportRepository;
@@ -41,7 +41,7 @@ final class ConstructionProcessor
     }
 
     /**
-     * Completes a construction queue item. Income and upkeep are not touched here: the GameEngine
+     * Completes a construction queue item. Income and upkeep are not touched here: the PlayerStateUpdaterService
      * accrues resources up to the completion time first and recalculates the rate afterwards.
      *
      * @return bool Whether the construction was completed (false when the region changed owner)
@@ -129,7 +129,7 @@ final class ConstructionProcessor
             $message = "You completed {$construction->getNumber()} {$unitName}!";
         }
 
-        $finishedConstructionTime = $construction->getTimestamp() + $construction->getDuration();
+        $finishedConstructionTime = $construction->getCompletionTimestamp();
         $report = Report::createForPlayer($construction->getPlayer(), $finishedConstructionTime, $reportType, $message);
         $this->reportRepository->save($report);
     }

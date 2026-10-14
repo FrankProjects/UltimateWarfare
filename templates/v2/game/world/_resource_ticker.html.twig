@@ -1,7 +1,7 @@
 {# Projected to now (stored resources are only written on sync); resource-ticker.js keeps them counting #}
 {% set now = 'now'|date('U') %}
 {% set currentResources = player_resources(player, now) %}
-<div class="resource-ticker" data-server-time="{{ now }}">
+<div class="resource-ticker" data-server-time="{{ now }}" data-next-completion="{{ player_next_completion(player) }}">
     {% set resources = [
         { name: 'Cash', icon: 'resource_cash.svg', key: 'cash' },
         { name: 'Wood', icon: 'resource_wood.svg', key: 'wood' },

@@ -15,8 +15,10 @@ composer install
 # Cache
 bin/console cache:clear
 
-# Game engine tick (processes income, construction, research)
-bin/console game:engine:run
+# Queue worker: keeps completing due construction/research (production: systemd unit
+# in config/systemd/ultimatewarfare-worker.service); --once for a single pass
+bin/console game:queue:work
+bin/console game:queue:work --once
 
 # Tests
 php bin/phpunit
@@ -35,11 +37,11 @@ vendor/bin/phpstan analyse               # Static analysis (level 10)
 - **Services** (`src/Service/`) — All business logic lives here
 - **Entities** (`src/Entity/`) — Doctrine ORM entities; mappings are in XML (`config/doctrine/`)
 - **Repositories** (`src/Repository/`) — Data access with custom query methods
-- **Commands** (`src/Command/`) — CLI commands for game engine and maintenance
+- **Commands** (`src/Command/`) — CLI commands for the queue worker and maintenance
 
 ### Key Services
 
-- **GameEngine** — Core tick processor: calculates income/upkeep per elapsed time, completes queued constructions and research
+- **PlayerStateUpdaterService** — Brings a player's stored state up to a moment (`updateStateForPlayer()`): completes queued construction and research at their completion time and accrues income/upkeep per interval; run by the queue worker for all players with due items, and at the start of every state-changing request for the current player
 - **BattleEngine** — Multi-phase combat simulation, casualty calculation, battle report generation
 - **FleetActionService / RegionActionService** — High-level fleet operations (send, recall, attack, pillage)
 - **OperationService** — Covert ops (spying, sabotage, conversion) with success probability
@@ -47,11 +49,10 @@ vendor/bin/phpstan analyse               # Static analysis (level 10)
 
 ### Game Systems
 
-- **Real-time income**: Resources accumulate continuously based on time deltas, processed on each engine tick
-- **Construction queue**: Buildings/research have completion timestamps; engine resolves them on tick
+- **Construction queue**: Buildings/research have (indexed) completion timestamps; the `game:queue:work` worker resolves them within seconds. GET requests never update player state; the client reloads data a few seconds after a completion (`ResourceTicker.completionDelaySeconds`)
 - **Fleet travel**: Distance-based travel time; fleets are entities in transit with action types
 - **World map v2**: Interactive map in `public/js/world/` and `templates/v2/`; active development area
-- **Request transaction**: `GameEngineSubscriber` runs every state-changing (non-GET) player request in one DB transaction holding a row lock on the current player; it commits for responses < 400 and rolls back otherwise. Game actions must therefore be POST routes and report failures with a 4xx status. An action that also changes another player must call `GameEngine::syncPlayer()` on them first; shared rows (market orders, fleets, regions, federations) are locked with `EntityLockRepository::lockForUpdate()`
+- **Request transaction**: `PlayerRequestSubscriber` runs every state-changing (non-GET) player request in one DB transaction holding a row lock on the current player; it commits for responses < 400 and rolls back otherwise. Game actions must therefore be POST routes and report failures with a 4xx status. An action that also changes another player must call `PlayerStateUpdaterService::updateStateForPlayer()` on them first; shared rows (market orders, fleets, regions, federations) are locked with `EntityLockRepository::lockForUpdate()`
 - **Income accrual**: Resources are stored as a checkpoint (`timestampUpdate`) plus the income/upkeep rate; `ResourceAccrualCalculator` accrues exactly. Recalculate the rate with `IncomeUpdaterService` after any change to units, regions or research; read current values for display with `project()` / the `player_resources()` Twig function
 
 ### Database

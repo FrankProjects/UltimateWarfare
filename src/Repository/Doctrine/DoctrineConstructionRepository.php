@@ -150,7 +150,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->createQuery(
                 'SELECT c
               FROM ' . Construction::class . ' c
-              WHERE c.timestamp + c.duration < :timestamp'
+              WHERE c.completionTimestamp < :timestamp'
             )->setParameter('timestamp', $timestamp)
             ->getResult();
 
@@ -167,13 +167,27 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->createQuery(
                 'SELECT c
               FROM ' . Construction::class . ' c
-              WHERE c.player = :player AND c.timestamp + c.duration < :timestamp
-              ORDER BY c.timestamp + c.duration ASC, c.id ASC'
+              WHERE c.player = :player AND c.completionTimestamp < :timestamp
+              ORDER BY c.completionTimestamp ASC, c.id ASC'
             )->setParameter('player', $player)
             ->setParameter('timestamp', $timestamp)
             ->getResult();
 
         return $completed;
+    }
+
+    public function getNextCompletionTimestampByPlayer(Player $player): ?int
+    {
+        /** @var int|string|null $next */
+        $next = $this->entityManager
+            ->createQuery(
+                'SELECT MIN(c.completionTimestamp)
+              FROM ' . Construction::class . ' c
+              WHERE c.player = :player'
+            )->setParameter('player', $player)
+            ->getSingleScalarResult();
+
+        return $next !== null ? (int) $next : null;
     }
 
     public function remove(Construction $construction): void

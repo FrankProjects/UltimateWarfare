@@ -397,6 +397,11 @@ Game/Fleet/Reinforce/Api:
     requirements:
         fleetId: '\d+'
 
+Game/Api/Resources:
+    path:      /game/api/resources
+    controller: FrankProjects\UltimateWarfare\Controller\Game\StatisticsController::resourcesApi
+    methods: [GET]
+
 Game/Api/Statistics:
     path:      /game/api/statistics
     controller: FrankProjects\UltimateWarfare\Controller\Game\StatisticsController::statisticsApi

@@ -12,13 +12,14 @@ use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use PHPUnit\Framework\TestCase;
 
-class GameEngineTest extends TestCase
+class PlayerStateUpdaterServiceTest extends TestCase
 {
-    use CreatesGameEngine;
+    use CreatesPlayerStateUpdaterService;
 
     private const int START = 1_700_000_000;
 
@@ -29,66 +30,65 @@ class GameEngineTest extends TestCase
 
     public function testAppliesNewRateFromCompletionTimeOnly(): void
     {
-        [$gameEngine, $player] = $this->createScenario();
+        [$playerStateUpdaterService, $player] = $this->createScenario();
 
-        // Farms complete one hour after START; sync one hour after that
-        $gameEngine->syncPlayer($player, self::START + 7200);
+        // Farms complete one hour after START; update one hour after that
+        $playerStateUpdaterService->updateStateForPlayer($player, self::START + 7200);
 
         self::assertSame(1000 + $this->getFarmFoodIncome(), $player->getResources()->getFood());
         self::assertSame(self::START + 7200, $player->getTimestampUpdate());
     }
 
-    public function testResultIsIndependentOfWhenAndHowOftenSyncRuns(): void
+    public function testResultIsIndependentOfWhenAndHowOftenUpdatesRun(): void
     {
         [$onceEngine, $once] = $this->createScenario();
-        $onceEngine->syncPlayer($once, self::START + 7 * 86400);
+        $onceEngine->updateStateForPlayer($once, self::START + 7 * 86400);
 
         [$oftenEngine, $often] = $this->createScenario();
         foreach ([600, 3599, 3601, 3700, 5000, 86400, 7 * 86400] as $offset) {
-            $oftenEngine->syncPlayer($often, self::START + $offset);
+            $oftenEngine->updateStateForPlayer($often, self::START + $offset);
         }
 
         self::assertEquals($once->getResources(), $often->getResources());
         self::assertSame(1000 + 167 * $this->getFarmFoodIncome(), $once->getResources()->getFood());
     }
 
-    public function testRunSkipsCurrentPlayerWithoutDueItemsWhenSyncedRecently(): void
+    public function testUpdateDuePlayersOnlyUpdatesPlayersWithDueQueueItems(): void
     {
-        $player = $this->createPlayer(1);
-        $player->setTimestampUpdate(time() - 10);
+        [, $player] = $this->createScenario();
 
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects(self::never())->method('refresh');
-
-        $this->createGameEngine(null, null, $entityManager)->run($player);
-    }
-
-    public function testRunSyncsCurrentPlayerAfterInterval(): void
-    {
-        $player = $this->createPlayer(1);
-        $player->setTimestampUpdate(time() - 120);
+        $constructionRepository = $this->createMock(ConstructionRepository::class);
+        $constructionRepository->method('getCompletedConstructions')->willReturn($this->queue);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->expects(self::once())->method('refresh')->with($player, LockMode::PESSIMISTIC_WRITE);
 
-        $this->createGameEngine(null, null, $entityManager)->run($player);
-
-        self::assertGreaterThanOrEqual(time() - 1, $player->getTimestampUpdate());
+        $this->createPlayerStateUpdaterService($constructionRepository, null, $entityManager)->updateDuePlayers(time());
     }
 
-    private function createPlayer(int $id): Player
+    public function testNextCompletionIsTheEarliestOfConstructionAndResearch(): void
     {
         $player = new Player();
-        $player->setId($id);
-        $player->setTimestampUpdate(self::START);
+        $constructionRepository = $this->createMock(ConstructionRepository::class);
+        $constructionRepository->method('getNextCompletionTimestampByPlayer')->willReturn(2000);
+        $researchPlayerRepository = $this->createMock(ResearchPlayerRepository::class);
+        $researchPlayerRepository->method('getNextCompletionTimestampByPlayer')->willReturn(1500);
 
-        return $player;
+        $service = $this->createPlayerStateUpdaterService(
+            $constructionRepository,
+            null,
+            null,
+            $researchPlayerRepository
+        );
+        self::assertSame(1500, $service->getNextCompletionTimestamp($player));
+
+        self::assertNull($this->createPlayerStateUpdaterService()->getNextCompletionTimestamp($player));
     }
 
     /**
      * Player without units who queued 10 farms at START that complete after one hour
      *
-     * @return array{GameEngine, Player}
+     * @return array{PlayerStateUpdaterService, Player}
      */
     private function createScenario(): array
     {
@@ -105,16 +105,16 @@ class GameEngineTest extends TestCase
         $construction->setTimestamp(self::START);
         $this->queue = [$construction];
 
-        return [$this->createScenarioGameEngine(), $player];
+        return [$this->createScenarioService(), $player];
     }
 
-    private function createScenarioGameEngine(): GameEngine
+    private function createScenarioService(): PlayerStateUpdaterService
     {
         $constructionRepository = $this->createMock(ConstructionRepository::class);
         $constructionRepository->method('getCompletedConstructionsByPlayer')->willReturnCallback(
             fn(Player $player, int $timestamp): array => array_values(array_filter(
                 $this->queue,
-                fn(Construction $c): bool => $c->getTimestamp() + $c->getDuration() < $timestamp
+                fn(Construction $c): bool => $c->getCompletionTimestamp() < $timestamp
             ))
         );
         $constructionRepository->method('remove')->willReturnCallback(
@@ -139,7 +139,7 @@ class GameEngineTest extends TestCase
             }
         );
 
-        return $this->createGameEngine($constructionRepository, $worldRegionStackableUnitRepository);
+        return $this->createPlayerStateUpdaterService($constructionRepository, $worldRegionStackableUnitRepository);
     }
 
     /**

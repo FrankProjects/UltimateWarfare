@@ -9,9 +9,9 @@ use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\User;
-use FrankProjects\UltimateWarfare\EventSubscriber\GameEngineSubscriber;
+use FrankProjects\UltimateWarfare\EventSubscriber\PlayerRequestSubscriber;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
-use FrankProjects\UltimateWarfare\Tests\Service\CreatesGameEngine;
+use FrankProjects\UltimateWarfare\Tests\Service\CreatesPlayerStateUpdaterService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -27,9 +27,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class GameEngineSubscriberTest extends TestCase
+class PlayerRequestSubscriberTest extends TestCase
 {
-    use CreatesGameEngine;
+    use CreatesPlayerStateUpdaterService;
 
     private EntityManagerInterface&MockObject $entityManager;
     private Player $player;
@@ -54,7 +54,7 @@ class GameEngineSubscriberTest extends TestCase
     {
         $this->entityManager->expects(self::once())->method('refresh')
             ->with($this->player, LockMode::PESSIMISTIC_WRITE);
-        // The request transaction plus the sync nested in it
+        // The request transaction plus the state update nested in it
         $this->entityManager->expects(self::exactly(2))->method('beginTransaction');
         $this->entityManager->expects(self::exactly(2))->method('commit');
         $this->entityManager->expects(self::never())->method('rollback');
@@ -66,7 +66,7 @@ class GameEngineSubscriberTest extends TestCase
 
     public function testErrorResponseRollsBack(): void
     {
-        $this->entityManager->expects(self::once())->method('commit'); // only the nested sync
+        $this->entityManager->expects(self::once())->method('commit'); // only the nested state update
         $this->entityManager->expects(self::once())->method('rollback');
 
         [$subscriber, $request] = $this->createSubscriber('POST');
@@ -76,7 +76,7 @@ class GameEngineSubscriberTest extends TestCase
 
     public function testExceptionRollsBackOnlyOnce(): void
     {
-        $this->entityManager->expects(self::once())->method('commit'); // only the nested sync
+        $this->entityManager->expects(self::once())->method('commit'); // only the nested state update
         $this->entityManager->expects(self::once())->method('rollback');
 
         [$subscriber, $request] = $this->createSubscriber('POST');
@@ -119,7 +119,7 @@ class GameEngineSubscriberTest extends TestCase
     }
 
     /**
-     * @return array{GameEngineSubscriber, Request}
+     * @return array{PlayerRequestSubscriber, Request}
      */
     private function createSubscriber(string $method): array
     {
@@ -137,8 +137,8 @@ class GameEngineSubscriberTest extends TestCase
         $playerRepository = $this->createMock(PlayerRepository::class);
         $playerRepository->method('find')->willReturn($this->player);
 
-        $subscriber = new GameEngineSubscriber(
-            $this->createGameEngine(null, null, $this->entityManager),
+        $subscriber = new PlayerRequestSubscriber(
+            $this->createPlayerStateUpdaterService(null, null, $this->entityManager),
             $requestStack,
             $tokenStorage,
             $playerRepository,

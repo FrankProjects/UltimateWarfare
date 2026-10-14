@@ -3,6 +3,7 @@
   <entity name="FrankProjects\UltimateWarfare\Entity\ResearchPlayer" table="research_player">
     <indexes>
       <index name="player_id" columns="player_id"/>
+      <index name="active_completion_timestamp" columns="active,completion_timestamp"/>
     </indexes>
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>

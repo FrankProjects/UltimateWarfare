@@ -39,6 +39,8 @@ interface ResearchPlayerRepository
      */
     public function getCompletedLevelsBySlug(Player $player): array;
 
+    public function getNextCompletionTimestampByPlayer(Player $player): ?int;
+
     public function remove(ResearchPlayer $researchPlayer): void;
 
     public function save(ResearchPlayer $researchPlayer): void;

@@ -488,10 +488,11 @@
                 el.textContent = formatTime(timeLeft);
             });
 
-            // A construction just finished: refresh so the new level/health bar/buttons appear.
+            // A construction just finished: refresh so the new level/health bar/buttons appear,
+            // after giving the queue worker time to process it.
             if (completed) {
                 stopBuildTimers();
-                refreshBuildData();
+                setTimeout(refreshBuildData, ResourceTicker.completionDelaySeconds * 1000);
             }
         }, 1000);
     }
@@ -524,6 +525,7 @@
 
             if (result.success) {
                 ResourceTicker.set({ cash: result.newCash, wood: result.newWood, steel: result.newSteel });
+                ResourceTicker.refresh();
 
                 showNotification(result.message, 'success');
 
@@ -566,6 +568,7 @@
 
             if (result.success) {
                 ResourceTicker.set({ cash: result.newCash, wood: result.newWood, steel: result.newSteel });
+                ResourceTicker.refresh();
 
                 showNotification(result.message, 'success');
                 applyBuildData(result.buildData);

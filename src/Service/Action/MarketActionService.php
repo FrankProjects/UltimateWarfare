@@ -13,7 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
-use FrankProjects\UltimateWarfare\Service\GameEngine;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use RuntimeException;
 
 final class MarketActionService
@@ -21,20 +21,20 @@ final class MarketActionService
     private MarketItemRepository $marketItemRepository;
     private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
-    private GameEngine $gameEngine;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
     private EntityLockRepository $entityLockRepository;
 
     public function __construct(
         MarketItemRepository $marketItemRepository,
         PlayerRepository $playerRepository,
         ReportRepository $reportRepository,
-        GameEngine $gameEngine,
+        PlayerStateUpdaterService $playerStateUpdaterService,
         EntityLockRepository $entityLockRepository
     ) {
         $this->marketItemRepository = $marketItemRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
-        $this->gameEngine = $gameEngine;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
         $this->entityLockRepository = $entityLockRepository;
     }
 
@@ -45,7 +45,7 @@ final class MarketActionService
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
         // The current player is locked for the whole request; settle and lock the other party as well
-        $this->gameEngine->syncPlayer($marketItem->getPlayer(), time());
+        $this->playerStateUpdaterService->updateStateForPlayer($marketItem->getPlayer(), time());
 
         // A concurrent request may have bought or cancelled this order in the meantime
         if (!$this->entityLockRepository->lockForUpdate($marketItem)) {
@@ -127,7 +127,7 @@ final class MarketActionService
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
         // The current player is locked for the whole request; settle and lock the other party as well
-        $this->gameEngine->syncPlayer($marketItem->getPlayer(), time());
+        $this->playerStateUpdaterService->updateStateForPlayer($marketItem->getPlayer(), time());
 
         // A concurrent request may have bought or cancelled this order in the meantime
         if (!$this->entityLockRepository->lockForUpdate($marketItem)) {

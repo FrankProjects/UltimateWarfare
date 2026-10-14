@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FrankProjects\UltimateWarfare\Service\GameEngine\Processor;
+namespace FrankProjects\UltimateWarfare\Service\PlayerState;
 
 use FrankProjects\UltimateWarfare\Entity\Report;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
@@ -11,7 +11,7 @@ use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 
-final class ResearchProcessor
+final class ResearchCompleter
 {
     private ResearchPlayerRepository $researchPlayerRepository;
     private ReportRepository $reportRepository;
@@ -31,7 +31,7 @@ final class ResearchProcessor
     }
 
     /**
-     * Activates a completed research. Income and upkeep are not touched here: the GameEngine
+     * Activates a completed research. Income and upkeep are not touched here: the PlayerStateUpdaterService
      * accrues resources up to the completion time first and recalculates the rate afterwards.
      */
     public function complete(ResearchPlayer $researchPlayer): void

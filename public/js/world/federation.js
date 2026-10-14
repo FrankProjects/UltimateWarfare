@@ -759,6 +759,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                ResourceTicker.refresh();
                 if (onSuccess) onSuccess();
             } else {
                 showNotification(result.message || 'Action failed', 'error');
