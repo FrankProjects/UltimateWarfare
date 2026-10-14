@@ -133,7 +133,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
                 'SELECT c
               FROM ' . Construction::class . ' c
               WHERE c.player = :player AND c.gameUnit IN (:unitIds)
-              ORDER BY c.timestamp DESC'
+              ORDER BY c.completionTimestamp DESC'
             )->setParameter('player', $player)
             ->setParameter('unitIds', $unitIds)
             ->getResult();

@@ -10,12 +10,6 @@ class Construction
 {
     private int $id;
     private int $number;
-    private int $timestamp = 0;
-    private int $duration = 0;
-
-    /**
-     * Stored (timestamp + duration), so finding completed constructions can use an index
-     */
     private int $completionTimestamp = 0;
     private Player $player;
     private WorldRegion $worldRegion;
@@ -41,30 +35,12 @@ class Construction
         return $this->number;
     }
 
-    public function setTimestamp(int $timestamp): void
-    {
-        $this->timestamp = $timestamp;
-        $this->completionTimestamp = $this->timestamp + $this->duration;
-    }
-
-    public function getTimestamp(): int
-    {
-        return $this->timestamp;
-    }
-
-    public function setDuration(int $duration): void
-    {
-        $this->duration = $duration;
-        $this->completionTimestamp = $this->timestamp + $this->duration;
-    }
-
     /**
-     * Effective build time in seconds, with any special-building build-speed bonus
-     * already applied and locked in at the moment the construction was queued.
+     * When the construction completes; the queue worker processes it from then on
      */
-    public function getDuration(): int
+    public function setCompletionTimestamp(int $completionTimestamp): void
     {
-        return $this->duration;
+        $this->completionTimestamp = $completionTimestamp;
     }
 
     public function getCompletionTimestamp(): int
@@ -102,6 +78,9 @@ class Construction
         $this->gameUnit = $gameUnit;
     }
 
+    /**
+     * @param int $duration Effective build time in seconds, with any special-building build-speed bonus applied
+     */
     public static function create(
         WorldRegion $worldRegion,
         Player $player,
@@ -114,8 +93,7 @@ class Construction
         $construction->setPlayer($player);
         $construction->setGameUnit($gameUnit);
         $construction->setNumber($amount);
-        $construction->setTimestamp(time());
-        $construction->setDuration($duration);
+        $construction->setCompletionTimestamp(time() + $duration);
 
         // Keep the inverse side in sync, so an already loaded collection includes the new construction
         $worldRegion->addConstruction($construction);

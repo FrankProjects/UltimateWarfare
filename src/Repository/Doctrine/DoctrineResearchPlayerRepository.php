@@ -59,7 +59,7 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
             'SELECT rp
               FROM ' . ResearchPlayer::class . ' rp
               WHERE rp.player = :player AND rp.active = 1
-              ORDER BY rp.timestamp DESC'
+              ORDER BY rp.completionTimestamp DESC'
         )->setParameter(
             'player',
             $player

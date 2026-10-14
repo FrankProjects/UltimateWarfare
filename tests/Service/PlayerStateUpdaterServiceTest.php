@@ -102,7 +102,7 @@ class PlayerStateUpdaterServiceTest extends TestCase
         $player->getWorldRegions()->add($worldRegion);
 
         $construction = Construction::create($worldRegion, $player, GameUnitEnum::FARM, 10, 3600);
-        $construction->setTimestamp(self::START);
+        $construction->setCompletionTimestamp(self::START + 3600);
         $this->queue = [$construction];
 
         return [$this->createScenarioService(), $player];

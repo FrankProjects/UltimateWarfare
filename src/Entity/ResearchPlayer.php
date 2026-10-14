@@ -7,7 +7,6 @@ namespace FrankProjects\UltimateWarfare\Entity;
 class ResearchPlayer
 {
     private int $id;
-    private int $timestamp;
     private bool $active = false;
     private Player $player;
     private string $researchSlug;
@@ -22,16 +21,6 @@ class ResearchPlayer
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function setTimestamp(int $timestamp): void
-    {
-        $this->timestamp = $timestamp;
-    }
-
-    public function getTimestamp(): int
-    {
-        return $this->timestamp;
     }
 
     public function setActive(bool $active): void

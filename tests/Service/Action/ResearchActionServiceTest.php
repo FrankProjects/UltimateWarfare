@@ -57,7 +57,6 @@ class ResearchActionServiceTest extends TestCase
         $researchPlayer->setResearchSlug($slug);
         $researchPlayer->setLevel($level);
         $researchPlayer->setActive(true);
-        $researchPlayer->setTimestamp(time());
         $researchPlayer->setCompletionTimestamp(time() - 1);
 
         return $researchPlayer;
@@ -69,7 +68,6 @@ class ResearchActionServiceTest extends TestCase
         $researchPlayer->setResearchSlug($slug);
         $researchPlayer->setLevel($level);
         $researchPlayer->setActive(false);
-        $researchPlayer->setTimestamp(time());
         $researchPlayer->setCompletionTimestamp(time() + 180);
 
         return $researchPlayer;

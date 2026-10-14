@@ -8,11 +8,6 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="timestamp" type="integer" column="timestamp">
-      <options>
-        <option name="unsigned">1</option>
-      </options>
-    </field>
     <field name="active" type="boolean" column="active">
       <options>
         <option name="default">0</option>
