@@ -24,12 +24,6 @@ interface ResearchPlayerRepository
      * @param Player $player
      * @return ResearchPlayer[]
      */
-    public function findFinishedByPlayer(Player $player): array;
-
-    /**
-     * @param Player $player
-     * @return ResearchPlayer[]
-     */
     public function findOngoingByPlayer(Player $player): array;
 
     /**

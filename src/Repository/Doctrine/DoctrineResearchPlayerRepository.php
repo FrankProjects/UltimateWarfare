@@ -53,23 +53,6 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
      * @param Player $player
      * @return ResearchPlayer[]
      */
-    public function findFinishedByPlayer(Player $player): array
-    {
-        return $this->entityManager->createQuery(
-            'SELECT rp
-              FROM ' . ResearchPlayer::class . ' rp
-              WHERE rp.player = :player AND rp.active = 1
-              ORDER BY rp.completionTimestamp DESC'
-        )->setParameter(
-            'player',
-            $player
-        )->getResult();
-    }
-
-    /**
-     * @param Player $player
-     * @return ResearchPlayer[]
-     */
     public function findOngoingByPlayer(Player $player): array
     {
         return $this->entityManager->createQuery(

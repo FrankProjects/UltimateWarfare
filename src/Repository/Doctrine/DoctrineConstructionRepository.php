@@ -116,30 +116,6 @@ final class DoctrineConstructionRepository implements ConstructionRepository
     }
 
     /**
-     * @param Player $player
-     * @param GameUnitCategory $gameUnitCategory
-     * @return Construction[]
-     */
-    public function findByPlayerAndGameUnitCategory(Player $player, GameUnitCategory $gameUnitCategory): array
-    {
-        $unitIds = $this->gameUnitRegistry->getIdsByCategory($gameUnitCategory);
-
-        if ($unitIds === []) {
-            return [];
-        }
-
-        return $this->entityManager
-            ->createQuery(
-                'SELECT c
-              FROM ' . Construction::class . ' c
-              WHERE c.player = :player AND c.gameUnit IN (:unitIds)
-              ORDER BY c.completionTimestamp DESC'
-            )->setParameter('player', $player)
-            ->setParameter('unitIds', $unitIds)
-            ->getResult();
-    }
-
-    /**
      * @param int $timestamp
      * @return Construction[]
      */
