@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\MessageRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
@@ -17,17 +18,20 @@ final class StatisticsController extends BaseGameController
     private GameUnitRegistry $gameUnitRegistry;
     private ResourceAccrualCalculator $resourceAccrualCalculator;
     private PlayerStateUpdaterService $playerStateUpdaterService;
+    private MessageRepository $messageRepository;
 
     public function __construct(
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         GameUnitRegistry $gameUnitRegistry,
         ResourceAccrualCalculator $resourceAccrualCalculator,
-        PlayerStateUpdaterService $playerStateUpdaterService
+        PlayerStateUpdaterService $playerStateUpdaterService,
+        MessageRepository $messageRepository
     ) {
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->resourceAccrualCalculator = $resourceAccrualCalculator;
         $this->playerStateUpdaterService = $playerStateUpdaterService;
+        $this->messageRepository = $messageRepository;
     }
 
     /**
@@ -57,6 +61,7 @@ final class StatisticsController extends BaseGameController
                 'steel' => $income->getSteel() - $upkeep->getSteel(),
             ],
             'nextCompletion' => $this->playerStateUpdaterService->getNextCompletionTimestamp($player),
+            'unreadMessages' => $this->messageRepository->countUnreadMessagesToPlayer($player),
         ]);
     }
 

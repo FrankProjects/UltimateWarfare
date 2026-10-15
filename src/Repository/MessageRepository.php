@@ -21,6 +21,8 @@ interface MessageRepository
 
     public function countNonDeletedMessagesToPlayer(Player $player): int;
 
+    public function countUnreadMessagesToPlayer(Player $player): int;
+
     /**
      * @param Player $player
      * @param int $limit

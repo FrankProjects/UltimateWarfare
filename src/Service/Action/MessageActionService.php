@@ -74,12 +74,7 @@ final class MessageActionService
         }
 
         $message = Message::create($player, $toPlayer, $subject, $message, $adminMessage);
-        $toPlayerNotifications = $toPlayer->getNotifications();
-        $toPlayerNotifications->setMessage(true);
-        $toPlayer->setNotifications($toPlayerNotifications);
-
         $this->messageRepository->save($message);
-        $this->playerRepository->save($toPlayer);
     }
 
     private function getMessage(int $messageId): Message
@@ -113,11 +108,5 @@ final class MessageActionService
         }
 
         return $message;
-    }
-
-    public function disableMessageNotification(Player $player): void
-    {
-        $player->getNotifications()->setMessage(false);
-        $this->playerRepository->save($player);
     }
 }

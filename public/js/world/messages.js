@@ -2,6 +2,24 @@
  * Messages modal logic (inbox, outbox, read, delete).
  * Depends on: notifications.js
  */
+
+/**
+ * Unread message badges on the profile icon and the Messages link
+ */
+const MessageBadge = {
+    set: function (count) {
+        const dot = document.querySelector('[data-message-badge-dot]');
+        const counter = document.querySelector('[data-message-badge-count]');
+        if (dot) {
+            dot.hidden = count === 0;
+        }
+        if (counter) {
+            counter.textContent = count;
+            counter.hidden = count === 0;
+        }
+    }
+};
+
 (function () {
     const messagesModal = document.getElementById('messagesModal');
     const messagesModalTitle = document.getElementById('messagesModalLabel');
@@ -168,6 +186,9 @@
 
             if (result.success) {
                 renderReadMessage(result.message);
+                if (result.unreadMessages !== undefined) {
+                    MessageBadge.set(result.unreadMessages);
+                }
             } else {
                 messagesContainer.innerHTML = '<div class="build-loading text-negative">' + escapeHtml(result.message) + '</div>';
             }
@@ -230,6 +251,9 @@
             const result = await response.json();
 
             if (result.success) {
+                if (result.unreadMessages !== undefined) {
+                    MessageBadge.set(result.unreadMessages);
+                }
                 showNotification(result.message, 'success');
                 currentView = 'list';
                 loadMessages();

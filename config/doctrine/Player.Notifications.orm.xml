@@ -11,11 +11,6 @@
         <option name="default">0</option>
       </options>
     </field>
-    <field name="message" type="boolean" column="message">
-      <options>
-        <option name="default">0</option>
-      </options>
-    </field>
     <field name="market" type="boolean" column="market">
       <options>
         <option name="default">0</option>

@@ -10,6 +10,7 @@ use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\BombardmentCooldownRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\MessageRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -30,6 +31,7 @@ final class WorldController extends BaseGameController
     private BombardmentCooldownRepository $bombardmentCooldownRepository;
     private GameUnitRegistry $gameUnitRegistry;
     private WorldRegionRepository $worldRegionRepository;
+    private MessageRepository $messageRepository;
 
     public function __construct(
         PlayerRepository $playerRepository,
@@ -37,7 +39,8 @@ final class WorldController extends BaseGameController
         FleetRepository $fleetRepository,
         BombardmentCooldownRepository $bombardmentCooldownRepository,
         GameUnitRegistry $gameUnitRegistry,
-        WorldRegionRepository $worldRegionRepository
+        WorldRegionRepository $worldRegionRepository,
+        MessageRepository $messageRepository
     ) {
         $this->playerRepository = $playerRepository;
         $this->worldRepository = $worldRepository;
@@ -45,6 +48,7 @@ final class WorldController extends BaseGameController
         $this->bombardmentCooldownRepository = $bombardmentCooldownRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->worldRegionRepository = $worldRegionRepository;
+        $this->messageRepository = $messageRepository;
     }
 
     public function create(WorldGeneratorService $worldGeneratorService): Response
@@ -201,6 +205,7 @@ final class WorldController extends BaseGameController
                 'player' => $player,
                 'fleets' => $fleets,
                 'bombardments' => $bombardments,
+                'unreadMessages' => $this->messageRepository->countUnreadMessagesToPlayer($player),
                 'showWelcome' => $request->query->getBoolean('welcome'),
             ]
         );

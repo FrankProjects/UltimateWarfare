@@ -59,10 +59,6 @@ final class MessageController extends BaseGameController
         $player = $this->getPlayer();
         $page = max(1, $request->query->getInt('page', 1));
 
-        if ($player->getNotifications()->getMessage()) {
-            $this->messageActionService->disableMessageNotification($player);
-        }
-
         $offset = ($page - 1) * self::MESSAGES_PER_PAGE;
         $messages = $this->messageRepository->findNonDeletedMessagesToPlayer($player, self::MESSAGES_PER_PAGE, $offset);
         $totalMessages = $this->messageRepository->countNonDeletedMessagesToPlayer($player);
@@ -151,6 +147,7 @@ final class MessageController extends BaseGameController
                     'date' => date('M d, Y H:i', $message->getTimestamp()),
                     'isAdmin' => $message->getAdminMessage(),
                 ],
+                'unreadMessages' => $this->messageRepository->countUnreadMessagesToPlayer($player),
             ]);
         } catch (Throwable $e) {
             return new JsonResponse([
@@ -187,11 +184,13 @@ final class MessageController extends BaseGameController
     public function deleteInboxMessageApi(int $messageId): JsonResponse
     {
         try {
-            $this->messageActionService->deleteMessageFromInbox($this->getPlayer(), $messageId);
+            $player = $this->getPlayer();
+            $this->messageActionService->deleteMessageFromInbox($player, $messageId);
 
             return new JsonResponse([
                 'success' => true,
-                'message' => 'Message deleted!'
+                'message' => 'Message deleted!',
+                'unreadMessages' => $this->messageRepository->countUnreadMessagesToPlayer($player),
             ]);
         } catch (Throwable $e) {
             return new JsonResponse([

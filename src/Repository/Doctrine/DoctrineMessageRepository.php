@@ -63,6 +63,21 @@ final class DoctrineMessageRepository implements MessageRepository
         )->getSingleScalarResult();
     }
 
+    public function countUnreadMessagesToPlayer(Player $player): int
+    {
+        return (int) $this->entityManager->createQuery(
+            'SELECT COUNT(m.id)
+              FROM ' . Message::class . ' m
+              WHERE m.toPlayer = :player AND m.toDelete = false AND m.status = :status'
+        )->setParameter(
+            'player',
+            $player
+        )->setParameter(
+            'status',
+            Message::MESSAGE_STATUS_NEW
+        )->getSingleScalarResult();
+    }
+
     /**
      * @param Player $player
      * @param int $limit

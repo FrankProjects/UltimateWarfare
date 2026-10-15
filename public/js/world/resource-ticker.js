@@ -103,6 +103,10 @@ const ResourceTicker = (function () {
             }
             render();
 
+            if (typeof MessageBadge !== 'undefined') {
+                MessageBadge.set(result.unreadMessages);
+            }
+
             // A completion that is still due wasn't processed yet: try again after the delay
             scheduleRefresh(result.nextCompletion);
         } catch (error) {

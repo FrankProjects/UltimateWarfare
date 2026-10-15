@@ -8,7 +8,6 @@ class Notifications
 {
     private bool $general = false;
     private bool $attacked = false;
-    private bool $message = false;
     private bool $market = false;
     private bool $aid = false;
     private bool $news = false;
@@ -31,16 +30,6 @@ class Notifications
     public function getAttacked(): bool
     {
         return $this->attacked;
-    }
-
-    public function setMessage(bool $message): void
-    {
-        $this->message = $message;
-    }
-
-    public function getMessage(): bool
-    {
-        return $this->message;
     }
 
     public function setMarket(bool $market): void

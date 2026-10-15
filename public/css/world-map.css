@@ -172,6 +172,7 @@ body {
 }
 
 .profile-icon {
+    position: relative;
     height: 32px;
     padding: 0 10px;
     line-height: 1;
@@ -185,6 +186,22 @@ body {
 
 .profile-icon:hover {
     background: #a08365;
+}
+
+.message-badge-dot {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f44336;
+    border: 1px solid #2a2a2a;
+}
+
+.message-badge-dot[hidden],
+.build-tab-badge[hidden] {
+    display: none;
 }
 
 .dropdown-content {
