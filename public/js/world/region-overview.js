@@ -13,7 +13,6 @@
         { key: 1, label: 'Build' },
         { key: 2, label: 'Defense' },
         { key: 3, label: 'Special' },
-        { key: 5, label: 'Elite' },
         { key: 6, label: 'Troops' },
         { key: 7, label: 'Naval' },
         { key: 8, label: 'Air' },

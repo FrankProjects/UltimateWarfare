@@ -25,9 +25,6 @@ class UnitRenderer {
             case 'special':
                 this.drawStarIcon(x, y, size);
                 break;
-            case 'specialUnits':
-                this.drawDiamondIcon(x, y, size);
-                break;
             case 'troops':
                 this.drawTankIcon(x, y, size);
                 break;
@@ -108,17 +105,6 @@ class UnitRenderer {
 
     drawStarIcon(x, y, size) {
         this.drawStar(x, y, 5, size * 0.5, size * 0.25);
-        this.ctx.fill();
-        this.ctx.stroke();
-    }
-
-    drawDiamondIcon(x, y, size) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(x, y - size * 0.5);
-        this.ctx.lineTo(x + size * 0.4, y);
-        this.ctx.lineTo(x, y + size * 0.5);
-        this.ctx.lineTo(x - size * 0.4, y);
-        this.ctx.closePath();
         this.ctx.fill();
         this.ctx.stroke();
     }
@@ -291,7 +277,6 @@ class UnitRenderer {
             { key: 'buildings', color: '#3d5a80', label: 'Buildings' },
             { key: 'defences', color: '#7b6d8d', label: 'Defences' },
             { key: 'special', color: '#d4a03c', label: 'Special' },
-            { key: 'specialUnits', color: '#c75146', label: 'Elite Units' },
             { key: 'troops', color: '#5a8c5a', label: 'Troops' },
             { key: 'navalUnits', color: '#4a7ba7', label: 'Naval Units' },
             { key: 'airUnits', color: '#87ceeb', label: 'Air Units' },
