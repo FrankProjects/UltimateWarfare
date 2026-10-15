@@ -95,6 +95,59 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         return $grouped;
     }
 
+    /**
+     * @return list<array{WorldRegion, int}>
+     */
+    public function findBelowPopulationCapacityByPlayer(Player $player, int $populationPerHouse): array
+    {
+        $results = $this->entityManager
+            ->createQuery(
+                'SELECT wr, wrsu.amount AS houses
+              FROM ' . WorldRegion::class . ' wr
+              JOIN ' . WorldRegionStackableUnit::class . ' wrsu WITH wrsu.worldRegion = wr
+              WHERE wr.player = :player
+                AND wrsu.gameUnit = :house
+                AND wr.population < wrsu.amount * :populationPerHouse'
+            )->setParameter('player', $player)
+            ->setParameter('house', GameUnitEnum::HOUSE)
+            ->setParameter('populationPerHouse', $populationPerHouse)
+            ->getResult();
+
+        $worldRegions = [];
+        foreach ($results as $result) {
+            $worldRegions[] = [$result[0], $result['houses']];
+        }
+
+        return $worldRegions;
+    }
+
+    /**
+     * @return WorldRegion[]
+     */
+    public function findWithPopulationByPlayer(Player $player): array
+    {
+        return $this->entityManager
+            ->createQuery(
+                'SELECT wr
+              FROM ' . WorldRegion::class . ' wr
+              WHERE wr.player = :player AND wr.population > 0'
+            )->setParameter('player', $player)
+            ->getResult();
+    }
+
+    public function getPopulationSumByPlayer(Player $player): int
+    {
+        $total = $this->entityManager
+            ->createQuery(
+                'SELECT SUM(wr.population)
+              FROM ' . WorldRegion::class . ' wr
+              WHERE wr.player = :player'
+            )->setParameter('player', $player)
+            ->getSingleScalarResult();
+
+        return is_numeric($total) ? (int) $total : 0;
+    }
+
     public function getPreviousWorldRegionForPlayer(int $id, Player $player): ?WorldRegion
     {
         return $this->entityManager

@@ -41,7 +41,7 @@ vendor/bin/phpstan analyse               # Static analysis (level 10)
 
 ### Key Services
 
-- **PlayerStateUpdaterService** — Brings a player's stored state up to a moment (`updateStateForPlayer()`): completes queued construction and research at their completion time and accrues income/upkeep per interval; run by the queue worker for all players with due items, and at the start of every state-changing request for the current player
+- **PlayerStateUpdaterService** — Brings a player's stored state up to a moment (`updateStateForPlayer()`): completes queued construction and research at their completion time, grows the population (or starves the player) at every population tick and accrues income/upkeep per interval; run by the queue worker for all players with due items, growing population or starvation, and at the start of every state-changing request for the current player
 - **BattleEngine** — Multi-phase combat simulation, casualty calculation, battle report generation
 - **FleetActionService / RegionActionService** — High-level fleet operations (send, recall, attack, pillage)
 - **OperationService** — Covert ops (spying, sabotage, conversion) with success probability
@@ -50,6 +50,7 @@ vendor/bin/phpstan analyse               # Static analysis (level 10)
 ### Game Systems
 
 - **Construction queue**: Buildings/research have (indexed) completion timestamps; the `game:queue:work` worker resolves them within seconds. GET requests never update player state; the client reloads data a few seconds after a completion (`ResourceTicker.completionDelaySeconds`)
+- **Population**: each House holds 500 people in its region; population grows by 1 per House every 6-minute tick (`PopulationUpdaterService`, ticks on the Unix epoch) and every 10 people add 1 cash/hour to income. On the same tick a player at 0 food with a food deficit starves instead (`StarvationUpdaterService`): regions lose 3.5% population per tick (30% per hour); units are not affected. Ticking keeps the income rate constant between ticks, so accrual stays exact. Regions start at 0 population and are reset to 0 when they lose their owner
 - **Fleet travel**: Distance-based travel time; fleets are entities in transit with action types
 - **World map v2**: Interactive map in `public/js/world/` and `templates/v2/`; active development area
 - **Request transaction**: `PlayerRequestSubscriber` runs every state-changing (non-GET) player request in one DB transaction holding a row lock on the current player; it commits for responses < 400 and rolls back otherwise. Game actions must therefore be POST routes and report failures with a 4xx status. An action that also changes another player must call `PlayerStateUpdaterService::updateStateForPlayer()` on them first; shared rows (market orders, fleets, regions, federations) are locked with `EntityLockRepository::lockForUpdate()`

@@ -15,7 +15,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Worker that completes queued construction and research of all players within seconds of their completion.
+ * Worker that completes queued construction and research of all players within seconds of their completion, and
+ * grows their population at every population tick.
  * Runs continuously under a process manager (config/systemd/ultimatewarfare-worker.service); --once does a single
  * pass. Requests don't depend on it for correctness: each state-changing request updates its own player first.
  */

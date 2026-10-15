@@ -92,20 +92,18 @@
             if (w.type === 'food') {
                 if (w.seconds === 0) {
                     html += '<strong>You don\'t have enough food to feed your Population</strong><br>';
-                    html += 'You will lose 30% of your population every hour!<br><br>';
-                    html += '<strong>You don\'t have enough food to feed your army</strong><br>';
-                    html += 'You will lose 10% of your army every hour!';
+                    html += 'You will lose 30% of your population every hour!';
                 } else {
                     html += 'You don\'t have enough food to feed your Population in <strong>' + formatNumber(w.seconds) + ' seconds from now!</strong><br>';
-                    html += 'Once you hit 0 food, you will lose 30% of your population and 10% of your army every hour!';
+                    html += 'Once you hit 0 food, you will lose 30% of your population every hour!';
                 }
             } else if (w.type === 'cash') {
                 if (w.seconds === 0) {
                     html += '<strong>You don\'t have enough cash to pay your army</strong><br>';
-                    html += 'You will lose 10% of your army every hour!';
+                    html += 'Your cash stays at 0 until your income exceeds your upkeep!';
                 } else {
                     html += 'You don\'t have enough cash to pay your army in <strong>' + formatNumber(w.seconds) + ' seconds from now!</strong><br>';
-                    html += 'Once you hit 0 cash, you will lose 10% of your army every hour!';
+                    html += 'Once you hit 0 cash, your cash stays at 0 until your income exceeds your upkeep!';
                 }
             }
             html += '</div>';

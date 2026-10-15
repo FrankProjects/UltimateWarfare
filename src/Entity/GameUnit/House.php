@@ -23,7 +23,7 @@ final class House extends GameUnit
             image: 'gu_house.jpg',
             netWorth: 1,
             timestamp: 900,
-            description: 'This house can keep a population of 500.',
+            description: 'This house can keep a population of 500, which grows by 10 per hour.',
             gameUnitCategory: GameUnitCategory::BUILDINGS,
             behaviorClass: null,
             cost: new Cost(cash: 150, food: 50, wood: 5, steel: 1),

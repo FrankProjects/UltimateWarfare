@@ -15,12 +15,15 @@ use FrankProjects\UltimateWarfare\Repository\ReportRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use FrankProjects\UltimateWarfare\Service\IncomeUpdaterService;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 use FrankProjects\UltimateWarfare\Service\PlayerState\ConstructionCompleter;
 use FrankProjects\UltimateWarfare\Service\PlayerState\ResearchCompleter;
+use FrankProjects\UltimateWarfare\Service\PopulationUpdaterService;
+use FrankProjects\UltimateWarfare\Service\StarvationUpdaterService;
 use FrankProjects\UltimateWarfare\Util\IncomeCalculator;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
@@ -39,13 +42,18 @@ trait CreatesPlayerStateUpdaterService
         ?ConstructionRepository $constructionRepository = null,
         ?WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository = null,
         ?EntityManagerInterface $entityManager = null,
-        ?ResearchPlayerRepository $researchPlayerRepository = null
+        ?ResearchPlayerRepository $researchPlayerRepository = null,
+        ?WorldRegionRepository $worldRegionRepository = null,
+        ?PlayerRepository $playerRepository = null
     ): PlayerStateUpdaterService {
 
         $gameUnitRegistry = new GameUnitRegistry();
         $constructionRepository ??= $this->createMock(ConstructionRepository::class);
         $worldRegionStackableUnitRepository ??= $this->createMock(WorldRegionStackableUnitRepository::class);
         $netWorthUpdaterService = $this->createNetWorthUpdaterService();
+        $worldRegionRepository ??= $this->createMock(WorldRegionRepository::class);
+        $playerRepository ??= $this->createMock(PlayerRepository::class);
+        $populationUpdaterService = new PopulationUpdaterService($worldRegionRepository, $playerRepository);
 
         return new PlayerStateUpdaterService(
             new ConstructionCompleter(
@@ -64,8 +72,10 @@ trait CreatesPlayerStateUpdaterService
             ),
             $constructionRepository,
             $researchPlayerRepository ?? $this->createMock(ResearchPlayerRepository::class),
-            $this->createMock(PlayerRepository::class),
-            $this->createIncomeUpdaterService($worldRegionStackableUnitRepository),
+            $playerRepository,
+            $this->createIncomeUpdaterService($worldRegionStackableUnitRepository, $worldRegionRepository),
+            $populationUpdaterService,
+            new StarvationUpdaterService($worldRegionRepository, $playerRepository, $populationUpdaterService),
             new ResourceAccrualCalculator(),
             $entityManager ?? $this->createMock(EntityManagerInterface::class),
             0,
@@ -74,7 +84,8 @@ trait CreatesPlayerStateUpdaterService
     }
 
     protected function createIncomeUpdaterService(
-        ?WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository = null
+        ?WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository = null,
+        ?WorldRegionRepository $worldRegionRepository = null
     ): IncomeUpdaterService {
         $gameUnitRegistry = new GameUnitRegistry();
         $worldRegionStackableUnitRepository ??= $this->createMock(WorldRegionStackableUnitRepository::class);
@@ -87,7 +98,8 @@ trait CreatesPlayerStateUpdaterService
                 $gameUnitRegistry,
                 $worldRegionStackableUnitRepository,
                 $worldRegionLeveledUnitRepository,
-                $fleetUnitRepository
+                $fleetUnitRepository,
+                $worldRegionRepository ?? $this->createMock(WorldRegionRepository::class)
             ),
             new UpkeepCalculator(
                 $gameUnitRegistry,

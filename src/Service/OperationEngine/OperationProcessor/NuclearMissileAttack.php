@@ -45,6 +45,7 @@ final class NuclearMissileAttack extends OperationProcessor
         }
 
         $this->region->setState(1);
+        $this->region->setPopulation(0);
         $this->region->setPlayer(null);
         $this->worldRegionRepository->save($this->region);
 

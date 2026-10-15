@@ -108,7 +108,7 @@ final class WorldGeneratorService
                     $worldRegion->setZ($z);
                     $worldRegion->setType($type);
                     $worldRegion->setSpace($space);
-                    $worldRegion->setPopulation($space * 10);
+                    $worldRegion->setPopulation(0);
                 }
                 $worldRegions[] = $worldRegion;
             }

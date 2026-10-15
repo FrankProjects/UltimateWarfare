@@ -341,7 +341,6 @@ class WorldRegion
         $worldRegion->setZ($z);
         $worldRegion->setType($type);
         $worldRegion->setSpace($space);
-        $worldRegion->setPopulation($space * 10);
 
         return $worldRegion;
     }
