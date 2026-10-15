@@ -56,6 +56,9 @@
             if (sortColumn === 'position') {
                 valA = a.x * 10000 + a.y;
                 valB = b.x * 10000 + b.y;
+            } else if (sortColumn === 'population') {
+                valA = a.population;
+                valB = b.population;
             } else {
                 const catA = a.categoryCounts[sortColumn];
                 const catB = b.categoryCounts[sortColumn];
@@ -95,6 +98,7 @@
         let html = '<table class="uw-table uw-table-compact">';
         html += '<tr class="uw-table-head">';
         html += '<th class="region-pos-col text-center uw-sortable" data-sort="position">Pos' + getSortArrow('position') + '</th>';
+        html += '<th class="text-center uw-sortable uw-cell-small" data-sort="population">Population' + getSortArrow('population') + '</th>';
 
         categories.forEach(function (cat) {
             html += '<th class="text-center uw-sortable uw-cell-small" data-sort="' + cat.key + '">' + cat.label + getSortArrow(cat.key) + '</th>';
@@ -106,6 +110,7 @@
         allRegions.forEach(function (region) {
             html += '<tr>';
             html += '<td class="region-pos-col text-center">' + region.x + ', ' + region.y + '</td>';
+            html += '<td class="text-center uw-cell-small">' + region.population + ' / ' + region.maxPopulation + '</td>';
 
             categories.forEach(function (cat) {
                 const data = region.categoryCounts[cat.key];
@@ -135,7 +140,7 @@
         regionContainer.querySelectorAll('th[data-sort]').forEach(function (th) {
             th.onclick = function () {
                 const col = th.getAttribute('data-sort');
-                onHeaderClick(col === 'position' ? 'position' : parseInt(col, 10));
+                onHeaderClick(col === 'position' || col === 'population' ? col : parseInt(col, 10));
             };
         });
 

@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Service\Action\RegionActionService;
+use FrankProjects\UltimateWarfare\Service\PopulationUpdaterService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
 
@@ -94,6 +96,9 @@ final class RegionController extends BaseGameController
                     'y' => $region->getY(),
                     'type' => $region->getType(),
                     'space' => $region->getSpace(),
+                    'population' => $region->getPopulation(),
+                    'maxPopulation' => ($regionUnits[GameUnitEnum::HOUSE->value] ?? 0)
+                        * PopulationUpdaterService::POPULATION_PER_HOUSE,
                     'categoryCounts' => $categoryCounts,
                 ];
             }
