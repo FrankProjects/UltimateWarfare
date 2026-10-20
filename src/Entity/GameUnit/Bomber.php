@@ -26,7 +26,8 @@ final class Bomber extends GameUnit
             image: 'gu_bomber.jpg',
             netWorth: 130,
             timestamp: 18000,
-            description: '',
+            description: 'Bombers are tough but slow and poor in a dogfight. Escort them with fighters '
+                . 'to protect them from enemy aircraft, and beware of flak, which ignores their armor.',
             gameUnitCategory: GameUnitCategory::AIR_UNITS,
             behaviorClass: AirUnitBehavior::class,
             cost: new Cost(cash: 25000, food: 2000, wood: 200, steel: 700),
@@ -36,7 +37,7 @@ final class Bomber extends GameUnit
                 health: 1250,
                 armor: 20,
                 travelSpeed: 500,
-                airBattleStats: new AirBattleStats(attack: 75, attackSpeed: 300, defence: 80, defenceSpeed: 310),
+                airBattleStats: new AirBattleStats(attack: 15, attackSpeed: 150, defence: 20, defenceSpeed: 150),
                 groundBattleStats: new GroundBattleStats(attack: 20, attackSpeed: 100),
             ),
         );

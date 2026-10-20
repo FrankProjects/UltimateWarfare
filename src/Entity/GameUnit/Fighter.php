@@ -26,7 +26,8 @@ final class Fighter extends GameUnit
             image: 'gu_fighter.jpg',
             netWorth: 75,
             timestamp: 7200,
-            description: '',
+            description: 'Fast and agile, fighters fight for control of the air. Each fighter escorts '
+                . 'one bomber, reducing the damage it takes from enemy aircraft. Flak only half hurts fighters.',
             gameUnitCategory: GameUnitCategory::AIR_UNITS,
             behaviorClass: AirUnitBehavior::class,
             cost: new Cost(cash: 8000, food: 1000, wood: 100, steel: 250),

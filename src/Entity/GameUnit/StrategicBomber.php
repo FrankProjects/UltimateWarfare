@@ -26,7 +26,9 @@ final class StrategicBomber extends GameUnit
             image: 'gu_strategic_bomber.jpg',
             netWorth: 250,
             timestamp: 72000,
-            description: '',
+            description: 'Strategic bombers are heavy and slow, and barely defend themselves in the air. '
+                . 'Escort them with fighters to protect them from enemy aircraft, and beware of flak, '
+                . 'which ignores their armor.',
             gameUnitCategory: GameUnitCategory::AIR_UNITS,
             behaviorClass: AirUnitBehavior::class,
             cost: new Cost(cash: 135000, food: 5000, wood: 1000, steel: 2500),
@@ -36,7 +38,7 @@ final class StrategicBomber extends GameUnit
                 health: 3000,
                 armor: 10,
                 travelSpeed: 500,
-                airBattleStats: new AirBattleStats(attack: 75, attackSpeed: 300, defence: 80, defenceSpeed: 310),
+                airBattleStats: new AirBattleStats(attack: 25, attackSpeed: 100, defence: 30, defenceSpeed: 100),
                 groundBattleStats: new GroundBattleStats(attack: 20, attackSpeed: 100),
             ),
         );
