@@ -12,6 +12,9 @@ framework:
         cookie_secure: auto
         cookie_samesite: lax
 
+    assets:
+        version_strategy: FrankProjects\UltimateWarfare\Asset\FileModificationVersionStrategy
+
     validation:
         email_validation_mode: html5
     #esi: true
