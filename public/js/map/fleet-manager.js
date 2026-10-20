@@ -167,10 +167,10 @@ class FleetManager {
             fleetIconX = targetIso.x;
             fleetIconY = targetIso.y;
         } else {
-            const now = Math.floor(Date.now() / 1000);
-            const totalTime = fleet.timestampArrive - (fleet.timestampArrive - fleet.eta);
-            const elapsed = totalTime - fleet.eta;
-            const progress = Math.min(1, elapsed / totalTime);
+            // Interpolate between departure and arrival, so the marker moves at the fleet's (slowest unit) speed
+            const now = Date.now() / 1000;
+            const totalTime = fleet.timestampArrive - fleet.timestamp;
+            const progress = totalTime > 0 ? Math.min(1, Math.max(0, (now - fleet.timestamp) / totalTime)) : 1;
 
             fleetIconX = sourceIso.x + (targetIso.x - sourceIso.x) * progress;
             fleetIconY = sourceIso.y + (targetIso.y - sourceIso.y) * progress;

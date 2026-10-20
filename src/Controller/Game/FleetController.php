@@ -198,19 +198,19 @@ final class FleetController extends BaseGameController
                 continue; // Can't send to self
             }
 
-            $travelTime = $this->distanceCalculator->calculateFleetTravelTime(
+            // Travel time depends on the units sent, so only the distance is known here
+            $distance = $this->distanceCalculator->calculateDistance(
                 $worldRegion->getX(),
                 $worldRegion->getY(),
                 $sourceRegion->getX(),
-                $sourceRegion->getY(),
-                $sourceRegion->getUnitLevel(GameUnitEnum::TRAIN_STATION)
+                $sourceRegion->getY()
             );
 
             $targets[] = [
                 'regionId' => $worldRegion->getId(),
                 'x' => $worldRegion->getX(),
                 'y' => $worldRegion->getY(),
-                'travelTime' => $travelTime,
+                'distance' => $distance,
             ];
         }
 
@@ -282,14 +282,6 @@ final class FleetController extends BaseGameController
             return new JsonResponse(['success' => false, 'message' => $e->getMessage()], 400);
         }
 
-        $travelTime = $this->distanceCalculator->calculateFleetTravelTime(
-            $targetRegion->getX(),
-            $targetRegion->getY(),
-            $sourceRegion->getX(),
-            $sourceRegion->getY(),
-            $sourceRegion->getUnitLevel(GameUnitEnum::TRAIN_STATION)
-        );
-
         $sentUnits = [];
         $totalUnitCount = 0;
         foreach ($filteredUnits as $gameUnitId => $amount) {
@@ -316,9 +308,10 @@ final class FleetController extends BaseGameController
                 'targetY' => $targetRegion->getY(),
                 'targetRegionId' => $targetRegion->getId(),
                 'targetIsYours' => true,
-                'timestampArrive' => time() + $travelTime,
+                'timestamp' => $fleet->getTimestamp(),
+                'timestampArrive' => $fleet->getTimestampArrive(),
                 'hasArrived' => false,
-                'eta' => $travelTime,
+                'eta' => max(0, $fleet->getTimestampArrive() - time()),
                 'unitCount' => $totalUnitCount,
                 'units' => $sentUnits,
             ],

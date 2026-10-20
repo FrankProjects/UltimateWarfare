@@ -14,7 +14,7 @@
     let sendMode = false;
     let sendSourceRegion = null;
     let sendUnitQuantities = {};
-    let sendTargetData = []; // [{regionId, x, y, travelTime}]
+    let sendTargetData = []; // [{regionId, x, y, distance}]
     let sendEligibleRegionIds = new Set();
 
     const sendUnitsModal = document.getElementById('sendUnitsModal');

@@ -57,11 +57,27 @@ class DistanceCalculatorTest extends TestCase
 
         // distance(1,1,10,10) * 100 = 2600 base travel time.
         // Level 0 and 1 give no bonus (level 1 only unlocks the building).
-        self::assertEquals(2600, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 0));
-        self::assertEquals(2600, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 1));
+        self::assertEquals(2600, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 0, 100));
+        self::assertEquals(2600, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 1, 100));
 
         // Level 2 -> 5% faster, level 10 -> 45% faster.
-        self::assertEquals(2470, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 2));
-        self::assertEquals(1430, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 10));
+        self::assertEquals(2470, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 2, 100));
+        self::assertEquals(1430, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 10, 100));
+    }
+
+    public function testCalculateFleetTravelTimeAppliesTravelSpeed(): void
+    {
+        $calculator = new DistanceCalculator(0);
+
+        // Base speed 100 takes the base travel time, faster units take proportionally less.
+        self::assertEquals(2600, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 0, 100));
+        self::assertEquals(1300, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 0, 200));
+        self::assertEquals(520, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 0, 500));
+
+        // Units without a travel speed move at base speed.
+        self::assertEquals(2600, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 0, 0));
+
+        // Combined with the Train Station bonus: 1300 * 0.55 = 715.
+        self::assertEquals(715, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 10, 200));
     }
 }

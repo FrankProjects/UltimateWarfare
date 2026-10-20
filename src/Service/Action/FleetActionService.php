@@ -17,6 +17,7 @@ use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\FleetFactory;
+use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use RuntimeException;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
@@ -159,7 +160,12 @@ final class FleetActionService
             throw new RuntimeException('No game units selected to send!');
         }
 
-        $fleet = $this->fleetFactory->createForPlayer($player, $region, $targetRegion);
+        $fleet = $this->fleetFactory->createForPlayer(
+            $player,
+            $region,
+            $targetRegion,
+            $this->getSlowestTravelSpeed($gameUnitsToSend)
+        );
         $this->fleetRepository->save($fleet);
 
         foreach ($gameUnitsToSend as $gameUnitData) {
@@ -167,6 +173,22 @@ final class FleetActionService
         }
 
         return $fleet;
+    }
+
+    /**
+     * A fleet moves at the speed of its slowest unit; units without a travel speed move at base speed.
+     *
+     * @param non-empty-list<array{gameUnit: GameUnit, amount: int}> $gameUnitsToSend
+     */
+    private function getSlowestTravelSpeed(array $gameUnitsToSend): int
+    {
+        $travelSpeeds = [];
+        foreach ($gameUnitsToSend as $gameUnitData) {
+            $travelSpeed = $gameUnitData['gameUnit']->getBattleStats()->getTravelSpeed();
+            $travelSpeeds[] = $travelSpeed > 0 ? $travelSpeed : DistanceCalculator::BASE_TRAVEL_SPEED;
+        }
+
+        return min($travelSpeeds);
     }
 
     private function addFleetUnitsToWorldRegion(Fleet $fleet, WorldRegion $worldRegion): void

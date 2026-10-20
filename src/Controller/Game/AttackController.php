@@ -11,7 +11,6 @@ use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\FleetActionService;
 use FrankProjects\UltimateWarfare\Service\Action\RegionActionService;
-use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Throwable;
@@ -21,18 +20,15 @@ final class AttackController extends BaseGameController
     private FleetActionService $fleetActionService;
     private RegionActionService $regionActionService;
     private GameUnitRegistry $gameUnitRegistry;
-    private DistanceCalculator $distanceCalculator;
 
     public function __construct(
         FleetActionService $fleetActionService,
         RegionActionService $regionActionService,
-        GameUnitRegistry $gameUnitRegistry,
-        DistanceCalculator $distanceCalculator
+        GameUnitRegistry $gameUnitRegistry
     ) {
         $this->fleetActionService = $fleetActionService;
         $this->regionActionService = $regionActionService;
         $this->gameUnitRegistry = $gameUnitRegistry;
-        $this->distanceCalculator = $distanceCalculator;
     }
 
     public function attackFromRegionsApi(int $regionId): JsonResponse
@@ -285,15 +281,6 @@ final class AttackController extends BaseGameController
             return new JsonResponse(['success' => false, 'message' => $e->getMessage()], 400);
         }
 
-        // Calculate travel time for the ETA
-        $travelTime = $this->distanceCalculator->calculateFleetTravelTime(
-            $targetRegion->getX(),
-            $targetRegion->getY(),
-            $playerRegion->getX(),
-            $playerRegion->getY(),
-            $playerRegion->getUnitLevel(GameUnitEnum::TRAIN_STATION)
-        );
-
         // Build unit list for frontend
         $sentUnits = [];
         $totalUnitCount = 0;
@@ -318,9 +305,10 @@ final class AttackController extends BaseGameController
                 'targetY' => $targetRegion->getY(),
                 'targetRegionId' => $targetRegion->getId(),
                 'targetIsYours' => false,
-                'timestampArrive' => time() + $travelTime,
+                'timestamp' => $fleet->getTimestamp(),
+                'timestampArrive' => $fleet->getTimestampArrive(),
                 'hasArrived' => false,
-                'eta' => $travelTime,
+                'eta' => max(0, $fleet->getTimestampArrive() - time()),
                 'unitCount' => $totalUnitCount,
                 'units' => $sentUnits,
             ],

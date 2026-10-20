@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
-use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
@@ -15,7 +14,6 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
-use FrankProjects\UltimateWarfare\Util\TimeCalculator;
 use RuntimeException;
 
 final class RegionActionService
@@ -24,7 +22,6 @@ final class RegionActionService
     private PlayerRepository $playerRepository;
     private FederationRepository $federationRepository;
     private DistanceCalculator $distanceCalculator;
-    private TimeCalculator $timeCalculator;
     private GameUnitRegistry $gameUnitRegistry;
 
     public function __construct(
@@ -32,47 +29,13 @@ final class RegionActionService
         PlayerRepository $playerRepository,
         FederationRepository $federationRepository,
         DistanceCalculator $distanceCalculator,
-        TimeCalculator $timeCalculator,
         GameUnitRegistry $gameUnitRegistry
     ) {
         $this->worldRegionRepository = $worldRegionRepository;
         $this->playerRepository = $playerRepository;
         $this->federationRepository = $federationRepository;
         $this->distanceCalculator = $distanceCalculator;
-        $this->timeCalculator = $timeCalculator;
         $this->gameUnitRegistry = $gameUnitRegistry;
-    }
-
-    /**
-     * @return array<int<0, max>, array<string, WorldRegion|string>>
-     */
-    public function getAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
-    {
-        if ($worldRegion->getPlayer() === null) {
-            throw new RuntimeException('Can not attack region without owner!');
-        }
-
-        if ($worldRegion->getPlayer()->getId() === $player->getId()) {
-            throw new RuntimeException('Can not attack your own region!');
-        }
-
-        $playerRegions = [];
-        foreach ($player->getWorldRegions() as $playerWorldRegion) {
-            $travelTime = $this->distanceCalculator->calculateFleetTravelTime(
-                $playerWorldRegion->getX(),
-                $playerWorldRegion->getY(),
-                $worldRegion->getX(),
-                $worldRegion->getY(),
-                $playerWorldRegion->getUnitLevel(GameUnitEnum::TRAIN_STATION)
-            );
-            $travelTimeLeft = $this->timeCalculator->calculateTimeLeft($travelTime);
-            $playerRegions[] = [
-                'region' => $playerWorldRegion,
-                'travelTime' => $travelTimeLeft
-            ];
-        }
-
-        return $playerRegions;
     }
 
     /**

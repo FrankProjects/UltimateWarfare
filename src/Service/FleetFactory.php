@@ -22,22 +22,25 @@ final class FleetFactory
     public function createForPlayer(
         Player $player,
         WorldRegion $worldRegion,
-        WorldRegion $targetWorldRegion
+        WorldRegion $targetWorldRegion,
+        int $travelSpeed
     ): Fleet {
         $travelTime = $this->distanceCalculator->calculateFleetTravelTime(
             $targetWorldRegion->getX(),
             $targetWorldRegion->getY(),
             $worldRegion->getX(),
             $worldRegion->getY(),
-            $worldRegion->getUnitLevel(GameUnitEnum::TRAIN_STATION)
+            $worldRegion->getUnitLevel(GameUnitEnum::TRAIN_STATION),
+            $travelSpeed
         );
 
         $fleet = new Fleet();
         $fleet->setPlayer($player);
         $fleet->setWorldRegion($worldRegion);
         $fleet->setTargetWorldRegion($targetWorldRegion);
-        $fleet->setTimestamp(time());
-        $fleet->setTimestampArrive(time() + $travelTime);
+        $now = time();
+        $fleet->setTimestamp($now);
+        $fleet->setTimestampArrive($now + $travelTime);
 
         return $fleet;
     }
