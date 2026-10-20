@@ -41,6 +41,13 @@ abstract class BattlePhase implements IBattlePhase
     protected float $defenderDamageMultiplier;
 
     /**
+     * Power per unit group that was not enough for a whole death or health point, keyed by object id
+     *
+     * @var array<int, int>
+     */
+    private array $carriedPower = [];
+
+    /**
      * @param FleetUnit[] $attackerGameUnits
      * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $defenderGameUnits
      */
@@ -118,34 +125,99 @@ abstract class BattlePhase implements IBattlePhase
     }
 
     /**
-     * XXX TODO: Add attack/defense speed from BattleStats
+     * Unit groups fire in order of their speed in this phase, fastest first. Groups sharing a speed
+     * fire simultaneously, and a group that is destroyed before its turn never fires.
      */
     public function startBattlePhase(): void
     {
         $this->addToBattleLog("Starting {$this->getName()} Battle Phase");
 
-        $defensePower = $this->getDefensePower();
-        $this->addToBattleLog("Defender starts with {$defensePower} defense power");
-
-        if ($defensePower > 0) {
-            $this->attackerGameUnits = $this->processBattlePhase($defensePower, $this->attackerGameUnits, 'attacking');
+        $speeds = $this->getSpeeds();
+        if ($speeds === []) {
+            $this->addToBattleLog("No resistance in this battle phase...");
+            return;
         }
 
-        $rawAttackPower = $this->getAttackPower();
+        foreach ($speeds as $speed) {
+            $this->processSpeedTier($speed);
+        }
+    }
+
+    /**
+     * @return array<int, int> Distinct speeds of all unit groups with power in this phase, fastest first
+     */
+    private function getSpeeds(): array
+    {
+        $speeds = [];
+        foreach ($this->attackerGameUnits as $fleetUnit) {
+            if ($this->getUnitAttackPower($fleetUnit) > 0) {
+                $speeds[] = $this->getUnitBattleStats($fleetUnit)->getAttackSpeed();
+            }
+        }
+
+        foreach ($this->defenderGameUnits as $defenderGameUnit) {
+            if ($this->getUnitDefensePower($defenderGameUnit) > 0) {
+                $speeds[] = $this->getUnitBattleStats($defenderGameUnit)->getDefenceSpeed();
+            }
+        }
+
+        $speeds = array_values(array_unique($speeds));
+        rsort($speeds);
+
+        return $speeds;
+    }
+
+    private function processSpeedTier(int $speed): void
+    {
+        $defensePower = 0;
+        $defenderNames = [];
+        foreach ($this->defenderGameUnits as $defenderGameUnit) {
+            $power = $this->getUnitDefensePower($defenderGameUnit);
+            if ($power > 0 && $this->getUnitBattleStats($defenderGameUnit)->getDefenceSpeed() === $speed) {
+                $defensePower += $power;
+                $defenderNames[] = $this->getUnitName($defenderGameUnit);
+            }
+        }
+
+        $rawAttackPower = 0;
+        $attackerNames = [];
+        foreach ($this->attackerGameUnits as $fleetUnit) {
+            $power = $this->getUnitAttackPower($fleetUnit);
+            if ($power > 0 && $this->getUnitBattleStats($fleetUnit)->getAttackSpeed() === $speed) {
+                $rawAttackPower += $power;
+                $attackerNames[] = $this->getUnitName($fleetUnit);
+            }
+        }
+
+        // Every group in this tier already died in a faster tier
+        if ($defensePower === 0 && $rawAttackPower === 0) {
+            return;
+        }
+
         $attackPower = (int) ($rawAttackPower * $this->defenderDamageMultiplier);
+
+        $firing = [];
+        if ($defensePower > 0) {
+            $firing[] = "defending " . implode(', ', $defenderNames) . " fire with {$defensePower} defense power";
+        }
+        if ($rawAttackPower > 0) {
+            $firing[] = "attacking " . implode(', ', $attackerNames) . " fire with {$rawAttackPower} attack power";
+        }
+        $this->addToBattleLog(ucfirst(implode(', ', $firing)));
+
         if ($this->defenderDamageMultiplier < 1.0 && $rawAttackPower > 0) {
             $this->addToBattleLog(
                 "Defender's defensive network reduces incoming damage from {$rawAttackPower} to {$attackPower}"
             );
         }
-        $this->addToBattleLog("Attacker starts with {$attackPower} attack power");
+
+        // Both powers are determined before any casualties, so both sides fire simultaneously
+        if ($defensePower > 0) {
+            $this->attackerGameUnits = $this->processBattlePhase($defensePower, $this->attackerGameUnits, 'attacking');
+        }
 
         if ($attackPower > 0) {
             $this->defenderGameUnits = $this->processBattlePhase($attackPower, $this->defenderGameUnits, 'defending');
-        }
-
-        if ($defensePower === 0 && $attackPower === 0) {
-            $this->addToBattleLog("No resistance in this battle phase...");
         }
     }
 
@@ -163,7 +235,7 @@ abstract class BattlePhase implements IBattlePhase
             // Their level is never reduced by combat, only their health.
             if ($gameUnit instanceof WorldRegionLeveledUnit) {
                 $armor = $resolvedUnit->getBattleStats()->getArmor();
-                $damage = $armor > 0 ? intval($power / $armor) : $power;
+                $damage = $this->applyCarriedDamage($gameUnit, $power, $armor > 0 ? $armor : 1);
                 $remainingHealth = $gameUnit->getHealth() - $damage;
 
                 if ($remainingHealth <= 0) {
@@ -171,7 +243,7 @@ abstract class BattlePhase implements IBattlePhase
                     $this->addToBattleLog(
                         "{$action} {$resolvedUnit->getName()} (level {$gameUnit->getLevel()}) was destroyed"
                     );
-                } else {
+                } elseif ($damage > 0) {
                     $gameUnit->setHealth($remainingHealth);
                     $this->addToBattleLog(
                         "{$action} {$resolvedUnit->getName()} (level {$gameUnit->getLevel()}) "
@@ -182,7 +254,12 @@ abstract class BattlePhase implements IBattlePhase
                 continue;
             }
 
-            $deaths = $this->calculateCasualties($resolvedUnit, $power);
+            $healthPerUnit = $this->getHealthPerUnit($resolvedUnit);
+            if ($healthPerUnit <= 0) {
+                continue;
+            }
+
+            $deaths = $this->applyCarriedDamage($gameUnit, $power, $healthPerUnit);
 
             if ($deaths >= $gameUnit->getAmount()) {
                 unset($gameUnits[$index]);
@@ -198,20 +275,62 @@ abstract class BattlePhase implements IBattlePhase
         return $gameUnits;
     }
 
-    private function calculateCasualties(GameUnit $gameUnit, int $power): int
+    /**
+     * Converts power into whole units of damage (deaths or health points). Power that is not enough
+     * for a whole unit is carried over to the next volley, so splitting a battle phase into speed
+     * tiers loses no damage to rounding.
+     */
+    private function applyCarriedDamage(
+        FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit,
+        int $power,
+        int $powerPerUnit
+    ): int {
+        $key = spl_object_id($gameUnit);
+        $totalPower = $power + ($this->carriedPower[$key] ?? 0);
+        $this->carriedPower[$key] = $totalPower % $powerPerUnit;
+
+        return intdiv($totalPower, $powerPerUnit);
+    }
+
+    private function getHealthPerUnit(GameUnit $gameUnit): int
     {
         $health = $gameUnit->getBattleStats()->getHealth();
-
-        if ($health <= 0) {
-            return 0;
-        }
-
         $armor = $gameUnit->getBattleStats()->getArmor();
-        if ($armor > 0) {
+        if ($health > 0 && $armor > 0) {
             $health = $health * $armor;
         }
 
-        return intval($power / $health);
+        return $health;
+    }
+
+    private function getUnitBattleStats(
+        FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit
+    ): AbstractBattleStats {
+        return $this->getBattlePhaseBattleStats($this->gameUnitRegistry->find($gameUnit->getGameUnit()));
+    }
+
+    private function getUnitName(FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit): string
+    {
+        $resolvedUnit = $this->gameUnitRegistry->find($gameUnit->getGameUnit());
+
+        return $gameUnit instanceof WorldRegionLeveledUnit
+            ? "{$resolvedUnit->getName()} (level {$gameUnit->getLevel()})"
+            : $resolvedUnit->getNameMulti();
+    }
+
+    private function getUnitAttackPower(FleetUnit $fleetUnit): int
+    {
+        return $this->getUnitBattleStats($fleetUnit)->getAttack() * $fleetUnit->getAmount();
+    }
+
+    private function getUnitDefensePower(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): int
+    {
+        // Leveled buildings contribute defence per level; stackable units per amount.
+        $multiplier = $defenderGameUnit instanceof WorldRegionLeveledUnit
+            ? $defenderGameUnit->getLevel()
+            : $defenderGameUnit->getAmount();
+
+        return $this->getUnitBattleStats($defenderGameUnit)->getDefence() * $multiplier;
     }
 
     private function getBattlePhaseBattleStats(GameUnit $gameUnit): AbstractBattleStats
@@ -231,9 +350,7 @@ abstract class BattlePhase implements IBattlePhase
     {
         $power = 0;
         foreach ($this->getAttackerGameUnits() as $fleetUnit) {
-            $gameUnit = $this->gameUnitRegistry->find($fleetUnit->getGameUnit());
-            $power += $this->getBattlePhaseBattleStats($gameUnit)->getAttack()
-                * $fleetUnit->getAmount();
+            $power += $this->getUnitAttackPower($fleetUnit);
         }
 
         return $power;
@@ -242,13 +359,8 @@ abstract class BattlePhase implements IBattlePhase
     public function getDefensePower(): int
     {
         $power = 0;
-        foreach ($this->getDefenderGameUnits() as $worldRegionStackableUnit) {
-            $gameUnit = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit());
-            // Leveled buildings contribute defence per level; stackable units per amount.
-            $multiplier = $worldRegionStackableUnit instanceof WorldRegionLeveledUnit
-                ? $worldRegionStackableUnit->getLevel()
-                : $worldRegionStackableUnit->getAmount();
-            $power += $this->getBattlePhaseBattleStats($gameUnit)->getDefence() * $multiplier;
+        foreach ($this->getDefenderGameUnits() as $defenderGameUnit) {
+            $power += $this->getUnitDefensePower($defenderGameUnit);
         }
 
         return $power;
