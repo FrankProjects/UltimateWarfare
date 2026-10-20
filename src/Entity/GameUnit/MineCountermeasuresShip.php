@@ -27,7 +27,8 @@ final class MineCountermeasuresShip extends GameUnit
             image: 'gu_anti_mine_ship.jpg',
             netWorth: 100,
             timestamp: 7200,
-            description: '',
+            description: 'This ship is equipped to find and disarm sea mines. Each Mine Countermeasures Ship '
+                . 'clears 25 sea mines before they detonate.',
             gameUnitCategory: GameUnitCategory::NAVAL_UNITS,
             behaviorClass: NavalUnitBehavior::class,
             cost: new Cost(cash: 15000, food: 3000, wood: 400, steel: 800),

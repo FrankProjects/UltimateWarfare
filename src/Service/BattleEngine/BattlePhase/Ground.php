@@ -18,7 +18,6 @@ use FrankProjects\UltimateWarfare\Service\BattleEngine\BattlePhase;
 final class Ground extends BattlePhase
 {
     private const int MINES_CLEARED_PER_SWEEPER = 25;
-    private const float MINE_DETONATION_COST = 0.5;
     private const int BUNKER_CAPACITY_PER_LEVEL = 100;
     private const float BUNKER_DAMAGE_REDUCTION = 0.5;
 
@@ -26,8 +25,8 @@ final class Ground extends BattlePhase
 
     protected function beforeSpeedTiers(): void
     {
-        $this->sweepMines();
-        $this->detonateMines();
+        $this->sweepMines(GameUnitEnum::MINE_FIELD, GameUnitEnum::MINE_SWEEPER, self::MINES_CLEARED_PER_SWEEPER);
+        $this->detonateMines(GameUnitEnum::MINE_FIELD, GameUnitCategory::TROOPS);
         $this->bombardBunker();
     }
 
@@ -47,7 +46,7 @@ final class Ground extends BattlePhase
         int $power,
         string $action
     ): int {
-        if ($action !== 'defending' || !$this->isTroop($gameUnit)) {
+        if ($action !== 'defending' || !$this->hasGameUnitCategory($gameUnit, GameUnitCategory::TROOPS)) {
             return $power;
         }
 
@@ -58,7 +57,10 @@ final class Ground extends BattlePhase
 
         $troops = 0;
         foreach ($this->defenderGameUnits as $defenderGameUnit) {
-            if ($defenderGameUnit instanceof WorldRegionStackableUnit && $this->isTroop($defenderGameUnit)) {
+            if (
+                $defenderGameUnit instanceof WorldRegionStackableUnit
+                && $this->hasGameUnitCategory($defenderGameUnit, GameUnitCategory::TROOPS)
+            ) {
                 $troops += $defenderGameUnit->getAmount();
             }
         }
@@ -74,79 +76,6 @@ final class Ground extends BattlePhase
         }
 
         return (int) round($power * (1 - self::BUNKER_DAMAGE_REDUCTION * $sheltered / $troops));
-    }
-
-    private function sweepMines(): void
-    {
-        $mineField = $this->findDefenderLeveledUnit(GameUnitEnum::MINE_FIELD);
-        if ($mineField === null) {
-            return;
-        }
-
-        $sweepers = 0;
-        foreach ($this->attackerGameUnits as $fleetUnit) {
-            if ($fleetUnit->getGameUnit() === GameUnitEnum::MINE_SWEEPER) {
-                $sweepers += $fleetUnit->getAmount();
-            }
-        }
-
-        if ($sweepers === 0) {
-            return;
-        }
-
-        $cleared = min($sweepers * self::MINES_CLEARED_PER_SWEEPER, $mineField->getHealth());
-        $this->addToBattleLog("Attacking Mine Sweepers clear {$cleared} mines");
-
-        $remainingHealth = $mineField->getHealth() - $cleared;
-        if ($remainingHealth <= 0) {
-            $this->removeDefenderGameUnit($mineField);
-            $this->addToBattleLog("Defending {$this->getUnitName($mineField)} was cleared");
-            return;
-        }
-
-        $mineField->setHealth($remainingHealth);
-    }
-
-    /**
-     * The Mine Field strikes attacking troops first with armor-piercing damage, scaled by its remaining mines.
-     * Detonated mines are spent, which costs the Mine Field part of its health.
-     */
-    private function detonateMines(): void
-    {
-        $mineField = $this->findDefenderLeveledUnit(GameUnitEnum::MINE_FIELD);
-        if ($mineField === null) {
-            return;
-        }
-
-        $maxHealth = $this->getMaxHealth($mineField);
-        $troops = array_filter($this->attackerGameUnits, fn (FleetUnit $fleetUnit): bool => $this->isTroop($fleetUnit));
-        if ($maxHealth <= 0 || $troops === []) {
-            return;
-        }
-
-        $power = intdiv($this->getUnitDefensePower($mineField) * $mineField->getHealth(), $maxHealth);
-        if ($power <= 0) {
-            return;
-        }
-
-        $this->addToBattleLog(
-            "Defending {$this->getUnitName($mineField)} detonates with {$power} armor-piercing power"
-        );
-
-        $survivors = $this->processBattlePhase($power, $troops, 'attacking', true);
-        foreach (array_keys(array_diff_key($troops, $survivors)) as $index) {
-            unset($this->attackerGameUnits[$index]);
-        }
-
-        $remainingHealth = $mineField->getHealth() - (int) ceil($maxHealth * self::MINE_DETONATION_COST);
-        if ($remainingHealth <= 0) {
-            $this->removeDefenderGameUnit($mineField);
-            $this->addToBattleLog("Defending {$this->getUnitName($mineField)} has no mines left");
-            return;
-        }
-
-        $mineField->setHealth($remainingHealth);
-        $this->addToBattleLog("Defending {$this->getUnitName($mineField)} has {$remainingHealth} mine health left");
     }
 
     /**
@@ -193,10 +122,5 @@ final class Ground extends BattlePhase
         }
 
         return intdiv(self::BUNKER_CAPACITY_PER_LEVEL * $bunker->getLevel() * $bunker->getHealth(), $maxHealth);
-    }
-
-    private function isTroop(FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit): bool
-    {
-        return $this->getGameUnit($gameUnit)->getGameUnitCategory() === GameUnitCategory::TROOPS;
     }
 }

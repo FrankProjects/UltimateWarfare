@@ -24,8 +24,10 @@ final class SeaMine extends GameUnit
             image: 'gu_sea_mine.jpg',
             netWorth: 0,
             timestamp: 7200,
-            description: 'Sea mines damage ships attacking this region. Each level lays an '
-                . 'additional layer of mines, increasing both their sea defence and durability.',
+            description: 'Sea mines detonate on attacking ships before the battle starts, '
+                . 'piercing their armor. Detonated mines are spent and each detonation costs half of '
+                . 'the sea mines, so repair them to re-arm. Mine Countermeasures Ships clear mines before '
+                . 'they explode. Each level lays an additional layer of mines.',
             gameUnitCategory: GameUnitCategory::DEFENSE_BUILDINGS,
             behaviorClass: null,
             cost: new Cost(cash: 3500, food: 0, wood: 0, steel: 1),
@@ -34,7 +36,7 @@ final class SeaMine extends GameUnit
             battleStats: new BattleStats(
                 health: 10,
                 armor: 1,
-                seaBattleStats: new SeaBattleStats(defence: 5, defenceSpeed: 500),
+                seaBattleStats: new SeaBattleStats(defence: 750, defenceSpeed: 0),
             ),
         );
     }

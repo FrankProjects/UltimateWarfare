@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\BattleEngine;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\GameUnit;
@@ -18,6 +19,11 @@ abstract class BattlePhase implements IBattlePhase
     public const string AIR_PHASE = 'air';
     public const string SEA_PHASE = 'sea';
     public const string GROUND_PHASE = 'ground';
+
+    /**
+     * Share of their max health that mines spend per detonation
+     */
+    private const float MINE_DETONATION_COST = 0.5;
 
     protected string $name;
 
@@ -374,6 +380,93 @@ abstract class BattlePhase implements IBattlePhase
     protected function getMaxHealth(WorldRegionLeveledUnit $leveledUnit): int
     {
         return $this->getGameUnit($leveledUnit)->getBattleStats()->getHealth() * $leveledUnit->getLevel();
+    }
+
+    /**
+     * Attacking sweepers clear mines before they can detonate
+     */
+    protected function sweepMines(GameUnitEnum $mineEnum, GameUnitEnum $sweeperEnum, int $minesClearedPerSweeper): void
+    {
+        $mines = $this->findDefenderLeveledUnit($mineEnum);
+        if ($mines === null) {
+            return;
+        }
+
+        $sweepers = 0;
+        foreach ($this->attackerGameUnits as $fleetUnit) {
+            if ($fleetUnit->getGameUnit() === $sweeperEnum) {
+                $sweepers += $fleetUnit->getAmount();
+            }
+        }
+
+        if ($sweepers === 0) {
+            return;
+        }
+
+        $cleared = min($sweepers * $minesClearedPerSweeper, $mines->getHealth());
+        $sweeperName = $this->gameUnitRegistry->find($sweeperEnum)->getNameMulti();
+        $this->addToBattleLog("Attacking {$sweeperName} clear {$cleared} mines");
+
+        $remainingHealth = $mines->getHealth() - $cleared;
+        if ($remainingHealth <= 0) {
+            $this->removeDefenderGameUnit($mines);
+            $this->addToBattleLog("Defending {$this->getUnitName($mines)} was cleared");
+            return;
+        }
+
+        $mines->setHealth($remainingHealth);
+    }
+
+    /**
+     * Mines strike the attacking units of the target category first with armor-piercing damage, scaled by
+     * the remaining mines. Detonated mines are spent, which costs the mines part of their health.
+     */
+    protected function detonateMines(GameUnitEnum $mineEnum, GameUnitCategory $targetCategory): void
+    {
+        $mines = $this->findDefenderLeveledUnit($mineEnum);
+        if ($mines === null) {
+            return;
+        }
+
+        $maxHealth = $this->getMaxHealth($mines);
+        $targets = array_filter(
+            $this->attackerGameUnits,
+            fn (FleetUnit $fleetUnit): bool => $this->hasGameUnitCategory($fleetUnit, $targetCategory)
+        );
+        if ($maxHealth <= 0 || $targets === []) {
+            return;
+        }
+
+        $power = intdiv($this->getUnitDefensePower($mines) * $mines->getHealth(), $maxHealth);
+        if ($power <= 0) {
+            return;
+        }
+
+        $this->addToBattleLog(
+            "Defending {$this->getUnitName($mines)} detonates with {$power} armor-piercing power"
+        );
+
+        $survivors = $this->processBattlePhase($power, $targets, 'attacking', true);
+        foreach (array_keys(array_diff_key($targets, $survivors)) as $index) {
+            unset($this->attackerGameUnits[$index]);
+        }
+
+        $remainingHealth = $mines->getHealth() - (int) ceil($maxHealth * self::MINE_DETONATION_COST);
+        if ($remainingHealth <= 0) {
+            $this->removeDefenderGameUnit($mines);
+            $this->addToBattleLog("Defending {$this->getUnitName($mines)} has no mines left");
+            return;
+        }
+
+        $mines->setHealth($remainingHealth);
+        $this->addToBattleLog("Defending {$this->getUnitName($mines)} has {$remainingHealth} mine health left");
+    }
+
+    protected function hasGameUnitCategory(
+        FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit,
+        GameUnitCategory $gameUnitCategory
+    ): bool {
+        return $this->getGameUnit($gameUnit)->getGameUnitCategory() === $gameUnitCategory;
     }
 
     private function getUnitBattleStats(
