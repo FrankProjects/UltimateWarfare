@@ -24,7 +24,8 @@ final class MineSweeper extends GameUnit
             image: 'gu_minesweeper.jpg',
             netWorth: 1,
             timestamp: 3600,
-            description: 'This Soldier is trained to find and disarm mines.',
+            description: 'This Soldier is trained to find and disarm mines. Each Mine Sweeper clears 25 '
+                . 'mines of a mine field before it detonates.',
             gameUnitCategory: GameUnitCategory::TROOPS,
             behaviorClass: null,
             cost: new Cost(cash: 1500, food: 75, wood: 2, steel: 15),

@@ -132,8 +132,10 @@ abstract class BattlePhase implements IBattlePhase
     {
         $this->addToBattleLog("Starting {$this->getName()} Battle Phase");
 
+        $this->beforeSpeedTiers();
+
         $speeds = $this->getSpeeds();
-        if ($speeds === []) {
+        if ($speeds === [] && count($this->battleLog) === 1) {
             $this->addToBattleLog("No resistance in this battle phase...");
             return;
         }
@@ -141,6 +143,32 @@ abstract class BattlePhase implements IBattlePhase
         foreach ($speeds as $speed) {
             $this->processSpeedTier($speed);
         }
+    }
+
+    /**
+     * Phase specific actions that happen before the first unit group fires
+     */
+    protected function beforeSpeedTiers(): void
+    {
+    }
+
+    /**
+     * Whether a defending unit group fires in the speed tiers; groups that don't still count as defense power
+     */
+    protected function firesInSpeedTiers(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): bool
+    {
+        return true;
+    }
+
+    /**
+     * The power of a volley that actually reaches a unit group
+     */
+    protected function getIncomingPower(
+        FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit,
+        int $power,
+        string $action
+    ): int {
+        return $power;
     }
 
     /**
@@ -156,7 +184,7 @@ abstract class BattlePhase implements IBattlePhase
         }
 
         foreach ($this->defenderGameUnits as $defenderGameUnit) {
-            if ($this->getUnitDefensePower($defenderGameUnit) > 0) {
+            if ($this->firesInSpeedTiers($defenderGameUnit) && $this->getUnitDefensePower($defenderGameUnit) > 0) {
                 $speeds[] = $this->getUnitBattleStats($defenderGameUnit)->getDefenceSpeed();
             }
         }
@@ -173,7 +201,11 @@ abstract class BattlePhase implements IBattlePhase
         $defenderNames = [];
         foreach ($this->defenderGameUnits as $defenderGameUnit) {
             $power = $this->getUnitDefensePower($defenderGameUnit);
-            if ($power > 0 && $this->getUnitBattleStats($defenderGameUnit)->getDefenceSpeed() === $speed) {
+            if (
+                $power > 0
+                && $this->firesInSpeedTiers($defenderGameUnit)
+                && $this->getUnitBattleStats($defenderGameUnit)->getDefenceSpeed() === $speed
+            ) {
                 $defensePower += $power;
                 $defenderNames[] = $this->getUnitName($defenderGameUnit);
             }
@@ -222,14 +254,21 @@ abstract class BattlePhase implements IBattlePhase
     }
 
     /**
+     * Armor-piercing damage kills a unit per point of health, ignoring its armor.
+     *
      * @param array<FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit> $gameUnits
      *
      * @return ($action is 'defending' ? array<WorldRegionStackableUnit|WorldRegionLeveledUnit> : FleetUnit[])
      */
-    private function processBattlePhase(int $power, array $gameUnits, string $action): array
-    {
+    protected function processBattlePhase(
+        int $volleyPower,
+        array $gameUnits,
+        string $action,
+        bool $armorPiercing = false
+    ): array {
         foreach ($gameUnits as $index => $gameUnit) {
             $resolvedUnit = $this->gameUnitRegistry->find($gameUnit->getGameUnit());
+            $power = $this->getIncomingPower($gameUnit, $volleyPower, $action);
 
             // Leveled buildings (Defense / Special) absorb damage on their health pool.
             // Their level is never reduced by combat, only their health.
@@ -254,7 +293,9 @@ abstract class BattlePhase implements IBattlePhase
                 continue;
             }
 
-            $healthPerUnit = $this->getHealthPerUnit($resolvedUnit);
+            $healthPerUnit = $armorPiercing
+                ? $resolvedUnit->getBattleStats()->getHealth()
+                : $this->getHealthPerUnit($resolvedUnit);
             if ($healthPerUnit <= 0) {
                 continue;
             }
@@ -303,27 +344,59 @@ abstract class BattlePhase implements IBattlePhase
         return $health;
     }
 
+    protected function getGameUnit(FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit): GameUnit
+    {
+        return $this->gameUnitRegistry->find($gameUnit->getGameUnit());
+    }
+
+    protected function findDefenderLeveledUnit(GameUnitEnum $gameUnitEnum): ?WorldRegionLeveledUnit
+    {
+        foreach ($this->defenderGameUnits as $defenderGameUnit) {
+            if (
+                $defenderGameUnit instanceof WorldRegionLeveledUnit
+                && $defenderGameUnit->getGameUnit() === $gameUnitEnum
+            ) {
+                return $defenderGameUnit;
+            }
+        }
+
+        return null;
+    }
+
+    protected function removeDefenderGameUnit(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): void
+    {
+        $index = array_search($defenderGameUnit, $this->defenderGameUnits, true);
+        if ($index !== false) {
+            unset($this->defenderGameUnits[$index]);
+        }
+    }
+
+    protected function getMaxHealth(WorldRegionLeveledUnit $leveledUnit): int
+    {
+        return $this->getGameUnit($leveledUnit)->getBattleStats()->getHealth() * $leveledUnit->getLevel();
+    }
+
     private function getUnitBattleStats(
         FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit
     ): AbstractBattleStats {
-        return $this->getBattlePhaseBattleStats($this->gameUnitRegistry->find($gameUnit->getGameUnit()));
+        return $this->getBattlePhaseBattleStats($this->getGameUnit($gameUnit));
     }
 
-    private function getUnitName(FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit): string
+    protected function getUnitName(FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit): string
     {
-        $resolvedUnit = $this->gameUnitRegistry->find($gameUnit->getGameUnit());
+        $resolvedUnit = $this->getGameUnit($gameUnit);
 
         return $gameUnit instanceof WorldRegionLeveledUnit
             ? "{$resolvedUnit->getName()} (level {$gameUnit->getLevel()})"
             : $resolvedUnit->getNameMulti();
     }
 
-    private function getUnitAttackPower(FleetUnit $fleetUnit): int
+    protected function getUnitAttackPower(FleetUnit $fleetUnit): int
     {
         return $this->getUnitBattleStats($fleetUnit)->getAttack() * $fleetUnit->getAmount();
     }
 
-    private function getUnitDefensePower(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): int
+    protected function getUnitDefensePower(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): int
     {
         // Leveled buildings contribute defence per level; stackable units per amount.
         $multiplier = $defenderGameUnit instanceof WorldRegionLeveledUnit

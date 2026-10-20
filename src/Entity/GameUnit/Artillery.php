@@ -24,7 +24,8 @@ final class Artillery extends GameUnit
             image: 'gu_artillery.jpg',
             netWorth: 10,
             timestamp: 14400,
-            description: '',
+            description: 'Artillery bombard enemy bunkers before the battle, '
+                . 'ignoring their armor, before joining the ground fight.',
             gameUnitCategory: GameUnitCategory::TROOPS,
             behaviorClass: null,
             cost: new Cost(cash: 5000, food: 1000, wood: 20, steel: 55),
