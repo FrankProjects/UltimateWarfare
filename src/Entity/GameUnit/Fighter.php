@@ -32,13 +32,13 @@ final class Fighter extends GameUnit
             behaviorClass: AirUnitBehavior::class,
             cost: new Cost(cash: 8000, food: 1000, wood: 100, steel: 250),
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
-            upkeep: new Upkeep(cash: 75, food: 10, wood: 0, steel: 0),
+            upkeep: new Upkeep(cash: 40, food: 10, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 500,
-                armor: 10,
+                health: 100,
+                armor: 5,
                 travelSpeed: 500,
-                airBattleStats: new AirBattleStats(attack: 75, attackSpeed: 300, defence: 80, defenceSpeed: 310),
-                groundBattleStats: new GroundBattleStats(attack: 20, attackSpeed: 100),
+                airBattleStats: new AirBattleStats(attack: 1200, attackSpeed: 300, defence: 1300, defenceSpeed: 310),
+                groundBattleStats: new GroundBattleStats(attack: 40, attackSpeed: 100),
             ),
         );
     }

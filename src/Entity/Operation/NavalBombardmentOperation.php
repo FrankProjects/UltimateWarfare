@@ -19,7 +19,7 @@ final readonly class NavalBombardmentOperation extends Operation
             cost: 25,
             description: "Bombard a coastal enemy region with cruisers. Damage is split 75% military units"
                 . " / 25% buildings, with diminishing returns at high volumes. Cruisers are not consumed"
-                . " but enter a 10-minute cooldown after firing."
+                . " but enter a 30-minute cooldown after firing."
                 . " The enemy always receives a report.",
             enabled: true,
             difficulty: 0,

@@ -14,15 +14,15 @@ final readonly class DefensiveNetworkResearch extends Research
             name: 'Defensive Network',
             image: 'research_defensive_network.jpg',
             description: 'A two-layer defense. In ground battles, each level multiplies incoming damage'
-                . ' by 0.75 (lvl 5 = enemy deals only ~24%). It also reduces the success rate of'
-                . ' incoming sniper, bomber, missile, and submarine operations by 12% per level.',
+                . ' by 0.9 (lvl 5 = enemy deals ~59%). It also reduces the success rate of'
+                . ' incoming sniper, bomber, missile, and submarine operations by 6% per level.',
             enabled: true,
             costPerLevel: [
-                1 => 5000,
-                2 => 25000,
-                3 => 100000,
-                4 => 500000,
-                5 => 2000000,
+                1 => 10000,
+                2 => 50000,
+                3 => 250000,
+                4 => 1000000,
+                5 => 4000000,
             ],
             timestampPerLevel: [
                 1 => 3600,

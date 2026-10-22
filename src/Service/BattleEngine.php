@@ -171,7 +171,7 @@ final class BattleEngine
             }
         }
 
-        return $level === 0 ? 1.0 : pow(0.75, $level);
+        return $level === 0 ? 1.0 : pow(0.9, $level);
     }
 
     private function ensureCanAttack(Fleet $fleet): void

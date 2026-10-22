@@ -65,11 +65,14 @@ class PlayerStateUpdaterServiceTest extends TestCase
         // 2 Houses for the first hour (10 ticks), then 5 Houses
         $playerStateUpdaterService->updateStateForPlayer($player, self::START + 7200);
         self::assertSame(10 * 2 + 10 * 5, $worldRegion->getPopulation());
-        self::assertSame(7, $player->getIncome()->getCash());
+        self::assertSame(intdiv(10 * 2 + 10 * 5, 15), $player->getIncome()->getCash());
 
         $playerStateUpdaterService->updateStateForPlayer($player, self::START + 7 * 86400);
         self::assertSame(5 * PopulationUpdaterService::POPULATION_PER_HOUSE, $worldRegion->getPopulation());
-        self::assertSame(250, $player->getIncome()->getCash());
+        self::assertSame(
+            intdiv(5 * PopulationUpdaterService::POPULATION_PER_HOUSE, 15),
+            $player->getIncome()->getCash()
+        );
     }
 
     public function testPopulationResultIsIndependentOfWhenAndHowOftenUpdatesRun(): void
@@ -100,7 +103,7 @@ class PlayerStateUpdaterServiceTest extends TestCase
             $expectedPopulation -= (int) ceil($expectedPopulation * 0.03505);
         }
         self::assertSame($expectedPopulation, $worldRegion->getPopulation());
-        self::assertSame(intdiv($expectedPopulation, 10), $player->getIncome()->getCash());
+        self::assertSame(intdiv($expectedPopulation, 15), $player->getIncome()->getCash());
         self::assertSame(0, $player->getResources()->getFood());
     }
 

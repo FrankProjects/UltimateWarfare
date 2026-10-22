@@ -28,27 +28,27 @@ class BattlePhaseTest extends TestCase
         self::assertSame(0, $battlePhase->getDefensePower());
         self::assertSame(10, $attackingTanks->getAmount());
         self::assertNotContains(
-            'Defending Soldiers fire with 120 defense power',
+            'Defending Soldiers fire with 140 defense power',
             $battlePhase->getBattleLog()
         );
     }
 
     public function testFasterDefenderFiresBeforeSlowerAttacker(): void
     {
-        // Defending soldiers fire at speed 110 and kill 2 attackers before they fire at speed 100
+        // Defending soldiers fire at speed 110 and kill 3 attackers before they fire at speed 100
         $attackingSoldiers = $this->createFleetUnit(GameUnitEnum::SOLDIER, 100);
         $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 10);
 
         $battlePhase = $this->startGroundPhase([$attackingSoldiers], [$defendingSoldiers]);
 
-        self::assertSame(98, $attackingSoldiers->getAmount());
+        self::assertSame(97, $attackingSoldiers->getAmount());
         self::assertSame([], $battlePhase->getDefenderGameUnits());
         self::assertSame(
             [
                 'Starting ground Battle Phase',
-                'Defending Soldiers fire with 120 defense power',
-                '2 attacking Soldiers died in the fight',
-                'Attacking Soldiers fire with 980 attack power',
+                'Defending Soldiers fire with 140 defense power',
+                '3 attacking Soldiers died in the fight',
+                'Attacking Soldiers fire with 3492 attack power',
                 'All defending Soldiers died in the fight',
             ],
             $battlePhase->getBattleLog()
@@ -63,33 +63,33 @@ class BattlePhaseTest extends TestCase
 
         $this->startGroundPhase([$attackingSoldiers], [$defendingMineSweepers]);
 
-        // 300 defense power kills 6 soldiers (50 health), the full 200 attack power still kills 1 sweeper
-        self::assertSame(14, $attackingSoldiers->getAmount());
-        self::assertSame(29, $defendingMineSweepers->getAmount());
+        // 300 defense power kills 7 soldiers (40 health), the full 720 attack power still kills 14 sweepers
+        self::assertSame(13, $attackingSoldiers->getAmount());
+        self::assertSame(16, $defendingMineSweepers->getAmount());
     }
 
     public function testPowerBelowOneKillCarriesOverToNextSpeedTier(): void
     {
-        // 55 power at speed 135 and 48 power at speed 110 add up to 2 kills of 50 health soldiers
+        // 28 power at speed 110 and 20 power at speed 100 add up to 1 kill of a 40 health soldier
         $attackingSoldiers = $this->createFleetUnit(GameUnitEnum::SOLDIER, 10);
-        $defendingTank = $this->createStackableUnit(GameUnitEnum::TANK, 1);
-        $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 4);
+        $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 2);
+        $defendingMineSweepers = $this->createStackableUnit(GameUnitEnum::MINE_SWEEPER, 2);
 
-        $this->startGroundPhase([$attackingSoldiers], [$defendingTank, $defendingSoldiers]);
+        $this->startGroundPhase([$attackingSoldiers], [$defendingSoldiers, $defendingMineSweepers]);
 
-        self::assertSame(8, $attackingSoldiers->getAmount());
+        self::assertSame(9, $attackingSoldiers->getAmount());
     }
 
     public function testDefenderDamageMultiplierReducesAttackPower(): void
     {
         $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 10);
-        $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 10);
+        $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 100);
 
         $battlePhase = $this->startGroundPhase([$attackingTanks], [$defendingSoldiers], 0.5);
 
-        self::assertSame(5, $defendingSoldiers->getAmount());
+        self::assertSame(53, $defendingSoldiers->getAmount());
         self::assertContains(
-            "Defender's defensive network reduces incoming damage from 500 to 250",
+            "Defender's defensive network reduces incoming damage from 3800 to 1900",
             $battlePhase->getBattleLog()
         );
     }
@@ -101,8 +101,8 @@ class BattlePhaseTest extends TestCase
 
         $battlePhase = $this->startGroundPhase([$attackingTanks], [$barrack]);
 
-        // 500 attack power against armor 2
-        self::assertSame(5750, $barrack->getHealth());
+        // 3800 attack power against armor 2
+        self::assertSame(4100, $barrack->getHealth());
         self::assertSame(0, $battlePhase->getDefensePower());
     }
 

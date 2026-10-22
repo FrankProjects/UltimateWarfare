@@ -30,15 +30,15 @@ final class Bomber extends GameUnit
                 . 'to protect them from enemy aircraft, and beware of flak, which ignores their armor.',
             gameUnitCategory: GameUnitCategory::AIR_UNITS,
             behaviorClass: AirUnitBehavior::class,
-            cost: new Cost(cash: 25000, food: 2000, wood: 200, steel: 700),
+            cost: new Cost(cash: 20000, food: 2000, wood: 200, steel: 600),
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
-            upkeep: new Upkeep(cash: 400, food: 100, wood: 0, steel: 0),
+            upkeep: new Upkeep(cash: 100, food: 20, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 1250,
-                armor: 20,
+                health: 400,
+                armor: 4,
                 travelSpeed: 500,
-                airBattleStats: new AirBattleStats(attack: 15, attackSpeed: 150, defence: 20, defenceSpeed: 150),
-                groundBattleStats: new GroundBattleStats(attack: 20, attackSpeed: 100),
+                airBattleStats: new AirBattleStats(attack: 100, attackSpeed: 150, defence: 150, defenceSpeed: 150),
+                groundBattleStats: new GroundBattleStats(attack: 2500, attackSpeed: 60),
             ),
         );
     }

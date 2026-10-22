@@ -21,7 +21,7 @@ use RuntimeException;
 
 final class OperationService
 {
-    private const int BOMBARDMENT_COOLDOWN_SECONDS = 600;
+    private const int BOMBARDMENT_COOLDOWN_SECONDS = 1800;
 
     private ReportCreator $reportCreator;
     private NetWorthUpdaterService $netWorthUpdaterService;

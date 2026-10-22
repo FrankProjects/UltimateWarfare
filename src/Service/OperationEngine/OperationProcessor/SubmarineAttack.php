@@ -19,7 +19,7 @@ final class SubmarineAttack extends OperationProcessor
 
         $probability = self::BASE_SUCCESS
             + 0.05 * max(0, $rtLevel - 1)
-            - 0.12 * $defNetLevel;
+            - 0.06 * $defNetLevel;
 
         $probability = max(0.05, min(0.95, $probability));
 

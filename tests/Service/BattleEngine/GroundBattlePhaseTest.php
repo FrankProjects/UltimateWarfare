@@ -18,25 +18,24 @@ class GroundBattlePhaseTest extends TestCase
 {
     public function testMinesDetonateOnTroopsWithArmorPiercingPower(): void
     {
-        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 10);
+        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 100);
         $attackingFighters = $this->createFleetUnit(GameUnitEnum::FIGHTER, 5);
         $mineField = $this->createLeveledUnit(GameUnitEnum::MINE_FIELD, 10, 2500);
 
         $battlePhase = $this->startGroundPhase([$attackingTanks, $attackingFighters], [$mineField]);
 
-        // 3000 power ignores tank armor: 1500 damage per tank. Fighters are not troops and are unharmed.
-        self::assertSame(8, $attackingTanks->getAmount());
+        // 10000 power ignores tank armor: 125 damage per tank. Fighters are not troops and are unharmed.
+        self::assertSame(20, $attackingTanks->getAmount());
         self::assertSame(5, $attackingFighters->getAmount());
         self::assertSame(
             [
                 'Starting ground Battle Phase',
-                'Defending Mine Field (level 10) detonates with 3000 armor-piercing power',
-                '2 attacking Tanks died in the fight',
+                'Defending Mine Field (level 10) detonates with 10000 armor-piercing power',
+                '80 attacking Tanks died in the fight',
                 'Defending Mine Field (level 10) has 1250 mine health left',
-                'Attacking Tanks fire with 400 attack power',
-                'defending Mine Field (level 10) took 400 damage, 850 health remaining',
-                'Attacking Fighters fire with 100 attack power',
-                'defending Mine Field (level 10) took 100 damage, 750 health remaining',
+                'Attacking Tanks fire with 7600 attack power',
+                'defending Mine Field (level 10) was destroyed',
+                'Attacking Fighters fire with 200 attack power',
             ],
             $battlePhase->getBattleLog()
         );
@@ -44,29 +43,29 @@ class GroundBattlePhaseTest extends TestCase
 
     public function testDamagedMineFieldDetonatesWeakerAndIsSpent(): void
     {
-        $attackingSoldiers = $this->createFleetUnit(GameUnitEnum::SOLDIER, 100);
+        $attackingSoldiers = $this->createFleetUnit(GameUnitEnum::SOLDIER, 200);
         $mineField = $this->createLeveledUnit(GameUnitEnum::MINE_FIELD, 10, 1250);
 
         $battlePhase = $this->startGroundPhase([$attackingSoldiers], [$mineField]);
 
-        // Half health detonates with 1500 power and spends the remaining mines
-        self::assertSame(70, $attackingSoldiers->getAmount());
+        // Half health detonates with 5000 power and spends the remaining mines
+        self::assertSame(75, $attackingSoldiers->getAmount());
         self::assertSame([], $battlePhase->getDefenderGameUnits());
         self::assertContains('Defending Mine Field (level 10) has no mines left', $battlePhase->getBattleLog());
     }
 
     public function testMineSweepersClearMinesBeforeDetonation(): void
     {
-        $attackingSweepers = $this->createFleetUnit(GameUnitEnum::MINE_SWEEPER, 40);
+        $attackingSweepers = $this->createFleetUnit(GameUnitEnum::MINE_SWEEPER, 80);
         $mineField = $this->createLeveledUnit(GameUnitEnum::MINE_FIELD, 10, 2500);
 
         $battlePhase = $this->startGroundPhase([$attackingSweepers], [$mineField]);
 
-        // 1000 mines cleared leaves 60% of the field: 1800 power kills 12 sweepers of 150 health
-        self::assertSame(28, $attackingSweepers->getAmount());
-        self::assertContains('Attacking Mine Sweepers clear 1000 mines', $battlePhase->getBattleLog());
+        // 2000 mines cleared leaves 20% of the field: 2000 power kills 40 sweepers of 50 health
+        self::assertSame(40, $attackingSweepers->getAmount());
+        self::assertContains('Attacking Mine Sweepers clear 2000 mines', $battlePhase->getBattleLog());
         self::assertContains(
-            'Defending Mine Field (level 10) detonates with 1800 armor-piercing power',
+            'Defending Mine Field (level 10) detonates with 2000 armor-piercing power',
             $battlePhase->getBattleLog()
         );
     }
@@ -97,7 +96,7 @@ class GroundBattlePhaseTest extends TestCase
 
         $battlePhase = $this->startGroundPhase([], [$mineField]);
 
-        self::assertSame(3000, $battlePhase->getDefensePower());
+        self::assertSame(10000, $battlePhase->getDefensePower());
         self::assertSame(2500, $mineField->getHealth());
         self::assertSame(
             ['Starting ground Battle Phase', 'No resistance in this battle phase...'],
@@ -107,66 +106,68 @@ class GroundBattlePhaseTest extends TestCase
 
     public function testBunkerHalvesDamageToShelteredTroops(): void
     {
-        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 10);
+        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 2);
         $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 50);
-        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 1, 4000);
+        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 1, 1500);
 
         $battlePhase = $this->startGroundPhase([$attackingTanks], [$defendingSoldiers, $bunker]);
 
-        // 500 attack power is halved for the soldiers: 5 die instead of 10
-        self::assertSame(45, $defendingSoldiers->getAmount());
+        // 760 attack power is halved for the soldiers: 9 die instead of 19
+        self::assertSame(41, $defendingSoldiers->getAmount());
         self::assertContains('Defending Bunker (level 1) shelters 50 of 50 troops', $battlePhase->getBattleLog());
     }
 
     public function testBunkerOnlySheltersTroopsUpToItsCapacity(): void
     {
-        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 20);
+        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 4);
         $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 200);
-        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 1, 4000);
+        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 1, 1500);
 
         $this->startGroundPhase([$attackingTanks], [$defendingSoldiers, $bunker]);
 
-        // Half of the soldiers are sheltered, so they take 75% of 1000 attack power
-        self::assertSame(185, $defendingSoldiers->getAmount());
+        // Half of the soldiers are sheltered, so they take 75% of 1520 attack power
+        self::assertSame(172, $defendingSoldiers->getAmount());
     }
 
     public function testDamagedBunkerSheltersFewerTroops(): void
     {
-        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 20);
+        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 4);
         $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 200);
-        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 2, 4000);
+        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 2, 1500);
 
         $battlePhase = $this->startGroundPhase([$attackingTanks], [$defendingSoldiers, $bunker]);
 
         // A level 2 bunker at half health has the capacity of a level 1 bunker
-        self::assertSame(185, $defendingSoldiers->getAmount());
+        self::assertSame(172, $defendingSoldiers->getAmount());
         self::assertContains('Defending Bunker (level 2) shelters 100 of 200 troops', $battlePhase->getBattleLog());
     }
 
     public function testArtilleryBombardsBunkerIgnoringArmor(): void
     {
-        $attackingArtillery = $this->createFleetUnit(GameUnitEnum::ARTILLERY, 40);
+        $attackingArtillery = $this->createFleetUnit(GameUnitEnum::ARTILLERY, 2);
+        $attackingTank = $this->createFleetUnit(GameUnitEnum::TANK, 1);
         $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 100);
-        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 1, 4000);
+        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 1, 1500);
 
-        $battlePhase = $this->startGroundPhase([$attackingArtillery], [$defendingSoldiers, $bunker]);
+        $battlePhase = $this->startGroundPhase([$attackingArtillery, $attackingTank], [$defendingSoldiers, $bunker]);
 
-        // The barrage halves the bunker before the fight, so it shelters only 50 of 100 soldiers.
-        // 2000 attack power then takes 75% effect on the soldiers and 2000 / 35 armor on the bunker.
-        self::assertSame(70, $defendingSoldiers->getAmount());
-        self::assertSame(1943, $bunker->getHealth());
+        // The barrage takes 600 of the bunker's 1500 health before the fight, so it shelters only 60 of
+        // 100 soldiers. The tank's 380 attack power then takes 70% effect on the soldiers and 380 / 10
+        // armor on the bunker.
+        self::assertSame(94, $defendingSoldiers->getAmount());
+        self::assertSame(862, $bunker->getHealth());
         self::assertContains(
-            'Attacking Artillery bombard the defending Bunker (level 1) for 2000 damage',
+            'Attacking Artillery bombard the defending Bunker (level 1) for 600 damage',
             $battlePhase->getBattleLog()
         );
-        self::assertContains('Defending Bunker (level 1) shelters 50 of 100 troops', $battlePhase->getBattleLog());
+        self::assertContains('Defending Bunker (level 1) shelters 60 of 100 troops', $battlePhase->getBattleLog());
     }
 
     public function testArtilleryCanDestroyBunker(): void
     {
-        $attackingArtillery = $this->createFleetUnit(GameUnitEnum::ARTILLERY, 80);
+        $attackingArtillery = $this->createFleetUnit(GameUnitEnum::ARTILLERY, 5);
         $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 100);
-        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 1, 4000);
+        $bunker = $this->createLeveledUnit(GameUnitEnum::BUNKER, 1, 1500);
 
         $battlePhase = $this->startGroundPhase([$attackingArtillery], [$defendingSoldiers, $bunker]);
 

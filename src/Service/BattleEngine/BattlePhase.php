@@ -273,6 +273,10 @@ abstract class BattlePhase implements IBattlePhase
         bool $armorPiercing = false
     ): array {
         foreach ($gameUnits as $index => $gameUnit) {
+            if (!$this->takesPartInPhase($gameUnit)) {
+                continue;
+            }
+
             $resolvedUnit = $this->gameUnitRegistry->find($gameUnit->getGameUnit());
             $power = $this->getIncomingPower($gameUnit, $volleyPower, $action);
 
@@ -337,6 +341,21 @@ abstract class BattlePhase implements IBattlePhase
         $this->carriedPower[$key] = $totalPower % $powerPerUnit;
 
         return intdiv($totalPower, $powerPerUnit);
+    }
+
+    /**
+     * Only unit groups fighting in this phase can be hit, so e.g. fighters in the air phase do not
+     * strike ground troops. Every leveled building can be hit in the ground phase.
+     */
+    private function takesPartInPhase(FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit): bool
+    {
+        if ($this->name === self::GROUND_PHASE && $gameUnit instanceof WorldRegionLeveledUnit) {
+            return true;
+        }
+
+        $battleStats = $this->getUnitBattleStats($gameUnit);
+
+        return $battleStats->getAttack() > 0 || $battleStats->getDefence() > 0;
     }
 
     private function getHealthPerUnit(GameUnit $gameUnit): int

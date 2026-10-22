@@ -17,9 +17,9 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 final class IncomeCalculator extends AbstractPlayerCalculator
 {
     /**
-     * Every 10 people bring in 1 cash per hour
+     * Every 15 people bring in 1 cash per hour
      */
-    private const int POPULATION_PER_CASH = 10;
+    private const int POPULATION_PER_CASH = 15;
 
     public function __construct(
         GameUnitRegistry $gameUnitRegistry,

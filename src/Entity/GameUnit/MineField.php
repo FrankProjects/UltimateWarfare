@@ -36,7 +36,7 @@ final class MineField extends GameUnit
             battleStats: new BattleStats(
                 health: 250,
                 armor: 1,
-                groundBattleStats: new GroundBattleStats(defence: 300, defenceSpeed: 0),
+                groundBattleStats: new GroundBattleStats(defence: 1000),
             ),
         );
     }

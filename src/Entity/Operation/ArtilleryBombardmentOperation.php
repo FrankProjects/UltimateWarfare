@@ -19,7 +19,7 @@ final readonly class ArtilleryBombardmentOperation extends Operation
             cost: 25,
             description: "Bombard an adjacent enemy region. Damage is split 75% military units / 25%"
                 . " buildings, with diminishing returns at high volumes. No artillery is consumed,"
-                . " but each piece enters a 10-minute cooldown after firing."
+                . " but each piece enters a 30-minute cooldown after firing."
                 . " The enemy always receives a report.",
             enabled: true,
             difficulty: 0,

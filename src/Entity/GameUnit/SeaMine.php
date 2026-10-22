@@ -34,9 +34,9 @@ final class SeaMine extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 0, food: 0, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 10,
+                health: 25,
                 armor: 1,
-                seaBattleStats: new SeaBattleStats(defence: 750, defenceSpeed: 0),
+                seaBattleStats: new SeaBattleStats(defence: 750),
             ),
         );
     }

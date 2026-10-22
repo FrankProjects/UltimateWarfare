@@ -10,7 +10,7 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class StrategicBomberAttack extends OperationProcessor
 {
-    protected const int BUILDINGS_DESTROYED_PER_BOMBER = 5;
+    protected const int BUILDINGS_DESTROYED_PER_BOMBER = 2;
     private const float BASE_SUCCESS = 0.62;
 
     public function getFormula(): float
@@ -20,7 +20,7 @@ final class StrategicBomberAttack extends OperationProcessor
 
         $probability = self::BASE_SUCCESS
             + 0.05 * max(0, $rtLevel - 1)
-            - 0.12 * $defNetLevel;
+            - 0.06 * $defNetLevel;
 
         $probability = max(0.05, min(0.95, $probability));
 

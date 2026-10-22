@@ -33,8 +33,8 @@ final class Bunker extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 0, food: 0, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 4000,
-                armor: 35,
+                health: 1500,
+                armor: 10,
                 groundBattleStats: new GroundBattleStats(defence: 1, defenceSpeed: 0),
             ),
         );

@@ -38,7 +38,7 @@ final class AntiAircraftGun extends GameUnit
             battleStats: new BattleStats(
                 health: 1500,
                 armor: 2,
-                airBattleStats: new AirBattleStats(defence: 400, defenceSpeed: 900),
+                airBattleStats: new AirBattleStats(defence: 1200, defenceSpeed: 900),
                 seaBattleStats: new SeaBattleStats(defence: 80, defenceSpeed: 70),
                 groundBattleStats: new GroundBattleStats(defence: 70, defenceSpeed: 40),
             ),

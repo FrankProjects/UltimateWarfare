@@ -31,15 +31,15 @@ final class StrategicBomber extends GameUnit
                 . 'which ignores their armor.',
             gameUnitCategory: GameUnitCategory::AIR_UNITS,
             behaviorClass: AirUnitBehavior::class,
-            cost: new Cost(cash: 135000, food: 5000, wood: 1000, steel: 2500),
+            cost: new Cost(cash: 120000, food: 5000, wood: 1000, steel: 2500),
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
-            upkeep: new Upkeep(cash: 1200, food: 200, wood: 0, steel: 0),
+            upkeep: new Upkeep(cash: 500, food: 100, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 3000,
-                armor: 10,
+                health: 1200,
+                armor: 5,
                 travelSpeed: 500,
-                airBattleStats: new AirBattleStats(attack: 25, attackSpeed: 100, defence: 30, defenceSpeed: 100),
-                groundBattleStats: new GroundBattleStats(attack: 20, attackSpeed: 100),
+                airBattleStats: new AirBattleStats(attack: 200, attackSpeed: 100, defence: 250, defenceSpeed: 100),
+                groundBattleStats: new GroundBattleStats(attack: 12000, attackSpeed: 50),
             ),
         );
     }

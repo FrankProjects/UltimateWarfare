@@ -9,7 +9,7 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class SniperAttack extends OperationProcessor
 {
-    protected const int SOLDIERS_KILLED_PER_SNIPER = 5;
+    protected const int SOLDIERS_KILLED_PER_SNIPER = 3;
     private const float BASE_SUCCESS = 0.78;
 
     public function getFormula(): float
@@ -19,7 +19,7 @@ final class SniperAttack extends OperationProcessor
 
         $probability = self::BASE_SUCCESS
             + 0.05 * max(0, $rtLevel - 1)
-            - 0.12 * $defNetLevel;
+            - 0.06 * $defNetLevel;
 
         $probability = max(0.05, min(0.95, $probability));
 
