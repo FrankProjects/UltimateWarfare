@@ -34,7 +34,7 @@ final class Fighter extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 40, food: 10, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 100,
+                health: 125,
                 armor: 5,
                 travelSpeed: 500,
                 airBattleStats: new AirBattleStats(attack: 1200, attackSpeed: 300, defence: 1300, defenceSpeed: 310),

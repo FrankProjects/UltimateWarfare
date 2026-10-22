@@ -63,9 +63,9 @@ class BattlePhaseTest extends TestCase
 
         $this->startGroundPhase([$attackingSoldiers], [$defendingMineSweepers]);
 
-        // 300 defense power kills 7 soldiers (40 health), the full 720 attack power still kills 14 sweepers
+        // 300 defense power kills 7 soldiers (40 health), the full 720 attack power still kills 13 sweepers
         self::assertSame(13, $attackingSoldiers->getAmount());
-        self::assertSame(16, $defendingMineSweepers->getAmount());
+        self::assertSame(17, $defendingMineSweepers->getAmount());
     }
 
     public function testPowerBelowOneKillCarriesOverToNextSpeedTier(): void

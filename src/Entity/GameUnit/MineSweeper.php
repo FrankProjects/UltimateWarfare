@@ -32,7 +32,7 @@ final class MineSweeper extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 1, food: 1, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 50,
+                health: 53,
                 armor: 1,
                 travelSpeed: 200,
                 groundBattleStats: new GroundBattleStats(attack: 15, attackSpeed: 100, defence: 10, defenceSpeed: 100),

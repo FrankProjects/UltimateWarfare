@@ -34,7 +34,7 @@ final class Cruiser extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 800, food: 200, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 1500,
+                health: 2100,
                 armor: 10,
                 travelSpeed: 100,
                 airBattleStats: new AirBattleStats(defence: 1500, defenceSpeed: 120),

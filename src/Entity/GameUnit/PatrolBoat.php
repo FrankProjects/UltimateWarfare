@@ -34,7 +34,7 @@ final class PatrolBoat extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 60, food: 20, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 200,
+                health: 245,
                 armor: 5,
                 travelSpeed: 100,
                 airBattleStats: new AirBattleStats(defence: 100, defenceSpeed: 50),

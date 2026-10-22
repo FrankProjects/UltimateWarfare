@@ -34,7 +34,7 @@ final class MineCountermeasuresShip extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 80, food: 30, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 400,
+                health: 500,
                 armor: 6,
                 travelSpeed: 100,
                 airBattleStats: new AirBattleStats(defence: 100, defenceSpeed: 50),

@@ -18,7 +18,7 @@ class SeaBattlePhaseTest extends TestCase
 {
     public function testSeaMinesDetonateOnShipsWithArmorPiercingPower(): void
     {
-        $attackingCruisers = $this->createFleetUnit(GameUnitEnum::CRUISER, 6);
+        $attackingCruisers = $this->createFleetUnit(GameUnitEnum::CRUISER, 4);
         $attackingPatrolBoats = $this->createFleetUnit(GameUnitEnum::PATROL_BOAT, 10);
         $attackingFighters = $this->createFleetUnit(GameUnitEnum::FIGHTER, 5);
         $seaMines = $this->createLeveledUnit(GameUnitEnum::SEA_MINE, 10, 250);
@@ -28,7 +28,7 @@ class SeaBattlePhaseTest extends TestCase
             [$seaMines]
         );
 
-        // 7500 power ignores ship armor: 1500 damage per cruiser and 200 per patrol boat.
+        // 7500 power ignores ship armor: 2100 damage per cruiser and 245 per patrol boat.
         // Fighters are not naval units and are unharmed.
         self::assertSame(1, $attackingCruisers->getAmount());
         self::assertSame(5, $attackingFighters->getAmount());
@@ -36,7 +36,7 @@ class SeaBattlePhaseTest extends TestCase
             [
                 'Starting sea Battle Phase',
                 'Defending Sea Mine (level 10) detonates with 7500 armor-piercing power',
-                '5 attacking Cruisers died in the fight',
+                '3 attacking Cruisers died in the fight',
                 'All attacking Patrol boats died in the fight',
                 'Defending Sea Mine (level 10) has 125 mine health left',
                 'Attacking Cruisers fire with 12000 attack power',
@@ -49,7 +49,7 @@ class SeaBattlePhaseTest extends TestCase
     public function testMineCountermeasuresShipsWeakenSeaMines(): void
     {
         $attackingCountermeasuresShips = $this->createFleetUnit(GameUnitEnum::MINE_COUNTERMEASURES_SHIP, 5);
-        $attackingDestroyers = $this->createFleetUnit(GameUnitEnum::DESTROYER, 8);
+        $attackingDestroyers = $this->createFleetUnit(GameUnitEnum::DESTROYER, 6);
         $seaMines = $this->createLeveledUnit(GameUnitEnum::SEA_MINE, 10, 250);
 
         $battlePhase = $this->startSeaPhase([$attackingCountermeasuresShips, $attackingDestroyers], [$seaMines]);

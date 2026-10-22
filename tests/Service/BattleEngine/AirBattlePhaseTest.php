@@ -21,27 +21,27 @@ class AirBattlePhaseTest extends TestCase
         $attackingBombers = $this->createFleetUnit(GameUnitEnum::BOMBER, 10);
         $attackingFighters = $this->createFleetUnit(GameUnitEnum::FIGHTER, 10);
         $attackingDestroyers = $this->createFleetUnit(GameUnitEnum::DESTROYER, 2);
-        $antiAircraftGun = $this->createLeveledUnit(GameUnitEnum::ANTI_AIRCRAFT_GUN, 3, 4500);
+        $antiAircraftGun = $this->createLeveledUnit(GameUnitEnum::ANTI_AIRCRAFT_GUN, 4, 6000);
 
         $battlePhase = $this->startAirPhase(
             [$attackingBombers, $attackingFighters, $attackingDestroyers],
             [$antiAircraftGun]
         );
 
-        // 3600 flak kills 9 escorted bombers of 400 health; 1800 flak downs 3 fighters (500) through their armor
+        // 4800 flak kills 9 escorted bombers of 520 health; 2400 flak downs 3 fighters (625) through their armor
         self::assertSame(1, $attackingBombers->getAmount());
         self::assertSame(7, $attackingFighters->getAmount());
         self::assertSame(2, $attackingDestroyers->getAmount());
         self::assertSame(
             [
                 'Starting air Battle Phase',
-                'Defending Anti Aircraft Gun (level 3) fires flak with 3600 power',
+                'Defending Anti Aircraft Gun (level 4) fires flak with 4800 power',
                 '9 attacking Bombers died in the fight',
                 '3 attacking Fighters died in the fight',
                 'Attacking Fighters fire with 8400 attack power',
-                'defending Anti Aircraft Gun (level 3) took 4200 damage, 300 health remaining',
+                'defending Anti Aircraft Gun (level 4) took 4200 damage, 1800 health remaining',
                 'Attacking Bombers fire with 100 attack power',
-                'defending Anti Aircraft Gun (level 3) took 50 damage, 250 health remaining',
+                'defending Anti Aircraft Gun (level 4) took 50 damage, 1750 health remaining',
             ],
             $battlePhase->getBattleLog()
         );
@@ -64,12 +64,12 @@ class AirBattlePhaseTest extends TestCase
     {
         $attackingFighters = $this->createFleetUnit(GameUnitEnum::FIGHTER, 10);
         $attackingBombers = $this->createFleetUnit(GameUnitEnum::BOMBER, 10);
-        $defendingFighters = $this->createStackableUnit(GameUnitEnum::FIGHTER, 10);
+        $defendingFighters = $this->createStackableUnit(GameUnitEnum::FIGHTER, 13);
 
         $battlePhase = $this->startAirPhase([$attackingFighters, $attackingBombers], [$defendingFighters]);
 
-        // 13000 defense power: the escorts are all shot down, but still protect the bombers in that volley.
-        // The bombers take 3250, which kills 2 of 1600 health.
+        // 16900 defense power: the escorts are all shot down, but still protect the bombers in that volley.
+        // The bombers take 4225, which kills 2 of 2080 health.
         self::assertSame(8, $attackingBombers->getAmount());
         self::assertNotContains($attackingFighters, $battlePhase->getAttackerGameUnits());
         self::assertContains('Attacking Fighters escort 10 of 10 bombers', $battlePhase->getBattleLog());
@@ -79,23 +79,23 @@ class AirBattlePhaseTest extends TestCase
     {
         $attackingFighters = $this->createFleetUnit(GameUnitEnum::FIGHTER, 5);
         $attackingBombers = $this->createFleetUnit(GameUnitEnum::BOMBER, 10);
-        $defendingFighters = $this->createStackableUnit(GameUnitEnum::FIGHTER, 10);
+        $defendingFighters = $this->createStackableUnit(GameUnitEnum::FIGHTER, 13);
 
         $this->startAirPhase([$attackingFighters, $attackingBombers], [$defendingFighters]);
 
-        // Half of the bombers are escorted, so they take 62.5% of 13000: 5 die
+        // Half of the bombers are escorted, so they take 62.5% of 16900: 5 die
         self::assertSame(5, $attackingBombers->getAmount());
     }
 
     public function testDefendingFightersEscortDefendingBombers(): void
     {
-        $attackingFighters = $this->createFleetUnit(GameUnitEnum::FIGHTER, 35);
+        $attackingFighters = $this->createFleetUnit(GameUnitEnum::FIGHTER, 29);
         $defendingFighters = $this->createStackableUnit(GameUnitEnum::FIGHTER, 10);
         $defendingBombers = $this->createStackableUnit(GameUnitEnum::BOMBER, 10);
 
         $battlePhase = $this->startAirPhase([$attackingFighters], [$defendingFighters, $defendingBombers]);
 
-        // 26 attackers are shot down first; 10800 attack power reaches the escorted bombers as 2700: 1 dies
+        // 20 attackers are shot down first; 10800 attack power reaches the escorted bombers as 2700: 1 dies
         self::assertSame(9, $defendingBombers->getAmount());
         self::assertContains('Defending Fighters escort 10 of 10 bombers', $battlePhase->getBattleLog());
     }
@@ -108,8 +108,8 @@ class AirBattlePhaseTest extends TestCase
 
         $battlePhase = $this->startAirPhase([$attackingBombers], [$antiAircraftGun, $radar]);
 
-        // 3600 flak kills 9 bombers of 400 health
-        self::assertSame(1, $attackingBombers->getAmount());
+        // 3600 flak kills 6 bombers of 520 health
+        self::assertSame(4, $attackingBombers->getAmount());
         self::assertContains(
             'Defending Radar Station (level 5) guides the air defence: +50% defense power',
             $battlePhase->getBattleLog()
@@ -128,7 +128,7 @@ class AirBattlePhaseTest extends TestCase
 
         $this->startAirPhase([$attackingFighters], [$defendingFighters, $radar]);
 
-        // 1300 defense power becomes 1950, killing 3 fighters of 500 instead of 2
+        // 1300 defense power becomes 1950, killing 3 fighters of 625 instead of 2
         self::assertSame(7, $attackingFighters->getAmount());
     }
 

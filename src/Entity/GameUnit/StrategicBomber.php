@@ -35,7 +35,7 @@ final class StrategicBomber extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 500, food: 100, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 1200,
+                health: 1700,
                 armor: 5,
                 travelSpeed: 500,
                 airBattleStats: new AirBattleStats(attack: 200, attackSpeed: 100, defence: 250, defenceSpeed: 100),

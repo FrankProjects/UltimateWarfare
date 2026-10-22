@@ -33,7 +33,7 @@ final class Submarine extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 600, food: 150, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 500,
+                health: 690,
                 armor: 8,
                 travelSpeed: 100,
                 seaBattleStats: new SeaBattleStats(attack: 15000, attackSpeed: 200, defence: 8000, defenceSpeed: 200),

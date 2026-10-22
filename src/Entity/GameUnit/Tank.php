@@ -31,7 +31,7 @@ final class Tank extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 12, food: 4, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 125,
+                health: 145,
                 armor: 4,
                 travelSpeed: 200,
                 groundBattleStats: new GroundBattleStats(

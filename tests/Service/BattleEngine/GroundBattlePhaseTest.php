@@ -24,16 +24,16 @@ class GroundBattlePhaseTest extends TestCase
 
         $battlePhase = $this->startGroundPhase([$attackingTanks, $attackingFighters], [$mineField]);
 
-        // 10000 power ignores tank armor: 125 damage per tank. Fighters are not troops and are unharmed.
-        self::assertSame(20, $attackingTanks->getAmount());
+        // 10000 power ignores tank armor: 145 damage per tank. Fighters are not troops and are unharmed.
+        self::assertSame(32, $attackingTanks->getAmount());
         self::assertSame(5, $attackingFighters->getAmount());
         self::assertSame(
             [
                 'Starting ground Battle Phase',
                 'Defending Mine Field (level 10) detonates with 10000 armor-piercing power',
-                '80 attacking Tanks died in the fight',
+                '68 attacking Tanks died in the fight',
                 'Defending Mine Field (level 10) has 1250 mine health left',
-                'Attacking Tanks fire with 7600 attack power',
+                'Attacking Tanks fire with 12160 attack power',
                 'defending Mine Field (level 10) was destroyed',
                 'Attacking Fighters fire with 200 attack power',
             ],
@@ -61,8 +61,8 @@ class GroundBattlePhaseTest extends TestCase
 
         $battlePhase = $this->startGroundPhase([$attackingSweepers], [$mineField]);
 
-        // 2000 mines cleared leaves 20% of the field: 2000 power kills 40 sweepers of 50 health
-        self::assertSame(40, $attackingSweepers->getAmount());
+        // 2000 mines cleared leaves 20% of the field: 2000 power kills 37 sweepers of 53 health
+        self::assertSame(43, $attackingSweepers->getAmount());
         self::assertContains('Attacking Mine Sweepers clear 2000 mines', $battlePhase->getBattleLog());
         self::assertContains(
             'Defending Mine Field (level 10) detonates with 2000 armor-piercing power',

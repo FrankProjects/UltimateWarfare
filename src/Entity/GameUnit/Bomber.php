@@ -34,7 +34,7 @@ final class Bomber extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 100, food: 20, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 400,
+                health: 520,
                 armor: 4,
                 travelSpeed: 500,
                 airBattleStats: new AirBattleStats(attack: 100, attackSpeed: 150, defence: 150, defenceSpeed: 150),
