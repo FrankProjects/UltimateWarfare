@@ -2019,6 +2019,31 @@ body {
     font-size: 12px;
 }
 
+.battle-losses {
+    margin-top: 10px;
+}
+
+.battle-losses h4 {
+    font-size: 15px;
+}
+
+.battle-losses-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.battle-losses h5 {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.battle-losses ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 12px;
+}
+
 /* Toast notifications */
 .fleet-notification {
     position: fixed;

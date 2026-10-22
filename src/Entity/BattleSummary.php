@@ -15,7 +15,15 @@ class BattleSummary
     private int $timestamp;
 
     /**
+     * Lost units per side keyed by game unit enum value, null for battles from before losses were recorded
+     *
+     * @var array<string, array<int, int>>|null
+     */
+    private ?array $lostUnits = null;
+
+    /**
      * @param array<string> $battleLog
+     * @param array<string, array<int, int>> $lostUnits
      */
     public static function create(
         World $world,
@@ -23,7 +31,8 @@ class BattleSummary
         Player $defender,
         array $battleLog,
         bool $attackerWon,
-        int $timestamp
+        int $timestamp,
+        array $lostUnits = []
     ): self {
         $battleSummary = new self();
         $battleSummary->world = $world;
@@ -32,6 +41,7 @@ class BattleSummary
         $battleSummary->battleLog = implode("\n", $battleLog);
         $battleSummary->attackerWon = $attackerWon;
         $battleSummary->timestamp = $timestamp;
+        $battleSummary->lostUnits = $lostUnits;
 
         return $battleSummary;
     }
@@ -117,5 +127,13 @@ class BattleSummary
     public function getTimestamp(): int
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @return array<string, array<int, int>>|null
+     */
+    public function getLostUnits(): ?array
+    {
+        return $this->lostUnits;
     }
 }

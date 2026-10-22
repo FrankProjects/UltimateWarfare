@@ -23,9 +23,9 @@ final class Airfield extends GameUnit
             image: 'gu_airfield.jpg',
             netWorth: 20,
             timestamp: 14400,
-            description: 'An airfield can send 10 planes to your neighbour countries '
-                . 'and help them defending when they are under attack. Each upgrade level '
-                . 'builds air units in this region 5% faster (up to 45% at level 10).',
+            description: 'When one of your neighbouring regions is attacked, an airfield sends up to '
+                . '10 planes per level from this region to help defend it, fighters first. Each upgrade level '
+                . 'also builds air units in this region 5% faster (up to 45% at level 10).',
             gameUnitCategory: GameUnitCategory::SPECIAL_BUILDINGS,
             behaviorClass: null,
             cost: new Cost(cash: 15000, food: 0, wood: 50, steel: 75),

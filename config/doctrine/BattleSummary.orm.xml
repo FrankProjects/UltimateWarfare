@@ -10,6 +10,7 @@
       </options>
     </field>
     <field name="attackerWon" type="boolean" column="attacker_won"/>
+    <field name="lostUnits" type="json" column="lost_units" nullable="true"/>
     <field name="timestamp" type="integer" column="timestamp">
       <options>
         <option name="unsigned">1</option>

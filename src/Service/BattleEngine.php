@@ -13,10 +13,13 @@ use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\BattleSummaryRepository;
 use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleLossCalculator;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattlePhase;
+use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleReinforcementService;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleReportCreator;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleResult;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleUpdaterService;
+use FrankProjects\UltimateWarfare\Service\BattleEngine\Reinforcement;
 use RuntimeException;
 
 final class BattleEngine
@@ -29,6 +32,7 @@ final class BattleEngine
     private BattleSummaryRepository $battleSummaryRepository;
     private PlayerStateUpdaterService $playerStateUpdaterService;
     private EntityLockRepository $entityLockRepository;
+    private BattleReinforcementService $battleReinforcementService;
 
     public function __construct(
         BattleUpdaterService $battleUpdaterService,
@@ -38,7 +42,8 @@ final class BattleEngine
         GameUnitRegistry $gameUnitRegistry,
         BattleSummaryRepository $battleSummaryRepository,
         PlayerStateUpdaterService $playerStateUpdaterService,
-        EntityLockRepository $entityLockRepository
+        EntityLockRepository $entityLockRepository,
+        BattleReinforcementService $battleReinforcementService
     ) {
         $this->battleUpdaterService = $battleUpdaterService;
         $this->battleReportCreator = $battleReportCreator;
@@ -48,11 +53,12 @@ final class BattleEngine
         $this->battleSummaryRepository = $battleSummaryRepository;
         $this->playerStateUpdaterService = $playerStateUpdaterService;
         $this->entityLockRepository = $entityLockRepository;
+        $this->battleReinforcementService = $battleReinforcementService;
     }
 
     /**
-     * XXX TODO: Add train station/airfield/harbor support
-     * XXX TODO: Add battle "lost units" summary
+     * Neighbouring regions of the defender send reinforcements through their Train Station, Airfield and Harbor.
+     * The battle result includes the units each side lost.
      *
      * @param Fleet $fleet
      * @return BattleResult
@@ -89,6 +95,21 @@ final class BattleEngine
             $fleet->getTargetWorldRegion()->getPlayer()
         );
 
+        $reinforcements = $defendingPlayer !== null
+            ? $this->battleReinforcementService->gatherReinforcements($targetWorldRegion, $defendingPlayer)
+            : [];
+        $reinforcementGameUnits = array_map(
+            fn (Reinforcement $reinforcement): WorldRegionStackableUnit => $reinforcement->getBattleUnit(),
+            $reinforcements
+        );
+        $defenderGameUnits = [...$defenderGameUnits, ...$reinforcementGameUnits];
+
+        $battleLossCalculator = new BattleLossCalculator(
+            $attackerGameUnits,
+            $defenderGameUnits,
+            $reinforcementGameUnits
+        );
+
         $battlePhaseResults = [];
         foreach ($this->getBattlePhases() as $battlePhaseName) {
             $battlePhase = BattlePhase::factory(
@@ -106,9 +127,15 @@ final class BattleEngine
             $battlePhaseResults[] = $battlePhase;
         }
 
-        $battleResults = new BattleResult($battlePhaseResults);
+        $battleResults = new BattleResult(
+            $battlePhaseResults,
+            $this->battleReinforcementService->getBattleLog($reinforcements)
+        );
+        $battleResults->setLostUnits(
+            $battleLossCalculator->calculate($attackerGameUnits, $defenderGameUnits, $battleResults->hasWon())
+        );
 
-        $this->processResults($battleResults, $fleet, $attackerGameUnits, $defenderGameUnits);
+        $this->processResults($battleResults, $fleet, $attackerGameUnits, $defenderGameUnits, $reinforcements);
 
         return $battleResults;
     }
@@ -173,13 +200,15 @@ final class BattleEngine
 
     /**
      * @param array<FleetUnit> $attackerGameUnits
-     * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $defenderGameUnits
+     * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $defenderGameUnits Including reinforcements
+     * @param Reinforcement[] $reinforcements
      */
     private function processResults(
         BattleResult $battleResults,
         Fleet $fleet,
         array $attackerGameUnits,
-        array $defenderGameUnits
+        array $defenderGameUnits,
+        array $reinforcements
     ): void {
         $defendingPlayer = $fleet->getTargetWorldRegion()->getPlayer();
         if ($defendingPlayer === null) {
@@ -193,7 +222,8 @@ final class BattleEngine
             $defendingPlayer,
             $battleResults->getBattleLog(),
             $battleResults->hasWon(),
-            time()
+            time(),
+            $battleResults->getLostUnits() ?? []
         );
         $this->battleSummaryRepository->save($battleSummary);
 
@@ -201,9 +231,21 @@ final class BattleEngine
             $this->battleUpdaterService->updateBattleWon($fleet, $attackerGameUnits);
             $this->battleReportCreator->createBattleWonReports($fleet, $battleSummary);
         } else {
-            $this->battleUpdaterService->updateBattleLost($fleet, $attackerGameUnits, $defenderGameUnits);
+            // Reinforcements only fought here; they must not be saved into the target region
+            $reinforcementGameUnits = array_map(
+                fn (Reinforcement $reinforcement): WorldRegionStackableUnit => $reinforcement->getBattleUnit(),
+                $reinforcements
+            );
+            $regionDefenderGameUnits = array_filter(
+                $defenderGameUnits,
+                fn (WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): bool
+                    => !in_array($defenderGameUnit, $reinforcementGameUnits, true)
+            );
+            $this->battleUpdaterService->updateBattleLost($fleet, $attackerGameUnits, $regionDefenderGameUnits);
             $this->battleReportCreator->createBattleLostReports($fleet, $battleSummary);
         }
+
+        $this->battleReinforcementService->applyLosses($reinforcements, $defenderGameUnits);
 
         $this->netWorthUpdaterService->updateNetWorthForPlayer($fleet->getPlayer());
         $this->netWorthUpdaterService->updateNetWorthForPlayer($defendingPlayer);

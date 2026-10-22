@@ -551,6 +551,48 @@ class FleetManager {
     }
 
     /**
+     * Render the units and buildings each side lost in a battle; also used by the battle summary in reports
+     */
+    static renderBattleLosses(lostUnits, attackerWon) {
+        if (!lostUnits) {
+            return '';
+        }
+
+        const escape = (text) => {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(String(text)));
+            return div.innerHTML;
+        };
+        const renderList = (units, buildings) => {
+            let html = '';
+            units.forEach(unit => {
+                html += `<li>${escape(unit.amount)} ${escape(unit.name)}</li>`;
+            });
+            buildings.forEach(building => {
+                html += `<li>${escape(building.name)} (level ${escape(building.level)}) destroyed</li>`;
+            });
+
+            return html === '' ? '<li class="text-muted">No losses</li>' : html;
+        };
+
+        return `
+            <div class="battle-losses">
+                <h4>Losses${attackerWon ? ' &mdash; region captured' : ''}</h4>
+                <div class="battle-losses-columns">
+                    <div>
+                        <h5>Attacker</h5>
+                        <ul>${renderList(lostUnits.attacker, [])}</ul>
+                    </div>
+                    <div>
+                        <h5>Defender</h5>
+                        <ul>${renderList(lostUnits.defender, lostUnits.defenderBuildings)}</ul>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
      * Show battle report in a modal
      */
     showBattleReportModal(result) {
@@ -580,6 +622,7 @@ class FleetManager {
                 <h3 class="battle-result-title ${resultClass}">${result.hasWon ? 'VICTORY!' : 'DEFEAT'}</h3>
                 <p>${result.message}</p>
             </div>
+            ${FleetManager.renderBattleLosses(result.lostUnits, result.hasWon)}
             ${battleLogHtml}
         `;
 

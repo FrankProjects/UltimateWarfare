@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Repository\BattleSummaryRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
@@ -76,6 +77,7 @@ final class BattleController extends BaseGameController
                 'success' => true,
                 'hasWon' => $hasWon,
                 'battleLog' => $battleResults->getBattleLog(),
+                'lostUnits' => $this->formatLostUnits($battleResults->getLostUnits()),
                 'message' => $hasWon ? 'Victory! You won the battle!' : 'Defeat! You lost the battle.',
                 'regionId' => $targetRegion->getId(),
                 'regionUnits' => $regionUnits,
@@ -118,7 +120,52 @@ final class BattleController extends BaseGameController
                 'hasWon' => $isAttacker === $battleSummary->hasAttackerWon(),
                 'date' => date('M d, Y H:i', $battleSummary->getTimestamp()),
                 'battleLog' => $battleSummary->getBattleLogLines(),
+                'lostUnits' => $this->formatLostUnits($battleSummary->getLostUnits()),
             ],
         ]);
+    }
+
+    /**
+     * Battles from before losses were recorded have no lost units
+     *
+     * @param array<string, array<int, int>>|null $lostUnits
+     *
+     * @return array<string, array<int, array{name: string, amount?: int, level?: int}>>|null
+     */
+    private function formatLostUnits(?array $lostUnits): ?array
+    {
+        if ($lostUnits === null) {
+            return null;
+        }
+
+        $formatted = [];
+        foreach (['attacker', 'defender'] as $side) {
+            $formatted[$side] = [];
+            foreach ($lostUnits[$side] ?? [] as $gameUnitValue => $amount) {
+                $gameUnitEnum = GameUnitEnum::tryFrom($gameUnitValue);
+                if ($gameUnitEnum === null) {
+                    continue;
+                }
+
+                $gameUnit = $this->gameUnitRegistry->find($gameUnitEnum);
+                $formatted[$side][] = [
+                    'name' => $amount === 1 ? $gameUnit->getName() : $gameUnit->getNameMulti(),
+                    'amount' => $amount,
+                ];
+            }
+        }
+
+        $formatted['defenderBuildings'] = [];
+        foreach ($lostUnits['defenderBuildings'] ?? [] as $gameUnitValue => $level) {
+            $gameUnitEnum = GameUnitEnum::tryFrom($gameUnitValue);
+            if ($gameUnitEnum !== null) {
+                $formatted['defenderBuildings'][] = [
+                    'name' => $this->gameUnitRegistry->find($gameUnitEnum)->getName(),
+                    'level' => $level,
+                ];
+            }
+        }
+
+        return $formatted;
     }
 }

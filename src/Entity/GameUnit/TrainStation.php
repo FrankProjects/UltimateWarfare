@@ -23,9 +23,9 @@ final class TrainStation extends GameUnit
             image: 'gu_train_station.jpg',
             netWorth: 10,
             timestamp: 10800,
-            description: 'An Train station can send 25 soldiers and 1 tank to your neighbour countries '
-                . 'and help them defending when they are under attack. Each upgrade level speeds up '
-                . 'fleets departing this region by 5% (up to 45% at level 10).',
+            description: 'When one of your neighbouring regions is attacked, a train station sends up to '
+                . '25 soldiers and 1 tank per level from this region to help defend it. Each upgrade level '
+                . 'also speeds up fleets departing this region by 5% (up to 45% at level 10).',
             gameUnitCategory: GameUnitCategory::SPECIAL_BUILDINGS,
             behaviorClass: null,
             cost: new Cost(cash: 10000, food: 0, wood: 500, steel: 750),

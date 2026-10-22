@@ -153,6 +153,8 @@
             + ' on ' + battleSummary.date + '. ' + escapeHtml(winner) + ' won the battle.</p>';
         html += '</div>';
 
+        html += FleetManager.renderBattleLosses(battleSummary.lostUnits, battleSummary.attackerWon);
+
         html += '<div class="battle-log battle-log-full">';
         battleSummary.battleLog.forEach(function (line) {
             html += '<p>' + escapeHtml(line) + '</p>';
