@@ -12,11 +12,14 @@ use FrankProjects\UltimateWarfare\Entity\GameUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\FleetFactory;
+use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use RuntimeException;
 use Doctrine\DBAL\LockMode;
@@ -30,6 +33,9 @@ final class FleetActionService
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private EntityManagerInterface $entityManager;
     private FleetFactory $fleetFactory;
+    private WorldRegionRepository $worldRegionRepository;
+    private EntityLockRepository $entityLockRepository;
+    private WaterRegionUpdaterService $waterRegionUpdaterService;
 
     public function __construct(
         FleetRepository $fleetRepository,
@@ -37,7 +43,10 @@ final class FleetActionService
         GameUnitRegistry $gameUnitRegistry,
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         EntityManagerInterface $entityManager,
-        FleetFactory $fleetFactory
+        FleetFactory $fleetFactory,
+        WorldRegionRepository $worldRegionRepository,
+        EntityLockRepository $entityLockRepository,
+        WaterRegionUpdaterService $waterRegionUpdaterService
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
@@ -45,6 +54,9 @@ final class FleetActionService
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->entityManager = $entityManager;
         $this->fleetFactory = $fleetFactory;
+        $this->worldRegionRepository = $worldRegionRepository;
+        $this->entityLockRepository = $entityLockRepository;
+        $this->waterRegionUpdaterService = $waterRegionUpdaterService;
     }
 
     public function recall(int $fleetId, Player $player): WorldRegion
@@ -65,6 +77,9 @@ final class FleetActionService
             }
 
             $sourceRegion = $fleet->getWorldRegion();
+            // The water region the fleet left was released, so claim it again
+            $this->claimIfOpenSea($sourceRegion, $player);
+
             $targetPlayer = $sourceRegion->getPlayer();
             if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
                 throw new RuntimeException('You are not the owner of this region!');
@@ -99,6 +114,11 @@ final class FleetActionService
             }
 
             $targetRegion = $fleet->getTargetWorldRegion();
+            if ($targetRegion->isWater() && $fleet->getTimestampArrive() > time()) {
+                throw new RuntimeException('Fleet not arrived yet!');
+            }
+            $this->claimIfOpenSea($targetRegion, $player);
+
             $targetPlayer = $targetRegion->getPlayer();
 
             if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
@@ -160,6 +180,10 @@ final class FleetActionService
             throw new RuntimeException('No game units selected to send!');
         }
 
+        if ($targetRegion->isWater()) {
+            $this->validateWaterTarget($targetRegion, $player, $gameUnitsToSend);
+        }
+
         $fleet = $this->fleetFactory->createForPlayer(
             $player,
             $region,
@@ -172,7 +196,58 @@ final class FleetActionService
             $this->addFleetUnitToFleet($region, $gameUnitData['gameUnit'], $gameUnitData['amount'], $fleet);
         }
 
+        $this->waterRegionUpdaterService->releaseIfUnoccupied($region);
+
         return $fleet;
+    }
+
+    /**
+     * Only ships sail onto water; open sea (unowned water) must be next to one of the player's regions
+     *
+     * @param non-empty-list<array{gameUnit: GameUnit, amount: int}> $gameUnitsToSend
+     */
+    private function validateWaterTarget(WorldRegion $targetRegion, Player $player, array $gameUnitsToSend): void
+    {
+        foreach ($gameUnitsToSend as $gameUnitData) {
+            if ($gameUnitData['gameUnit']->getGameUnitCategory() !== GameUnitCategory::NAVAL_UNITS) {
+                throw new RuntimeException('Only naval units can be sent to water!');
+            }
+        }
+
+        if ($targetRegion->getPlayer() !== null) {
+            return;
+        }
+
+        $adjacentRegions = $this->worldRegionRepository->findAdjacentRegions(
+            $targetRegion->getX(),
+            $targetRegion->getY(),
+            $targetRegion->getWorld()
+        );
+        foreach ($adjacentRegions as $adjacentRegion) {
+            if ($adjacentRegion->getPlayer()?->getId() === $player->getId()) {
+                return;
+            }
+        }
+
+        throw new RuntimeException('You can only sail to open sea next to one of your regions!');
+    }
+
+    /**
+     * Claims an unowned water region for the player; a region owned by somebody is left as it is
+     */
+    private function claimIfOpenSea(WorldRegion $worldRegion, Player $player): void
+    {
+        if (!$worldRegion->isWater() || $worldRegion->getPlayer() !== null) {
+            return;
+        }
+
+        // Another fleet may claim the same region concurrently; re-read it under a lock, claim() then refuses
+        // a region that was claimed in the meantime
+        if (!$this->entityLockRepository->lockForUpdate($worldRegion)) {
+            return;
+        }
+
+        $this->waterRegionUpdaterService->claim($worldRegion, $player);
     }
 
     /**

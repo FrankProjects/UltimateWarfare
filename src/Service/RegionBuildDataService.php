@@ -37,10 +37,9 @@ final class RegionBuildDataService
      */
     public function getBuildData(WorldRegion $worldRegion, Player $player): array
     {
-        $regionType = $worldRegion->getType();
-        $waterTypes = ['deep_water', 'water', 'shallow_water', 'sand'];
-        $isSandOrWater = in_array($regionType, $waterTypes, true);
-        $isSand = $regionType === 'sand';
+        $isWater = $worldRegion->isWater();
+        $isSand = $worldRegion->getType() === WorldRegion::TYPE_SAND;
+        $isSandOrWater = $isWater || $isSand;
 
         // Detect relevant buildings in this region (units + constructions in progress)
         $hasBarrack = false;
@@ -71,12 +70,14 @@ final class RegionBuildDataService
             };
         }
 
-        // Determine available categories based on buildings
-        $availableCategories = [
-            GameUnitCategory::BUILDINGS,
-            GameUnitCategory::DEFENSE_BUILDINGS,
-            GameUnitCategory::SPECIAL_BUILDINGS,
-        ];
+        // Determine available categories based on buildings; water regions only allow Sea Mines
+        $availableCategories = $isWater
+            ? [GameUnitCategory::DEFENSE_BUILDINGS]
+            : [
+                GameUnitCategory::BUILDINGS,
+                GameUnitCategory::DEFENSE_BUILDINGS,
+                GameUnitCategory::SPECIAL_BUILDINGS,
+            ];
 
         if ($hasBarrack) {
             $availableCategories[] = GameUnitCategory::TROOPS;
@@ -137,6 +138,10 @@ final class RegionBuildDataService
                     && $rowName === 'sea_mine'
                     && !$isSandOrWater
                 ) {
+                    continue;
+                }
+
+                if ($isWater && $rowName !== 'sea_mine') {
                     continue;
                 }
 
@@ -212,7 +217,7 @@ final class RegionBuildDataService
 
         return [
             'regionId' => $worldRegion->getId(),
-            'regionType' => $regionType,
+            'regionType' => $worldRegion->getType(),
             'spaceLeft' => $spaceLeft,
             'categories' => $categories,
             'units' => $this->gameUnitRegistry->getRegionUnitSummary($worldRegion),

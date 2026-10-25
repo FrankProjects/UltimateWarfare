@@ -155,4 +155,21 @@ class ConstructionActionServiceTest extends TestCase
 
         return $player;
     }
+
+    public function testConstructRejectsBuildingsOnWater(): void
+    {
+        $region = $this->createRegion(10);
+        $region->setType(WorldRegion::TYPE_WATER);
+
+        $this->constructionRepository->expects(self::never())->method('save');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('only Sea Mines can be built on water');
+
+        $this->service->constructGameUnits(
+            $region,
+            $this->createPlayer(),
+            GameUnitCategory::BUILDINGS,
+            [GameUnitEnum::FARM->value => '1']
+        );
+    }
 }

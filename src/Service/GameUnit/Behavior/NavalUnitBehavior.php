@@ -41,14 +41,8 @@ class NavalUnitBehavior extends AbstractGameUnitBehavior
             $region->getWorld()
         );
 
-        $waterTypes = [
-            WorldRegion::TYPE_DEEP_WATER,
-            WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER,
-        ];
-
         foreach ($adjacentRegions as $adjacent) {
-            if (in_array($adjacent->getType(), $waterTypes, true)) {
+            if ($adjacent->isWater()) {
                 return true;
             }
         }
@@ -59,10 +53,6 @@ class NavalUnitBehavior extends AbstractGameUnitBehavior
     public function canMoveTo(WorldRegion $from, WorldRegion $to): bool
     {
         // Naval units can only move to water or coastal regions
-        $navalTypes = [
-            WorldRegion::TYPE_DEEP_WATER, WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER, WorldRegion::TYPE_SAND,
-        ];
-        return in_array($to->getType(), $navalTypes, true);
+        return $to->isWater() || $to->getType() === WorldRegion::TYPE_SAND;
     }
 }

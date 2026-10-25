@@ -314,6 +314,8 @@ final class AttackController extends BaseGameController
             ],
             'sourceRegionId' => $playerRegion->getId(),
             'sourceRegionUnits' => $this->gameUnitRegistry->getRegionUnitSummary($playerRegion),
+            // A water region is released when its last units leave
+            'sourceRegionReleased' => $playerRegion->getPlayer() === null,
         ]);
     }
 
@@ -355,12 +357,7 @@ final class AttackController extends BaseGameController
      */
     private function isCoastalOrWater(WorldRegion $region, array $regionsByCoord): bool
     {
-        $waterTypes = [
-            WorldRegion::TYPE_DEEP_WATER, WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER, WorldRegion::TYPE_SAND,
-        ];
-
-        if (in_array($region->getType(), $waterTypes, true)) {
+        if ($this->isWaterOrSand($region)) {
             return true;
         }
 
@@ -372,13 +369,18 @@ final class AttackController extends BaseGameController
         foreach ($adjacentOffsets as [$dx, $dy]) {
             $key = ($x + $dx) . ',' . ($y + $dy);
             if (isset($regionsByCoord[$key])) {
-                if (in_array($regionsByCoord[$key]->getType(), $waterTypes, true)) {
+                if ($this->isWaterOrSand($regionsByCoord[$key])) {
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    private function isWaterOrSand(WorldRegion $region): bool
+    {
+        return $region->isWater() || $region->getType() === WorldRegion::TYPE_SAND;
     }
 
     /**

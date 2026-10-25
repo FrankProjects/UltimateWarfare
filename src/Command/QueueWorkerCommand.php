@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
+use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -16,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Worker that completes queued construction and research of all players within seconds of their completion, and
- * grows their population at every population tick.
+ * grows their population at every population tick. It also releases water regions that lost their last units.
  * Runs continuously under a process manager (config/systemd/ultimatewarfare-worker.service); --once does a single
  * pass. Requests don't depend on it for correctness: each state-changing request updates its own player first.
  */
@@ -24,16 +25,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 class QueueWorkerCommand extends Command implements SignalableCommandInterface
 {
     private PlayerStateUpdaterService $playerStateUpdaterService;
+    private WaterRegionUpdaterService $waterRegionUpdaterService;
     private EntityManagerInterface $entityManager;
     private LoggerInterface $logger;
     private bool $shouldStop = false;
 
     public function __construct(
         PlayerStateUpdaterService $playerStateUpdaterService,
+        WaterRegionUpdaterService $waterRegionUpdaterService,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger
     ) {
         $this->playerStateUpdaterService = $playerStateUpdaterService;
+        $this->waterRegionUpdaterService = $waterRegionUpdaterService;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
 
@@ -63,7 +67,7 @@ class QueueWorkerCommand extends Command implements SignalableCommandInterface
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('once') === true) {
-            $this->playerStateUpdaterService->updateDuePlayers(time());
+            $this->processPass();
             $output->writeln('Done!');
 
             return Command::SUCCESS;
@@ -80,7 +84,7 @@ class QueueWorkerCommand extends Command implements SignalableCommandInterface
 
         while (!$this->shouldStop && time() < $deadline) {
             try {
-                $this->playerStateUpdaterService->updateDuePlayers(time());
+                $this->processPass();
             } catch (\Throwable $e) {
                 // A failed flush closes the EntityManager; exit and let the process manager start a fresh process
                 $this->logger->error('Queue worker pass failed: ' . $e->getMessage(), ['exception' => $e]);
@@ -98,6 +102,12 @@ class QueueWorkerCommand extends Command implements SignalableCommandInterface
         $output->writeln('Stopped');
 
         return Command::SUCCESS;
+    }
+
+    private function processPass(): void
+    {
+        $this->playerStateUpdaterService->updateDuePlayers(time());
+        $this->waterRegionUpdaterService->releaseUnoccupiedRegions();
     }
 
     /**

@@ -194,4 +194,28 @@ class LeveledUnitActionServiceTest extends TestCase
 
         $this->service->repair($region, $this->createPlayer(), GameUnitEnum::BARRACK);
     }
+
+    public function testBuildSeaMineOnWater(): void
+    {
+        $region = $this->createRegion();
+        $region->setType(WorldRegion::TYPE_DEEP_WATER);
+
+        $this->constructionRepository->expects(self::once())
+            ->method('save')
+            ->with(self::callback(static fn (Construction $c): bool => $c->getGameUnit() === GameUnitEnum::SEA_MINE));
+
+        $this->service->build($region, $this->createPlayer(), GameUnitEnum::SEA_MINE);
+    }
+
+    public function testBuildRejectsOtherBuildingsOnWater(): void
+    {
+        $region = $this->createRegion();
+        $region->setType(WorldRegion::TYPE_SHALLOW_WATER);
+
+        $this->constructionRepository->expects(self::never())->method('save');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('only Sea Mines can be built on water');
+
+        $this->service->build($region, $this->createPlayer(), GameUnitEnum::BARRACK);
+    }
 }

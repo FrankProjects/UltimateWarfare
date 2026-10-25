@@ -51,6 +51,11 @@ interface WorldRegionRepository
      */
     public function getPopulationSumByPlayer(Player $player): int;
 
+    /**
+     * @return WorldRegion[] Owned water regions without units, leveled units or constructions
+     */
+    public function findUnoccupiedOwnedWaterRegions(): array;
+
     public function getPreviousWorldRegionForPlayer(int $id, Player $player): ?WorldRegion;
 
     public function getNextWorldRegionForPlayer(int $id, Player $player): ?WorldRegion;

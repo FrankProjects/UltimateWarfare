@@ -1,4 +1,9 @@
 /**
+ * Region types that can't be bought: ships claim them while stationed there (WorldRegion::WATER_TYPES)
+ */
+const WATER_TYPES = ['deep_water', 'water', 'shallow_water'];
+
+/**
  * TileRenderer - Handles rendering of hex map tiles with game-specific features
  * Uses pointy-top hexagons
  */
@@ -276,6 +281,10 @@ class TileRenderer {
         this.ctx.lineWidth = 3;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
+        // Water is only held while units are stationed on it, so its border is dashed
+        if (WATER_TYPES.includes(region.type)) {
+            this.ctx.setLineDash([6, 6]);
+        }
 
         const verts = this.hexVertices;
 

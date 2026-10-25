@@ -283,10 +283,11 @@ class FleetManager {
         const widget = document.createElement('div');
         widget.className = 'fleet-widget';
 
-        // Determine if this is a friendly reinforcement or an attack
-        const isReinforcement = fleet.targetIsYours === true;
+        // Determine if this is a friendly reinforcement (or ships occupying open sea) or an attack
+        const isReinforcement = fleet.targetIsYours === true || fleet.targetIsOpenSea === true;
+        const reinforceLabel = fleet.targetIsOpenSea === true ? 'Occupy' : 'Reinforce';
         const actionButton = isReinforcement
-            ? `<button class="fleet-widget-btn reinforce" data-fleet-id="${fleet.id}" data-action="reinforce">Reinforce</button>`
+            ? `<button class="fleet-widget-btn reinforce" data-fleet-id="${fleet.id}" data-action="reinforce">${reinforceLabel}</button>`
             : `<button class="fleet-widget-btn attack" data-fleet-id="${fleet.id}" data-action="attack">Attack</button>`;
 
         const title = isReinforcement ? '🛡 Fleet Arrived' : '⚔ Fleet Arrived';
@@ -365,20 +366,8 @@ class FleetManager {
             const result = await response.json();
 
             if (result.success) {
-                // Remove fleet from list
-                this.removeFleet(fleet.id);
-
-                // Update region unit data; cached build data of this region is now outdated
-                this.updateRegionUnits(result.regionId, result.units);
-                if (window.WorldBuild) {
-                    WorldBuild.invalidateCache(result.regionId);
-                }
-
-                // Show success message
+                this.applyFleetLanded(fleet.id, result);
                 this.showNotification(result.message, 'success');
-
-                // Re-render map
-                this.map.render();
             } else {
                 // Show error in widget
                 buttonsDiv.innerHTML = `<div class="text-enemy">Error: ${result.message}</div>`;
@@ -415,20 +404,8 @@ class FleetManager {
             const result = await response.json();
 
             if (result.success) {
-                // Remove fleet from list
-                this.removeFleet(fleet.id);
-
-                // Update region unit data; cached build data of this region is now outdated
-                this.updateRegionUnits(result.regionId, result.units);
-                if (window.WorldBuild) {
-                    WorldBuild.invalidateCache(result.regionId);
-                }
-
-                // Show success message
+                this.applyFleetLanded(fleet.id, result);
                 this.showNotification(result.message, 'success');
-
-                // Re-render map
-                this.map.render();
             } else {
                 // Show error in widget
                 buttonsDiv.innerHTML = `<div class="text-enemy">Error: ${result.message}</div>`;
@@ -443,6 +420,47 @@ class FleetManager {
                 this.map.render();
             }, 3000);
         }
+    }
+
+    /**
+     * Update the map after a recall or reinforce. Ships landing on open sea make that water region yours.
+     */
+    applyFleetLanded(fleetId, result) {
+        this.removeFleet(fleetId);
+        if (window.WorldBuild) {
+            WorldBuild.invalidateCache(result.regionId);
+        }
+
+        const region = this.map.sectors.find(r => r.id === result.regionId);
+        if (region && !region.isYours && window.WorldModals) {
+            this.updateFleetTargets(result.regionId, true);
+            WorldModals.applyRegionOwnership(result.regionId, result.units, result.newlyVisibleEnemyUnits);
+            return;
+        }
+
+        this.updateRegionUnits(result.regionId, result.units);
+        this.map.render();
+    }
+
+    /**
+     * A region changed owner: fleets heading there reinforce it when it became yours, or otherwise sail to
+     * open sea (a released water region). Their widgets are rebuilt on the next render.
+     */
+    updateFleetTargets(regionId, isYours) {
+        this.fleets.forEach(f => {
+            if (f.targetRegionId === regionId) {
+                f.targetIsYours = isYours;
+                f.targetIsOpenSea = !isYours;
+            }
+        });
+
+        this.fleetUIMap.forEach((el, id) => {
+            const fleet = this.fleets.find(f => f.id === id);
+            if (fleet && fleet.targetRegionId === regionId) {
+                el.remove();
+                this.fleetUIMap.delete(id);
+            }
+        });
     }
 
     /**
@@ -525,6 +543,7 @@ class FleetManager {
             this.fleets.forEach(f => {
                 if (f.targetRegionId === result.regionId) {
                     f.targetIsYours = true;
+                    f.targetIsOpenSea = false;
                 }
             });
         }
@@ -544,6 +563,9 @@ class FleetManager {
 
         if (result.hasWon && window.WorldModals) {
             WorldModals.applyRegionOwnership(result.regionId, result.regionUnits, result.newlyVisibleEnemyUnits);
+        } else if (result.regionHasOwner === false && window.WorldModals) {
+            // All defenders of a water region died, so the region is open sea now
+            WorldModals.applyRegionRelease(result.regionId);
         } else {
             this.updateRegionUnits(result.regionId, result.regionUnits);
             this.map.render();

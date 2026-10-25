@@ -189,6 +189,11 @@
                     WorldBuild.invalidateCache(result.sourceRegionId);
                 }
 
+                // A water region is released when its last units leave
+                if (result.sourceRegionReleased) {
+                    WorldModals.applyRegionRelease(result.sourceRegionId);
+                }
+
                 const newFleet = result.fleet;
                 WorldApp.worldMap.fleetManager.fleets.push(newFleet);
                 WorldApp.worldMap.fleetManager.startETACountdown();

@@ -82,6 +82,8 @@ final class BattleController extends BaseGameController
                 'regionId' => $targetRegion->getId(),
                 'regionUnits' => $regionUnits,
                 'newlyVisibleEnemyUnits' => $newlyVisibleEnemyUnits,
+                // A lost battle can leave a water region without defenders, which releases it
+                'regionHasOwner' => $targetRegion->getPlayer() !== null,
                 'fleetUnits' => $fleetUnits,
             ]);
         } catch (Throwable $e) {

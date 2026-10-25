@@ -1,6 +1,6 @@
 /**
- * Send Units mode — allows sending units from your region to another of your regions
- * on the world map, reusing the attack mode highlight/select pattern.
+ * Send Units mode — allows sending units from your region to another of your regions, or ships
+ * to open sea next to your regions, on the world map, reusing the attack mode highlight/select pattern.
  *
  * Flow:
  *   1. Player clicks own region → "Send Units" button
@@ -14,6 +14,7 @@
     let sendMode = false;
     let sendSourceRegion = null;
     let sendUnitQuantities = {};
+    let sendNavalUnitIds = new Set(); // Only ships can sail to water regions
     let sendTargetData = []; // [{regionId, x, y, distance}]
     let sendEligibleRegionIds = new Set();
 
@@ -73,6 +74,7 @@
      * Render unit cards (reuses the same card style as attack/build)
      */
     function renderSendUnits(units) {
+        sendNavalUnitIds = new Set(units.filter(function (unit) { return unit.isNaval; }).map(function (unit) { return unit.gameUnitId; }));
         const container = document.getElementById('sendUnitsContainer');
         const imgBase = WorldApp.imageBasePath;
         container.innerHTML = '';
@@ -129,13 +131,18 @@
                 return;
             }
 
-            if (result.targets.length === 0) {
+            const onlyNaval = Object.keys(sendUnitQuantities).every(function (unitId) {
+                return sendUnitQuantities[unitId] === 0 || sendNavalUnitIds.has(parseInt(unitId));
+            });
+            const targets = result.targets.filter(function (t) { return onlyNaval || !t.isWater; });
+
+            if (targets.length === 0) {
                 showNotification('You have no other regions to send units to!', 'error');
                 return;
             }
 
-            sendTargetData = result.targets;
-            sendEligibleRegionIds = new Set(result.targets.map(function (t) { return t.regionId; }));
+            sendTargetData = targets;
+            sendEligibleRegionIds = new Set(targets.map(function (t) { return t.regionId; }));
 
             // Enter send mode — highlight eligible regions on the map
             sendMode = true;
@@ -170,7 +177,7 @@
 
             worldMap.render();
             showNotification(
-                'Select a target region to send units to (' + result.targets.length + ' region(s) available). Click source or press Escape to cancel.',
+                'Select a target region to send units to (' + targets.length + ' region(s) available). Click source or press Escape to cancel.',
                 'info'
             );
         } catch (error) {
@@ -205,6 +212,11 @@
                     WorldApp.worldMap.fleetManager.updateRegionUnits(result.sourceRegionId, result.sourceRegionUnits);
                     // Unit counts changed, so cached build data of this region is outdated
                     WorldBuild.invalidateCache(result.sourceRegionId);
+                }
+
+                // A water region is released when its last units leave
+                if (result.sourceRegionReleased) {
+                    WorldModals.applyRegionRelease(result.sourceRegionId);
                 }
 
                 // Add fleet to the map and start ETA countdown

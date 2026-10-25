@@ -417,6 +417,7 @@ final class WorldController extends BaseGameController
                 'unitCount' => $totalUnitCount,
                 'units' => $units,
                 'targetIsYours' => $targetIsYours,
+                'targetIsOpenSea' => $targetRegion->isWater() && $targetRegion->getPlayer() === null,
             ];
         }
 

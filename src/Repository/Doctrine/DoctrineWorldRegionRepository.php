@@ -7,10 +7,12 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 
@@ -132,6 +134,30 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
               FROM ' . WorldRegion::class . ' wr
               WHERE wr.player = :player AND wr.population > 0'
             )->setParameter('player', $player)
+            ->getResult();
+    }
+
+    /**
+     * @return WorldRegion[]
+     */
+    public function findUnoccupiedOwnedWaterRegions(): array
+    {
+        return $this->entityManager
+            ->createQuery(
+                'SELECT wr
+              FROM ' . WorldRegion::class . ' wr
+              WHERE wr.player IS NOT NULL AND wr.type IN (:waterTypes)
+                AND NOT EXISTS (
+                  SELECT su.id FROM ' . WorldRegionStackableUnit::class . ' su
+                  WHERE su.worldRegion = wr AND su.amount > 0
+                )
+                AND NOT EXISTS (
+                  SELECT lu.id FROM ' . WorldRegionLeveledUnit::class . ' lu WHERE lu.worldRegion = wr
+                )
+                AND NOT EXISTS (
+                  SELECT c.id FROM ' . Construction::class . ' c WHERE c.worldRegion = wr
+                )'
+            )->setParameter('waterTypes', WorldRegion::WATER_TYPES)
             ->getResult();
     }
 

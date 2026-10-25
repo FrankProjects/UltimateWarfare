@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
+use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\FleetActionService;
@@ -65,6 +66,7 @@ final class FleetController extends BaseGameController
                 'targetY' => $targetRegion->getY(),
                 'targetOwner' => $targetPlayer !== null ? $targetPlayer->getName() : '',
                 'targetIsYours' => $targetIsYours,
+                'targetIsOpenSea' => $targetRegion->isWater() && $targetPlayer === null,
                 'hasArrived' => $hasArrived,
                 'timeLeft' => max(0, $arriveTime - $currentTime),
                 'arriveAt' => date('Y-m-d H:i:s', $arriveTime),
@@ -90,6 +92,7 @@ final class FleetController extends BaseGameController
                 'message' => 'You successfully recalled your troops!',
                 'regionId' => $region->getId(),
                 'units' => $this->gameUnitRegistry->getRegionUnitSummary($region),
+                'newlyVisibleEnemyUnits' => $this->getNewlyVisibleEnemyUnits($region),
             ]);
         } catch (Throwable $e) {
             return new JsonResponse([
@@ -111,6 +114,7 @@ final class FleetController extends BaseGameController
                 'message' => 'You successfully reinforced your region!',
                 'regionId' => $region->getId(),
                 'units' => $this->gameUnitRegistry->getRegionUnitSummary($region),
+                'newlyVisibleEnemyUnits' => $this->getNewlyVisibleEnemyUnits($region),
             ]);
         } catch (Throwable $e) {
             return new JsonResponse([
@@ -165,6 +169,7 @@ final class FleetController extends BaseGameController
                 'imageDir' => $category->getImageDir(),
                 'amount' => $worldRegionStackableUnit->getAmount(),
                 'category' => $category->getLabel(),
+                'isNaval' => $category === GameUnitCategory::NAVAL_UNITS,
             ];
         }
 
@@ -180,7 +185,7 @@ final class FleetController extends BaseGameController
     }
 
     /**
-     * API: Get target regions (your own) that are in range for sending units
+     * API: Get target regions (your own regions and open sea next to them) for sending units
      */
     public function sendUnitsTargetsApi(int $regionId): JsonResponse
     {
@@ -211,6 +216,23 @@ final class FleetController extends BaseGameController
                 'x' => $worldRegion->getX(),
                 'y' => $worldRegion->getY(),
                 'distance' => $distance,
+                'isWater' => $worldRegion->isWater(),
+            ];
+        }
+
+        // Ships can also sail to open sea next to one of your regions, which claims it on arrival
+        foreach ($this->regionActionService->getOpenSeaRegionsNextToPlayer($player) as $worldRegion) {
+            $targets[] = [
+                'regionId' => $worldRegion->getId(),
+                'x' => $worldRegion->getX(),
+                'y' => $worldRegion->getY(),
+                'distance' => $this->distanceCalculator->calculateDistance(
+                    $worldRegion->getX(),
+                    $worldRegion->getY(),
+                    $sourceRegion->getX(),
+                    $sourceRegion->getY()
+                ),
+                'isWater' => true,
             ];
         }
 
@@ -250,8 +272,18 @@ final class FleetController extends BaseGameController
         }
 
         try {
-            $targetRegion = $this->regionActionService->getWorldRegionByIdAndPlayer($targetRegionId, $player);
+            $targetRegion = $this->regionActionService->getWorldRegionByIdAndWorld(
+                $targetRegionId,
+                $player->getWorld()
+            );
         } catch (WorldRegionNotFoundException $e) {
+            return new JsonResponse(['success' => false, 'message' => 'Target region not found or not yours!'], 404);
+        }
+
+        // Units move to your own regions, or ships to open sea (unowned water)
+        $targetPlayer = $targetRegion->getPlayer();
+        $targetIsOpenSea = $targetRegion->isWater() && $targetPlayer === null;
+        if ($targetPlayer?->getId() !== $player->getId() && !$targetIsOpenSea) {
             return new JsonResponse(['success' => false, 'message' => 'Target region not found or not yours!'], 404);
         }
 
@@ -307,7 +339,8 @@ final class FleetController extends BaseGameController
                 'targetX' => $targetRegion->getX(),
                 'targetY' => $targetRegion->getY(),
                 'targetRegionId' => $targetRegion->getId(),
-                'targetIsYours' => true,
+                'targetIsYours' => !$targetIsOpenSea,
+                'targetIsOpenSea' => $targetIsOpenSea,
                 'timestamp' => $fleet->getTimestamp(),
                 'timestampArrive' => $fleet->getTimestampArrive(),
                 'hasArrived' => false,
@@ -317,6 +350,22 @@ final class FleetController extends BaseGameController
             ],
             'sourceRegionId' => $sourceRegion->getId(),
             'sourceRegionUnits' => $this->gameUnitRegistry->getRegionUnitSummary($sourceRegion),
+            // A water region is released when its last units leave
+            'sourceRegionReleased' => $sourceRegion->getPlayer() === null,
         ]);
+    }
+
+    /**
+     * Masked units of enemy neighbors, revealed when a fleet claims a water region
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function getNewlyVisibleEnemyUnits(WorldRegion $region): array
+    {
+        if (!$region->isWater()) {
+            return [];
+        }
+
+        return $this->regionActionService->getNeighborEnemyUnitPresence($region, $this->getPlayer());
     }
 }

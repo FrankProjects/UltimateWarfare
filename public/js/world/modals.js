@@ -70,6 +70,27 @@
         return worldMap.setSectors(WorldApp.worldRegions).then(function () { worldMap.render(); });
     }
 
+    /**
+     * Mark a region as unowned on the map, after a water region lost its last units.
+     */
+    function applyRegionRelease(regionId) {
+        const worldMap = WorldApp.worldMap;
+        const region = WorldApp.worldRegions.find(function (r) { return r.id === regionId; });
+        if (region) {
+            region.hasOwner = false;
+            region.isYours = false;
+            region.ownerName = null;
+            region.units = [];
+        }
+
+        // Fleets heading there now sail to open sea
+        worldMap.fleetManager.updateFleetTargets(regionId, false);
+
+        recalculateVisibility(WorldApp.worldRegions);
+
+        return worldMap.setSectors(WorldApp.worldRegions).then(function () { worldMap.render(); });
+    }
+
     // ===== Buy Region Modal =====
     const modal = document.getElementById('buyRegionModal');
     const confirmBuyBtn = document.getElementById('confirmBuyBtn');
@@ -324,7 +345,9 @@
 
     // ===== Default tile click handler =====
     WorldApp.defaultTileClick = function (region) {
-        if (!region.hasOwner) {
+        if (!region.hasOwner && WATER_TYPES.includes(region.type)) {
+            showNotification('Open sea cannot be bought. Send ships from a neighboring region to claim it.', 'info');
+        } else if (!region.hasOwner) {
             showBuyRegionModal(region);
         } else if (region.isYours) {
             showYourRegionModal(region);
@@ -335,6 +358,7 @@
 
     // Expose globally
     window.WorldModals = {
-        applyRegionOwnership: applyRegionOwnership
+        applyRegionOwnership: applyRegionOwnership,
+        applyRegionRelease: applyRegionRelease
     };
 })();

@@ -82,6 +82,11 @@ final class RegionActionService
             throw new RuntimeException('Region is already owned by somebody!');
         }
 
+        // Water is claimed by stationing naval units on it instead
+        if ($worldRegion->isWater()) {
+            throw new RuntimeException('Water regions cannot be bought!');
+        }
+
         if ($resources->getCash() < $player->getRegionPrice()) {
             throw new RuntimeException('You do not have enough money!');
         }
@@ -161,10 +166,60 @@ final class RegionActionService
         WorldRegion $region,
         Player $player
     ): array {
-        $x = $region->getX();
-        $y = $region->getY();
         $world = $player->getWorld();
 
+        $result = [];
+        foreach ($this->getHexNeighborCoordinates($region->getX(), $region->getY()) as [$nx, $ny]) {
+            $neighbor = $this->worldRegionRepository->findByWorldXY($world, $nx, $ny);
+            if ($neighbor === null || $neighbor->getPlayer() === null) {
+                continue;
+            }
+            if ($neighbor->getPlayer()->getId() === $player->getId()) {
+                continue;
+            }
+
+            $result[$neighbor->getId()] = $this->gameUnitRegistry->getMaskedRegionUnitSummary($neighbor);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Unowned water regions next to one of the player's regions, where the player's ships can sail to
+     *
+     * @return WorldRegion[]
+     */
+    public function getOpenSeaRegionsNextToPlayer(Player $player): array
+    {
+        $playerCoordinates = [];
+        foreach ($player->getWorldRegions() as $worldRegion) {
+            $playerCoordinates[$worldRegion->getX() . ',' . $worldRegion->getY()] = true;
+        }
+
+        $openSeaRegions = [];
+        foreach ($player->getWorld()->getWorldRegions() as $worldRegion) {
+            if ($worldRegion->getPlayer() !== null || !$worldRegion->isWater()) {
+                continue;
+            }
+
+            foreach ($this->getHexNeighborCoordinates($worldRegion->getX(), $worldRegion->getY()) as [$nx, $ny]) {
+                if (isset($playerCoordinates[$nx . ',' . $ny])) {
+                    $openSeaRegions[] = $worldRegion;
+                    break;
+                }
+            }
+        }
+
+        return $openSeaRegions;
+    }
+
+    /**
+     * The 6 hex neighbors of a tile (pointy-top, odd-r offset; odd rows shifted right)
+     *
+     * @return list<array{int, int}>
+     */
+    private function getHexNeighborCoordinates(int $x, int $y): array
+    {
         $neighborCoords = [[$x - 1, $y], [$x + 1, $y]];
         if ($y % 2 === 0) {
             $neighborCoords[] = [$x - 1, $y - 1];
@@ -178,19 +233,6 @@ final class RegionActionService
             $neighborCoords[] = [$x + 1, $y + 1];
         }
 
-        $result = [];
-        foreach ($neighborCoords as [$nx, $ny]) {
-            $neighbor = $this->worldRegionRepository->findByWorldXY($world, $nx, $ny);
-            if ($neighbor === null || $neighbor->getPlayer() === null) {
-                continue;
-            }
-            if ($neighbor->getPlayer()->getId() === $player->getId()) {
-                continue;
-            }
-
-            $result[$neighbor->getId()] = $this->gameUnitRegistry->getMaskedRegionUnitSummary($neighbor);
-        }
-
-        return $result;
+        return $neighborCoords;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Tests\Service\BattleEngine;
 
+use Doctrine\ORM\EntityManagerInterface;
 use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
@@ -13,6 +14,8 @@ use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
+use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
@@ -20,6 +23,9 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleUpdaterService;
+use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
+use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
+use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -28,6 +34,7 @@ class BattleUpdaterServiceTest extends TestCase
     public function testBattleLostOnlyRemovesDefendersThatDied(): void
     {
         $region = new WorldRegion();
+        $region->setType(WorldRegion::TYPE_GRASSLAND);
         $region->setPlayer(new Player());
         $survivingSoldiers = WorldRegionStackableUnit::create($region, GameUnitEnum::SOLDIER, 10);
         $deadTanks = WorldRegionStackableUnit::create($region, GameUnitEnum::TANK, 5);
@@ -53,7 +60,8 @@ class BattleUpdaterServiceTest extends TestCase
             $stackableUnitRepository,
             $leveledUnitRepository,
             $this->createMock(ConstructionRepository::class),
-            $this->createMock(PlayerRepository::class)
+            $this->createMock(PlayerRepository::class),
+            $this->createWaterRegionUpdaterService()
         );
 
         $service->updateBattleLost($fleet, [], [$survivingSoldiers, $survivingBarrack]);
@@ -62,6 +70,7 @@ class BattleUpdaterServiceTest extends TestCase
     public function testBattleWonRemovesConstructionsOfPreviousOwner(): void
     {
         $region = new WorldRegion();
+        $region->setType(WorldRegion::TYPE_GRASSLAND);
         $region->setPlayer(new Player());
         $defenderConstruction = Construction::create($region, new Player(), GameUnitEnum::SOLDIER, 10, 60);
 
@@ -79,7 +88,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(WorldRegionStackableUnitRepository::class),
             $this->createMock(WorldRegionLeveledUnitRepository::class),
             $constructionRepository,
-            $this->createMock(PlayerRepository::class)
+            $this->createMock(PlayerRepository::class),
+            $this->createWaterRegionUpdaterService()
         );
 
         $service->updateBattleWon($fleet, []);
@@ -130,6 +140,7 @@ class BattleUpdaterServiceTest extends TestCase
         $attacker = new Player();
         $defender = new Player();
         $region = new WorldRegion();
+        $region->setType(WorldRegion::TYPE_GRASSLAND);
         $region->setPlayer($defender);
 
         $fleet = new Fleet();
@@ -152,6 +163,7 @@ class BattleUpdaterServiceTest extends TestCase
         $attacker = new Player();
         $defender = new Player();
         $region = new WorldRegion();
+        $region->setType(WorldRegion::TYPE_GRASSLAND);
         $region->setPlayer($defender);
 
         $fleet = new Fleet();
@@ -183,6 +195,7 @@ class BattleUpdaterServiceTest extends TestCase
     private function createOwnedRegion(): WorldRegion
     {
         $region = new WorldRegion();
+        $region->setType(WorldRegion::TYPE_GRASSLAND);
         $region->setPlayer(new Player());
 
         return $region;
@@ -197,7 +210,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(WorldRegionStackableUnitRepository::class),
             $this->createMock(WorldRegionLeveledUnitRepository::class),
             $this->createMock(ConstructionRepository::class),
-            $playerRepository
+            $playerRepository,
+            $this->createWaterRegionUpdaterService()
         );
     }
 
@@ -212,7 +226,93 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(WorldRegionStackableUnitRepository::class),
             $this->createMock(WorldRegionLeveledUnitRepository::class),
             $this->createMock(ConstructionRepository::class),
-            $this->createMock(PlayerRepository::class)
+            $this->createMock(PlayerRepository::class),
+            $this->createWaterRegionUpdaterService()
+        );
+    }
+
+    private function createWaterRegionUpdaterService(): WaterRegionUpdaterService
+    {
+        return new WaterRegionUpdaterService(
+            $this->createMock(WorldRegionRepository::class),
+            new NetWorthUpdaterService(
+                $this->createMock(FederationRepository::class),
+                $this->createMock(PlayerRepository::class),
+                new NetWorthCalculator(
+                    $this->createMock(WorldRegionStackableUnitRepository::class),
+                    $this->createMock(WorldRegionLeveledUnitRepository::class)
+                )
+            ),
+            $this->createMock(EntityLockRepository::class),
+            $this->createMock(EntityManagerInterface::class)
+        );
+    }
+
+    public function testBattleLostReleasesWaterRegionWithoutSurvivingDefenders(): void
+    {
+        $defender = new Player();
+        $region = $this->createDefendedWaterRegion($defender);
+
+        $this->createServiceForWaterRegion()->updateBattleLost($this->createFleetAttacking($region), [], []);
+
+        self::assertNull($region->getPlayer());
+        self::assertFalse($defender->getWorldRegions()->contains($region));
+    }
+
+    public function testBattleLostKeepsWaterRegionWithSurvivingDefenders(): void
+    {
+        $defender = new Player();
+        $region = $this->createDefendedWaterRegion($defender);
+        $survivingCruisers = $region->getWorldRegionStackableUnits()->toArray();
+
+        $this->createServiceForWaterRegion()->updateBattleLost(
+            $this->createFleetAttacking($region),
+            [],
+            $survivingCruisers
+        );
+
+        self::assertSame($defender, $region->getPlayer());
+    }
+
+    private function createDefendedWaterRegion(Player $defender): WorldRegion
+    {
+        $region = new WorldRegion();
+        $region->setType(WorldRegion::TYPE_WATER);
+        $region->setPlayer($defender);
+        $defender->getWorldRegions()->add($region);
+        WorldRegionStackableUnit::create($region, GameUnitEnum::CRUISER, 2);
+
+        return $region;
+    }
+
+    private function createFleetAttacking(WorldRegion $region): Fleet
+    {
+        $fleet = new Fleet();
+        $fleet->setTargetWorldRegion($region);
+        $fleet->setPlayer(new Player());
+
+        return $fleet;
+    }
+
+    private function createServiceForWaterRegion(): BattleUpdaterService
+    {
+        // Like the Doctrine repository, removing a unit also removes it from the region's collection
+        $stackableUnitRepository = $this->createMock(WorldRegionStackableUnitRepository::class);
+        $stackableUnitRepository->method('remove')->willReturnCallback(
+            static function (WorldRegionStackableUnit $unit): void {
+                $unit->getWorldRegion()->removeWorldRegionStackableUnit($unit);
+            }
+        );
+
+        return new BattleUpdaterService(
+            $this->createMock(FleetRepository::class),
+            $this->createMock(FleetUnitRepository::class),
+            $this->createMock(WorldRegionRepository::class),
+            $stackableUnitRepository,
+            $this->createMock(WorldRegionLeveledUnitRepository::class),
+            $this->createMock(ConstructionRepository::class),
+            $this->createMock(PlayerRepository::class),
+            $this->createWaterRegionUpdaterService()
         );
     }
 }

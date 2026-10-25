@@ -20,6 +20,10 @@ class WorldRegion
     public const string TYPE_HILLS = 'hills';
     public const string TYPE_MOUNTAIN = 'mountain';
 
+    /**
+     * Water regions can't be bought; naval units claim them while stationed there (see WaterRegionUpdaterService)
+     */
+    public const array WATER_TYPES = [self::TYPE_DEEP_WATER, self::TYPE_WATER, self::TYPE_SHALLOW_WATER];
 
     private int $id;
     private int $x;
@@ -132,6 +136,11 @@ class WorldRegion
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function isWater(): bool
+    {
+        return in_array($this->type, self::WATER_TYPES, true);
     }
 
     public function setType(string $type): void

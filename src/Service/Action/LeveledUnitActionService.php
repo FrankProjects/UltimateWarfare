@@ -140,12 +140,14 @@ final class LeveledUnitActionService
         }
 
         // Sea mines can only be built on coastal or water regions
-        $waterTypes = [
-            WorldRegion::TYPE_DEEP_WATER, WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER, WorldRegion::TYPE_SAND,
-        ];
-        if ($rowName === 'sea_mine' && !in_array($regionType, $waterTypes, true)) {
+        $isWater = $region->isWater();
+        if ($rowName === 'sea_mine' && !$isWater && $regionType !== WorldRegion::TYPE_SAND) {
             throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a sand or water region.");
+        }
+
+        // Water regions only allow Sea Mines
+        if ($isWater && $rowName !== 'sea_mine') {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: only Sea Mines can be built on water.");
         }
 
         $behavior = $this->behaviorFactory->create($gameUnit);

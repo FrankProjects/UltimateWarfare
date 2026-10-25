@@ -17,6 +17,7 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
+use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use RuntimeException;
 
 final class BattleUpdaterService
@@ -28,6 +29,7 @@ final class BattleUpdaterService
     private WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository;
     private ConstructionRepository $constructionRepository;
     private PlayerRepository $playerRepository;
+    private WaterRegionUpdaterService $waterRegionUpdaterService;
 
     public function __construct(
         FleetRepository $fleetRepository,
@@ -36,7 +38,8 @@ final class BattleUpdaterService
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
         ConstructionRepository $constructionRepository,
-        PlayerRepository $playerRepository
+        PlayerRepository $playerRepository,
+        WaterRegionUpdaterService $waterRegionUpdaterService
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
@@ -45,6 +48,7 @@ final class BattleUpdaterService
         $this->worldRegionLeveledUnitRepository = $worldRegionLeveledUnitRepository;
         $this->constructionRepository = $constructionRepository;
         $this->playerRepository = $playerRepository;
+        $this->waterRegionUpdaterService = $waterRegionUpdaterService;
     }
 
     /**
@@ -90,6 +94,9 @@ final class BattleUpdaterService
         $this->removeDeadDefenders($targetWorldRegion, $defenderGameUnits);
         $this->saveSurvivingDefenders($defenderGameUnits);
         $this->updateAttackingFleet($fleet, $attackerGameUnits);
+
+        // A water region whose defenders all died is no longer held by the defender
+        $this->waterRegionUpdaterService->releaseIfUnoccupied($targetWorldRegion);
     }
 
     /**
