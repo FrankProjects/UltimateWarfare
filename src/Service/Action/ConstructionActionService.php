@@ -13,6 +13,7 @@ use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 use FrankProjects\UltimateWarfare\Service\IncomeUpdaterService;
@@ -28,6 +29,7 @@ final class ConstructionActionService
     private NetWorthUpdaterService $netWorthUpdaterService;
     private GameUnitBehaviorFactory $behaviorFactory;
     private IncomeUpdaterService $incomeUpdaterService;
+    private WorldRegionRepository $worldRegionRepository;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
@@ -36,7 +38,8 @@ final class ConstructionActionService
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         NetWorthUpdaterService $netWorthUpdaterService,
         GameUnitBehaviorFactory $behaviorFactory,
-        IncomeUpdaterService $incomeUpdaterService
+        IncomeUpdaterService $incomeUpdaterService,
+        WorldRegionRepository $worldRegionRepository
     ) {
         $this->constructionRepository = $constructionRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
@@ -45,6 +48,7 @@ final class ConstructionActionService
         $this->netWorthUpdaterService = $netWorthUpdaterService;
         $this->behaviorFactory = $behaviorFactory;
         $this->incomeUpdaterService = $incomeUpdaterService;
+        $this->worldRegionRepository = $worldRegionRepository;
     }
 
     /**
@@ -196,28 +200,39 @@ final class ConstructionActionService
     private function validateUnitAllowed(GameUnit $gameUnit, WorldRegion $region): void
     {
         $rowName = $gameUnit->getRowName();
-        $regionType = $region->getType();
 
         // Tanks require a Factory on this region
         if ($rowName === 'tank') {
             $this->requireLeveledBuilding($region, GameUnitEnum::FACTORY, 'a Factory');
         }
 
-        // Harbor can only be built on sand regions
-        if ($rowName === 'harbor' && $regionType !== WorldRegion::TYPE_SAND) {
-            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a sand region.");
+        // Harbors can only be built on coastal regions
+        if ($rowName === 'harbor' && !$this->isCoastal($region)) {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a coastal region.");
         }
 
         // Sea mines can only be built on coastal or water regions
         $isWater = $region->isWater();
-        if ($rowName === 'sea_mine' && !$isWater && $regionType !== WorldRegion::TYPE_SAND) {
-            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a sand or water region.");
+        if ($rowName === 'sea_mine' && !$isWater && !$this->isCoastal($region)) {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a coastal or water region.");
         }
 
         // Water regions only allow Sea Mines
         if ($isWater && $rowName !== 'sea_mine') {
             throw new RuntimeException("Cannot build {$gameUnit->getName()}: only Sea Mines can be built on water.");
         }
+    }
+
+    /**
+     * A land region that shares a border with a water region
+     */
+    private function isCoastal(WorldRegion $region): bool
+    {
+        return $region->isCoastal($this->worldRegionRepository->findAdjacentRegions(
+            $region->getX(),
+            $region->getY(),
+            $region->getWorld()
+        ));
     }
 
     /**

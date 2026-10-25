@@ -143,6 +143,26 @@ class WorldRegion
         return in_array($this->type, self::WATER_TYPES, true);
     }
 
+    /**
+     * A coastal region is a land region that shares a border with a water region
+     *
+     * @param iterable<WorldRegion> $adjacentRegions The neighbors of this region
+     */
+    public function isCoastal(iterable $adjacentRegions): bool
+    {
+        if ($this->isWater()) {
+            return false;
+        }
+
+        foreach ($adjacentRegions as $adjacentRegion) {
+            if ($adjacentRegion->isWater()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function setType(string $type): void
     {
         if (!$this->isValidType($type)) {

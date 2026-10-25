@@ -11,6 +11,7 @@ use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\FleetActionService;
 use FrankProjects\UltimateWarfare\Service\Action\RegionActionService;
+use FrankProjects\UltimateWarfare\Util\HexGrid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Throwable;
@@ -59,8 +60,8 @@ final class AttackController extends BaseGameController
         $targetX = $targetRegion->getX();
         $targetY = $targetRegion->getY();
 
-        // Check if target region is water/sand or adjacent to water/sand (for naval rule)
-        $targetIsCoastal = $this->isCoastalOrWater($targetRegion, $regionsByCoord);
+        // Ships can only attack water and coastal regions
+        $targetIsCoastal = $this->isWaterOrCoastal($targetRegion, $regionsByCoord);
 
         $eligibleRegions = [];
 
@@ -127,8 +128,8 @@ final class AttackController extends BaseGameController
             $regionsByCoord[$wr->getX() . ',' . $wr->getY()] = $wr;
         }
 
-        $targetIsCoastal = $this->isCoastalOrWater($targetRegion, $regionsByCoord);
-        $sourceIsCoastal = $this->isCoastalOrWater($playerRegion, $regionsByCoord);
+        $targetIsCoastal = $this->isWaterOrCoastal($targetRegion, $regionsByCoord);
+        $sourceIsCoastal = $this->isWaterOrCoastal($playerRegion, $regionsByCoord);
 
         $units = [];
         foreach ($playerRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
@@ -229,8 +230,8 @@ final class AttackController extends BaseGameController
             $regionsByCoord[$wr->getX() . ',' . $wr->getY()] = $wr;
         }
 
-        $targetIsCoastal = $this->isCoastalOrWater($targetRegion, $regionsByCoord);
-        $sourceIsCoastal = $this->isCoastalOrWater($playerRegion, $regionsByCoord);
+        $targetIsCoastal = $this->isWaterOrCoastal($targetRegion, $regionsByCoord);
+        $sourceIsCoastal = $this->isWaterOrCoastal($playerRegion, $regionsByCoord);
 
         // Build lookup of valid unit IDs for this attack
         $validUnitIds = [];
@@ -350,37 +351,25 @@ final class AttackController extends BaseGameController
     }
 
     /**
-     * Check if a region is water/sand or directly adjacent to a water/sand region.
+     * Ships reach water regions and coastal regions (land regions that share a border with water)
      *
-     * @param WorldRegion $region
      * @param array<string, WorldRegion> $regionsByCoord
      */
-    private function isCoastalOrWater(WorldRegion $region, array $regionsByCoord): bool
+    private function isWaterOrCoastal(WorldRegion $region, array $regionsByCoord): bool
     {
-        if ($this->isWaterOrSand($region)) {
+        if ($region->isWater()) {
             return true;
         }
 
-        // Check 4 adjacent tiles
-        $x = $region->getX();
-        $y = $region->getY();
-        $adjacentOffsets = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-
-        foreach ($adjacentOffsets as [$dx, $dy]) {
-            $key = ($x + $dx) . ',' . ($y + $dy);
-            if (isset($regionsByCoord[$key])) {
-                if ($this->isWaterOrSand($regionsByCoord[$key])) {
-                    return true;
-                }
+        $adjacentRegions = [];
+        foreach (HexGrid::getNeighborCoordinates($region->getX(), $region->getY()) as [$nx, $ny]) {
+            $adjacentRegion = $regionsByCoord[$nx . ',' . $ny] ?? null;
+            if ($adjacentRegion !== null) {
+                $adjacentRegions[] = $adjacentRegion;
             }
         }
 
-        return false;
-    }
-
-    private function isWaterOrSand(WorldRegion $region): bool
-    {
-        return $region->isWater() || $region->getType() === WorldRegion::TYPE_SAND;
+        return $region->isCoastal($adjacentRegions);
     }
 
     /**
@@ -392,7 +381,7 @@ final class AttackController extends BaseGameController
      * - Fighter: range 3
      * - Bomber: range 5
      * - Strategic Bomber: range 7
-     * - Naval units: can only attack if target is coastal/water
+     * - Naval units: range 1, from and to water or coastal regions only
      *
      * @param WorldRegion $playerRegion
      * @param bool $targetIsCoastal
@@ -401,7 +390,7 @@ final class AttackController extends BaseGameController
     private function getMaxAttackRange(WorldRegion $playerRegion, bool $targetIsCoastal, array $regionsByCoord): int
     {
         $maxRange = 0;
-        $sourceIsCoastal = $this->isCoastalOrWater($playerRegion, $regionsByCoord);
+        $sourceIsCoastal = $this->isWaterOrCoastal($playerRegion, $regionsByCoord);
 
         foreach ($playerRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
             if ($worldRegionStackableUnit->getAmount() <= 0) {

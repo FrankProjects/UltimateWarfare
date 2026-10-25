@@ -15,6 +15,7 @@ use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Util\HexGrid;
 
 final class DoctrineWorldRegionRepository implements WorldRegionRepository
 {
@@ -210,22 +211,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
      */
     public function findAdjacentRegions(int $x, int $y, World $world): array
     {
-        // Hex neighbors differ based on even/odd row
-        if ($y % 2 === 0) {
-            // Even row neighbors
-            $neighbors = [
-                [$x - 1, $y], [$x + 1, $y],
-                [$x - 1, $y - 1], [$x, $y - 1],
-                [$x - 1, $y + 1], [$x, $y + 1],
-            ];
-        } else {
-            // Odd row neighbors (shifted right)
-            $neighbors = [
-                [$x - 1, $y], [$x + 1, $y],
-                [$x, $y - 1], [$x + 1, $y - 1],
-                [$x, $y + 1], [$x + 1, $y + 1],
-            ];
-        }
+        $neighbors = HexGrid::getNeighborCoordinates($x, $y);
 
         $conditions = [];
         $parameters = ['world' => $world];

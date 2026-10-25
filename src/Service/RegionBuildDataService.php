@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Service\Action\ConstructionActionService;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 
@@ -21,15 +22,18 @@ final class RegionBuildDataService
     private ConstructionActionService $constructionActionService;
     private GameUnitRegistry $gameUnitRegistry;
     private GameUnitBehaviorFactory $behaviorFactory;
+    private WorldRegionRepository $worldRegionRepository;
 
     public function __construct(
         ConstructionActionService $constructionActionService,
         GameUnitRegistry $gameUnitRegistry,
-        GameUnitBehaviorFactory $behaviorFactory
+        GameUnitBehaviorFactory $behaviorFactory,
+        WorldRegionRepository $worldRegionRepository
     ) {
         $this->constructionActionService = $constructionActionService;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->behaviorFactory = $behaviorFactory;
+        $this->worldRegionRepository = $worldRegionRepository;
     }
 
     /**
@@ -38,8 +42,11 @@ final class RegionBuildDataService
     public function getBuildData(WorldRegion $worldRegion, Player $player): array
     {
         $isWater = $worldRegion->isWater();
-        $isSand = $worldRegion->getType() === WorldRegion::TYPE_SAND;
-        $isSandOrWater = $isWater || $isSand;
+        $isCoastal = $worldRegion->isCoastal($this->worldRegionRepository->findAdjacentRegions(
+            $worldRegion->getX(),
+            $worldRegion->getY(),
+            $worldRegion->getWorld()
+        ));
 
         // Detect relevant buildings in this region (units + constructions in progress)
         $hasBarrack = false;
@@ -127,16 +134,17 @@ final class RegionBuildDataService
             foreach ($gameUnits as $gameUnit) {
                 $rowName = $gameUnit->getRowName();
 
-                // Filter harbor from special buildings when region is not sand
-                if ($gameUnitCategory === GameUnitCategory::SPECIAL_BUILDINGS && $rowName === 'harbor' && !$isSand) {
+                // Filter harbor from special buildings when region is not coastal
+                if ($gameUnitCategory === GameUnitCategory::SPECIAL_BUILDINGS && $rowName === 'harbor' && !$isCoastal) {
                     continue;
                 }
 
-                // Filter sea mines from defense buildings when region is not sand or water
+                // Filter sea mines from defense buildings when region is not coastal or water
                 if (
                     $gameUnitCategory === GameUnitCategory::DEFENSE_BUILDINGS
                     && $rowName === 'sea_mine'
-                    && !$isSandOrWater
+                    && !$isCoastal
+                    && !$isWater
                 ) {
                     continue;
                 }

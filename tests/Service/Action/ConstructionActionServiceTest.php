@@ -16,6 +16,7 @@ use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\Action\ConstructionActionService;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
@@ -62,7 +63,8 @@ class ConstructionActionServiceTest extends TestCase
             $this->createMock(WorldRegionStackableUnitRepository::class),
             $netWorthUpdaterService,
             $behaviorFactory,
-            $this->createIncomeUpdaterService()
+            $this->createIncomeUpdaterService(),
+            $this->createMock(WorldRegionRepository::class)
         );
     }
 

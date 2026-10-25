@@ -13,6 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
+use FrankProjects\UltimateWarfare\Util\HexGrid;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use RuntimeException;
 
@@ -169,7 +170,7 @@ final class RegionActionService
         $world = $player->getWorld();
 
         $result = [];
-        foreach ($this->getHexNeighborCoordinates($region->getX(), $region->getY()) as [$nx, $ny]) {
+        foreach (HexGrid::getNeighborCoordinates($region->getX(), $region->getY()) as [$nx, $ny]) {
             $neighbor = $this->worldRegionRepository->findByWorldXY($world, $nx, $ny);
             if ($neighbor === null || $neighbor->getPlayer() === null) {
                 continue;
@@ -202,7 +203,7 @@ final class RegionActionService
                 continue;
             }
 
-            foreach ($this->getHexNeighborCoordinates($worldRegion->getX(), $worldRegion->getY()) as [$nx, $ny]) {
+            foreach (HexGrid::getNeighborCoordinates($worldRegion->getX(), $worldRegion->getY()) as [$nx, $ny]) {
                 if (isset($playerCoordinates[$nx . ',' . $ny])) {
                     $openSeaRegions[] = $worldRegion;
                     break;
@@ -211,28 +212,5 @@ final class RegionActionService
         }
 
         return $openSeaRegions;
-    }
-
-    /**
-     * The 6 hex neighbors of a tile (pointy-top, odd-r offset; odd rows shifted right)
-     *
-     * @return list<array{int, int}>
-     */
-    private function getHexNeighborCoordinates(int $x, int $y): array
-    {
-        $neighborCoords = [[$x - 1, $y], [$x + 1, $y]];
-        if ($y % 2 === 0) {
-            $neighborCoords[] = [$x - 1, $y - 1];
-            $neighborCoords[] = [$x, $y - 1];
-            $neighborCoords[] = [$x - 1, $y + 1];
-            $neighborCoords[] = [$x, $y + 1];
-        } else {
-            $neighborCoords[] = [$x, $y - 1];
-            $neighborCoords[] = [$x + 1, $y - 1];
-            $neighborCoords[] = [$x, $y + 1];
-            $neighborCoords[] = [$x + 1, $y + 1];
-        }
-
-        return $neighborCoords;
     }
 }
