@@ -9,12 +9,16 @@
  *   4. Map enters "send mode": your in-range regions are highlighted
  *   5. Player clicks a highlighted region → fleet is created via API
  *   6. Fleet appears on map with ETA countdown
+ *
+ * From the open sea modal, the player instead picks one of their regions with ships and sends
+ * naval units straight to that open sea (no target selection).
  */
 (function () {
     let sendMode = false;
     let sendSourceRegion = null;
     let sendUnitQuantities = {};
     let sendNavalUnitIds = new Set(); // Only ships can sail to water regions
+    let sendFixedTarget = null; // Open sea the ships sail to, skipping target selection
     let sendTargetData = []; // [{regionId, x, y, distance}]
     let sendEligibleRegionIds = new Set();
 
@@ -30,18 +34,22 @@
     /**
      * Step 1+2: Open send units modal, load available units from source region
      */
-    async function startSendUnits(sourceRegion) {
+    async function startSendUnits(sourceRegion, fixedTarget = null) {
         // Close the "Your Region" modal
         // yourRegionModal is already closed by modals.js before calling this
 
         sendSourceRegion = sourceRegion;
         sendUnitQuantities = {};
+        sendFixedTarget = fixedTarget;
 
         document.getElementById('sendUnitsSource').textContent =
             sourceRegion.x + ', ' + sourceRegion.y;
 
-        document.getElementById('sendUnitsInfo').innerHTML =
-            '<strong>Select units to move from</strong> region ' + sourceRegion.x + ', ' + sourceRegion.y;
+        document.getElementById('sendUnitsInfo').innerHTML = fixedTarget
+            ? '<strong>Select ships to send from</strong> region ' + sourceRegion.x + ', ' + sourceRegion.y +
+                ' <strong>to open sea</strong> ' + fixedTarget.x + ', ' + fixedTarget.y
+            : '<strong>Select units to move from</strong> region ' + sourceRegion.x + ', ' + sourceRegion.y;
+        confirmSendUnitsBtn.innerHTML = fixedTarget ? '&#9875; Send Ships' : '&#128640; Select Target';
 
         const container = document.getElementById('sendUnitsContainer');
         container.innerHTML = '<div class="build-loading">Loading available units...</div>';
@@ -56,14 +64,16 @@
                 return;
             }
 
-            if (result.units.length === 0) {
-                container.innerHTML = '<div class="build-loading">No movable units in this region.</div>';
+            // Only ships can sail to open sea
+            const units = fixedTarget ? result.units.filter(function (unit) { return unit.isNaval; }) : result.units;
+            if (units.length === 0) {
+                container.innerHTML = '<div class="build-loading">No ' + (fixedTarget ? 'naval' : 'movable') + ' units in this region.</div>';
                 confirmSendUnitsBtn.style.display = 'none';
                 return;
             }
 
             confirmSendUnitsBtn.style.display = '';
-            renderSendUnits(result.units);
+            renderSendUnits(units);
         } catch (error) {
             console.error('Error loading send units data:', error);
             container.innerHTML = '<div class="build-loading text-negative">Failed to load units.</div>';
@@ -120,6 +130,12 @@
         }
 
         bootstrap.Modal.getInstance(sendUnitsModal).hide();
+
+        if (sendFixedTarget) {
+            confirmSendToTarget(sendFixedTarget);
+            return;
+        }
+
         showNotification('Loading target regions...', 'info');
 
         try {
@@ -205,7 +221,7 @@
             const result = await response.json();
 
             if (result.success) {
-                cancelSendMode();
+                resetSendMode();
 
                 // Update source region units on the map
                 if (result.sourceRegionId && result.sourceRegionUnits) {
@@ -236,11 +252,64 @@
     }
 
     /**
+     * Send ships to open sea from one of your regions with naval units: directly when there is only one,
+     * otherwise the player picks the source region on the map.
+     */
+    function startSendToOpenSea(targetRegion) {
+        const worldMap = WorldApp.worldMap;
+        const sources = worldMap.sectors.filter(function (region) {
+            return region.isYours && region.id !== targetRegion.id && region.units && region.units.navalUnits > 0;
+        });
+
+        if (sources.length === 0) {
+            showNotification('You have no naval ships to send!', 'error');
+            return;
+        }
+
+        if (sources.length === 1) {
+            startSendUnits(sources[0], targetRegion);
+            return;
+        }
+
+        sendMode = true;
+        const sourceIds = new Set(sources.map(function (region) { return region.id; }));
+        worldMap.sectors.forEach(function (region) {
+            region._attackEligible = sourceIds.has(region.id); // Reuse the green highlight rendering
+            region._attackTarget = false;
+            region._sendSource = false;
+        });
+
+        worldMap.config.onTileClick = function (region) {
+            if (sourceIds.has(region.id)) {
+                resetSendMode();
+                startSendUnits(region, targetRegion);
+            } else {
+                showNotification('Select one of your highlighted regions with naval ships.', 'error');
+            }
+        };
+
+        worldMap.render();
+        showNotification(
+            'Select the region to send ships from (' + sources.length + ' region(s) with ships). Press Escape to cancel.',
+            'info'
+        );
+    }
+
+    /**
      * Cancel send mode and restore the default map behavior.
      */
     function cancelSendMode() {
+        resetSendMode();
+        showNotification('Send units cancelled.', 'info');
+    }
+
+    /**
+     * Leave send mode: clear the highlights and restore the default map behavior.
+     */
+    function resetSendMode() {
         sendMode = false;
         sendSourceRegion = null;
+        sendFixedTarget = null;
         sendEligibleRegionIds.clear();
         sendTargetData = [];
         sendUnitQuantities = {};
@@ -254,7 +323,6 @@
 
         worldMap.config.onTileClick = getDefaultTileClick();
         worldMap.render();
-        showNotification('Send units cancelled.', 'info');
     }
 
     // Cancel on Escape
@@ -266,6 +334,7 @@
 
     // Expose globally
     window.WorldSendUnits = {
-        startSendUnits: startSendUnits
+        startSendUnits: startSendUnits,
+        startSendToOpenSea: startSendToOpenSea
     };
 })();
