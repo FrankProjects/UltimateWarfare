@@ -49,6 +49,7 @@ final class BattleController extends BaseGameController
 
         try {
             $targetRegion = $fleet->getTargetWorldRegion();
+            $sourceRegion = $fleet->getWorldRegion();
             $battleResults = $this->battleEngine->battle($fleet);
             $hasWon = $battleResults->hasWon();
 
@@ -85,6 +86,11 @@ final class BattleController extends BaseGameController
                 // A lost battle can leave a water region without defenders, which releases it
                 'regionHasOwner' => $targetRegion->getPlayer() !== null,
                 'fleetUnits' => $fleetUnits,
+                // Aircraft of a won battle fly back to the source region
+                'sourceRegionId' => $sourceRegion->getId(),
+                'sourceRegionUnits' => $sourceRegion->getPlayer()?->getId() === $player->getId()
+                    ? $this->gameUnitRegistry->getRegionUnitSummary($sourceRegion)
+                    : null,
             ]);
         } catch (Throwable $e) {
             return new JsonResponse([

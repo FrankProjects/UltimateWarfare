@@ -125,6 +125,13 @@ final class FleetActionService
                 throw new RuntimeException('You are not the owner of this region!');
             }
 
+            // The Airfield of the target region may have been destroyed while the aircraft were on their way
+            if ($this->hasAirUnits($fleet) && $targetRegion->getLeveledUnit(GameUnitEnum::AIRFIELD) === null) {
+                throw new RuntimeException(
+                    'Aircraft cannot land: this region no longer has an Airfield. Recall the fleet instead.'
+                );
+            }
+
             $this->addFleetUnitsToWorldRegion($fleet, $targetRegion);
 
             $this->entityManager->commit();
@@ -184,6 +191,8 @@ final class FleetActionService
             $this->validateWaterTarget($targetRegion, $player, $gameUnitsToSend);
         }
 
+        $this->validateAirUnits($region, $targetRegion, $player, $gameUnitsToSend);
+
         $fleet = $this->fleetFactory->createForPlayer(
             $player,
             $region,
@@ -199,6 +208,43 @@ final class FleetActionService
         $this->waterRegionUpdaterService->releaseIfUnoccupied($region);
 
         return $fleet;
+    }
+
+    /**
+     * Aircraft take off from an Airfield and only move to regions with an Airfield. An attack needs no
+     * Airfield on the target region, as aircraft never stay there but fly back to their source region.
+     *
+     * @param non-empty-list<array{gameUnit: GameUnit, amount: int}> $gameUnitsToSend
+     */
+    private function validateAirUnits(
+        WorldRegion $region,
+        WorldRegion $targetRegion,
+        Player $player,
+        array $gameUnitsToSend
+    ): void {
+        $hasAirUnits = false;
+        foreach ($gameUnitsToSend as $gameUnitData) {
+            if ($gameUnitData['gameUnit']->getGameUnitCategory() === GameUnitCategory::AIR_UNITS) {
+                $hasAirUnits = true;
+                break;
+            }
+        }
+
+        if ($hasAirUnits === false) {
+            return;
+        }
+
+        if ($region->getLeveledUnit(GameUnitEnum::AIRFIELD) === null) {
+            throw new RuntimeException(
+                'Aircraft cannot take off: this region has no Airfield. Build an Airfield here to move or '
+                . 'attack with these aircraft.'
+            );
+        }
+
+        $isAttack = $targetRegion->getPlayer() !== null && $targetRegion->getPlayer()->getId() !== $player->getId();
+        if (!$isAttack && $targetRegion->getLeveledUnit(GameUnitEnum::AIRFIELD) === null) {
+            throw new RuntimeException('Aircraft can only be moved to a region with an Airfield!');
+        }
     }
 
     /**
@@ -264,6 +310,18 @@ final class FleetActionService
         }
 
         return min($travelSpeeds);
+    }
+
+    private function hasAirUnits(Fleet $fleet): bool
+    {
+        foreach ($fleet->getFleetUnits() as $fleetUnit) {
+            $category = $this->gameUnitRegistry->find($fleetUnit->getGameUnit())->getGameUnitCategory();
+            if ($category === GameUnitCategory::AIR_UNITS) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function addFleetUnitsToWorldRegion(Fleet $fleet, WorldRegion $worldRegion): void

@@ -11,6 +11,7 @@ use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
@@ -195,6 +196,94 @@ class FleetActionServiceTest extends TestCase
 
         self::assertSame($releasedSea, $region);
         self::assertSame($this->player, $releasedSea->getPlayer());
+    }
+
+    public function testSendRejectsAircraftFromRegionWithoutAirfield(): void
+    {
+        $source = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 0, 0, $this->player);
+        WorldRegionStackableUnit::create($source, GameUnitEnum::FIGHTER, 2);
+        $enemyRegion = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 2, 0, $this->createEnemy());
+
+        $this->expectExceptionMessage('Aircraft cannot take off');
+
+        $this->createService()->sendGameUnits(
+            $source,
+            $enemyRegion,
+            $this->player,
+            [GameUnitEnum::FIGHTER->value => '2']
+        );
+    }
+
+    public function testSendRejectsAircraftToOwnRegionWithoutAirfield(): void
+    {
+        $source = $this->createAirfieldRegion(0, 0);
+        WorldRegionStackableUnit::create($source, GameUnitEnum::FIGHTER, 2);
+        $target = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 2, 0, $this->player);
+
+        $this->expectExceptionMessage('Aircraft can only be moved to a region with an Airfield!');
+
+        $this->createService()->sendGameUnits($source, $target, $this->player, [GameUnitEnum::FIGHTER->value => '2']);
+    }
+
+    public function testSendAircraftBetweenAirfields(): void
+    {
+        $source = $this->createAirfieldRegion(0, 0);
+        WorldRegionStackableUnit::create($source, GameUnitEnum::FIGHTER, 2);
+        $target = $this->createAirfieldRegion(2, 0);
+
+        $fleet = $this->createService()->sendGameUnits(
+            $source,
+            $target,
+            $this->player,
+            [GameUnitEnum::FIGHTER->value => '2']
+        );
+
+        self::assertSame($target, $fleet->getTargetWorldRegion());
+    }
+
+    public function testAttackWithAircraftNeedsNoAirfieldOnTarget(): void
+    {
+        $source = $this->createAirfieldRegion(0, 0);
+        WorldRegionStackableUnit::create($source, GameUnitEnum::FIGHTER, 2);
+        $enemyRegion = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 2, 0, $this->createEnemy());
+
+        $fleet = $this->createService()->sendGameUnits(
+            $source,
+            $enemyRegion,
+            $this->player,
+            [GameUnitEnum::FIGHTER->value => '2']
+        );
+
+        self::assertSame($enemyRegion, $fleet->getTargetWorldRegion());
+    }
+
+    public function testReinforceRejectsAircraftWhenTargetLostItsAirfield(): void
+    {
+        $source = $this->createAirfieldRegion(0, 0);
+        $target = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 2, 0, $this->player);
+        $fleet = $this->createFleet($source, $target, time());
+        $fleet->getFleetUnits()->add(FleetUnit::createForFleet($fleet, GameUnitEnum::FIGHTER, 2));
+
+        $this->expectExceptionMessage('Aircraft cannot land');
+
+        $this->createService()->reinforce(1, $this->player);
+    }
+
+    private function createAirfieldRegion(int $x, int $y): WorldRegion
+    {
+        $region = $this->createRegion(WorldRegion::TYPE_GRASSLAND, $x, $y, $this->player);
+        WorldRegionLeveledUnit::create($region, GameUnitEnum::AIRFIELD, 1, 6000);
+
+        return $region;
+    }
+
+    private function createEnemy(): Player
+    {
+        $enemy = new Player();
+        $enemy->setId(2);
+        $enemy->setWorld($this->world);
+
+        return $enemy;
     }
 
     private function createRegion(string $type, int $x, int $y, ?Player $player): WorldRegion

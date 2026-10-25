@@ -18,6 +18,7 @@ use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -61,7 +62,8 @@ class BattleUpdaterServiceTest extends TestCase
             $leveledUnitRepository,
             $this->createMock(ConstructionRepository::class),
             $this->createMock(PlayerRepository::class),
-            $this->createWaterRegionUpdaterService()
+            $this->createWaterRegionUpdaterService(),
+            new GameUnitRegistry()
         );
 
         $service->updateBattleLost($fleet, [], [$survivingSoldiers, $survivingBarrack]);
@@ -75,6 +77,7 @@ class BattleUpdaterServiceTest extends TestCase
         $defenderConstruction = Construction::create($region, new Player(), GameUnitEnum::SOLDIER, 10, 60);
 
         $fleet = new Fleet();
+        $fleet->setWorldRegion(new WorldRegion());
         $fleet->setTargetWorldRegion($region);
         $fleet->setPlayer(new Player());
 
@@ -89,10 +92,59 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(WorldRegionLeveledUnitRepository::class),
             $constructionRepository,
             $this->createMock(PlayerRepository::class),
-            $this->createWaterRegionUpdaterService()
+            $this->createWaterRegionUpdaterService(),
+            new GameUnitRegistry()
         );
 
         $service->updateBattleWon($fleet, []);
+    }
+
+    public function testBattleWonReturnsAircraftToSourceRegion(): void
+    {
+        $attacker = new Player();
+        $source = new WorldRegion();
+        $source->setPlayer($attacker);
+        $sourceFighters = WorldRegionStackableUnit::create($source, GameUnitEnum::FIGHTER, 3);
+        $target = $this->createOwnedRegion();
+
+        $fleet = new Fleet();
+        $fleet->setPlayer($attacker);
+        $fleet->setWorldRegion($source);
+        $fleet->setTargetWorldRegion($target);
+        $fighters = FleetUnit::createForFleet($fleet, GameUnitEnum::FIGHTER, 2);
+        $soldiers = FleetUnit::createForFleet($fleet, GameUnitEnum::SOLDIER, 10);
+
+        $this->createServiceForFleet(
+            $this->createMock(FleetRepository::class),
+            $this->createMock(FleetUnitRepository::class)
+        )->updateBattleWon($fleet, [$fighters, $soldiers]);
+
+        self::assertSame(5, $sourceFighters->getAmount());
+        self::assertSame($attacker, $target->getPlayer());
+        $targetUnits = $target->getWorldRegionStackableUnits()->toArray();
+        self::assertCount(1, $targetUnits);
+        self::assertSame(GameUnitEnum::SOLDIER, $targetUnits[0]->getGameUnit());
+    }
+
+    public function testBattleWonKeepsAircraftOnTargetWhenSourceRegionIsLost(): void
+    {
+        $attacker = new Player();
+        $source = $this->createOwnedRegion();
+        $target = $this->createOwnedRegion();
+
+        $fleet = new Fleet();
+        $fleet->setPlayer($attacker);
+        $fleet->setWorldRegion($source);
+        $fleet->setTargetWorldRegion($target);
+        $fighters = FleetUnit::createForFleet($fleet, GameUnitEnum::FIGHTER, 2);
+
+        $this->createServiceForFleet(
+            $this->createMock(FleetRepository::class),
+            $this->createMock(FleetUnitRepository::class)
+        )->updateBattleWon($fleet, [$fighters]);
+
+        self::assertCount(0, $source->getWorldRegionStackableUnits());
+        self::assertCount(1, $target->getWorldRegionStackableUnits());
     }
 
     public function testBattleLostKeepsSurvivingAttackersInFleet(): void
@@ -144,6 +196,7 @@ class BattleUpdaterServiceTest extends TestCase
         $region->setPlayer($defender);
 
         $fleet = new Fleet();
+        $fleet->setWorldRegion(new WorldRegion());
         $fleet->setTargetWorldRegion($region);
         $fleet->setPlayer($attacker);
 
@@ -167,6 +220,7 @@ class BattleUpdaterServiceTest extends TestCase
         $region->setPlayer($defender);
 
         $fleet = new Fleet();
+        $fleet->setWorldRegion(new WorldRegion());
         $fleet->setTargetWorldRegion($region);
         $fleet->setPlayer($attacker);
 
@@ -211,7 +265,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(WorldRegionLeveledUnitRepository::class),
             $this->createMock(ConstructionRepository::class),
             $playerRepository,
-            $this->createWaterRegionUpdaterService()
+            $this->createWaterRegionUpdaterService(),
+            new GameUnitRegistry()
         );
     }
 
@@ -227,7 +282,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(WorldRegionLeveledUnitRepository::class),
             $this->createMock(ConstructionRepository::class),
             $this->createMock(PlayerRepository::class),
-            $this->createWaterRegionUpdaterService()
+            $this->createWaterRegionUpdaterService(),
+            new GameUnitRegistry()
         );
     }
 
@@ -312,7 +368,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(WorldRegionLeveledUnitRepository::class),
             $this->createMock(ConstructionRepository::class),
             $this->createMock(PlayerRepository::class),
-            $this->createWaterRegionUpdaterService()
+            $this->createWaterRegionUpdaterService(),
+            new GameUnitRegistry()
         );
     }
 }

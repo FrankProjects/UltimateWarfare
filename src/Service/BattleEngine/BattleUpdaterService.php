@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\BattleEngine;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\FleetUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
@@ -13,6 +14,7 @@ use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -30,6 +32,7 @@ final class BattleUpdaterService
     private ConstructionRepository $constructionRepository;
     private PlayerRepository $playerRepository;
     private WaterRegionUpdaterService $waterRegionUpdaterService;
+    private GameUnitRegistry $gameUnitRegistry;
 
     public function __construct(
         FleetRepository $fleetRepository,
@@ -39,7 +42,8 @@ final class BattleUpdaterService
         WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
         ConstructionRepository $constructionRepository,
         PlayerRepository $playerRepository,
-        WaterRegionUpdaterService $waterRegionUpdaterService
+        WaterRegionUpdaterService $waterRegionUpdaterService,
+        GameUnitRegistry $gameUnitRegistry
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
@@ -49,6 +53,7 @@ final class BattleUpdaterService
         $this->constructionRepository = $constructionRepository;
         $this->playerRepository = $playerRepository;
         $this->waterRegionUpdaterService = $waterRegionUpdaterService;
+        $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
     /**
@@ -70,15 +75,35 @@ final class BattleUpdaterService
             $this->constructionRepository->remove($construction);
         }
 
+        // Aircraft never stay on the conquered region, they fly back to the source region when it is still yours
+        $sourceWorldRegion = $fleet->getWorldRegion();
+        $canReturnToSource = $sourceWorldRegion->getPlayer() === $fleet->getPlayer();
         foreach ($attackerGameUnits as $fleetUnit) {
-            $worldRegionStackableUnit = WorldRegionStackableUnit::create(
-                $targetWorldRegion,
-                $fleetUnit->getGameUnit(),
-                $fleetUnit->getAmount()
-            );
-            $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
+            $category = $this->gameUnitRegistry->find($fleetUnit->getGameUnit())->getGameUnitCategory();
+            $worldRegion = $canReturnToSource && $category === GameUnitCategory::AIR_UNITS
+                ? $sourceWorldRegion
+                : $targetWorldRegion;
+            $this->addUnitsToWorldRegion($worldRegion, $fleetUnit);
         }
         $this->fleetRepository->remove($fleet);
+    }
+
+    private function addUnitsToWorldRegion(WorldRegion $worldRegion, FleetUnit $fleetUnit): void
+    {
+        foreach ($worldRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+            if ($worldRegionStackableUnit->getGameUnit() === $fleetUnit->getGameUnit()) {
+                $worldRegionStackableUnit->setAmount($worldRegionStackableUnit->getAmount() + $fleetUnit->getAmount());
+                $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
+                return;
+            }
+        }
+
+        $worldRegionStackableUnit = WorldRegionStackableUnit::create(
+            $worldRegion,
+            $fleetUnit->getGameUnit(),
+            $fleetUnit->getAmount()
+        );
+        $this->worldRegionStackableUnitRepository->save($worldRegionStackableUnit);
     }
 
     /**

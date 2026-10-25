@@ -539,6 +539,14 @@ class FleetManager {
         }
 
         if (result.hasWon) {
+            // Aircraft fly back to the source region after a won battle
+            if (result.sourceRegionUnits) {
+                this.updateRegionUnits(result.sourceRegionId, result.sourceRegionUnits);
+                if (window.WorldBuild) {
+                    WorldBuild.invalidateCache(result.sourceRegionId);
+                }
+            }
+
             // Other fleets heading to the conquered region can now reinforce it
             this.fleets.forEach(f => {
                 if (f.targetRegionId === result.regionId) {
