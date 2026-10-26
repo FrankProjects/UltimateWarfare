@@ -40,6 +40,7 @@ final class Bomber extends GameUnit
                 airBattleStats: new AirBattleStats(attack: 100, attackSpeed: 150, defence: 150, defenceSpeed: 150),
                 groundBattleStats: new GroundBattleStats(attack: 2500, attackSpeed: 60),
             ),
+            population: 4,
         );
     }
 

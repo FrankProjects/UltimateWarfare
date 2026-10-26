@@ -36,6 +36,7 @@ final class Soldier extends GameUnit
                 travelSpeed: 100,
                 groundBattleStats: new GroundBattleStats(attack: 36, attackSpeed: 100, defence: 14, defenceSpeed: 110),
             ),
+            population: 1,
         );
     }
 

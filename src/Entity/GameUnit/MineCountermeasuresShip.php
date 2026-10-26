@@ -40,6 +40,7 @@ final class MineCountermeasuresShip extends GameUnit
                 airBattleStats: new AirBattleStats(defence: 100, defenceSpeed: 50),
                 seaBattleStats: new SeaBattleStats(attack: 1500, attackSpeed: 140, defence: 1500, defenceSpeed: 140),
             ),
+            population: 20,
         );
     }
 

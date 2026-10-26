@@ -41,6 +41,7 @@ final class StrategicBomber extends GameUnit
                 airBattleStats: new AirBattleStats(attack: 200, attackSpeed: 100, defence: 250, defenceSpeed: 100),
                 groundBattleStats: new GroundBattleStats(attack: 12000, attackSpeed: 50),
             ),
+            population: 10,
         );
     }
 

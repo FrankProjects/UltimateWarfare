@@ -41,6 +41,7 @@ final class Destroyer extends GameUnit
                 seaBattleStats: new SeaBattleStats(attack: 5000, attackSpeed: 150, defence: 5500, defenceSpeed: 160),
                 groundBattleStats: new GroundBattleStats(attack: 600, attackSpeed: 40),
             ),
+            population: 40,
         );
     }
 

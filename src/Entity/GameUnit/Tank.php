@@ -41,6 +41,7 @@ final class Tank extends GameUnit
                     defenceSpeed: 135,
                 ),
             ),
+            population: 4,
         );
     }
 

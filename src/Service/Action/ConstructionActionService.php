@@ -71,6 +71,7 @@ final class ConstructionActionService
         $priceCash = 0;
         $priceWood = 0;
         $priceSteel = 0;
+        $pricePopulation = 0;
         $totalBuild = 0;
         /** @var list<array{gameUnit: GameUnit, amount: int, duration: int}> $queue */
         $queue = [];
@@ -114,6 +115,7 @@ final class ConstructionActionService
             $priceCash = $priceCash + ($costMultiplier * $gameUnit->getCost()->getCash());
             $priceWood = $priceWood + ($costMultiplier * $gameUnit->getCost()->getWood());
             $priceSteel = $priceSteel + ($costMultiplier * $gameUnit->getCost()->getSteel());
+            $pricePopulation = $pricePopulation + ($costMultiplier * $gameUnit->getPopulation());
 
             if ($gameUnitCategory === GameUnitCategory::BUILDINGS) {
                 $totalBuild = $totalBuild + $amount;
@@ -143,6 +145,9 @@ final class ConstructionActionService
         if ($priceSteel > $resources->getSteel()) {
             throw new RuntimeException("You don't have enough steel to build that.");
         }
+        if ($pricePopulation > $region->getPopulation()) {
+            throw new RuntimeException("You don't have enough people in this region to train that.");
+        }
 
         if (count($queue) === 0) {
             throw new RuntimeException("You didn't select anything to build.");
@@ -154,6 +159,13 @@ final class ConstructionActionService
 
         $player->setResources($resources);
         $this->playerRepository->save($player);
+
+        // Units are crewed by people from the region they are trained in, which lowers the population income
+        if ($pricePopulation > 0) {
+            $region->setPopulation($region->getPopulation() - $pricePopulation);
+            $this->worldRegionRepository->save($region);
+            $this->incomeUpdaterService->updateIncomeForPlayer($player);
+        }
 
         // Constructions are only created once validation passed, as creating one adds it to the region
         foreach ($queue as $item) {

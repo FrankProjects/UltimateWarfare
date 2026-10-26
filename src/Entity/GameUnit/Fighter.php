@@ -40,6 +40,7 @@ final class Fighter extends GameUnit
                 airBattleStats: new AirBattleStats(attack: 1200, attackSpeed: 300, defence: 1300, defenceSpeed: 310),
                 groundBattleStats: new GroundBattleStats(attack: 40, attackSpeed: 100),
             ),
+            population: 1,
         );
     }
 

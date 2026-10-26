@@ -37,6 +37,7 @@ final class MineSweeper extends GameUnit
                 travelSpeed: 200,
                 groundBattleStats: new GroundBattleStats(attack: 15, attackSpeed: 100, defence: 10, defenceSpeed: 100),
             ),
+            population: 2,
         );
     }
 

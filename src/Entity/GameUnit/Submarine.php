@@ -39,6 +39,7 @@ final class Submarine extends GameUnit
                 seaBattleStats: new SeaBattleStats(attack: 15000, attackSpeed: 200, defence: 8000, defenceSpeed: 200),
             ),
             researchClass: SubmarineTechnologyResearch::class,
+            population: 50,
         );
     }
 

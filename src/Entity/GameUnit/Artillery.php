@@ -37,6 +37,7 @@ final class Artillery extends GameUnit
                 travelSpeed: 200,
                 groundBattleStats: new GroundBattleStats(attack: 300, attackSpeed: 90, defence: 150, defenceSpeed: 90),
             ),
+            population: 4,
         );
     }
 

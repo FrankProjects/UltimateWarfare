@@ -41,6 +41,7 @@ final class Cruiser extends GameUnit
                 seaBattleStats: new SeaBattleStats(attack: 12000, attackSpeed: 120, defence: 13000, defenceSpeed: 130),
                 groundBattleStats: new GroundBattleStats(attack: 3000, attackSpeed: 50),
             ),
+            population: 80,
         );
     }
 

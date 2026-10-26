@@ -23,6 +23,7 @@
         wood: 'resource_wood.svg',
         steel: 'resource_steel.svg',
         food: 'resource_grain_wheat.svg',
+        population: 'population.svg',
         time: 'time.svg'
     };
 
@@ -128,7 +129,8 @@
             { key: 'costCash', icon: 'resource_cash.svg', label: 'Cash' },
             { key: 'costWood', icon: 'resource_wood.svg', label: 'Wood' },
             { key: 'costSteel', icon: 'resource_steel.svg', label: 'Steel' },
-            { key: 'costFood', icon: 'resource_grain_wheat.svg', label: 'Food' }
+            { key: 'costFood', icon: 'resource_grain_wheat.svg', label: 'Food' },
+            { key: 'costPopulation', icon: 'population.svg', label: 'People' }
         ];
         costItems.forEach(function (item) {
             if (unit[item.key] > 0) {
@@ -309,6 +311,7 @@
         currentBuildData = {
             gameUnitCategory: { id: category.id, name: category.name },
             spaceLeft: cached.data.spaceLeft,
+            population: cached.data.population,
             units: category.units,
             // Seconds since the data was fetched, to correct construction countdowns
             ageSeconds: Math.floor((Date.now() - cached.timestamp) / 1000)
@@ -328,6 +331,10 @@
         if (data.gameUnitCategory.id === 1) {
             spaceInfo.style.display = 'block';
             spaceInfo.innerHTML = 'You have <span class="text-positive">' + data.spaceLeft + '</span> building space left on this region.';
+        } else if (data.units.some(function (unit) { return unit.costPopulation > 0; })) {
+            // Units are crewed by people from this region's population
+            spaceInfo.style.display = 'block';
+            spaceInfo.innerHTML = 'You have <span class="text-positive">' + data.population.toLocaleString() + '</span> people available to train on this region.';
         } else {
             spaceInfo.style.display = 'none';
         }
@@ -420,7 +427,9 @@
                             : statusHtml) +
                     '</div>' +
                 '</div>' +
-                costRowHtml([['cash', costCash], ['wood', costWood], ['steel', costSteel], ['time', timeStr]]) +
+                costRowHtml([['cash', costCash], ['wood', costWood], ['steel', costSteel]]
+                    .concat(unit.costPopulation > 0 ? [['population', unit.costPopulation]] : [])
+                    .concat([['time', timeStr]])) +
                 actionHtml;
 
             container.appendChild(card);

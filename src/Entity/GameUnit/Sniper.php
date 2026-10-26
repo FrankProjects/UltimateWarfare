@@ -32,6 +32,7 @@ final class Sniper extends GameUnit
             upkeep: new Upkeep(cash: 2, food: 2, wood: 0, steel: 0),
             battleStats: new BattleStats(health: 0, armor: 0),
             researchClass: AdvancedOpticsResearch::class,
+            population: 1,
         );
     }
 

@@ -24,7 +24,7 @@
                 </div>
                 <div class="guide-unit-description">{{ gameUnit.description }}</div>
                 <div class="guide-unit-details">
-                    {{ cost_section(gameUnit.cost) }}
+                    {{ cost_section(gameUnit.cost, gameUnit.population) }}
                     {{ income_section(gameUnit.income) }}
                     {{ upkeep_section(gameUnit.upkeep) }}
                     {{ build_time(gameUnit.timestamp) }}

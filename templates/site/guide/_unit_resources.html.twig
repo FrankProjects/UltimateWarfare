@@ -11,9 +11,9 @@
     {% endif %}
 {% endmacro %}
 
-{% macro cost_section(cost) %}
+{% macro cost_section(cost, population = 0) %}
     {% from _self import resource_row %}
-    {% if cost.cash != 0 or cost.wood != 0 or cost.steel != 0 or cost.food != 0 %}
+    {% if cost.cash != 0 or cost.wood != 0 or cost.steel != 0 or cost.food != 0 or population != 0 %}
         <div class="guide-unit-section">
             <div class="guide-section-label">Cost</div>
             <div class="guide-resource-list">
@@ -21,6 +21,7 @@
                 {{ resource_row('resource_wood.svg', cost.wood, '') }}
                 {{ resource_row('resource_steel.svg', cost.steel, '') }}
                 {{ resource_row('resource_grain_wheat.svg', cost.food, '') }}
+                {{ resource_row('population.svg', population, '') }}
             </div>
         </div>
     {% endif %}

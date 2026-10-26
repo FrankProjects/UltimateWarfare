@@ -30,6 +30,7 @@ abstract class GameUnit
         private readonly Upkeep $upkeep,
         private readonly BattleStats $battleStats,
         private readonly ?string $researchClass = null,
+        private readonly int $population = 0,
     ) {
     }
 
@@ -93,6 +94,14 @@ abstract class GameUnit
     public function getUpkeep(): Upkeep
     {
         return $this->upkeep;
+    }
+
+    /**
+     * The people this unit takes from the population of the region it is trained in
+     */
+    public function getPopulation(): int
+    {
+        return $this->population;
     }
 
     public function getBattleStats(): BattleStats

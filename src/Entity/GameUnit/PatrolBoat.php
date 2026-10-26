@@ -41,6 +41,7 @@ final class PatrolBoat extends GameUnit
                 seaBattleStats: new SeaBattleStats(attack: 800, attackSpeed: 160, defence: 900, defenceSpeed: 170),
                 groundBattleStats: new GroundBattleStats(attack: 60, attackSpeed: 40),
             ),
+            population: 10,
         );
     }
 

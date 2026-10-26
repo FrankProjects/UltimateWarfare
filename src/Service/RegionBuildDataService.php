@@ -193,6 +193,7 @@ final class RegionBuildDataService
                     'costWood' => $gameUnit->getCost()->getWood(),
                     'costSteel' => $gameUnit->getCost()->getSteel(),
                     'costFood' => $gameUnit->getCost()->getFood(),
+                    'costPopulation' => $gameUnit->getPopulation(),
                     'incomeCash' => $gameUnit->getIncome()->getCash(),
                     'incomeWood' => $gameUnit->getIncome()->getWood(),
                     'incomeSteel' => $gameUnit->getIncome()->getSteel(),
@@ -227,6 +228,7 @@ final class RegionBuildDataService
             'regionId' => $worldRegion->getId(),
             'regionType' => $worldRegion->getType(),
             'spaceLeft' => $spaceLeft,
+            'population' => $worldRegion->getPopulation(),
             'categories' => $categories,
             'units' => $this->gameUnitRegistry->getRegionUnitSummary($worldRegion),
         ];
