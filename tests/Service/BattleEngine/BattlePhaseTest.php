@@ -94,6 +94,45 @@ class BattlePhaseTest extends TestCase
         );
     }
 
+    public function testLowMoraleWeakensAttackers(): void
+    {
+        $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 10);
+        $defendingSoldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 100);
+
+        $battlePhase = $this->startGroundPhase(
+            [$attackingTanks],
+            [$defendingSoldiers],
+            strengthMultipliers: [spl_object_id($attackingTanks) => 0.5]
+        );
+
+        // Half of the 3800 attack power, as with a defensive network halving the damage
+        self::assertSame(53, $defendingSoldiers->getAmount());
+        self::assertContains('Attacking Tanks fire with 1900 attack power', $battlePhase->getBattleLog());
+    }
+
+    public function testLowMoraleWeakensDefendingUnitsButNotBuildings(): void
+    {
+        $soldiers = $this->createStackableUnit(GameUnitEnum::SOLDIER, 100);
+        $bunker = WorldRegionLeveledUnit::create(new WorldRegion(), GameUnitEnum::BUNKER, 1, 1000);
+        $bunkerOnly = BattlePhase::factory(BattlePhase::GROUND_PHASE, [], [$bunker], new GameUnitRegistry());
+        $soldiersOnly = BattlePhase::factory(BattlePhase::GROUND_PHASE, [], [$soldiers], new GameUnitRegistry());
+
+        $battlePhase = BattlePhase::factory(
+            BattlePhase::GROUND_PHASE,
+            [],
+            [$soldiers, $bunker],
+            new GameUnitRegistry(),
+            1.0,
+            [spl_object_id($soldiers) => 0.5, spl_object_id($bunker) => 0.5]
+        );
+
+        self::assertGreaterThan(0, $bunkerOnly->getDefensePower());
+        self::assertSame(
+            intdiv($soldiersOnly->getDefensePower(), 2) + $bunkerOnly->getDefensePower(),
+            $battlePhase->getDefensePower()
+        );
+    }
+
     public function testLeveledBuildingWithoutPowerStillTakesDamage(): void
     {
         $attackingTanks = $this->createFleetUnit(GameUnitEnum::TANK, 10);
@@ -119,18 +158,21 @@ class BattlePhaseTest extends TestCase
     /**
      * @param FleetUnit[] $attackerGameUnits
      * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $defenderGameUnits
+     * @param array<int, float> $strengthMultipliers
      */
     private function startGroundPhase(
         array $attackerGameUnits,
         array $defenderGameUnits,
-        float $defenderDamageMultiplier = 1.0
+        float $defenderDamageMultiplier = 1.0,
+        array $strengthMultipliers = []
     ): BattlePhase {
         $battlePhase = BattlePhase::factory(
             BattlePhase::GROUND_PHASE,
             $attackerGameUnits,
             $defenderGameUnits,
             new GameUnitRegistry(),
-            $defenderDamageMultiplier
+            $defenderDamageMultiplier,
+            $strengthMultipliers
         );
         $battlePhase->startBattlePhase();
 

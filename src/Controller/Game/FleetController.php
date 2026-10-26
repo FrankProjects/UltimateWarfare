@@ -76,6 +76,7 @@ final class FleetController extends BaseGameController
                 'timeLeft' => max(0, $arriveTime - $currentTime),
                 'arriveAt' => date('Y-m-d H:i:s', $arriveTime),
                 'units' => $units,
+                'morale' => $fleet->getMorale(),
             ];
         }
 

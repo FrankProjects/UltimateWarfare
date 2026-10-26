@@ -47,6 +47,13 @@ abstract class BattlePhase implements IBattlePhase
     protected float $defenderDamageMultiplier;
 
     /**
+     * Factor on the power of a unit group from its morale, keyed by object id; 1.0 when missing
+     *
+     * @var array<int, float>
+     */
+    private array $strengthMultipliers;
+
+    /**
      * Power per unit group that was not enough for a whole death or health point, keyed by object id
      *
      * @var array<int, int>
@@ -56,31 +63,37 @@ abstract class BattlePhase implements IBattlePhase
     /**
      * @param FleetUnit[] $attackerGameUnits
      * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $defenderGameUnits
+     * @param array<int, float> $strengthMultipliers
      */
     private function __construct(
         string $name,
         array $attackerGameUnits,
         array $defenderGameUnits,
         GameUnitRegistry $gameUnitRegistry,
-        float $defenderDamageMultiplier = 1.0
+        float $defenderDamageMultiplier = 1.0,
+        array $strengthMultipliers = []
     ) {
         $this->name = $name;
         $this->attackerGameUnits = $attackerGameUnits;
         $this->defenderGameUnits = $defenderGameUnits;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->defenderDamageMultiplier = $defenderDamageMultiplier;
+        $this->strengthMultipliers = $strengthMultipliers;
     }
 
     /**
      * @param FleetUnit[] $attackerGameUnits
      * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $defenderGameUnits
+     * @param array<int, float> $strengthMultipliers Factor on the power of unit groups from their morale, keyed by
+     *                                               object id
      */
     public static function factory(
         string $battlePhaseName,
         array $attackerGameUnits,
         array $defenderGameUnits,
         GameUnitRegistry $gameUnitRegistry,
-        float $defenderDamageMultiplier = 1.0
+        float $defenderDamageMultiplier = 1.0,
+        array $strengthMultipliers = []
     ): BattlePhase {
         $className = "FrankProjects\\UltimateWarfare\\Service\\BattleEngine\\BattlePhase\\" . ucfirst($battlePhaseName);
         if (!class_exists($className) || is_subclass_of($className, __CLASS__) === false) {
@@ -92,7 +105,8 @@ abstract class BattlePhase implements IBattlePhase
             $attackerGameUnits,
             $defenderGameUnits,
             $gameUnitRegistry,
-            $defenderDamageMultiplier
+            $defenderDamageMultiplier,
+            $strengthMultipliers
         );
     }
 
@@ -505,17 +519,30 @@ abstract class BattlePhase implements IBattlePhase
 
     protected function getUnitAttackPower(FleetUnit $fleetUnit): int
     {
-        return $this->getUnitBattleStats($fleetUnit)->getAttack() * $fleetUnit->getAmount();
+        return $this->applyStrengthMultiplier(
+            $fleetUnit,
+            $this->getUnitBattleStats($fleetUnit)->getAttack() * $fleetUnit->getAmount()
+        );
     }
 
     protected function getUnitDefensePower(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): int
     {
-        // Leveled buildings contribute defence per level; stackable units per amount.
-        $multiplier = $defenderGameUnit instanceof WorldRegionLeveledUnit
-            ? $defenderGameUnit->getLevel()
-            : $defenderGameUnit->getAmount();
+        // Leveled buildings contribute defence per level and have no morale; stackable units per amount.
+        if ($defenderGameUnit instanceof WorldRegionLeveledUnit) {
+            return $this->getUnitBattleStats($defenderGameUnit)->getDefence() * $defenderGameUnit->getLevel();
+        }
 
-        return $this->getUnitBattleStats($defenderGameUnit)->getDefence() * $multiplier;
+        return $this->applyStrengthMultiplier(
+            $defenderGameUnit,
+            $this->getUnitBattleStats($defenderGameUnit)->getDefence() * $defenderGameUnit->getAmount()
+        );
+    }
+
+    private function applyStrengthMultiplier(FleetUnit|WorldRegionStackableUnit $gameUnit, int $power): int
+    {
+        $multiplier = $this->strengthMultipliers[spl_object_id($gameUnit)] ?? 1.0;
+
+        return $multiplier === 1.0 ? $power : (int) floor($power * $multiplier);
     }
 
     private function getBattlePhaseBattleStats(GameUnit $gameUnit): AbstractBattleStats

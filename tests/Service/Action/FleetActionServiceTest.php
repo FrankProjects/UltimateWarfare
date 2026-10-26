@@ -25,6 +25,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\Action\FleetActionService;
 use FrankProjects\UltimateWarfare\Service\FleetFactory;
 use FrankProjects\UltimateWarfare\Service\FleetRouteService;
+use FrankProjects\UltimateWarfare\Service\MoraleUpdaterService;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
@@ -263,6 +264,52 @@ class FleetActionServiceTest extends TestCase
         self::assertSame(600, $fleet->getTimestampArrive() - $fleet->getTimestamp());
     }
 
+    public function testFleetLeavesWithMoraleOfItsRegion(): void
+    {
+        $source = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 0, 0, $this->player);
+        $source->setMorale(70);
+        $source->setMoraleTimestamp(time());
+        WorldRegionStackableUnit::create($source, GameUnitEnum::SOLDIER, 10);
+        $target = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 1, 0, $this->player);
+
+        $fleet = $this->createService()->sendGameUnits(
+            $source,
+            $target,
+            $this->player,
+            [GameUnitEnum::SOLDIER->value => '5']
+        );
+
+        self::assertSame(70, $fleet->getMorale());
+        self::assertSame(70, $source->getMorale());
+    }
+
+    public function testReinforceAveragesMoraleByCrew(): void
+    {
+        $source = $this->createRegion(WorldRegion::TYPE_SAND, 0, 0, $this->player);
+        $target = $this->createRegion(WorldRegion::TYPE_SAND, 1, 0, $this->player);
+        $target->setMorale(100);
+        $target->setMoraleTimestamp(time());
+        WorldRegionStackableUnit::create($target, GameUnitEnum::CRUISER, 2);
+        $fleet = $this->createFleet($source, $target, time() - 1);
+        $fleet->setMorale(40);
+
+        $this->createService()->reinforce(1, $this->player);
+
+        self::assertSame(70, $target->getMorale());
+    }
+
+    public function testRecallTakesFleetMoraleIntoEmptyRegion(): void
+    {
+        $source = $this->createRegion(WorldRegion::TYPE_SAND, 0, 0, $this->player);
+        $target = $this->createRegion(WorldRegion::TYPE_SAND, 1, 0, $this->player);
+        $fleet = $this->createFleet($source, $target, time() + 600);
+        $fleet->setMorale(40);
+
+        $this->createService()->recall(1, $this->player);
+
+        self::assertSame(40, $source->getMorale());
+    }
+
     public function testSendRejectsTroopsToRegionNotConnectedToSource(): void
     {
         $source = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 0, 0, $this->player);
@@ -422,7 +469,8 @@ class FleetActionServiceTest extends TestCase
             $this->worldRegionRepository,
             $entityLockRepository,
             $waterRegionUpdaterService,
-            new FleetRouteService()
+            new FleetRouteService(),
+            new MoraleUpdaterService(new GameUnitRegistry())
         );
     }
 }

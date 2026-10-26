@@ -25,6 +25,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\BattleEngine\BattleUpdaterService;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
+use FrankProjects\UltimateWarfare\Service\MoraleUpdaterService;
 use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use PHPUnit\Framework\TestCase;
@@ -63,7 +64,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(ConstructionRepository::class),
             $this->createMock(PlayerRepository::class),
             $this->createWaterRegionUpdaterService(),
-            new GameUnitRegistry()
+            new GameUnitRegistry(),
+            new MoraleUpdaterService(new GameUnitRegistry())
         );
 
         $service->updateBattleLost($fleet, [], [$survivingSoldiers, $survivingBarrack]);
@@ -93,7 +95,8 @@ class BattleUpdaterServiceTest extends TestCase
             $constructionRepository,
             $this->createMock(PlayerRepository::class),
             $this->createWaterRegionUpdaterService(),
-            new GameUnitRegistry()
+            new GameUnitRegistry(),
+            new MoraleUpdaterService(new GameUnitRegistry())
         );
 
         $service->updateBattleWon($fleet, []);
@@ -124,6 +127,34 @@ class BattleUpdaterServiceTest extends TestCase
         $targetUnits = $target->getWorldRegionStackableUnits()->toArray();
         self::assertCount(1, $targetUnits);
         self::assertSame(GameUnitEnum::SOLDIER, $targetUnits[0]->getGameUnit());
+    }
+
+    public function testBattleWonGivesConqueredRegionTheFleetMoraleAndMergesReturningAircraft(): void
+    {
+        $attacker = new Player();
+        $source = new WorldRegion();
+        $source->setPlayer($attacker);
+        $source->setMorale(100);
+        $source->setMoraleTimestamp(time());
+        WorldRegionStackableUnit::create($source, GameUnitEnum::FIGHTER, 2);
+        $target = $this->createOwnedRegion();
+
+        $fleet = new Fleet();
+        $fleet->setPlayer($attacker);
+        $fleet->setWorldRegion($source);
+        $fleet->setTargetWorldRegion($target);
+        $fleet->setMorale(60);
+        $fighters = FleetUnit::createForFleet($fleet, GameUnitEnum::FIGHTER, 2);
+        $soldiers = FleetUnit::createForFleet($fleet, GameUnitEnum::SOLDIER, 10);
+
+        $this->createServiceForFleet(
+            $this->createMock(FleetRepository::class),
+            $this->createMock(FleetUnitRepository::class)
+        )->updateBattleWon($fleet, [$fighters, $soldiers]);
+
+        self::assertSame(60, $target->getMorale());
+        // 2 Fighters at 100 and 2 returning Fighters at 60
+        self::assertSame(80, $source->getMorale());
     }
 
     public function testBattleWonKeepsAircraftOnTargetWhenSourceRegionIsLost(): void
@@ -266,7 +297,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(ConstructionRepository::class),
             $playerRepository,
             $this->createWaterRegionUpdaterService(),
-            new GameUnitRegistry()
+            new GameUnitRegistry(),
+            new MoraleUpdaterService(new GameUnitRegistry())
         );
     }
 
@@ -283,7 +315,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(ConstructionRepository::class),
             $this->createMock(PlayerRepository::class),
             $this->createWaterRegionUpdaterService(),
-            new GameUnitRegistry()
+            new GameUnitRegistry(),
+            new MoraleUpdaterService(new GameUnitRegistry())
         );
     }
 
@@ -369,7 +402,8 @@ class BattleUpdaterServiceTest extends TestCase
             $this->createMock(ConstructionRepository::class),
             $this->createMock(PlayerRepository::class),
             $this->createWaterRegionUpdaterService(),
-            new GameUnitRegistry()
+            new GameUnitRegistry(),
+            new MoraleUpdaterService(new GameUnitRegistry())
         );
     }
 }

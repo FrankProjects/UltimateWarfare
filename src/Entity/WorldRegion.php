@@ -34,6 +34,8 @@ class WorldRegion
     private ?string $name;
     private int $space = 1000;
     private int $population = 0;
+    private int $morale = 100;
+    private int $moraleTimestamp = 0;
     private World $world;
     private ?Player $player = null;
 
@@ -210,6 +212,29 @@ class WorldRegion
     public function getPopulation(): int
     {
         return $this->population;
+    }
+
+    /**
+     * Morale as it was at the morale timestamp; use MoraleUpdaterService::project() for the current value
+     */
+    public function getMorale(): int
+    {
+        return $this->morale;
+    }
+
+    public function setMorale(int $morale): void
+    {
+        $this->morale = $morale;
+    }
+
+    public function getMoraleTimestamp(): int
+    {
+        return $this->moraleTimestamp;
+    }
+
+    public function setMoraleTimestamp(int $moraleTimestamp): void
+    {
+        $this->moraleTimestamp = $moraleTimestamp;
     }
 
     /**

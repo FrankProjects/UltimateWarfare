@@ -33,6 +33,7 @@ final class BattleEngine
     private PlayerStateUpdaterService $playerStateUpdaterService;
     private EntityLockRepository $entityLockRepository;
     private BattleReinforcementService $battleReinforcementService;
+    private MoraleUpdaterService $moraleUpdaterService;
 
     public function __construct(
         BattleUpdaterService $battleUpdaterService,
@@ -43,7 +44,8 @@ final class BattleEngine
         BattleSummaryRepository $battleSummaryRepository,
         PlayerStateUpdaterService $playerStateUpdaterService,
         EntityLockRepository $entityLockRepository,
-        BattleReinforcementService $battleReinforcementService
+        BattleReinforcementService $battleReinforcementService,
+        MoraleUpdaterService $moraleUpdaterService
     ) {
         $this->battleUpdaterService = $battleUpdaterService;
         $this->battleReportCreator = $battleReportCreator;
@@ -54,6 +56,7 @@ final class BattleEngine
         $this->playerStateUpdaterService = $playerStateUpdaterService;
         $this->entityLockRepository = $entityLockRepository;
         $this->battleReinforcementService = $battleReinforcementService;
+        $this->moraleUpdaterService = $moraleUpdaterService;
     }
 
     /**
@@ -85,11 +88,13 @@ final class BattleEngine
 
         $this->ensureCanAttack($fleet);
 
+        $now = time();
         $attackerGameUnits = $fleet->getFleetUnits()->toArray();
+        $regionDefenderGameUnits = $targetWorldRegion->getWorldRegionStackableUnits()->toArray();
         // Defenders are both stackable units and leveled buildings present in the region.
         $defenderGameUnits = array_merge(
-            $fleet->getTargetWorldRegion()->getWorldRegionStackableUnits()->toArray(),
-            $fleet->getTargetWorldRegion()->getWorldRegionLeveledUnits()->toArray()
+            $regionDefenderGameUnits,
+            $targetWorldRegion->getWorldRegionLeveledUnits()->toArray()
         );
         $defenderDamageMultiplier = $this->getDefenderDamageMultiplier(
             $fleet->getTargetWorldRegion()->getPlayer()
@@ -110,6 +115,17 @@ final class BattleEngine
             $reinforcementGameUnits
         );
 
+        // Battle phases change the amounts in place, so count the crews before they start
+        $attackerStartCrew = $this->moraleUpdaterService->getCrew($attackerGameUnits);
+        $regionDefenderStartCrew = $this->moraleUpdaterService->getCrew($regionDefenderGameUnits);
+        $strengthMultipliers = $this->getStrengthMultipliers(
+            $fleet,
+            $attackerGameUnits,
+            $regionDefenderGameUnits,
+            $reinforcements,
+            $now
+        );
+
         $battlePhaseResults = [];
         foreach ($this->getBattlePhases() as $battlePhaseName) {
             $battlePhase = BattlePhase::factory(
@@ -117,7 +133,8 @@ final class BattleEngine
                 $attackerGameUnits,
                 $defenderGameUnits,
                 $this->gameUnitRegistry,
-                $defenderDamageMultiplier
+                $defenderDamageMultiplier,
+                $strengthMultipliers
             );
             $battlePhase->startBattlePhase();
 
@@ -129,15 +146,161 @@ final class BattleEngine
 
         $battleResults = new BattleResult(
             $battlePhaseResults,
-            $this->battleReinforcementService->getBattleLog($reinforcements)
+            [
+                ...$this->getMoraleBattleLog($fleet, $regionDefenderGameUnits, $now),
+                ...$this->battleReinforcementService->getBattleLog($reinforcements),
+                ...$this->getReinforcementMoraleBattleLog($reinforcements, $now),
+            ]
         );
         $battleResults->setLostUnits(
             $battleLossCalculator->calculate($attackerGameUnits, $defenderGameUnits, $battleResults->hasWon())
         );
 
+        // Before processing the results, as the surviving attackers take their morale into the region they join
+        $this->moraleUpdaterService->applyAttackerLoss(
+            $fleet,
+            $attackerStartCrew,
+            $attackerStartCrew - $this->moraleUpdaterService->getCrew($attackerGameUnits),
+            $battleResults->hasWon()
+        );
+        if (!$battleResults->hasWon()) {
+            $survivingRegionDefenders = array_filter(
+                $regionDefenderGameUnits,
+                fn (WorldRegionStackableUnit $stackableUnit): bool => in_array($stackableUnit, $defenderGameUnits, true)
+            );
+            $this->moraleUpdaterService->applyDefenderLoss(
+                $targetWorldRegion,
+                $regionDefenderStartCrew,
+                $regionDefenderStartCrew - $this->moraleUpdaterService->getCrew($survivingRegionDefenders),
+                $now
+            );
+        }
+        $this->applyReinforcementMoraleLoss($reinforcements, $defenderGameUnits, $now);
+
         $this->processResults($battleResults, $fleet, $attackerGameUnits, $defenderGameUnits, $reinforcements);
 
         return $battleResults;
+    }
+
+    /**
+     * Each unit group fights with the morale of the fleet or region it belongs to; reinforcements with that of
+     * the region they come from
+     *
+     * @param FleetUnit[] $attackerGameUnits
+     * @param WorldRegionStackableUnit[] $regionDefenderGameUnits
+     * @param Reinforcement[] $reinforcements
+     *
+     * @return array<int, float> Keyed by object id
+     */
+    private function getStrengthMultipliers(
+        Fleet $fleet,
+        array $attackerGameUnits,
+        array $regionDefenderGameUnits,
+        array $reinforcements,
+        int $now
+    ): array {
+        $strengthMultipliers = [];
+        $attackerMultiplier = $this->moraleUpdaterService->getStrengthMultiplier($fleet->getMorale());
+        foreach ($attackerGameUnits as $fleetUnit) {
+            $strengthMultipliers[spl_object_id($fleetUnit)] = $attackerMultiplier;
+        }
+
+        $defenderMultiplier = $this->moraleUpdaterService->getStrengthMultiplier(
+            $this->moraleUpdaterService->project($fleet->getTargetWorldRegion(), $now)
+        );
+        foreach ($regionDefenderGameUnits as $stackableUnit) {
+            $strengthMultipliers[spl_object_id($stackableUnit)] = $defenderMultiplier;
+        }
+
+        foreach ($reinforcements as $reinforcement) {
+            $strengthMultipliers[spl_object_id($reinforcement->getBattleUnit())] =
+                $this->moraleUpdaterService->getStrengthMultiplier(
+                    $this->moraleUpdaterService->project($reinforcement->getSourceUnit()->getWorldRegion(), $now)
+                );
+        }
+
+        return $strengthMultipliers;
+    }
+
+    /**
+     * E.g. "Attacking units fight at 72% morale (86% strength)"
+     *
+     * @param WorldRegionStackableUnit[] $regionDefenderGameUnits
+     *
+     * @return array<string>
+     */
+    private function getMoraleBattleLog(Fleet $fleet, array $regionDefenderGameUnits, int $now): array
+    {
+        $battleLog = [$this->getMoraleLogLine('Attacking units', $fleet->getMorale())];
+        if ($regionDefenderGameUnits !== []) {
+            $battleLog[] = $this->getMoraleLogLine(
+                'Defending units',
+                $this->moraleUpdaterService->project($fleet->getTargetWorldRegion(), $now)
+            );
+        }
+
+        return $battleLog;
+    }
+
+    /**
+     * One line per region that sent reinforcements
+     *
+     * @param Reinforcement[] $reinforcements
+     *
+     * @return array<string>
+     */
+    private function getReinforcementMoraleBattleLog(array $reinforcements, int $now): array
+    {
+        $battleLog = [];
+        foreach ($reinforcements as $reinforcement) {
+            $worldRegion = $reinforcement->getSourceUnit()->getWorldRegion();
+            $battleLog[spl_object_id($worldRegion)] = $this->getMoraleLogLine(
+                "Reinforcements from region {$worldRegion->getRegionName()}",
+                $this->moraleUpdaterService->project($worldRegion, $now)
+            );
+        }
+
+        return array_values($battleLog);
+    }
+
+    private function getMoraleLogLine(string $units, int $morale): string
+    {
+        $strength = (int) round($this->moraleUpdaterService->getStrengthMultiplier($morale) * 100);
+
+        return "{$units} fight at {$morale}% morale ({$strength}% strength)";
+    }
+
+    /**
+     * Regions that sent reinforcements lose morale for the share of the units they sent that died
+     *
+     * @param Reinforcement[] $reinforcements
+     * @param array<WorldRegionStackableUnit|WorldRegionLeveledUnit> $survivingDefenderGameUnits
+     */
+    private function applyReinforcementMoraleLoss(
+        array $reinforcements,
+        array $survivingDefenderGameUnits,
+        int $now
+    ): void {
+        $crews = [];
+        foreach ($reinforcements as $reinforcement) {
+            $battleUnit = $reinforcement->getBattleUnit();
+            $worldRegion = $reinforcement->getSourceUnit()->getWorldRegion();
+            $surviving = in_array($battleUnit, $survivingDefenderGameUnits, true) ? $battleUnit->getAmount() : 0;
+
+            $key = spl_object_id($worldRegion);
+            $crews[$key]['region'] = $worldRegion;
+            $crews[$key]['start'] = ($crews[$key]['start'] ?? 0)
+                + $this->moraleUpdaterService->getUnitCrew($battleUnit->getGameUnit(), $reinforcement->getAmount());
+            $crews[$key]['lost'] = ($crews[$key]['lost'] ?? 0)
+                + $this->moraleUpdaterService->getUnitCrew(
+                    $battleUnit->getGameUnit(),
+                    $reinforcement->getAmount() - $surviving
+                );
+        }
+
+        foreach ($crews as $crew) {
+            $this->moraleUpdaterService->applyDefenderLoss($crew['region'], $crew['start'], $crew['lost'], $now);
+        }
     }
 
     /**

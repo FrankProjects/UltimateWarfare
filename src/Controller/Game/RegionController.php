@@ -10,6 +10,7 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Service\Action\RegionActionService;
+use FrankProjects\UltimateWarfare\Service\MoraleUpdaterService;
 use FrankProjects\UltimateWarfare\Service\PopulationUpdaterService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
@@ -20,17 +21,20 @@ final class RegionController extends BaseGameController
     private WorldRegionRepository $worldRegionRepository;
     private ConstructionRepository $constructionRepository;
     private GameUnitRegistry $gameUnitRegistry;
+    private MoraleUpdaterService $moraleUpdaterService;
 
     public function __construct(
         RegionActionService $regionActionService,
         WorldRegionRepository $worldRegionRepository,
         ConstructionRepository $constructionRepository,
-        GameUnitRegistry $gameUnitRegistry
+        GameUnitRegistry $gameUnitRegistry,
+        MoraleUpdaterService $moraleUpdaterService
     ) {
         $this->regionActionService = $regionActionService;
         $this->worldRegionRepository = $worldRegionRepository;
         $this->constructionRepository = $constructionRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->moraleUpdaterService = $moraleUpdaterService;
     }
 
     public function buyApi(int $regionId): JsonResponse
@@ -99,6 +103,7 @@ final class RegionController extends BaseGameController
                     'population' => $region->getPopulation(),
                     'maxPopulation' => ($regionUnits[GameUnitEnum::HOUSE->value] ?? 0)
                         * PopulationUpdaterService::POPULATION_PER_HOUSE,
+                    'morale' => $this->moraleUpdaterService->project($region, time()),
                     'categoryCounts' => $categoryCounts,
                 ];
             }

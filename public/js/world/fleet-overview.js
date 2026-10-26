@@ -52,6 +52,7 @@
         html += '<th class="text-center">To</th>';
         html += '<th class="text-center">Owner</th>';
         html += '<th class="text-start">Fleet</th>';
+        html += '<th class="text-center">Morale</th>';
         html += '<th class="text-center">Time Left</th>';
         html += '<th class="text-center">Actions</th>';
         html += '</tr>';
@@ -85,6 +86,7 @@
             html += '<td class="text-center">' + fleet.targetX + ', ' + fleet.targetY + '</td>';
             html += '<td class="text-center">' + (fleet.targetIsYours ? '<span class="text-own">You</span>' : escapeHtml(fleet.targetOwner || 'Nobody')) + '</td>';
             html += '<td class="fleet-overview-units">' + unitsHtml + '</td>';
+            html += '<td class="text-center">' + fleet.morale + '%</td>';
             html += '<td class="text-center">' + timeHtml + '</td>';
             html += '<td class="text-center">' + actionsHtml + '</td>';
             html += '</tr>';

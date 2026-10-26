@@ -165,6 +165,8 @@ final class DoctrinePlayerRepository implements PlayerRepository
 
             $worldRegion->setName('');
             $worldRegion->setPopulation(0);
+            $worldRegion->setMorale(100);
+            $worldRegion->setMoraleTimestamp(0);
             $worldRegion->setPlayer(null);
             $this->entityManager->persist($worldRegion);
         }

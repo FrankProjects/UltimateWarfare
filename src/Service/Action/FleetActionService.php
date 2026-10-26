@@ -21,6 +21,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\FleetFactory;
 use FrankProjects\UltimateWarfare\Service\FleetRouteService;
+use FrankProjects\UltimateWarfare\Service\MoraleUpdaterService;
 use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use RuntimeException;
@@ -39,6 +40,7 @@ final class FleetActionService
     private EntityLockRepository $entityLockRepository;
     private WaterRegionUpdaterService $waterRegionUpdaterService;
     private FleetRouteService $fleetRouteService;
+    private MoraleUpdaterService $moraleUpdaterService;
 
     public function __construct(
         FleetRepository $fleetRepository,
@@ -50,7 +52,8 @@ final class FleetActionService
         WorldRegionRepository $worldRegionRepository,
         EntityLockRepository $entityLockRepository,
         WaterRegionUpdaterService $waterRegionUpdaterService,
-        FleetRouteService $fleetRouteService
+        FleetRouteService $fleetRouteService,
+        MoraleUpdaterService $moraleUpdaterService
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
@@ -62,6 +65,7 @@ final class FleetActionService
         $this->entityLockRepository = $entityLockRepository;
         $this->waterRegionUpdaterService = $waterRegionUpdaterService;
         $this->fleetRouteService = $fleetRouteService;
+        $this->moraleUpdaterService = $moraleUpdaterService;
     }
 
     public function recall(int $fleetId, Player $player): WorldRegion
@@ -214,6 +218,8 @@ final class FleetActionService
             $path,
             $movement
         );
+        // The region keeps its morale: splitting an army doesn't make it any fresher
+        $fleet->setMorale($this->moraleUpdaterService->project($region, time()));
         $this->fleetRepository->save($fleet);
 
         foreach ($gameUnitsToSend as $gameUnitData) {
@@ -341,6 +347,13 @@ final class FleetActionService
 
     private function addFleetUnitsToWorldRegion(Fleet $fleet, WorldRegion $worldRegion): void
     {
+        $this->moraleUpdaterService->mergeIntoRegion(
+            $worldRegion,
+            $fleet->getMorale(),
+            $this->moraleUpdaterService->getCrew($fleet->getFleetUnits()),
+            time()
+        );
+
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
             $this->addFleetUnitToWorldRegion($fleetUnit, $worldRegion);
         }

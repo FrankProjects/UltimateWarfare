@@ -19,6 +19,7 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
+use FrankProjects\UltimateWarfare\Service\MoraleUpdaterService;
 use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use RuntimeException;
 
@@ -33,6 +34,7 @@ final class BattleUpdaterService
     private PlayerRepository $playerRepository;
     private WaterRegionUpdaterService $waterRegionUpdaterService;
     private GameUnitRegistry $gameUnitRegistry;
+    private MoraleUpdaterService $moraleUpdaterService;
 
     public function __construct(
         FleetRepository $fleetRepository,
@@ -43,7 +45,8 @@ final class BattleUpdaterService
         ConstructionRepository $constructionRepository,
         PlayerRepository $playerRepository,
         WaterRegionUpdaterService $waterRegionUpdaterService,
-        GameUnitRegistry $gameUnitRegistry
+        GameUnitRegistry $gameUnitRegistry,
+        MoraleUpdaterService $moraleUpdaterService
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
@@ -54,6 +57,7 @@ final class BattleUpdaterService
         $this->playerRepository = $playerRepository;
         $this->waterRegionUpdaterService = $waterRegionUpdaterService;
         $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->moraleUpdaterService = $moraleUpdaterService;
     }
 
     /**
@@ -75,15 +79,33 @@ final class BattleUpdaterService
             $this->constructionRepository->remove($construction);
         }
 
+        // The conquered region only holds the attacking units now, so it takes over their morale
+        $now = time();
+        $this->moraleUpdaterService->setRegionMorale($targetWorldRegion, $fleet->getMorale(), $now);
+
         // Aircraft never stay on the conquered region, they fly back to the source region when it is still yours
         $sourceWorldRegion = $fleet->getWorldRegion();
         $canReturnToSource = $sourceWorldRegion->getPlayer() === $fleet->getPlayer();
+        $returningGameUnits = [];
         foreach ($attackerGameUnits as $fleetUnit) {
             $category = $this->gameUnitRegistry->find($fleetUnit->getGameUnit())->getGameUnitCategory();
-            $worldRegion = $canReturnToSource && $category === GameUnitCategory::AIR_UNITS
-                ? $sourceWorldRegion
-                : $targetWorldRegion;
-            $this->addUnitsToWorldRegion($worldRegion, $fleetUnit);
+            if ($canReturnToSource && $category === GameUnitCategory::AIR_UNITS) {
+                $returningGameUnits[] = $fleetUnit;
+            } else {
+                $this->addUnitsToWorldRegion($targetWorldRegion, $fleetUnit);
+            }
+        }
+
+        if ($returningGameUnits !== []) {
+            $this->moraleUpdaterService->mergeIntoRegion(
+                $sourceWorldRegion,
+                $fleet->getMorale(),
+                $this->moraleUpdaterService->getCrew($returningGameUnits),
+                $now
+            );
+            foreach ($returningGameUnits as $fleetUnit) {
+                $this->addUnitsToWorldRegion($sourceWorldRegion, $fleetUnit);
+            }
         }
         $this->fleetRepository->remove($fleet);
     }

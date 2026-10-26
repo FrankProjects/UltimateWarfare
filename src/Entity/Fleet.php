@@ -20,6 +20,9 @@ class Fleet
     /** @var list<array{int, int}> Coordinates of the regions the fleet travels through, from source to target */
     private array $path = [];
 
+    /** Fleets keep the morale they left with until they join a region again */
+    private int $morale = 100;
+
     /** @var Collection<int, FleetUnit> */
     private Collection $fleetUnits;
 
@@ -102,6 +105,16 @@ class Fleet
     public function setPath(array $path): void
     {
         $this->path = $path;
+    }
+
+    public function getMorale(): int
+    {
+        return $this->morale;
+    }
+
+    public function setMorale(int $morale): void
+    {
+        $this->morale = $morale;
     }
 
     /**

@@ -59,6 +59,9 @@
             } else if (sortColumn === 'population') {
                 valA = a.population;
                 valB = b.population;
+            } else if (sortColumn === 'morale') {
+                valA = a.morale;
+                valB = b.morale;
             } else {
                 const catA = a.categoryCounts[sortColumn];
                 const catB = b.categoryCounts[sortColumn];
@@ -99,6 +102,7 @@
         html += '<tr class="uw-table-head">';
         html += '<th class="region-pos-col text-center uw-sortable" data-sort="position">Pos' + getSortArrow('position') + '</th>';
         html += '<th class="text-center uw-sortable uw-cell-small" data-sort="population">Population' + getSortArrow('population') + '</th>';
+        html += '<th class="text-center uw-sortable uw-cell-small" data-sort="morale">Morale' + getSortArrow('morale') + '</th>';
 
         categories.forEach(function (cat) {
             html += '<th class="text-center uw-sortable uw-cell-small" data-sort="' + cat.key + '">' + cat.label + getSortArrow(cat.key) + '</th>';
@@ -111,6 +115,7 @@
             html += '<tr>';
             html += '<td class="region-pos-col text-center">' + region.x + ', ' + region.y + '</td>';
             html += '<td class="text-center uw-cell-small">' + region.population + ' / ' + region.maxPopulation + '</td>';
+            html += '<td class="text-center uw-cell-small">' + region.morale + '%</td>';
 
             categories.forEach(function (cat) {
                 const data = region.categoryCounts[cat.key];
@@ -140,7 +145,7 @@
         regionContainer.querySelectorAll('th[data-sort]').forEach(function (th) {
             th.onclick = function () {
                 const col = th.getAttribute('data-sort');
-                onHeaderClick(col === 'position' || col === 'population' ? col : parseInt(col, 10));
+                onHeaderClick(col === 'position' || col === 'population' || col === 'morale' ? col : parseInt(col, 10));
             };
         });
 
