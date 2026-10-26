@@ -107,7 +107,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->createQuery(
                 'SELECT wr, wrsu.amount AS houses
               FROM ' . WorldRegion::class . ' wr
-              JOIN ' . WorldRegionStackableUnit::class . ' wrsu WITH wrsu.worldRegion = wr
+              JOIN ' . WorldRegionStackableUnit::class . ' wrsu ON wrsu.worldRegion = wr
               WHERE wr.player = :player
                 AND wrsu.gameUnit = :house
                 AND wr.population < wrsu.amount * :populationPerHouse'

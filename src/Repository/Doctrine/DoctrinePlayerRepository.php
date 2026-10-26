@@ -89,8 +89,8 @@ final class DoctrinePlayerRepository implements PlayerRepository
             ->createQuery(
                 'SELECT DISTINCT p
               FROM ' . Player::class . ' p
-              JOIN ' . WorldRegion::class . ' wr WITH wr.player = p
-              JOIN ' . WorldRegionStackableUnit::class . ' wrsu WITH wrsu.worldRegion = wr
+              JOIN ' . WorldRegion::class . ' wr ON wr.player = p
+              JOIN ' . WorldRegionStackableUnit::class . ' wrsu ON wrsu.worldRegion = wr
               WHERE p.timestampUpdate < :timestamp
                 AND wrsu.gameUnit = :house
                 AND wr.population < wrsu.amount * :populationPerHouse'
@@ -109,7 +109,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
             ->createQuery(
                 'SELECT DISTINCT p
               FROM ' . Player::class . ' p
-              JOIN ' . WorldRegion::class . ' wr WITH wr.player = p
+              JOIN ' . WorldRegion::class . ' wr ON wr.player = p
               WHERE p.timestampUpdate < :timestamp
                 AND wr.population > 0
                 AND p.income.food < p.upkeep.food
