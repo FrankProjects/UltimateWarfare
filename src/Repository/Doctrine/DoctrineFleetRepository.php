@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 
 final class DoctrineFleetRepository implements FleetRepository
@@ -37,6 +38,23 @@ final class DoctrineFleetRepository implements FleetRepository
     public function findByPlayer(Player $player): array
     {
         return $this->repository->findBy(['player' => $player]);
+    }
+
+    /**
+     * @return Fleet[]
+     */
+    public function findByWorldExcludingPlayer(World $world, Player $player): array
+    {
+        /** @var Fleet[] */
+        return $this->entityManager->createQuery(
+            'SELECT f, p
+              FROM ' . Fleet::class . ' f
+              JOIN f.player p
+              WHERE p.world = :world
+              AND p != :player'
+        )->setParameter('world', $world)
+            ->setParameter('player', $player)
+            ->getResult();
     }
 
     public function remove(Fleet $fleet): void

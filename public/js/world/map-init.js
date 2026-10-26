@@ -5,6 +5,7 @@
 (function () {
     const worldRegions = WorldApp.worldRegions;
     const playerFleets = WorldApp.playerFleets;
+    const detectedFleets = WorldApp.detectedFleets || [];
     const playerBombardments = WorldApp.playerBombardments || [];
 
     // Find the player's first owned region for centering
@@ -38,6 +39,7 @@
 
     worldMap.setSectors(worldRegions).then(function () {
         worldMap.setFleets(playerFleets);
+        worldMap.setDetectedFleets(detectedFleets);
         worldMap.setBombardments(playerBombardments);
         centerOnHomeRegion();
         console.log('World map loaded successfully with ' + worldRegions.length + ' regions!');

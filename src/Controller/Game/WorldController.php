@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
-use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
@@ -16,7 +15,9 @@ use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRepository;
 use FrankProjects\UltimateWarfare\Service\PlayerSetupService;
+use FrankProjects\UltimateWarfare\Service\RadarService;
 use FrankProjects\UltimateWarfare\Service\WorldGeneratorService;
+use FrankProjects\UltimateWarfare\Util\HexGrid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -32,6 +33,7 @@ final class WorldController extends BaseGameController
     private GameUnitRegistry $gameUnitRegistry;
     private WorldRegionRepository $worldRegionRepository;
     private MessageRepository $messageRepository;
+    private RadarService $radarService;
 
     public function __construct(
         PlayerRepository $playerRepository,
@@ -40,7 +42,8 @@ final class WorldController extends BaseGameController
         BombardmentCooldownRepository $bombardmentCooldownRepository,
         GameUnitRegistry $gameUnitRegistry,
         WorldRegionRepository $worldRegionRepository,
-        MessageRepository $messageRepository
+        MessageRepository $messageRepository,
+        RadarService $radarService
     ) {
         $this->playerRepository = $playerRepository;
         $this->worldRepository = $worldRepository;
@@ -49,6 +52,7 @@ final class WorldController extends BaseGameController
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->worldRegionRepository = $worldRegionRepository;
         $this->messageRepository = $messageRepository;
+        $this->radarService = $radarService;
     }
 
     public function create(WorldGeneratorService $worldGeneratorService): Response
@@ -194,8 +198,14 @@ final class WorldController extends BaseGameController
         $player = $this->getPlayer();
         $world = $player->getWorld();
 
-        $regions = $this->getWorldRegionsData($world, $player);
+        // Load the units and constructions of the player's regions upfront, instead of querying per region.
+        // This must run before anything reads those collections, such as the radar coverage.
+        $this->worldRegionRepository->findByPlayerWithUnitsAndConstructions($player);
+        $radarCoverage = $this->radarService->getCoverage($player);
+
+        $regions = $this->getWorldRegionsData($world, $player, $radarCoverage);
         $fleets = $this->getPlayerFleetsData($player);
+        $detectedFleets = $this->getDetectedFleetsData($player, $radarCoverage);
         $bombardments = $this->getActiveBombardmentCooldowns($player);
 
         return $this->render(
@@ -204,6 +214,7 @@ final class WorldController extends BaseGameController
                 'regions' => $regions,
                 'player' => $player,
                 'fleets' => $fleets,
+                'detectedFleets' => $detectedFleets,
                 'bombardments' => $bombardments,
                 'unreadMessages' => $this->messageRepository->countUnreadMessagesToPlayer($player),
                 'showWelcome' => $request->query->getBoolean('welcome'),
@@ -217,15 +228,13 @@ final class WorldController extends BaseGameController
      *   isYours: bool, ownerName: string|null, isVisible: bool,
      *   units: array<string, mixed>
      * }>
+     *
+     * @param array<string, true> $radarCoverage
      */
-    private function getWorldRegionsData(World $world, Player $player): array
+    private function getWorldRegionsData(World $world, Player $player, array $radarCoverage): array
     {
-        // Load the units and constructions of the player's regions upfront, instead of querying per region.
-        // This must run before anything reads those collections, such as the radar lookup below.
-        $this->worldRegionRepository->findByPlayerWithUnitsAndConstructions($player);
-
         $playerRegions = $this->getPlayerRegionCoordinates($player);
-        $visibleRegions = $this->calculateVisibleRegions($playerRegions, $this->getRadarRegions($player));
+        $visibleRegions = $this->calculateVisibleRegions($playerRegions, $radarCoverage);
 
         $regions = [];
         foreach ($world->getWorldRegions() as $region) {
@@ -273,102 +282,25 @@ final class WorldController extends BaseGameController
     }
 
     /**
-     * Coordinates of owned regions that have a Radar Station, mapped to the radar's level.
-     * @return array<string, int>
-     */
-    private function getRadarRegions(Player $player): array
-    {
-        $radarRegions = [];
-        foreach ($player->getWorldRegions() as $region) {
-            $level = $region->getUnitLevel(GameUnitEnum::RADAR_STATION);
-            if ($level > 0) {
-                $radarRegions[$region->getX() . ',' . $region->getY()] = $level;
-            }
-        }
-
-        return $radarRegions;
-    }
-
-    /**
-     * Calculate which regions are visible: every owned region plus its 1-hex ring, extended
-     * to a radius equal to the Radar Station level around regions that have one.
+     * Calculate which regions are visible: every owned region plus its 1-hex ring, and the radar coverage.
      *
      * @param array<string, true> $playerRegions
-     * @param array<string, int> $radarRegions
+     * @param array<string, true> $radarCoverage
      * @return array<string, true>
      */
-    private function calculateVisibleRegions(array $playerRegions, array $radarRegions): array
+    private function calculateVisibleRegions(array $playerRegions, array $radarCoverage): array
     {
-        $visibleRegions = $playerRegions;
+        $visibleRegions = $playerRegions + $radarCoverage;
 
         // Base 1-hex ring of vision around every owned region.
         foreach (array_keys($playerRegions) as $coordString) {
             [$x, $y] = explode(',', $coordString);
-            foreach ($this->getHexNeighbors((int)$x, (int)$y) as $neighbor) {
-                $visibleRegions[$neighbor] = true;
+            foreach (HexGrid::getNeighborCoordinates((int)$x, (int)$y) as [$nx, $ny]) {
+                $visibleRegions[$nx . ',' . $ny] = true;
             }
-        }
-
-        // Radar stations extend vision to a radius equal to their level.
-        foreach ($radarRegions as $coordString => $level) {
-            [$x, $y] = explode(',', $coordString);
-            $this->revealRings($visibleRegions, (int)$x, (int)$y, $level);
         }
 
         return $visibleRegions;
-    }
-
-    /**
-     * The 6 hex neighbors of a tile (pointy-top, odd-r offset; odd rows shifted right).
-     * @return list<string>
-     */
-    private function getHexNeighbors(int $x, int $y): array
-    {
-        $neighbors = [
-            ($x - 1) . ',' . $y,
-            ($x + 1) . ',' . $y,
-        ];
-
-        if ($y % 2 === 0) {
-            $neighbors[] = ($x - 1) . ',' . ($y - 1);
-            $neighbors[] = $x . ',' . ($y - 1);
-            $neighbors[] = ($x - 1) . ',' . ($y + 1);
-            $neighbors[] = $x . ',' . ($y + 1);
-        } else {
-            $neighbors[] = $x . ',' . ($y - 1);
-            $neighbors[] = ($x + 1) . ',' . ($y - 1);
-            $neighbors[] = $x . ',' . ($y + 1);
-            $neighbors[] = ($x + 1) . ',' . ($y + 1);
-        }
-
-        return $neighbors;
-    }
-
-    /**
-     * Reveal a hex disk of the given radius (in rings) around a center tile.
-     *
-     * @param array<string, true> $visibleRegions
-     */
-    private function revealRings(array &$visibleRegions, int $x, int $y, int $rings): void
-    {
-        $visited = [$x . ',' . $y => true];
-        $frontier = [[$x, $y]];
-
-        for ($ring = 0; $ring < $rings; $ring++) {
-            $next = [];
-            foreach ($frontier as [$cx, $cy]) {
-                foreach ($this->getHexNeighbors($cx, $cy) as $neighbor) {
-                    if (isset($visited[$neighbor])) {
-                        continue;
-                    }
-                    $visited[$neighbor] = true;
-                    $visibleRegions[$neighbor] = true;
-                    [$nx, $ny] = explode(',', $neighbor);
-                    $next[] = [(int)$nx, (int)$ny];
-                }
-            }
-            $frontier = $next;
-        }
     }
 
     /**
@@ -419,6 +351,39 @@ final class WorldController extends BaseGameController
                 'units' => $units,
                 'targetIsYours' => $targetIsYours,
                 'targetIsOpenSea' => $targetRegion->isWater() && $targetRegion->getPlayer() === null,
+            ];
+        }
+
+        return $fleets;
+    }
+
+    /**
+     * Enemy fleets detected by radar: only their route and arrival time, not their units or owner
+     *
+     * @param array<string, true> $radarCoverage
+     * @return list<array{
+     *   id: int, sourceX: int, sourceY: int, targetX: int, targetY: int, path: list<array{int, int}>,
+     *   timestamp: int, timestampArrive: int, hasArrived: bool, eta: int
+     * }>
+     */
+    private function getDetectedFleetsData(Player $player, array $radarCoverage): array
+    {
+        $fleets = [];
+        $currentTime = time();
+
+        foreach ($this->radarService->findDetectedFleets($player, $radarCoverage) as $fleet) {
+            $arriveTime = $fleet->getTimestampArrive();
+            $fleets[] = [
+                'id' => $fleet->getId(),
+                'sourceX' => $fleet->getWorldRegion()->getX(),
+                'sourceY' => $fleet->getWorldRegion()->getY(),
+                'targetX' => $fleet->getTargetWorldRegion()->getX(),
+                'targetY' => $fleet->getTargetWorldRegion()->getY(),
+                'path' => $fleet->getPath(),
+                'timestamp' => $fleet->getTimestamp(),
+                'timestampArrive' => $arriveTime,
+                'hasArrived' => $currentTime >= $arriveTime,
+                'eta' => max(0, $arriveTime - $currentTime),
             ];
         }
 

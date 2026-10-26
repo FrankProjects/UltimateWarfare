@@ -842,6 +842,14 @@ body {
     transform: translate(-50%, -100%) translateY(-35px);
 }
 
+/* Enemy fleet detected by radar: below the target, so it doesn't cover the label of an own fleet */
+.fleet-eta-label.enemy {
+    background: rgba(220, 40, 40, 0.95);
+    border-color: #ff3b3b;
+    color: #fff;
+    transform: translate(-50%, 0) translateY(20px);
+}
+
 /* ===== Attack Mode Banner ===== */
 .attack-mode-banner {
     display: none;

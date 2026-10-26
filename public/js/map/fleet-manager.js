@@ -5,6 +5,8 @@ class FleetManager {
     constructor(mapInstance) {
         this.map = mapInstance;
         this.fleets = [];
+        // Enemy fleets detected by radar: only route and arrival time are known
+        this.detectedFleets = [];
         this.fleetUIMap = new Map();
 
         // Animation state
@@ -25,12 +27,20 @@ class FleetManager {
     }
 
     /**
+     * Set enemy fleets detected by radar
+     */
+    setDetectedFleets(fleets) {
+        this.detectedFleets = fleets || [];
+        this.startETACountdown();
+    }
+
+    /**
      * Start countdown timer for ETA updates
      */
     startETACountdown() {
         this.stopETACountdown();
 
-        if (this.fleets && this.fleets.some(f => !f.hasArrived)) {
+        if ([...this.fleets, ...this.detectedFleets].some(f => !f.hasArrived)) {
             this.etaUpdateInterval = setInterval(() => {
                 // Update animation offset for fleet line
                 const currentTime = Date.now();
@@ -61,12 +71,10 @@ class FleetManager {
      * Update ETA for all in-transit fleets
      */
     updateFleetETAs() {
-        if (!this.fleets) return;
-
         const now = Math.floor(Date.now() / 1000);
         let hasInTransitFleets = false;
 
-        this.fleets.forEach(fleet => {
+        [...this.fleets, ...this.detectedFleets].forEach(fleet => {
             if (!fleet.hasArrived) {
                 fleet.eta = Math.max(0, fleet.timestampArrive - now);
 
@@ -88,10 +96,6 @@ class FleetManager {
      * Render fleet lines on the canvas
      */
     renderFleetLines(ctx, coordToPixel) {
-        if (!this.fleets || this.fleets.length === 0) {
-            return;
-        }
-
         ctx.save();
 
         this.fleets.forEach(fleet => {
@@ -127,7 +131,60 @@ class FleetManager {
             this.drawFleetMarker(ctx, fleet, points);
         });
 
+        this.renderDetectedFleetLines(ctx, coordToPixel);
+
         ctx.restore();
+    }
+
+    /**
+     * Render enemy fleets detected by radar as red dotted lines from source to target
+     */
+    renderDetectedFleetLines(ctx, coordToPixel) {
+        const color = '#ff3b3b';
+
+        this.detectedFleets.forEach(fleet => {
+            const points = this.getRoutePoints(fleet, coordToPixel);
+
+            ctx.beginPath();
+            ctx.setLineDash([2, 8]);
+            ctx.lineDashOffset = fleet.hasArrived ? 0 : -this.animationOffset;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 4;
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.lineDashOffset = 0;
+            ctx.lineCap = 'butt';
+
+            if (!fleet.hasArrived) {
+                this.drawArrow(ctx, points[points.length - 2], points[points.length - 1], color);
+            }
+
+            const position = fleet.hasArrived
+                ? points[points.length - 1]
+                : this.getPointAlongRoute(points, this.getProgress(fleet));
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.arc(position.x, position.y - 15, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        });
+    }
+
+    /**
+     * Fraction (0-1) of the route an in-transit fleet has travelled
+     */
+    getProgress(fleet) {
+        const now = Date.now() / 1000;
+        const totalTime = fleet.timestampArrive - fleet.timestamp;
+
+        return totalTime > 0 ? Math.min(1, Math.max(0, (now - fleet.timestamp) / totalTime)) : 1;
     }
 
     /**
@@ -171,7 +228,7 @@ class FleetManager {
     /**
      * Draw direction arrow
      */
-    drawArrow(ctx, sourceIso, targetIso) {
+    drawArrow(ctx, sourceIso, targetIso, color = '#ffcc00') {
         const angle = Math.atan2(targetIso.y - sourceIso.y, targetIso.x - sourceIso.x);
         const arrowSize = 15;
         const arrowX = targetIso.x - Math.cos(angle) * 20;
@@ -181,7 +238,7 @@ class FleetManager {
         ctx.translate(arrowX, arrowY);
         ctx.rotate(angle);
 
-        ctx.fillStyle = '#ffcc00';
+        ctx.fillStyle = color;
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 1.5;
 
@@ -208,11 +265,7 @@ class FleetManager {
         } else {
             // Interpolate along the route between departure and arrival, so the marker moves at the fleet's
             // (slowest unit) speed
-            const now = Date.now() / 1000;
-            const totalTime = fleet.timestampArrive - fleet.timestamp;
-            const progress = totalTime > 0 ? Math.min(1, Math.max(0, (now - fleet.timestamp) / totalTime)) : 1;
-
-            const position = this.getPointAlongRoute(points, progress);
+            const position = this.getPointAlongRoute(points, this.getProgress(fleet));
             fleetIconX = position.x;
             fleetIconY = position.y;
         }
@@ -240,12 +293,6 @@ class FleetManager {
      * Uses DOM pooling to update in place instead of destroy/recreate each frame
      */
     renderFleetUIElements(canvas, camera, coordToPixel) {
-        if (!this.fleets || this.fleets.length === 0) {
-            this.fleetUIMap.forEach(function (el) { el.remove(); });
-            this.fleetUIMap.clear();
-            return;
-        }
-
         const container = canvas.parentElement;
         const canvasRect = canvas.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
@@ -305,6 +352,35 @@ class FleetManager {
                     this.fleetUIMap.set(fleet.id, label);
                 }
             }
+        });
+
+        this.detectedFleets.forEach(fleet => {
+            const key = 'enemy-' + fleet.id;
+            const targetIso = coordToPixel(fleet.targetX, fleet.targetY);
+            const screenX = (targetIso.x * camera.zoom) + camera.x + canvas.width / 2;
+            const screenY = (targetIso.y * camera.zoom) + camera.y + canvas.height / 2;
+            activeFleetIds.add(key);
+
+            let label = this.fleetUIMap.get(key);
+            if (screenX < 0 || screenX > canvas.width || screenY < 0 || screenY > canvas.height) {
+                if (label) {
+                    label.style.display = 'none';
+                }
+                return;
+            }
+
+            if (!label) {
+                label = document.createElement('div');
+                label.className = 'fleet-eta-label enemy';
+                container.appendChild(label);
+                this.fleetUIMap.set(key, label);
+            }
+            label.style.display = '';
+            label.style.left = (screenX + offsetX) + 'px';
+            label.style.top = (screenY + offsetY) + 'px';
+            label.textContent = fleet.hasArrived
+                ? '\u26A0 Enemy arrived'
+                : '\u26A0 Enemy ETA: ' + this.formatETA(fleet.eta);
         });
 
         // Remove elements for fleets that no longer exist
