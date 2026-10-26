@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\FleetMovement;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
+use FrankProjects\UltimateWarfare\Entity\GameUnit;
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\FleetActionService;
 use FrankProjects\UltimateWarfare\Service\Action\RegionActionService;
-use FrankProjects\UltimateWarfare\Util\HexGrid;
+use FrankProjects\UltimateWarfare\Service\FleetRouteService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Throwable;
@@ -21,15 +24,18 @@ final class AttackController extends BaseGameController
     private FleetActionService $fleetActionService;
     private RegionActionService $regionActionService;
     private GameUnitRegistry $gameUnitRegistry;
+    private FleetRouteService $fleetRouteService;
 
     public function __construct(
         FleetActionService $fleetActionService,
         RegionActionService $regionActionService,
-        GameUnitRegistry $gameUnitRegistry
+        GameUnitRegistry $gameUnitRegistry,
+        FleetRouteService $fleetRouteService
     ) {
         $this->fleetActionService = $fleetActionService;
         $this->regionActionService = $regionActionService;
         $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->fleetRouteService = $fleetRouteService;
     }
 
     public function attackFromRegionsApi(int $regionId): JsonResponse
@@ -50,33 +56,25 @@ final class AttackController extends BaseGameController
             return new JsonResponse(['success' => false, 'message' => 'Cannot attack your own region!'], 400);
         }
 
-        // Build a lookup of all world regions by coordinate for adjacency checks
-        $world = $player->getWorld();
-        $regionsByCoord = [];
-        foreach ($world->getWorldRegions() as $wr) {
-            $regionsByCoord[$wr->getX() . ',' . $wr->getY()] = $wr;
-        }
-
-        $targetX = $targetRegion->getX();
-        $targetY = $targetRegion->getY();
-
-        // Ships can only attack water and coastal regions
-        $targetIsCoastal = $this->isWaterOrCoastal($targetRegion, $regionsByCoord);
+        $attackRoutes = $this->findAttackRoutes($targetRegion, $player);
 
         $eligibleRegions = [];
-
         foreach ($player->getWorldRegions() as $playerRegion) {
-            $distance = $this->calculateTileDistance(
-                $playerRegion->getX(),
-                $playerRegion->getY(),
-                $targetX,
-                $targetY
-            );
+            // The shortest distance over which one of the stationed units can attack
+            $distance = null;
+            foreach ($playerRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
+                if ($worldRegionStackableUnit->getAmount() <= 0) {
+                    continue;
+                }
 
-            // Determine max attack range from this region based on stationed units
-            $maxRange = $this->getMaxAttackRange($playerRegion, $targetIsCoastal, $regionsByCoord);
+                $gameUnit = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit());
+                $unitDistance = $this->getAttackDistance($gameUnit, $playerRegion, $targetRegion, $attackRoutes);
+                if ($unitDistance !== null && ($distance === null || $unitDistance < $distance)) {
+                    $distance = $unitDistance;
+                }
+            }
 
-            if ($maxRange > 0 && $distance <= $maxRange) {
+            if ($distance !== null) {
                 $eligibleRegions[] = [
                     'regionId' => $playerRegion->getId(),
                     'x' => $playerRegion->getX(),
@@ -116,20 +114,7 @@ final class AttackController extends BaseGameController
             return new JsonResponse(['success' => false, 'message' => 'Cannot attack your own region!'], 400);
         }
 
-        $distance = $this->calculateTileDistance(
-            $playerRegion->getX(),
-            $playerRegion->getY(),
-            $targetRegion->getX(),
-            $targetRegion->getY()
-        );
-
-        $regionsByCoord = [];
-        foreach ($player->getWorld()->getWorldRegions() as $wr) {
-            $regionsByCoord[$wr->getX() . ',' . $wr->getY()] = $wr;
-        }
-
-        $targetIsCoastal = $this->isWaterOrCoastal($targetRegion, $regionsByCoord);
-        $sourceIsCoastal = $this->isWaterOrCoastal($playerRegion, $regionsByCoord);
+        $attackRoutes = $this->findAttackRoutes($targetRegion, $player);
 
         $units = [];
         foreach ($playerRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
@@ -140,11 +125,8 @@ final class AttackController extends BaseGameController
             $gameUnitEnum = $worldRegionStackableUnit->getGameUnit();
             $gameUnit = $this->gameUnitRegistry->find($gameUnitEnum);
             $category = $gameUnit->getGameUnitCategory();
-            $rowName = $gameUnit->getRowName();
 
-            $unitRange = $this->getUnitRange($category, $rowName, $sourceIsCoastal, $targetIsCoastal);
-
-            if ($unitRange <= 0 || $distance > $unitRange) {
+            if ($this->getAttackDistance($gameUnit, $playerRegion, $targetRegion, $attackRoutes) === null) {
                 continue;
             }
 
@@ -217,21 +199,8 @@ final class AttackController extends BaseGameController
             return new JsonResponse(['success' => false, 'message' => 'No units selected!'], 400);
         }
 
-        // Validate that all selected units are within range
-        $distance = $this->calculateTileDistance(
-            $playerRegion->getX(),
-            $playerRegion->getY(),
-            $targetRegion->getX(),
-            $targetRegion->getY()
-        );
-
-        $regionsByCoord = [];
-        foreach ($player->getWorld()->getWorldRegions() as $wr) {
-            $regionsByCoord[$wr->getX() . ',' . $wr->getY()] = $wr;
-        }
-
-        $targetIsCoastal = $this->isWaterOrCoastal($targetRegion, $regionsByCoord);
-        $sourceIsCoastal = $this->isWaterOrCoastal($playerRegion, $regionsByCoord);
+        // Validate that all selected units can reach the target
+        $attackRoutes = $this->findAttackRoutes($targetRegion, $player);
 
         // Build lookup of valid unit IDs for this attack
         $validUnitIds = [];
@@ -241,13 +210,7 @@ final class AttackController extends BaseGameController
             }
             $gameUnitEnum = $worldRegionStackableUnit->getGameUnit();
             $gameUnit = $this->gameUnitRegistry->find($gameUnitEnum);
-            $unitRange = $this->getUnitRange(
-                $gameUnit->getGameUnitCategory(),
-                $gameUnit->getRowName(),
-                $sourceIsCoastal,
-                $targetIsCoastal
-            );
-            if ($unitRange > 0 && $distance <= $unitRange) {
+            if ($this->getAttackDistance($gameUnit, $playerRegion, $targetRegion, $attackRoutes) !== null) {
                 $validUnitIds[$gameUnitEnum->value] = true;
             }
         }
@@ -304,6 +267,7 @@ final class AttackController extends BaseGameController
                 'sourceY' => $playerRegion->getY(),
                 'targetX' => $targetRegion->getX(),
                 'targetY' => $targetRegion->getY(),
+                'path' => $fleet->getPath(),
                 'targetRegionId' => $targetRegion->getId(),
                 'targetIsYours' => false,
                 'timestamp' => $fleet->getTimestamp(),
@@ -321,24 +285,64 @@ final class AttackController extends BaseGameController
     }
 
     /**
-     * Get the attack range for a specific unit type.
+     * The player's regions from which ground troops and ships reach the target, with the length of their route.
+     * Ground troops march through your own regions and attack a neighboring region, ships sail over water to a
+     * water or coastal region.
+     *
+     * @return array{ground: array<int, int>, naval: array<int, int>} Route steps keyed by region id
      */
-    private function getUnitRange(
-        GameUnitCategory $category,
-        string $rowName,
-        bool $sourceIsCoastal,
-        bool $targetIsCoastal
-    ): int {
-        return match (true) {
-            $category === GameUnitCategory::TROOPS
-                && in_array($rowName, ['soldier', 'sniper', 'minesweeper'], true) => 1,
-            $category === GameUnitCategory::TROOPS && in_array($rowName, ['tank', 'artillery'], true) => 2,
-            $category === GameUnitCategory::AIR_UNITS && $rowName === 'fighter' => 3,
-            $category === GameUnitCategory::AIR_UNITS && $rowName === 'bomber' => 5,
-            $category === GameUnitCategory::AIR_UNITS && $rowName === 'strategic_bomber' => 7,
-            $category === GameUnitCategory::NAVAL_UNITS => ($sourceIsCoastal && $targetIsCoastal) ? 1 : 0,
+    private function findAttackRoutes(WorldRegion $targetRegion, Player $player): array
+    {
+        return [
+            'ground' => $this->fleetRouteService->findSourceRegions($targetRegion, $player, FleetMovement::GROUND),
+            'naval' => $this->fleetRouteService->findSourceRegions($targetRegion, $player, FleetMovement::NAVAL),
+        ];
+    }
+
+    /**
+     * The distance over which a unit attacks the target from the player region, or null when it can't attack it
+     *
+     * Rules:
+     * - Troops: march through your own regions to a region next to the target
+     * - Naval units: sail through your own water and open sea, from and to water or coastal regions
+     * - Aircraft fly in a straight line: Fighter range 3, Bomber range 5, Strategic Bomber range 7
+     *
+     * @param array{ground: array<int, int>, naval: array<int, int>} $attackRoutes
+     */
+    private function getAttackDistance(
+        GameUnit $gameUnit,
+        WorldRegion $playerRegion,
+        WorldRegion $targetRegion,
+        array $attackRoutes
+    ): ?int {
+        return match ($gameUnit->getGameUnitCategory()) {
+            GameUnitCategory::TROOPS => $attackRoutes['ground'][$playerRegion->getId()] ?? null,
+            GameUnitCategory::NAVAL_UNITS => $attackRoutes['naval'][$playerRegion->getId()] ?? null,
+            GameUnitCategory::AIR_UNITS => $this->getAirAttackDistance($gameUnit, $playerRegion, $targetRegion),
+            default => null,
+        };
+    }
+
+    private function getAirAttackDistance(
+        GameUnit $gameUnit,
+        WorldRegion $playerRegion,
+        WorldRegion $targetRegion
+    ): ?int {
+        $range = match ($gameUnit->getRowName()) {
+            'fighter' => 3,
+            'bomber' => 5,
+            'strategic_bomber' => 7,
             default => 0,
         };
+
+        $distance = $this->calculateTileDistance(
+            $playerRegion->getX(),
+            $playerRegion->getY(),
+            $targetRegion->getX(),
+            $targetRegion->getY()
+        );
+
+        return $distance <= $range ? $distance : null;
     }
 
     /**
@@ -348,66 +352,5 @@ final class AttackController extends BaseGameController
     private function calculateTileDistance(int $x1, int $y1, int $x2, int $y2): int
     {
         return max(abs($x1 - $x2), abs($y1 - $y2));
-    }
-
-    /**
-     * Ships reach water regions and coastal regions (land regions that share a border with water)
-     *
-     * @param array<string, WorldRegion> $regionsByCoord
-     */
-    private function isWaterOrCoastal(WorldRegion $region, array $regionsByCoord): bool
-    {
-        if ($region->isWater()) {
-            return true;
-        }
-
-        $adjacentRegions = [];
-        foreach (HexGrid::getNeighborCoordinates($region->getX(), $region->getY()) as [$nx, $ny]) {
-            $adjacentRegion = $regionsByCoord[$nx . ',' . $ny] ?? null;
-            if ($adjacentRegion !== null) {
-                $adjacentRegions[] = $adjacentRegion;
-            }
-        }
-
-        return $region->isCoastal($adjacentRegions);
-    }
-
-    /**
-     * Determine the maximum attack range from a player region based on stationed units.
-     *
-     * Rules:
-     * - Infantry (Soldier, Sniper, Mine Sweeper): range 1
-     * - Tank, Artillery: range 2
-     * - Fighter: range 3
-     * - Bomber: range 5
-     * - Strategic Bomber: range 7
-     * - Naval units: range 1, from and to water or coastal regions only
-     *
-     * @param WorldRegion $playerRegion
-     * @param bool $targetIsCoastal
-     * @param array<string, WorldRegion> $regionsByCoord
-     */
-    private function getMaxAttackRange(WorldRegion $playerRegion, bool $targetIsCoastal, array $regionsByCoord): int
-    {
-        $maxRange = 0;
-        $sourceIsCoastal = $this->isWaterOrCoastal($playerRegion, $regionsByCoord);
-
-        foreach ($playerRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
-            if ($worldRegionStackableUnit->getAmount() <= 0) {
-                continue;
-            }
-
-            $gameUnit = $this->gameUnitRegistry->find($worldRegionStackableUnit->getGameUnit());
-            $unitRange = $this->getUnitRange(
-                $gameUnit->getGameUnitCategory(),
-                $gameUnit->getRowName(),
-                $sourceIsCoastal,
-                $targetIsCoastal
-            );
-
-            $maxRange = max($maxRange, $unitRange);
-        }
-
-        return $maxRange;
     }
 }

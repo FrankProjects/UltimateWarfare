@@ -24,6 +24,7 @@ use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\Action\FleetActionService;
 use FrankProjects\UltimateWarfare\Service\FleetFactory;
+use FrankProjects\UltimateWarfare\Service\FleetRouteService;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
@@ -241,6 +242,77 @@ class FleetActionServiceTest extends TestCase
         self::assertSame($target, $fleet->getTargetWorldRegion());
     }
 
+    public function testSendTroopsAlongYourRegions(): void
+    {
+        $source = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 0, 0, $this->player);
+        WorldRegionStackableUnit::create($source, GameUnitEnum::SOLDIER, 10);
+        $this->createRegion(WorldRegion::TYPE_GRASSLAND, 1, 0, $this->createEnemy());
+        $this->createRegion(WorldRegion::TYPE_GRASSLAND, 0, 1, $this->player);
+        $this->createRegion(WorldRegion::TYPE_GRASSLAND, 1, 1, $this->player);
+        $target = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 2, 0, $this->player);
+
+        $fleet = $this->createService()->sendGameUnits(
+            $source,
+            $target,
+            $this->player,
+            [GameUnitEnum::SOLDIER->value => '10']
+        );
+
+        self::assertSame([[0, 0], [0, 1], [1, 1], [2, 0]], $fleet->getPath());
+        // 3 steps of 200 seconds at base speed
+        self::assertSame(600, $fleet->getTimestampArrive() - $fleet->getTimestamp());
+    }
+
+    public function testSendRejectsTroopsToRegionNotConnectedToSource(): void
+    {
+        $source = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 0, 0, $this->player);
+        WorldRegionStackableUnit::create($source, GameUnitEnum::SOLDIER, 10);
+        $target = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 3, 0, $this->player);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Your units can't reach this region");
+
+        $this->createService()->sendGameUnits(
+            $source,
+            $target,
+            $this->player,
+            [GameUnitEnum::SOLDIER->value => '10']
+        );
+    }
+
+    public function testSendRejectsTroopsAttackingRegionNotNextToYourRegions(): void
+    {
+        $source = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 0, 0, $this->player);
+        WorldRegionStackableUnit::create($source, GameUnitEnum::TANK, 5);
+        $enemyRegion = $this->createRegion(WorldRegion::TYPE_GRASSLAND, 2, 0, $this->createEnemy());
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Your units can't reach this region");
+
+        $this->createService()->sendGameUnits(
+            $source,
+            $enemyRegion,
+            $this->player,
+            [GameUnitEnum::TANK->value => '5']
+        );
+    }
+
+    public function testAircraftFlyStraightToAirfieldNotConnectedToSource(): void
+    {
+        $source = $this->createAirfieldRegion(0, 0);
+        WorldRegionStackableUnit::create($source, GameUnitEnum::FIGHTER, 2);
+        $target = $this->createAirfieldRegion(3, 0);
+
+        $fleet = $this->createService()->sendGameUnits(
+            $source,
+            $target,
+            $this->player,
+            [GameUnitEnum::FIGHTER->value => '2']
+        );
+
+        self::assertSame([[0, 0], [3, 0]], $fleet->getPath());
+    }
+
     public function testAttackWithAircraftNeedsNoAirfieldOnTarget(): void
     {
         $source = $this->createAirfieldRegion(0, 0);
@@ -291,6 +363,7 @@ class FleetActionServiceTest extends TestCase
         $region = WorldRegion::createForWorld($this->world, $x, $y, 0, $type, 0);
         $region->setPlayer($player);
         $player?->getWorldRegions()->add($region);
+        $this->world->getWorldRegions()->add($region);
 
         return $region;
     }
@@ -348,7 +421,8 @@ class FleetActionServiceTest extends TestCase
             new FleetFactory(new DistanceCalculator(0)),
             $this->worldRegionRepository,
             $entityLockRepository,
-            $waterRegionUpdaterService
+            $waterRegionUpdaterService,
+            new FleetRouteService()
         );
     }
 }

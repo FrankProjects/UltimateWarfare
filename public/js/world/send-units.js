@@ -17,7 +17,6 @@
     let sendMode = false;
     let sendSourceRegion = null;
     let sendUnitQuantities = {};
-    let sendNavalUnitIds = new Set(); // Only ships can sail to water regions
     let sendFixedTarget = null; // Open sea the ships sail to, skipping target selection
     let sendTargetData = []; // [{regionId, x, y, distance}]
     let sendEligibleRegionIds = new Set();
@@ -84,7 +83,6 @@
      * Render unit cards (reuses the same card style as attack/build)
      */
     function renderSendUnits(units) {
-        sendNavalUnitIds = new Set(units.filter(function (unit) { return unit.isNaval; }).map(function (unit) { return unit.gameUnitId; }));
         const container = document.getElementById('sendUnitsContainer');
         const imgBase = WorldApp.imageBasePath;
         container.innerHTML = '';
@@ -139,7 +137,14 @@
         showNotification('Loading target regions...', 'info');
 
         try {
-            const response = await fetch('/game/api/world/region/send-units-targets/' + sendSourceRegion.id);
+            // The selected units decide which regions the fleet can reach (marching, sailing or flying)
+            const selectedUnitIds = Object.keys(sendUnitQuantities).filter(function (unitId) {
+                return sendUnitQuantities[unitId] > 0;
+            });
+            const response = await fetch(
+                '/game/api/world/region/send-units-targets/' + sendSourceRegion.id +
+                '?units=' + encodeURIComponent(selectedUnitIds.join(','))
+            );
             const result = await response.json();
 
             if (!result.success) {
@@ -147,13 +152,10 @@
                 return;
             }
 
-            const onlyNaval = Object.keys(sendUnitQuantities).every(function (unitId) {
-                return sendUnitQuantities[unitId] === 0 || sendNavalUnitIds.has(parseInt(unitId));
-            });
-            const targets = result.targets.filter(function (t) { return onlyNaval || !t.isWater; });
+            const targets = result.targets;
 
             if (targets.length === 0) {
-                showNotification('You have no other regions to send units to!', 'error');
+                showNotification('These units can\'t reach any of your other regions!', 'error');
                 return;
             }
 

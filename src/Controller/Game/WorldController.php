@@ -409,6 +409,7 @@ final class WorldController extends BaseGameController
                 'sourceY' => $sourceRegion->getY(),
                 'targetX' => $targetRegion->getX(),
                 'targetY' => $targetRegion->getY(),
+                'path' => $fleet->getPath(),
                 'targetRegionId' => $targetRegion->getId(),
                 'timestamp' => $fleet->getTimestamp(),
                 'timestampArrive' => $arriveTime,

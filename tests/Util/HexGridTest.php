@@ -24,4 +24,32 @@ class HexGridTest extends TestCase
             HexGrid::getNeighborCoordinates(5, 3)
         );
     }
+
+    public function testSearchFindsShortestPathAroundBlockedTiles(): void
+    {
+        // Row 0 tile (1, 0) is blocked, so the path goes through row 1
+        $open = ['0,0', '0,1', '1,1', '2,0'];
+        $paths = HexGrid::search(
+            0,
+            0,
+            static fn (array $from, array $to): bool => in_array($to[0] . ',' . $to[1], $open, true),
+            static fn (array $tile): bool => true
+        );
+
+        self::assertSame([[0, 0], [0, 1], [1, 1], [2, 0]], $paths['2,0']);
+        self::assertArrayNotHasKey('1,0', $paths);
+    }
+
+    public function testSearchDoesNotMoveOnFromTilesItCannotPassThrough(): void
+    {
+        $paths = HexGrid::search(
+            0,
+            0,
+            static fn (array $from, array $to): bool => $to[1] === 0 && $to[0] >= 0 && $to[0] <= 3,
+            static fn (array $tile): bool => $tile !== [2, 0]
+        );
+
+        self::assertSame([[0, 0], [1, 0], [2, 0]], $paths['2,0']);
+        self::assertArrayNotHasKey('3,0', $paths);
+    }
 }

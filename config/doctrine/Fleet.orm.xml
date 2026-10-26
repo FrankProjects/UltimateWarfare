@@ -14,6 +14,7 @@
         <option name="unsigned">1</option>
       </options>
     </field>
+    <field name="path" type="json" column="path"/>
     <one-to-many field="fleetUnits" target-entity="FrankProjects\UltimateWarfare\Entity\FleetUnit" mapped-by="fleet"/>
     <many-to-one field="player" target-entity="FrankProjects\UltimateWarfare\Entity\Player" inversed-by="fleets">
       <join-columns>

@@ -95,10 +95,9 @@ class FleetManager {
         ctx.save();
 
         this.fleets.forEach(fleet => {
-            const sourceIso = coordToPixel(fleet.sourceX, fleet.sourceY);
-            const targetIso = coordToPixel(fleet.targetX, fleet.targetY);
+            const points = this.getRoutePoints(fleet, coordToPixel);
 
-            // Draw line with arrow for direction
+            // Draw the route with an arrow for direction
             ctx.beginPath();
 
             if (fleet.hasArrived) {
@@ -111,22 +110,62 @@ class FleetManager {
             }
 
             ctx.lineWidth = 3;
-            ctx.moveTo(sourceIso.x, sourceIso.y);
-            ctx.lineTo(targetIso.x, targetIso.y);
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
             ctx.stroke();
             ctx.setLineDash([]);
             ctx.lineDashOffset = 0;
 
             // Draw arrow for in-transit fleets
             if (!fleet.hasArrived) {
-                this.drawArrow(ctx, sourceIso, targetIso);
+                this.drawArrow(ctx, points[points.length - 2], points[points.length - 1]);
             }
 
             // Draw fleet marker
-            this.drawFleetMarker(ctx, fleet, sourceIso, targetIso);
+            this.drawFleetMarker(ctx, fleet, points);
         });
 
         ctx.restore();
+    }
+
+    /**
+     * Pixel positions of the regions the fleet travels through; fleets without a stored route travel straight
+     */
+    getRoutePoints(fleet, coordToPixel) {
+        const path = fleet.path && fleet.path.length >= 2
+            ? fleet.path
+            : [[fleet.sourceX, fleet.sourceY], [fleet.targetX, fleet.targetY]];
+
+        return path.map(coordinate => coordToPixel(coordinate[0], coordinate[1]));
+    }
+
+    /**
+     * Position at the given fraction (0-1) of the route's total length
+     */
+    getPointAlongRoute(points, progress) {
+        const segmentLengths = [];
+        let totalLength = 0;
+        for (let i = 1; i < points.length; i++) {
+            const length = Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+            segmentLengths.push(length);
+            totalLength += length;
+        }
+
+        let remaining = totalLength * progress;
+        for (let i = 0; i < segmentLengths.length; i++) {
+            if (remaining <= segmentLengths[i] || i === segmentLengths.length - 1) {
+                const fraction = segmentLengths[i] > 0 ? Math.min(1, remaining / segmentLengths[i]) : 1;
+                return {
+                    x: points[i].x + (points[i + 1].x - points[i].x) * fraction,
+                    y: points[i].y + (points[i + 1].y - points[i].y) * fraction,
+                };
+            }
+            remaining -= segmentLengths[i];
+        }
+
+        return points[points.length - 1];
     }
 
     /**
@@ -160,20 +199,22 @@ class FleetManager {
     /**
      * Draw fleet marker at current position
      */
-    drawFleetMarker(ctx, fleet, sourceIso, targetIso) {
+    drawFleetMarker(ctx, fleet, points) {
         let fleetIconX, fleetIconY;
 
         if (fleet.hasArrived) {
-            fleetIconX = targetIso.x;
-            fleetIconY = targetIso.y;
+            fleetIconX = points[points.length - 1].x;
+            fleetIconY = points[points.length - 1].y;
         } else {
-            // Interpolate between departure and arrival, so the marker moves at the fleet's (slowest unit) speed
+            // Interpolate along the route between departure and arrival, so the marker moves at the fleet's
+            // (slowest unit) speed
             const now = Date.now() / 1000;
             const totalTime = fleet.timestampArrive - fleet.timestamp;
             const progress = totalTime > 0 ? Math.min(1, Math.max(0, (now - fleet.timestamp) / totalTime)) : 1;
 
-            fleetIconX = sourceIso.x + (targetIso.x - sourceIso.x) * progress;
-            fleetIconY = sourceIso.y + (targetIso.y - sourceIso.y) * progress;
+            const position = this.getPointAlongRoute(points, progress);
+            fleetIconX = position.x;
+            fleetIconY = position.y;
         }
 
         ctx.beginPath();

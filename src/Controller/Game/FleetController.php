@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\FleetMovement;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
@@ -11,6 +12,7 @@ use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\FleetActionService;
 use FrankProjects\UltimateWarfare\Service\Action\RegionActionService;
+use FrankProjects\UltimateWarfare\Service\FleetRouteService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,17 +24,20 @@ final class FleetController extends BaseGameController
     private RegionActionService $regionActionService;
     private GameUnitRegistry $gameUnitRegistry;
     private DistanceCalculator $distanceCalculator;
+    private FleetRouteService $fleetRouteService;
 
     public function __construct(
         FleetActionService $fleetActionService,
         RegionActionService $regionActionService,
         GameUnitRegistry $gameUnitRegistry,
-        DistanceCalculator $distanceCalculator
+        DistanceCalculator $distanceCalculator,
+        FleetRouteService $fleetRouteService
     ) {
         $this->fleetActionService = $fleetActionService;
         $this->regionActionService = $regionActionService;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->distanceCalculator = $distanceCalculator;
+        $this->fleetRouteService = $fleetRouteService;
     }
 
     public function fleetOverviewApi(): JsonResponse
@@ -185,9 +190,10 @@ final class FleetController extends BaseGameController
     }
 
     /**
-     * API: Get target regions (your own regions and open sea next to them) for sending units
+     * API: Get target regions (your own regions and open sea next to them) the selected units can reach.
+     * Ground troops march through your own regions, ships sail over water and aircraft fly to an Airfield.
      */
-    public function sendUnitsTargetsApi(int $regionId): JsonResponse
+    public function sendUnitsTargetsApi(Request $request, int $regionId): JsonResponse
     {
         $player = $this->getPlayer();
 
@@ -197,19 +203,59 @@ final class FleetController extends BaseGameController
             return new JsonResponse(['success' => false, 'message' => $e->getMessage()], 404);
         }
 
+        // Comma separated ids of the selected units, which decide how the fleet travels
+        $gameUnits = [];
+        foreach (explode(',', $request->query->getString('units')) as $gameUnitId) {
+            $gameUnitEnum = is_numeric($gameUnitId) ? GameUnitEnum::tryFrom((int) $gameUnitId) : null;
+            if ($gameUnitEnum !== null) {
+                $gameUnits[] = $this->gameUnitRegistry->find($gameUnitEnum);
+            }
+        }
+
+        if ($gameUnits === []) {
+            return new JsonResponse(['success' => false, 'message' => 'No units selected!'], 400);
+        }
+
+        try {
+            $movement = $this->fleetRouteService->getMovement($gameUnits);
+        } catch (Throwable $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], 400);
+        }
+
+        // Ships can also sail to open sea next to one of your regions, which claims it on arrival
+        $candidates = $player->getWorldRegions()->toArray();
+        if ($movement === FleetMovement::NAVAL) {
+            $candidates = [...$candidates, ...$this->regionActionService->getOpenSeaRegionsNextToPlayer($player)];
+        }
+
+        $routeSteps = $this->fleetRouteService->findTargetRegions($sourceRegion, $player, $movement);
+
         $targets = [];
-        foreach ($player->getWorldRegions() as $worldRegion) {
+        foreach ($candidates as $worldRegion) {
             if ($worldRegion->getId() === $sourceRegion->getId()) {
                 continue; // Can't send to self
             }
 
             // Travel time depends on the units sent, so only the distance is known here
-            $distance = $this->distanceCalculator->calculateDistance(
-                $worldRegion->getX(),
-                $worldRegion->getY(),
-                $sourceRegion->getX(),
-                $sourceRegion->getY()
-            );
+            if ($movement === FleetMovement::AIR) {
+                if ($worldRegion->getLeveledUnit(GameUnitEnum::AIRFIELD) === null) {
+                    continue; // Aircraft only land on an Airfield
+                }
+
+                $distance = $this->distanceCalculator->calculateDistance(
+                    $worldRegion->getX(),
+                    $worldRegion->getY(),
+                    $sourceRegion->getX(),
+                    $sourceRegion->getY()
+                );
+            } else {
+                $steps = $routeSteps[$worldRegion->getId()] ?? null;
+                if ($steps === null) {
+                    continue; // Not connected to the source region
+                }
+
+                $distance = 2 * $steps;
+            }
 
             $targets[] = [
                 'regionId' => $worldRegion->getId(),
@@ -217,22 +263,6 @@ final class FleetController extends BaseGameController
                 'y' => $worldRegion->getY(),
                 'distance' => $distance,
                 'isWater' => $worldRegion->isWater(),
-            ];
-        }
-
-        // Ships can also sail to open sea next to one of your regions, which claims it on arrival
-        foreach ($this->regionActionService->getOpenSeaRegionsNextToPlayer($player) as $worldRegion) {
-            $targets[] = [
-                'regionId' => $worldRegion->getId(),
-                'x' => $worldRegion->getX(),
-                'y' => $worldRegion->getY(),
-                'distance' => $this->distanceCalculator->calculateDistance(
-                    $worldRegion->getX(),
-                    $worldRegion->getY(),
-                    $sourceRegion->getX(),
-                    $sourceRegion->getY()
-                ),
-                'isWater' => true,
             ];
         }
 
@@ -338,6 +368,7 @@ final class FleetController extends BaseGameController
                 'sourceY' => $sourceRegion->getY(),
                 'targetX' => $targetRegion->getX(),
                 'targetY' => $targetRegion->getY(),
+                'path' => $fleet->getPath(),
                 'targetRegionId' => $targetRegion->getId(),
                 'targetIsYours' => !$targetIsOpenSea,
                 'targetIsOpenSea' => $targetIsOpenSea,

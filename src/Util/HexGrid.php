@@ -28,4 +28,38 @@ final class HexGrid
             [$x, $y + 1], [$x + 1, $y + 1],
         ];
     }
+
+    /**
+     * Breadth-first search from a tile, one tile per step. A tile is reached when $canEnter allows the step onto it,
+     * the search only moves on from tiles $canPassThrough allows; the start tile is always passed through.
+     *
+     * @param callable(array{int, int} $from, array{int, int} $to): bool $canEnter
+     * @param callable(array{int, int} $tile): bool $canPassThrough
+     * @return array<string, non-empty-list<array{int, int}>> The path from the start to every reached tile,
+     *     keyed by "x,y"
+     */
+    public static function search(int $x, int $y, callable $canEnter, callable $canPassThrough): array
+    {
+        $paths = [$x . ',' . $y => [[$x, $y]]];
+        $queue = [[$x, $y]];
+
+        while ($queue !== []) {
+            $tile = array_shift($queue);
+            $path = $paths[$tile[0] . ',' . $tile[1]];
+
+            foreach (self::getNeighborCoordinates($tile[0], $tile[1]) as $neighbor) {
+                $key = $neighbor[0] . ',' . $neighbor[1];
+                if (isset($paths[$key]) || !$canEnter($tile, $neighbor)) {
+                    continue;
+                }
+
+                $paths[$key] = [...$path, $neighbor];
+                if ($canPassThrough($neighbor)) {
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        return $paths;
+    }
 }

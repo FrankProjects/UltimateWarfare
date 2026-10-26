@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\FleetMovement;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
@@ -19,6 +20,7 @@ use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\FleetFactory;
+use FrankProjects\UltimateWarfare\Service\FleetRouteService;
 use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use RuntimeException;
@@ -36,6 +38,7 @@ final class FleetActionService
     private WorldRegionRepository $worldRegionRepository;
     private EntityLockRepository $entityLockRepository;
     private WaterRegionUpdaterService $waterRegionUpdaterService;
+    private FleetRouteService $fleetRouteService;
 
     public function __construct(
         FleetRepository $fleetRepository,
@@ -46,7 +49,8 @@ final class FleetActionService
         FleetFactory $fleetFactory,
         WorldRegionRepository $worldRegionRepository,
         EntityLockRepository $entityLockRepository,
-        WaterRegionUpdaterService $waterRegionUpdaterService
+        WaterRegionUpdaterService $waterRegionUpdaterService,
+        FleetRouteService $fleetRouteService
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
@@ -57,6 +61,7 @@ final class FleetActionService
         $this->worldRegionRepository = $worldRegionRepository;
         $this->entityLockRepository = $entityLockRepository;
         $this->waterRegionUpdaterService = $waterRegionUpdaterService;
+        $this->fleetRouteService = $fleetRouteService;
     }
 
     public function recall(int $fleetId, Player $player): WorldRegion
@@ -193,11 +198,21 @@ final class FleetActionService
 
         $this->validateAirUnits($region, $targetRegion, $player, $gameUnitsToSend);
 
+        $movement = $this->fleetRouteService->getMovement(array_column($gameUnitsToSend, 'gameUnit'));
+        $path = $this->fleetRouteService->findRoute($region, $targetRegion, $player, $movement);
+        if ($path === null) {
+            throw new RuntimeException($movement === FleetMovement::NAVAL
+                ? "Your ships can't reach this region by water!"
+                : "Your units can't reach this region: it is not connected to this region through your own regions!");
+        }
+
         $fleet = $this->fleetFactory->createForPlayer(
             $player,
             $region,
             $targetRegion,
-            $this->getSlowestTravelSpeed($gameUnitsToSend)
+            $this->getSlowestTravelSpeed($gameUnitsToSend),
+            $path,
+            $movement
         );
         $this->fleetRepository->save($fleet);
 

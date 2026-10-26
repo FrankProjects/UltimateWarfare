@@ -17,6 +17,9 @@ class Fleet
     private WorldRegion $worldRegion;
     private WorldRegion $targetWorldRegion;
 
+    /** @var list<array{int, int}> Coordinates of the regions the fleet travels through, from source to target */
+    private array $path = [];
+
     /** @var Collection<int, FleetUnit> */
     private Collection $fleetUnits;
 
@@ -83,6 +86,22 @@ class Fleet
     public function setTargetWorldRegion(WorldRegion $targetWorldRegion): void
     {
         $this->targetWorldRegion = $targetWorldRegion;
+    }
+
+    /**
+     * @return list<array{int, int}>
+     */
+    public function getPath(): array
+    {
+        return $this->path;
+    }
+
+    /**
+     * @param list<array{int, int}> $path
+     */
+    public function setPath(array $path): void
+    {
+        $this->path = $path;
     }
 
     /**
