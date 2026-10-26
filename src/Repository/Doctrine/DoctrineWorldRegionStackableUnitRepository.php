@@ -70,7 +70,7 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
     /**
      * @param Player $player
      * @param GameUnitCategory[] $gameUnitCategories
-     * @return array<int|string, int>
+     * @return array<int, int>
      */
     public function getGameUnitSumByPlayerAndGameUnitCategories(Player $player, array $gameUnitCategories): array
     {
@@ -97,9 +97,9 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
             ->getArrayResult();
 
         $gameUnits = [];
-        /** @var array{gameUnit: GameUnitEnum, total: int} $result */
+        /** @var array{gameUnit: GameUnitEnum, total: int|string} $result */
         foreach ($results as $result) {
-            $gameUnits[$result['gameUnit']->value] = $result['total'];
+            $gameUnits[$result['gameUnit']->value] = (int) $result['total'];
         }
 
         return $gameUnits;

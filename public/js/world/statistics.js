@@ -114,6 +114,7 @@
         html += '<tr><td class="uw-table-label">Wood</td><td>' + formatNumber(status.wood) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Steel</td><td>' + formatNumber(status.steel) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Food</td><td>' + formatNumber(status.food) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Population</td><td>' + formatNumber(status.population) + ' / ' + formatNumber(status.maxPopulation) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Regions</td><td>' + formatNumber(status.regions) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Net Worth</td><td>' + formatNumber(status.netWorth) + '</td></tr>';
         html += '</table>';
