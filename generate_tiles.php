@@ -538,7 +538,6 @@ function drawHexClip(GdImage $img, int $cx, int $cy, int $size): void
         }
     }
 
-    imagedestroy($mask);
 }
 
 // ========== MAIN ==========
@@ -560,7 +559,6 @@ foreach ($tiles as $name => $generator) {
     $img = $generator($width, $height);
     $path = "{$outputDir}/{$name}.png";
     imagepng($img, $path, 9);
-    imagedestroy($img);
     echo "  Created: {$name}.png\n";
 }
 

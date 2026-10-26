@@ -83,7 +83,7 @@ Pull requests from contributors who have not signed the CLA will not be merged.
 
 ##### Assumptions:
 
-- You have [PHP](http://www.php.net/) 8.0 or higher installed and in your path.
+- You have [PHP](https://www.php.net/) 8.5 or higher installed and in your path.
 - You have [Composer](https://getcomposer.org/) installed and in your path.
 - You have a basic understanding of the [Symfony framework](https://symfony.com/).
 

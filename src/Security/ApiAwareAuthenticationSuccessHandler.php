@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
+use Uri\Rfc3986\Uri;
 
 final class ApiAwareAuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
@@ -21,8 +22,8 @@ final class ApiAwareAuthenticationSuccessHandler extends DefaultAuthenticationSu
         // When login session expires while player is doing async /game/api requests on the worldmap,
         // Don't forward the player to a json /game/api endpoint. Logins should always go to the worldmap
         if (is_string($targetPath)) {
-            $path = parse_url($targetPath, PHP_URL_PATH);
-            if (is_string($path) && str_starts_with($path, '/game/api/')) {
+            $path = Uri::parse($targetPath)?->getPath();
+            if ($path !== null && str_starts_with($path, '/game/api/')) {
                 $session->remove($sessionKey);
             }
         }

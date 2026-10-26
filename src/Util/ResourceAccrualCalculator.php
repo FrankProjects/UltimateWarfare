@@ -32,6 +32,7 @@ final class ResourceAccrualCalculator
      * The player's resources as they are at $at, without changing the player. Exact between state updates,
      * as the income/upkeep rate only changes when the player is synced.
      */
+    #[\NoDiscard]
     public function project(Player $player, int $at): Resources
     {
         $from = $player->getTimestampUpdate();

@@ -139,7 +139,7 @@ final class FleetRouteService
 
         $steps = [];
         foreach ($this->searchPaths($from, $player, $movement, $isEndpoint) as $path) {
-            $region = end($path);
+            $region = array_last($path);
             if ($region !== $from && $isEndpoint($region)) {
                 $steps[$region->getId()] = count($path) - 1;
             }

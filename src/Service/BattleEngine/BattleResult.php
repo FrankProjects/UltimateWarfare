@@ -77,8 +77,7 @@ final class BattleResult
 
     public function hasWon(): bool
     {
-        $battlePhases = $this->getBattlePhases();
-        $battlePhase = end($battlePhases);
+        $battlePhase = array_last($this->getBattlePhases());
         if ($battlePhase instanceof BattlePhase === false) {
             return false;
         }

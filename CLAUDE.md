@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Ultimate Warfare is a browser-based multiplayer strategy game built with **Symfony 8.0** and **PHP 8.4**. Players compete through resource management, construction, research, fleet operations, and battles.
+Ultimate Warfare is a browser-based multiplayer strategy game built with **Symfony 8.0** and **PHP 8.5**. Players compete through resource management, construction, research, fleet operations, and battles.
 
 ## Common Commands
 
