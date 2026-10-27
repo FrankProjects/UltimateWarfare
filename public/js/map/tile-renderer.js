@@ -217,14 +217,14 @@ class TileRenderer {
         this.ctx.save();
 
         const terrainColors = {
-            deep_water: '#143278',
-            water: '#2350a5',
-            shallow_water: '#4696c3',
-            sand: '#d2be8c',
-            grassland: '#4b8c3c',
-            forest: '#235523',
-            hills: '#6e914b',
-            mountain: '#645f55',
+            deep_water: '#1e3d6b',
+            water: '#2c62a0',
+            shallow_water: '#4e9cc7',
+            sand: '#dcc790',
+            grassland: '#79aa4c',
+            forest: '#3f7a3e',
+            hills: '#a8a065',
+            mountain: '#8a8781',
         };
 
         if (region.hasOwner) {
