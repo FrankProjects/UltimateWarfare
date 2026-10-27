@@ -18,6 +18,7 @@ final readonly class SubmarineAttackOperation extends Operation
             image: 'op_submarine_attack.jpg',
             cost: 25000,
             description: "Send submarines to sink enemy destroyers. Each submarine sinks 1 destroyer."
+                . " Submarines in the region need 30 minutes to rearm afterwards."
                 . " On failure, you lose 5% of the deployed submarines."
                 . " The enemy always receives a report; your name is hidden on success.",
             enabled: true,
@@ -36,5 +37,10 @@ final readonly class SubmarineAttackOperation extends Operation
     public function getProcessorClass(): string
     {
         return SubmarineAttack::class;
+    }
+
+    public function hasCooldown(): bool
+    {
+        return true;
     }
 }

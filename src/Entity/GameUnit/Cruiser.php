@@ -30,17 +30,18 @@ final class Cruiser extends GameUnit
             description: '',
             gameUnitCategory: GameUnitCategory::NAVAL_UNITS,
             behaviorClass: NavalUnitBehavior::class,
-            cost: new Cost(cash: 100000, food: 20000, wood: 2500, steel: 3500),
+            cost: new Cost(cash: 80000, food: 12000, wood: 2000, steel: 3000),
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
-            upkeep: new Upkeep(cash: 1500, food: 750, wood: 0, steel: 0),
+            upkeep: new Upkeep(cash: 800, food: 200, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 7500,
-                armor: 75,
+                health: 2100,
+                armor: 10,
                 travelSpeed: 100,
-                airBattleStats: new AirBattleStats(defence: 100, defenceSpeed: 50),
-                seaBattleStats: new SeaBattleStats(attack: 200, attackSpeed: 150, defence: 230, defenceSpeed: 160),
-                groundBattleStats: new GroundBattleStats(attack: 160, attackSpeed: 40),
+                airBattleStats: new AirBattleStats(defence: 1500, defenceSpeed: 120),
+                seaBattleStats: new SeaBattleStats(attack: 12000, attackSpeed: 120, defence: 13000, defenceSpeed: 130),
+                groundBattleStats: new GroundBattleStats(attack: 3000, attackSpeed: 50),
             ),
+            population: 80,
         );
     }
 

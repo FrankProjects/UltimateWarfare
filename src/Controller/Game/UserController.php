@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
+use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
@@ -63,8 +64,8 @@ final class UserController extends BaseGameController
     {
         $user = $this->getGameUser();
         $player = $this->getPlayer();
-        $isFederationFounder = $player->getFederation() !== null
-            && $player->getFederation()->getFounder() === $player;
+        $isFederationGeneral = $player->getFederation() !== null
+            && $player->getFederationHierarchy() === Player::FEDERATION_HIERARCHY_GENERAL;
 
         return new JsonResponse([
             'success' => true,
@@ -75,7 +76,7 @@ final class UserController extends BaseGameController
                 'accountType' => $this->getAccountType(),
                 'banned' => $user->isBanned(),
                 'canSurrender' => $player->canSurrender(),
-                'isFederationFounder' => $isFederationFounder,
+                'isFederationGeneral' => $isFederationGeneral,
             ]
         ]);
     }
@@ -108,11 +109,14 @@ final class UserController extends BaseGameController
                 ]);
             }
 
-            if ($player->getFederation() !== null && $player->getFederation()->getFounder() === $player) {
+            if (
+                $player->getFederation() !== null
+                && $player->getFederationHierarchy() === Player::FEDERATION_HIERARCHY_GENERAL
+            ) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'You cannot surrender if you are a Federation founder. '
-                        . 'Please disband your Federation first.',
+                    'message' => 'You cannot surrender while you are a Federation General. '
+                        . 'Please hand over or disband your Federation first.',
                 ]);
             }
 

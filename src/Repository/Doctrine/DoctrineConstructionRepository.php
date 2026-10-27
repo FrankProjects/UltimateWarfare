@@ -116,30 +116,6 @@ final class DoctrineConstructionRepository implements ConstructionRepository
     }
 
     /**
-     * @param Player $player
-     * @param GameUnitCategory $gameUnitCategory
-     * @return Construction[]
-     */
-    public function findByPlayerAndGameUnitCategory(Player $player, GameUnitCategory $gameUnitCategory): array
-    {
-        $unitIds = $this->gameUnitRegistry->getIdsByCategory($gameUnitCategory);
-
-        if ($unitIds === []) {
-            return [];
-        }
-
-        return $this->entityManager
-            ->createQuery(
-                'SELECT c
-              FROM ' . Construction::class . ' c
-              WHERE c.player = :player AND c.gameUnit IN (:unitIds)
-              ORDER BY c.timestamp DESC'
-            )->setParameter('player', $player)
-            ->setParameter('unitIds', $unitIds)
-            ->getResult();
-    }
-
-    /**
      * @param int $timestamp
      * @return Construction[]
      */
@@ -150,7 +126,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
             ->createQuery(
                 'SELECT c
               FROM ' . Construction::class . ' c
-              WHERE c.timestamp + c.duration < :timestamp'
+              WHERE c.completionTimestamp < :timestamp'
             )->setParameter('timestamp', $timestamp)
             ->getResult();
 
@@ -160,9 +136,34 @@ final class DoctrineConstructionRepository implements ConstructionRepository
     /**
      * @return Construction[]
      */
-    public function getAllConstructions(): array
+    public function getCompletedConstructionsByPlayer(Player $player, int $timestamp): array
     {
-        return $this->repository->findAll();
+        /** @var Construction[] $completed */
+        $completed = $this->entityManager
+            ->createQuery(
+                'SELECT c
+              FROM ' . Construction::class . ' c
+              WHERE c.player = :player AND c.completionTimestamp < :timestamp
+              ORDER BY c.completionTimestamp ASC, c.id ASC'
+            )->setParameter('player', $player)
+            ->setParameter('timestamp', $timestamp)
+            ->getResult();
+
+        return $completed;
+    }
+
+    public function getNextCompletionTimestampByPlayer(Player $player): ?int
+    {
+        /** @var int|string|null $next */
+        $next = $this->entityManager
+            ->createQuery(
+                'SELECT MIN(c.completionTimestamp)
+              FROM ' . Construction::class . ' c
+              WHERE c.player = :player'
+            )->setParameter('player', $player)
+            ->getSingleScalarResult();
+
+        return $next !== null ? (int) $next : null;
     }
 
     public function remove(Construction $construction): void

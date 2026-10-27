@@ -35,22 +35,17 @@ interface ConstructionRepository
     public function getGameUnitConstructionSumByPlayerGroupedByRegion(Player $player): array;
 
     /**
-     * @param Player $player
-     * @param GameUnitCategory $gameUnitCategory
-     * @return Construction[]
-     */
-    public function findByPlayerAndGameUnitCategory(Player $player, GameUnitCategory $gameUnitCategory): array;
-
-    /**
      * @param int $timestamp
      * @return Construction[]
      */
     public function getCompletedConstructions(int $timestamp): array;
 
     /**
-     * @return Construction[]
+     * @return Construction[] Ordered by completion time
      */
-    public function getAllConstructions(): array;
+    public function getCompletedConstructionsByPlayer(Player $player, int $timestamp): array;
+
+    public function getNextCompletionTimestampByPlayer(Player $player): ?int;
 
     public function remove(Construction $construction): void;
 

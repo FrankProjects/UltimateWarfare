@@ -43,14 +43,13 @@ final class RegisterActionService
     }
 
     /**
-     * XXX TODO: Add captcha
-     *
      * @param User $user
+     * @param string $plainPassword
      * @throws Exception
      */
-    public function register(User $user): void
+    public function register(User $user, string $plainPassword): void
     {
-        $password = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
+        $password = $this->passwordHasher->hashPassword($user, $plainPassword);
         $user->setPassword($password);
 
         try {

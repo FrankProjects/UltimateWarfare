@@ -9,12 +9,14 @@ use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Player\Resources as PlayerResources;
+use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Service\Action\LeveledUnitActionService;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorInterface;
@@ -30,6 +32,7 @@ class LeveledUnitActionServiceTest extends TestCase
     private PlayerRepository&MockObject $playerRepository;
     private WorldRegionLeveledUnitRepository&MockObject $leveledUnitRepository;
     private GameUnitBehaviorFactory&MockObject $behaviorFactory;
+    private WorldRegionRepository&MockObject $worldRegionRepository;
 
     protected function setUp(): void
     {
@@ -38,6 +41,7 @@ class LeveledUnitActionServiceTest extends TestCase
         $this->playerRepository = $this->createMock(PlayerRepository::class);
         $this->leveledUnitRepository = $this->createMock(WorldRegionLeveledUnitRepository::class);
         $this->behaviorFactory = $this->createMock(GameUnitBehaviorFactory::class);
+        $this->worldRegionRepository = $this->createMock(WorldRegionRepository::class);
 
         $behavior = $this->createMock(GameUnitBehaviorInterface::class);
         $behavior->method('canBuild')->willReturn(true);
@@ -49,7 +53,8 @@ class LeveledUnitActionServiceTest extends TestCase
             $this->gameUnitRegistry,
             $this->playerRepository,
             $this->leveledUnitRepository,
-            $this->behaviorFactory
+            $this->behaviorFactory,
+            $this->worldRegionRepository
         );
     }
 
@@ -193,5 +198,75 @@ class LeveledUnitActionServiceTest extends TestCase
         $this->expectExceptionMessage('full health');
 
         $this->service->repair($region, $this->createPlayer(), GameUnitEnum::BARRACK);
+    }
+
+    public function testBuildSeaMineOnWater(): void
+    {
+        $region = $this->createRegion();
+        $region->setType(WorldRegion::TYPE_DEEP_WATER);
+
+        $this->constructionRepository->expects(self::once())
+            ->method('save')
+            ->with(self::callback(static fn (Construction $c): bool => $c->getGameUnit() === GameUnitEnum::SEA_MINE));
+
+        $this->service->build($region, $this->createPlayer(), GameUnitEnum::SEA_MINE);
+    }
+
+    public function testBuildRejectsOtherBuildingsOnWater(): void
+    {
+        $region = $this->createRegion();
+        $region->setType(WorldRegion::TYPE_SHALLOW_WATER);
+
+        $this->constructionRepository->expects(self::never())->method('save');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('only Sea Mines can be built on water');
+
+        $this->service->build($region, $this->createPlayer(), GameUnitEnum::BARRACK);
+    }
+
+    public function testBuildHarborOnCoastalRegion(): void
+    {
+        $region = $this->createRegionNextTo(WorldRegion::TYPE_WATER);
+
+        $this->constructionRepository->expects(self::once())
+            ->method('save')
+            ->with(self::callback(static fn (Construction $c): bool => $c->getGameUnit() === GameUnitEnum::HARBOR));
+
+        $this->service->build($region, $this->createPlayer(), GameUnitEnum::HARBOR);
+    }
+
+    public function testBuildRejectsHarborOnInlandRegion(): void
+    {
+        $region = $this->createRegionNextTo(WorldRegion::TYPE_GRASSLAND);
+
+        $this->constructionRepository->expects(self::never())->method('save');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('requires a coastal region');
+
+        $this->service->build($region, $this->createPlayer(), GameUnitEnum::HARBOR);
+    }
+
+    public function testBuildRejectsSeaMineOnInlandRegion(): void
+    {
+        $region = $this->createRegionNextTo(WorldRegion::TYPE_FOREST);
+
+        $this->constructionRepository->expects(self::never())->method('save');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('requires a coastal or water region');
+
+        $this->service->build($region, $this->createPlayer(), GameUnitEnum::SEA_MINE);
+    }
+
+    /**
+     * A grassland region whose only neighbor is of the given type
+     */
+    private function createRegionNextTo(string $neighborType): WorldRegion
+    {
+        $world = new World();
+        $region = WorldRegion::createForWorld($world, 1, 1, 0, WorldRegion::TYPE_GRASSLAND, 1000);
+        $neighbor = WorldRegion::createForWorld($world, 2, 1, 0, $neighborType, 0);
+        $this->worldRegionRepository->method('findAdjacentRegions')->willReturn([$neighbor]);
+
+        return $region;
     }
 }

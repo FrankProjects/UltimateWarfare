@@ -14,16 +14,24 @@ interface MessageRepository
     /**
      * @param Player $player
      * @param int $limit
+     * @param int $offset
      * @return Message[]
      */
-    public function findNonDeletedMessagesToPlayer(Player $player, int $limit = 100): array;
+    public function findNonDeletedMessagesToPlayer(Player $player, int $limit = 100, int $offset = 0): array;
+
+    public function countNonDeletedMessagesToPlayer(Player $player): int;
+
+    public function countUnreadMessagesToPlayer(Player $player): int;
 
     /**
      * @param Player $player
      * @param int $limit
+     * @param int $offset
      * @return Message[]
      */
-    public function findNonDeletedMessagesFromPlayer(Player $player, int $limit = 100): array;
+    public function findNonDeletedMessagesFromPlayer(Player $player, int $limit = 100, int $offset = 0): array;
+
+    public function countNonDeletedMessagesFromPlayer(Player $player): int;
 
     public function remove(Message $message): void;
 

@@ -31,16 +31,12 @@ final class Soldier extends GameUnit
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
             upkeep: new Upkeep(cash: 1, food: 1, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 50,
+                health: 40,
                 armor: 1,
                 travelSpeed: 100,
-                groundBattleStats: new GroundBattleStats(
-                    attack: 10,
-                    attackSpeed: 100,
-                    defence: 12,
-                    defenceSpeed: 110,
-                ),
+                groundBattleStats: new GroundBattleStats(attack: 36, attackSpeed: 100, defence: 14, defenceSpeed: 110),
             ),
+            population: 1,
         );
     }
 

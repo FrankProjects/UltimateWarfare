@@ -23,9 +23,9 @@ final class Harbor extends GameUnit
             image: 'gu_harbor.jpg',
             netWorth: 15,
             timestamp: 28800,
-            description: 'An harbor can send 1 ship to your neighbour countries '
-                . 'and help them defending when they are under attack. Each upgrade level '
-                . 'builds naval units in this region 5% faster (up to 45% at level 10).',
+            description: 'When one of your neighbouring regions is attacked, a harbor sends up to '
+                . '1 ship per level from this region to help defend it, the toughest ships first. Each upgrade '
+                . 'level also builds naval units in this region 5% faster (up to 45% at level 10).',
             gameUnitCategory: GameUnitCategory::SPECIAL_BUILDINGS,
             behaviorClass: null,
             cost: new Cost(cash: 25000, food: 0, wood: 600, steel: 150),

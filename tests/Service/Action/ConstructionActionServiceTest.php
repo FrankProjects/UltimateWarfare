@@ -11,16 +11,19 @@ use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Player\Resources as PlayerResources;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\Action\ConstructionActionService;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorInterface;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
+use FrankProjects\UltimateWarfare\Tests\Service\CreatesPlayerStateUpdaterService;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -28,6 +31,8 @@ use RuntimeException;
 
 class ConstructionActionServiceTest extends TestCase
 {
+    use CreatesPlayerStateUpdaterService;
+
     private ConstructionActionService $service;
     private ConstructionRepository&MockObject $constructionRepository;
 
@@ -58,7 +63,9 @@ class ConstructionActionServiceTest extends TestCase
             $this->createMock(PlayerRepository::class),
             $this->createMock(WorldRegionStackableUnitRepository::class),
             $netWorthUpdaterService,
-            $behaviorFactory
+            $behaviorFactory,
+            $this->createIncomeUpdaterService(),
+            $this->createMock(WorldRegionRepository::class)
         );
     }
 
@@ -129,6 +136,65 @@ class ConstructionActionServiceTest extends TestCase
         self::assertTrue($region->getConstructions()->isEmpty());
     }
 
+    public function testTrainingTakesPopulationFromRegion(): void
+    {
+        $region = $this->createRegion(10);
+        WorldRegionLeveledUnit::create($region, GameUnitEnum::BARRACK, 1, 100);
+        $region->setPopulation(100);
+
+        $this->service->constructGameUnits(
+            $region,
+            $this->createPlayer(),
+            GameUnitCategory::TROOPS,
+            [GameUnitEnum::SOLDIER->value => '30']
+        );
+
+        self::assertSame(70, $region->getPopulation());
+        self::assertCount(1, $region->getConstructions());
+    }
+
+    public function testTrainingMoreThanPopulationFails(): void
+    {
+        $region = $this->createRegion(10);
+        WorldRegionLeveledUnit::create($region, GameUnitEnum::BARRACK, 1, 100);
+        $region->setPopulation(20);
+        $player = $this->createPlayer();
+
+        $this->constructionRepository->expects(self::never())->method('save');
+
+        try {
+            $this->service->constructGameUnits(
+                $region,
+                $player,
+                GameUnitCategory::TROOPS,
+                [GameUnitEnum::SOLDIER->value => '21']
+            );
+            self::fail('Expected the population to be exceeded');
+        } catch (RuntimeException $e) {
+            self::assertSame("You don't have enough people in this region to train that.", $e->getMessage());
+        }
+
+        self::assertSame(20, $region->getPopulation());
+        self::assertSame(1000000, $player->getResources()->getCash());
+        self::assertTrue($region->getConstructions()->isEmpty());
+    }
+
+    public function testMissilesNeedNoPopulation(): void
+    {
+        $region = $this->createRegion(10);
+        WorldRegionLeveledUnit::create($region, GameUnitEnum::MISSILE_FACTORY, 1, 100);
+
+        $this->service->constructGameUnits(
+            $region,
+            $this->createPlayer(),
+            GameUnitCategory::MISSILES,
+            [GameUnitEnum::ROCKET->value => '5']
+        );
+
+        self::assertSame(0, $region->getPopulation());
+        self::assertCount(1, $region->getConstructions());
+    }
+
     private function createRegion(int $space): WorldRegion
     {
         $region = new WorldRegion();
@@ -150,5 +216,22 @@ class ConstructionActionServiceTest extends TestCase
         $player->method('getPlayerResearch')->willReturn(new ArrayCollection([]));
 
         return $player;
+    }
+
+    public function testConstructRejectsBuildingsOnWater(): void
+    {
+        $region = $this->createRegion(10);
+        $region->setType(WorldRegion::TYPE_WATER);
+
+        $this->constructionRepository->expects(self::never())->method('save');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('only Sea Mines can be built on water');
+
+        $this->service->constructGameUnits(
+            $region,
+            $this->createPlayer(),
+            GameUnitCategory::BUILDINGS,
+            [GameUnitEnum::FARM->value => '1']
+        );
     }
 }

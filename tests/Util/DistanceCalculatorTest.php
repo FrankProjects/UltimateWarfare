@@ -22,17 +22,29 @@ class DistanceCalculatorTest extends TestCase
         self::assertEquals(26, $result);
     }
 
+    public function testCalculatePathDistanceCountsStepsLikeNeighborDistance(): void
+    {
+        $calculator = new DistanceCalculator(0);
+
+        self::assertEquals(0, $calculator->calculatePathDistance([[3, 3]]));
+        self::assertEquals(
+            $calculator->calculateDistance(3, 3, 4, 3),
+            $calculator->calculatePathDistance([[3, 3], [4, 3]])
+        );
+        self::assertEquals(6, $calculator->calculatePathDistance([[3, 3], [4, 3], [4, 4], [4, 5]]));
+    }
+
     public function testCalculateDistanceTravelTime(): void
     {
         $calculator = new DistanceCalculator(0);
 
-        $result = $calculator->calculateDistanceTravelTime(1, 1, 1, 1);
+        $result = $calculator->calculateDistanceTravelTime(0);
         self::assertEquals(0, $result); // 0 distance * 100
 
-        $result = $calculator->calculateDistanceTravelTime(1, 1, 2, 1);
+        $result = $calculator->calculateDistanceTravelTime(2);
         self::assertEquals(200, $result); // 2 distance * 100
 
-        $result = $calculator->calculateDistanceTravelTime(1, 1, 10, 10);
+        $result = $calculator->calculateDistanceTravelTime(26);
         self::assertEquals(2600, $result); // 26 distance * 100
     }
 
@@ -41,13 +53,13 @@ class DistanceCalculatorTest extends TestCase
         $calculator = new DistanceCalculator(1);
 
         // When override is set, travel time should always be 1
-        $result = $calculator->calculateDistanceTravelTime(1, 1, 1, 1);
+        $result = $calculator->calculateDistanceTravelTime(0);
         self::assertEquals(1, $result);
 
-        $result = $calculator->calculateDistanceTravelTime(1, 1, 10, 10);
+        $result = $calculator->calculateDistanceTravelTime(26);
         self::assertEquals(1, $result);
 
-        $result = $calculator->calculateDistanceTravelTime(1, 1, 100, 100);
+        $result = $calculator->calculateDistanceTravelTime(280);
         self::assertEquals(1, $result);
     }
 
@@ -55,13 +67,29 @@ class DistanceCalculatorTest extends TestCase
     {
         $calculator = new DistanceCalculator(0);
 
-        // distance(1,1,10,10) * 100 = 2600 base travel time.
+        // distance 26 * 100 = 2600 base travel time.
         // Level 0 and 1 give no bonus (level 1 only unlocks the building).
-        self::assertEquals(2600, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 0));
-        self::assertEquals(2600, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 1));
+        self::assertEquals(2600, $calculator->calculateFleetTravelTime(26, 0, 100));
+        self::assertEquals(2600, $calculator->calculateFleetTravelTime(26, 1, 100));
 
         // Level 2 -> 5% faster, level 10 -> 45% faster.
-        self::assertEquals(2470, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 2));
-        self::assertEquals(1430, $calculator->calculateFleetTravelTime(1, 1, 10, 10, 10));
+        self::assertEquals(2470, $calculator->calculateFleetTravelTime(26, 2, 100));
+        self::assertEquals(1430, $calculator->calculateFleetTravelTime(26, 10, 100));
+    }
+
+    public function testCalculateFleetTravelTimeAppliesTravelSpeed(): void
+    {
+        $calculator = new DistanceCalculator(0);
+
+        // Base speed 100 takes the base travel time, faster units take proportionally less.
+        self::assertEquals(2600, $calculator->calculateFleetTravelTime(26, 0, 100));
+        self::assertEquals(1300, $calculator->calculateFleetTravelTime(26, 0, 200));
+        self::assertEquals(520, $calculator->calculateFleetTravelTime(26, 0, 500));
+
+        // Units without a travel speed move at base speed.
+        self::assertEquals(2600, $calculator->calculateFleetTravelTime(26, 0, 0));
+
+        // Combined with the Train Station bonus: 1300 * 0.55 = 715.
+        self::assertEquals(715, $calculator->calculateFleetTravelTime(26, 10, 200));
     }
 }

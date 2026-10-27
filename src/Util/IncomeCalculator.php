@@ -5,12 +5,37 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Util;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 
 /**
  * @property Player\Income $abstractGameResources
  */
 final class IncomeCalculator extends AbstractPlayerCalculator
 {
+    /**
+     * Every 15 people bring in 1 cash per hour
+     */
+    private const int POPULATION_PER_CASH = 15;
+
+    public function __construct(
+        GameUnitRegistry $gameUnitRegistry,
+        WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
+        WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
+        FleetUnitRepository $fleetUnitRepository,
+        private readonly WorldRegionRepository $worldRegionRepository
+    ) {
+        parent::__construct(
+            $gameUnitRegistry,
+            $worldRegionStackableUnitRepository,
+            $worldRegionLeveledUnitRepository,
+            $fleetUnitRepository
+        );
+    }
+
     public function calculateIncomeForPlayer(Player $player): Player\Income
     {
         $this->abstractGameResources = new Player\Income();
@@ -19,6 +44,10 @@ final class IncomeCalculator extends AbstractPlayerCalculator
         $this->calculateForWorldRegions($player, AbstractPlayerCalculator::ABSTRACT_GAME_RESOURCES_INCOME);
 
         $this->applyResearchMultipliers($player);
+
+        $this->abstractGameResources->addCash(
+            intdiv($this->worldRegionRepository->getPopulationSumByPlayer($player), self::POPULATION_PER_CASH)
+        );
 
         return $this->abstractGameResources;
     }

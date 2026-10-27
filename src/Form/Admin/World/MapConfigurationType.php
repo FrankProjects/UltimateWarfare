@@ -6,12 +6,13 @@ namespace FrankProjects\UltimateWarfare\Form\Admin\World;
 
 use FrankProjects\UltimateWarfare\Entity\World\MapConfiguration;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\RangeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
+use Symfony\Component\Validator\Constraints\Range;
 
 /** @extends AbstractType<null> */
 class MapConfigurationType extends AbstractType
@@ -21,89 +22,133 @@ class MapConfigurationType extends AbstractType
         $builder
             ->add(
                 'seed',
-                TextType::class,
+                IntegerType::class,
                 [
                     'label' => 'label.seed',
-                    'required' => false
+                    'help' => 'label.seedHelp',
+                    'required' => false,
+                    'constraints' => [
+                        new PositiveOrZero()
+                    ],
+                    // A seed of 0 makes WorldGeneratorService pick a random seed
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'size',
-                TextType::class,
+                IntegerType::class,
                 [
-                    'label' => 'label.size'
+                    'label' => 'label.size',
+                    'constraints' => [
+                        new Positive()
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'deepWaterLevel',
-                RangeType::class,
+                IntegerType::class,
                 [
+                    'block_prefix' => 'range',
                     'label' => 'label.deepWaterLevel',
                     'attr' => ['min' => 100, 'max' => 250],
+                    'constraints' => [
+                        new Range(min: 100, max: 250)
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'waterLevel',
-                RangeType::class,
+                IntegerType::class,
                 [
+                    'block_prefix' => 'range',
                     'label' => 'label.waterLevel',
                     'attr' => ['min' => 100, 'max' => 250],
+                    'constraints' => [
+                        new Range(min: 100, max: 250)
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'shallowWaterLevel',
-                RangeType::class,
+                IntegerType::class,
                 [
+                    'block_prefix' => 'range',
                     'label' => 'label.shallowWaterLevel',
                     'attr' => ['min' => 100, 'max' => 250],
+                    'constraints' => [
+                        new Range(min: 100, max: 250)
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'sandLevel',
-                RangeType::class,
+                IntegerType::class,
                 [
+                    'block_prefix' => 'range',
                     'label' => 'label.sandLevel',
                     'attr' => ['min' => 100, 'max' => 250],
+                    'constraints' => [
+                        new Range(min: 100, max: 250)
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'grasslandLevel',
-                RangeType::class,
+                IntegerType::class,
                 [
+                    'block_prefix' => 'range',
                     'label' => 'label.grasslandLevel',
                     'attr' => ['min' => 100, 'max' => 250],
+                    'constraints' => [
+                        new Range(min: 100, max: 250)
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'forestLevel',
-                RangeType::class,
+                IntegerType::class,
                 [
+                    'block_prefix' => 'range',
                     'label' => 'label.forestLevel',
                     'attr' => ['min' => 100, 'max' => 250],
+                    'constraints' => [
+                        new Range(min: 100, max: 250)
+                    ],
+                    'empty_data' => '0'
                 ]
             )
             ->add(
                 'hillsLevel',
-                RangeType::class,
+                IntegerType::class,
                 [
+                    'block_prefix' => 'range',
                     'label' => 'label.hillsLevel',
                     'attr' => ['min' => 100, 'max' => 250],
+                    'constraints' => [
+                        new Range(min: 100, max: 250)
+                    ],
+                    'empty_data' => '0'
+                ]
+            )
+            ->add(
+                'generate',
+                SubmitType::class,
+                [
+                    'label' => 'label.generatePreview',
+                    'attr' => ['class' => 'btn-secondary']
                 ]
             )
             ->add(
                 'save',
-                CheckboxType::class,
-                [
-                    'label' => 'label.save',
-                    'mapped' => false,
-                    'required' => false
-                ]
-            )
-            ->add(
-                'submit',
                 SubmitType::class,
                 [
-                    'label' => 'label.generate'
+                    'label' => 'label.save'
                 ]
             );
     }

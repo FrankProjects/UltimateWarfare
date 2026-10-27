@@ -20,6 +20,10 @@ class WorldRegion
     public const string TYPE_HILLS = 'hills';
     public const string TYPE_MOUNTAIN = 'mountain';
 
+    /**
+     * Water regions can't be bought; naval units claim them while stationed there (see WaterRegionUpdaterService)
+     */
+    public const array WATER_TYPES = [self::TYPE_DEEP_WATER, self::TYPE_WATER, self::TYPE_SHALLOW_WATER];
 
     private int $id;
     private int $x;
@@ -30,8 +34,10 @@ class WorldRegion
     private ?string $name;
     private int $space = 1000;
     private int $population = 0;
+    private int $morale = 100;
+    private int $moraleTimestamp = 0;
     private World $world;
-    private ?Player $player;
+    private ?Player $player = null;
 
     /**
      * @var Collection<int, WorldRegionStackableUnit>
@@ -134,6 +140,31 @@ class WorldRegion
         return $this->type;
     }
 
+    public function isWater(): bool
+    {
+        return in_array($this->type, self::WATER_TYPES, true);
+    }
+
+    /**
+     * A coastal region is a land region that shares a border with a water region
+     *
+     * @param iterable<WorldRegion> $adjacentRegions The neighbors of this region
+     */
+    public function isCoastal(iterable $adjacentRegions): bool
+    {
+        if ($this->isWater()) {
+            return false;
+        }
+
+        foreach ($adjacentRegions as $adjacentRegion) {
+            if ($adjacentRegion->isWater()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function setType(string $type): void
     {
         if (!$this->isValidType($type)) {
@@ -181,6 +212,29 @@ class WorldRegion
     public function getPopulation(): int
     {
         return $this->population;
+    }
+
+    /**
+     * Morale as it was at the morale timestamp; use MoraleUpdaterService::project() for the current value
+     */
+    public function getMorale(): int
+    {
+        return $this->morale;
+    }
+
+    public function setMorale(int $morale): void
+    {
+        $this->morale = $morale;
+    }
+
+    public function getMoraleTimestamp(): int
+    {
+        return $this->moraleTimestamp;
+    }
+
+    public function setMoraleTimestamp(int $moraleTimestamp): void
+    {
+        $this->moraleTimestamp = $moraleTimestamp;
     }
 
     /**
@@ -341,7 +395,6 @@ class WorldRegion
         $worldRegion->setZ($z);
         $worldRegion->setType($type);
         $worldRegion->setSpace($space);
-        $worldRegion->setPopulation($space * 10);
 
         return $worldRegion;
     }

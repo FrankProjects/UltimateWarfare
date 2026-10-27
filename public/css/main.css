@@ -265,6 +265,10 @@ a:hover {
     color: #f3e6c1;
 }
 
+.form-text {
+    color: #999;
+}
+
 .form-select {
     background-color: #1a1a1a;
     border: 1px solid #8B7355;
@@ -667,6 +671,23 @@ a:hover {
 }
 
 /* ===== Admin World Generator ===== */
+.world-generator-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.world-generator-map {
+    display: grid;
+    grid-template-columns: repeat(var(--map-size), 1fr);
+    width: 100%;
+    max-width: 500px;
+}
+
+.world-generator-map > div {
+    aspect-ratio: 1;
+}
+
 .terrain-deep-water {
     background-color: #143278;
 }

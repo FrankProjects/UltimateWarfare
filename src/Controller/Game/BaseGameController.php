@@ -34,9 +34,6 @@ class BaseGameController extends BaseController
 
     public function getPlayer(): Player
     {
-        /**
-         * XXX TODO: Fix counter in messages navigation bar
-         */
         $user = $this->getGameUser();
         $playerId = $this->getPlayerIdFromSession();
         if ($playerId === null) {

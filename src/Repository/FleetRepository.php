@@ -6,6 +6,7 @@ namespace FrankProjects\UltimateWarfare\Repository;
 
 use FrankProjects\UltimateWarfare\Entity\Fleet;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\World;
 
 interface FleetRepository
 {
@@ -16,6 +17,13 @@ interface FleetRepository
      * @return Fleet[]
      */
     public function findByPlayer(Player $player): array;
+
+    /**
+     * Fleets of every other player in the world
+     *
+     * @return Fleet[]
+     */
+    public function findByWorldExcludingPlayer(World $world, Player $player): array;
 
     public function remove(Fleet $fleet): void;
 

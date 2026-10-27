@@ -52,17 +52,11 @@ final class PlayerSetupService
 
     private function findStartingRegion(World $world): WorldRegion
     {
-        $waterTypes = [
-            WorldRegion::TYPE_DEEP_WATER,
-            WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER,
-        ];
-
         $unownedRegions = $this->worldRegionRepository->findByWorldAndPlayer($world, null);
 
         $landRegions = [];
         foreach ($unownedRegions as $region) {
-            if (!in_array($region->getType(), $waterTypes, true)) {
+            if (!$region->isWater()) {
                 $landRegions[] = $region;
             }
         }

@@ -95,7 +95,7 @@
             html += '<td class="text-center">' + escapeHtml(item.playerName) + '</td>';
             html += '<td class="text-center">';
             if (!item.isOwn) {
-                html += '<button class="market-action-btn" data-id="' + item.id + '" data-action="buy">Buy</button>';
+                html += '<button class="uw-btn" data-id="' + item.id + '" data-action="buy">Buy</button>';
             } else {
                 html += '<span class="text-faded">Your order</span>';
             }
@@ -126,7 +126,7 @@
             html += '<td class="text-center">' + escapeHtml(item.playerName) + '</td>';
             html += '<td class="text-center">';
             if (!item.isOwn) {
-                html += '<button class="market-action-btn" data-id="' + item.id + '" data-action="sell">Sell</button>';
+                html += '<button class="uw-btn" data-id="' + item.id + '" data-action="sell">Sell</button>';
             } else {
                 html += '<span class="text-faded">Your order</span>';
             }
@@ -156,7 +156,7 @@
             html += '<td class="text-center">' + item.amount.toLocaleString('en-US') + '</td>';
             html += '<td class="text-center">$' + item.price.toLocaleString('en-US') + '</td>';
             html += '<td class="text-center">';
-            html += '<button class="market-action-btn market-action-btn-danger" data-id="' + item.id + '" data-action="cancel">Cancel</button>';
+            html += '<button class="uw-btn uw-btn-danger" data-id="' + item.id + '" data-action="cancel">Cancel</button>';
             html += '</td>';
             html += '</tr>';
         });
@@ -167,7 +167,7 @@
     }
 
     function bindActionButtons() {
-        marketContainer.querySelectorAll('.market-action-btn').forEach(function (btn) {
+        marketContainer.querySelectorAll('.uw-btn').forEach(function (btn) {
             btn.onclick = function () {
                 const itemId = parseInt(btn.getAttribute('data-id'), 10);
                 const action = btn.getAttribute('data-action');
@@ -190,6 +190,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                ResourceTicker.refresh();
                 loadTab();
             } else {
                 showNotification(result.message || 'Action failed', 'error');
@@ -233,7 +234,7 @@
         html += '<input type="number" id="marketOrderPrice" min="1" value="1" class="form-control">';
         html += '</div>';
 
-        html += '<button id="marketSubmitOrder" class="market-action-btn uw-btn-block">Place Order</button>';
+        html += '<button id="marketSubmitOrder" class="uw-btn uw-btn-block">Place Order</button>';
         html += '</div>';
 
         marketContainer.innerHTML = html;
@@ -277,6 +278,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                ResourceTicker.refresh();
                 currentTab = 'orders';
                 renderTabs();
                 loadTab();

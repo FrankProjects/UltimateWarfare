@@ -172,6 +172,7 @@ body {
 }
 
 .profile-icon {
+    position: relative;
     height: 32px;
     padding: 0 10px;
     line-height: 1;
@@ -185,6 +186,22 @@ body {
 
 .profile-icon:hover {
     background: #a08365;
+}
+
+.message-badge-dot {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f44336;
+    border: 1px solid #2a2a2a;
+}
+
+.message-badge-dot[hidden],
+.build-tab-badge[hidden] {
+    display: none;
 }
 
 .dropdown-content {
@@ -319,6 +336,10 @@ body {
     border-top: none;
 }
 
+.modal-footer:empty {
+    display: none;
+}
+
 /* Confirmation dialog stacks above other open modals */
 .confirm-modal {
     z-index: 1065;
@@ -348,11 +369,11 @@ body {
 
 .reports-pagination {
     display: none;
-    margin-top: 15px;
-    text-align: center;
+    justify-content: center;
 }
 
-.reports-pagination span {
+.reports-pagination span,
+.messages-pagination span {
     color: #f3e6c1;
 }
 
@@ -403,7 +424,7 @@ body {
     gap: 10px;
 }
 
-.market-action-btn {
+.uw-btn {
     padding: 5px 15px;
     background: #8B7355;
     color: #f3e6c1;
@@ -412,7 +433,7 @@ body {
     cursor: pointer;
 }
 
-.market-action-btn:hover {
+.uw-btn:hover {
     background: #a08365;
 }
 
@@ -819,6 +840,14 @@ body {
     text-align: center;
     pointer-events: none;
     transform: translate(-50%, -100%) translateY(-35px);
+}
+
+/* Enemy fleet detected by radar: below the target, so it doesn't cover the label of an own fleet */
+.fleet-eta-label.enemy {
+    background: rgba(220, 40, 40, 0.95);
+    border-color: #ff3b3b;
+    color: #fff;
+    transform: translate(-50%, 0) translateY(20px);
 }
 
 /* ===== Attack Mode Banner ===== */
@@ -1738,11 +1767,11 @@ body {
     margin-top: 10px;
 }
 
-.market-action-btn.market-action-btn-danger {
+.uw-btn.uw-btn-danger {
     background-color: #f44336;
 }
 
-.fed-bank-tabs .market-action-btn + .market-action-btn {
+.fed-bank-tabs .uw-btn + .uw-btn {
     margin-left: 5px;
 }
 
@@ -1755,7 +1784,7 @@ body {
     margin-top: 10px;
 }
 
-.fed-application-actions .market-action-btn + .market-action-btn {
+.fed-application-actions .uw-btn + .uw-btn {
     margin-left: 10px;
 }
 
@@ -1795,7 +1824,7 @@ body {
     white-space: nowrap;
 }
 
-.messages-col-actions .market-action-btn + .market-action-btn {
+.messages-col-actions .uw-btn + .uw-btn {
     margin-left: 5px;
 }
 
@@ -1809,6 +1838,15 @@ body {
     width: 150px;
 }
 
+.reports-col-actions {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.battle-log-full {
+    max-height: none;
+}
+
 /* Buy region / operations */
 .buy-region-price {
     margin-top: 15px;
@@ -1819,8 +1857,11 @@ body {
 }
 
 /* Reports pagination */
-.reports-pagination button:disabled {
+.reports-pagination .uw-btn:disabled,
+.messages-pagination .uw-btn:disabled {
+    background: #8B7355;
     opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Worlds */
@@ -1986,6 +2027,31 @@ body {
     font-size: 12px;
 }
 
+.battle-losses {
+    margin-top: 10px;
+}
+
+.battle-losses h4 {
+    font-size: 15px;
+}
+
+.battle-losses-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.battle-losses h5 {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.battle-losses ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 12px;
+}
+
 /* Toast notifications */
 .fleet-notification {
     position: fixed;
@@ -2068,7 +2134,7 @@ body {
         font-size: 12px;
     }
 
-    .messages-col-actions .market-action-btn {
+    .messages-col-actions .uw-btn {
         padding: 3px 8px;
     }
 

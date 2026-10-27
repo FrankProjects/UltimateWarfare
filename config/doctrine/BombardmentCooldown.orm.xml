@@ -14,6 +14,11 @@
         <option name="unsigned">1</option>
       </options>
     </field>
+    <many-to-one field="world" target-entity="FrankProjects\UltimateWarfare\Entity\World">
+      <join-columns>
+        <join-column name="world_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
     <many-to-one field="worldRegion" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegion">
       <join-columns>
         <join-column name="region_id" nullable="false"/>

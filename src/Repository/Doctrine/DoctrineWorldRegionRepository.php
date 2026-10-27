@@ -7,12 +7,15 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\Construction;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
+use FrankProjects\UltimateWarfare\Util\HexGrid;
 
 final class DoctrineWorldRegionRepository implements WorldRegionRepository
 {
@@ -80,7 +83,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->createQuery(
                 'SELECT IDENTITY(wrsu.worldRegion) as regionId, wrsu.gameUnit, sum(wrsu.amount) as total
               FROM ' . WorldRegionStackableUnit::class . ' wrsu
-              JOIN ' . WorldRegion::class . ' wr WITH wrsu.worldRegion = wr
+              JOIN ' . WorldRegion::class . ' wr ON wrsu.worldRegion = wr
               WHERE wr.player = :player
               GROUP BY regionId, wrsu.gameUnit'
             )->setParameter('player', $player)
@@ -93,6 +96,83 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         }
 
         return $grouped;
+    }
+
+    /**
+     * @return list<array{WorldRegion, int}>
+     */
+    public function findBelowPopulationCapacityByPlayer(Player $player, int $populationPerHouse): array
+    {
+        $results = $this->entityManager
+            ->createQuery(
+                'SELECT wr, wrsu.amount AS houses
+              FROM ' . WorldRegion::class . ' wr
+              JOIN ' . WorldRegionStackableUnit::class . ' wrsu ON wrsu.worldRegion = wr
+              WHERE wr.player = :player
+                AND wrsu.gameUnit = :house
+                AND wr.population < wrsu.amount * :populationPerHouse'
+            )->setParameter('player', $player)
+            ->setParameter('house', GameUnitEnum::HOUSE)
+            ->setParameter('populationPerHouse', $populationPerHouse)
+            ->getResult();
+
+        $worldRegions = [];
+        foreach ($results as $result) {
+            $worldRegions[] = [$result[0], $result['houses']];
+        }
+
+        return $worldRegions;
+    }
+
+    /**
+     * @return WorldRegion[]
+     */
+    public function findWithPopulationByPlayer(Player $player): array
+    {
+        return $this->entityManager
+            ->createQuery(
+                'SELECT wr
+              FROM ' . WorldRegion::class . ' wr
+              WHERE wr.player = :player AND wr.population > 0'
+            )->setParameter('player', $player)
+            ->getResult();
+    }
+
+    /**
+     * @return WorldRegion[]
+     */
+    public function findUnoccupiedOwnedWaterRegions(): array
+    {
+        return $this->entityManager
+            ->createQuery(
+                'SELECT wr
+              FROM ' . WorldRegion::class . ' wr
+              WHERE wr.player IS NOT NULL AND wr.type IN (:waterTypes)
+                AND NOT EXISTS (
+                  SELECT su.id FROM ' . WorldRegionStackableUnit::class . ' su
+                  WHERE su.worldRegion = wr AND su.amount > 0
+                )
+                AND NOT EXISTS (
+                  SELECT lu.id FROM ' . WorldRegionLeveledUnit::class . ' lu WHERE lu.worldRegion = wr
+                )
+                AND NOT EXISTS (
+                  SELECT c.id FROM ' . Construction::class . ' c WHERE c.worldRegion = wr
+                )'
+            )->setParameter('waterTypes', WorldRegion::WATER_TYPES)
+            ->getResult();
+    }
+
+    public function getPopulationSumByPlayer(Player $player): int
+    {
+        $total = $this->entityManager
+            ->createQuery(
+                'SELECT SUM(wr.population)
+              FROM ' . WorldRegion::class . ' wr
+              WHERE wr.player = :player'
+            )->setParameter('player', $player)
+            ->getSingleScalarResult();
+
+        return is_numeric($total) ? (int) $total : 0;
     }
 
     public function getPreviousWorldRegionForPlayer(int $id, Player $player): ?WorldRegion
@@ -131,22 +211,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
      */
     public function findAdjacentRegions(int $x, int $y, World $world): array
     {
-        // Hex neighbors differ based on even/odd row
-        if ($y % 2 === 0) {
-            // Even row neighbors
-            $neighbors = [
-                [$x - 1, $y], [$x + 1, $y],
-                [$x - 1, $y - 1], [$x, $y - 1],
-                [$x - 1, $y + 1], [$x, $y + 1],
-            ];
-        } else {
-            // Odd row neighbors (shifted right)
-            $neighbors = [
-                [$x - 1, $y], [$x + 1, $y],
-                [$x, $y - 1], [$x + 1, $y - 1],
-                [$x, $y + 1], [$x + 1, $y + 1],
-            ];
-        }
+        $neighbors = HexGrid::getNeighborCoordinates($x, $y);
 
         $conditions = [];
         $parameters = ['world' => $world];
@@ -175,5 +240,25 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     {
         $this->entityManager->persist($worldRegion);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param WorldRegion[] $worldRegions
+     */
+    public function saveAll(array $worldRegions): void
+    {
+        foreach ($worldRegions as $worldRegion) {
+            $this->entityManager->persist($worldRegion);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    public function removeForWorld(World $world): void
+    {
+        $this->entityManager->createQuery(
+            'DELETE FROM ' . WorldRegion::class . ' wr WHERE wr.world = :world'
+        )->setParameter('world', $world)
+            ->execute();
     }
 }

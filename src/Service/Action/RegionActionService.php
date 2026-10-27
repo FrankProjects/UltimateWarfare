@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
-use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Exception\WorldRegionNotFoundException;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
+use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
+use FrankProjects\UltimateWarfare\Util\HexGrid;
 use FrankProjects\UltimateWarfare\Util\NetWorthCalculator;
-use FrankProjects\UltimateWarfare\Util\TimeCalculator;
 use RuntimeException;
 
 final class RegionActionService
@@ -23,52 +23,20 @@ final class RegionActionService
     private PlayerRepository $playerRepository;
     private FederationRepository $federationRepository;
     private DistanceCalculator $distanceCalculator;
-    private TimeCalculator $timeCalculator;
+    private GameUnitRegistry $gameUnitRegistry;
 
     public function __construct(
         WorldRegionRepository $worldRegionRepository,
         PlayerRepository $playerRepository,
         FederationRepository $federationRepository,
         DistanceCalculator $distanceCalculator,
-        TimeCalculator $timeCalculator
+        GameUnitRegistry $gameUnitRegistry
     ) {
         $this->worldRegionRepository = $worldRegionRepository;
         $this->playerRepository = $playerRepository;
         $this->federationRepository = $federationRepository;
         $this->distanceCalculator = $distanceCalculator;
-        $this->timeCalculator = $timeCalculator;
-    }
-
-    /**
-     * @return array<int<0, max>, array<string, WorldRegion|string>>
-     */
-    public function getAttackFromWorldRegionList(WorldRegion $worldRegion, Player $player): array
-    {
-        if ($worldRegion->getPlayer() === null) {
-            throw new RuntimeException('Can not attack region without owner!');
-        }
-
-        if ($worldRegion->getPlayer()->getId() === $player->getId()) {
-            throw new RuntimeException('Can not attack your own region!');
-        }
-
-        $playerRegions = [];
-        foreach ($player->getWorldRegions() as $playerWorldRegion) {
-            $travelTime = $this->distanceCalculator->calculateFleetTravelTime(
-                $playerWorldRegion->getX(),
-                $playerWorldRegion->getY(),
-                $worldRegion->getX(),
-                $worldRegion->getY(),
-                $playerWorldRegion->getUnitLevel(GameUnitEnum::TRAIN_STATION)
-            );
-            $travelTimeLeft = $this->timeCalculator->calculateTimeLeft($travelTime);
-            $playerRegions[] = [
-                'region' => $playerWorldRegion,
-                'travelTime' => $travelTimeLeft
-            ];
-        }
-
-        return $playerRegions;
+        $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
     /**
@@ -113,6 +81,11 @@ final class RegionActionService
 
         if ($worldRegion->getPlayer() !== null) {
             throw new RuntimeException('Region is already owned by somebody!');
+        }
+
+        // Water is claimed by stationing naval units on it instead
+        if ($worldRegion->isWater()) {
+            throw new RuntimeException('Water regions cannot be bought!');
         }
 
         if ($resources->getCash() < $player->getRegionPrice()) {
@@ -183,5 +156,61 @@ final class RegionActionService
 
 
         return $worldRegion;
+    }
+
+    /**
+     * Get masked unit presence for enemy-owned hex neighbors of a region.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getNeighborEnemyUnitPresence(
+        WorldRegion $region,
+        Player $player
+    ): array {
+        $world = $player->getWorld();
+
+        $result = [];
+        foreach (HexGrid::getNeighborCoordinates($region->getX(), $region->getY()) as [$nx, $ny]) {
+            $neighbor = $this->worldRegionRepository->findByWorldXY($world, $nx, $ny);
+            if ($neighbor === null || $neighbor->getPlayer() === null) {
+                continue;
+            }
+            if ($neighbor->getPlayer()->getId() === $player->getId()) {
+                continue;
+            }
+
+            $result[$neighbor->getId()] = $this->gameUnitRegistry->getMaskedRegionUnitSummary($neighbor);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Unowned water regions next to one of the player's regions, where the player's ships can sail to
+     *
+     * @return WorldRegion[]
+     */
+    public function getOpenSeaRegionsNextToPlayer(Player $player): array
+    {
+        $playerCoordinates = [];
+        foreach ($player->getWorldRegions() as $worldRegion) {
+            $playerCoordinates[$worldRegion->getX() . ',' . $worldRegion->getY()] = true;
+        }
+
+        $openSeaRegions = [];
+        foreach ($player->getWorld()->getWorldRegions() as $worldRegion) {
+            if ($worldRegion->getPlayer() !== null || !$worldRegion->isWater()) {
+                continue;
+            }
+
+            foreach (HexGrid::getNeighborCoordinates($worldRegion->getX(), $worldRegion->getY()) as [$nx, $ny]) {
+                if (isset($playerCoordinates[$nx . ',' . $ny])) {
+                    $openSeaRegions[] = $worldRegion;
+                    break;
+                }
+            }
+        }
+
+        return $openSeaRegions;
     }
 }

@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\Research;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ResearchRegistry;
 use FrankProjects\UltimateWarfare\Service\Action\ResearchActionService;
+use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
 
@@ -17,15 +18,18 @@ final class ResearchController extends BaseGameController
     private ResearchRegistry $researchRegistry;
     private ResearchPlayerRepository $researchPlayerRepository;
     private ResearchActionService $researchActionService;
+    private ResourceAccrualCalculator $resourceAccrualCalculator;
 
     public function __construct(
         ResearchRegistry $researchRegistry,
         ResearchPlayerRepository $researchPlayerRepository,
-        ResearchActionService $researchActionService
+        ResearchActionService $researchActionService,
+        ResourceAccrualCalculator $resourceAccrualCalculator
     ) {
         $this->researchRegistry = $researchRegistry;
         $this->researchPlayerRepository = $researchPlayerRepository;
         $this->researchActionService = $researchActionService;
+        $this->resourceAccrualCalculator = $resourceAccrualCalculator;
     }
 
     public function researchTreeApi(): JsonResponse
@@ -50,7 +54,7 @@ final class ResearchController extends BaseGameController
         return new JsonResponse([
             'success' => true,
             'research' => $researchData,
-            'playerCash' => $player->getResources()->getCash(),
+            'playerCash' => $this->resourceAccrualCalculator->project($player, $now)->getCash(),
         ]);
     }
 
@@ -69,7 +73,7 @@ final class ResearchController extends BaseGameController
             return new JsonResponse([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -86,7 +90,7 @@ final class ResearchController extends BaseGameController
             return new JsonResponse([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ]);
+            ], 400);
         }
     }
 

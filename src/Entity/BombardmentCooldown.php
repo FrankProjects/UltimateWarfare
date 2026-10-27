@@ -8,6 +8,7 @@ class BombardmentCooldown
 {
     private int $id;
     private string $operationSlug;
+    private World $world;
     private WorldRegion $worldRegion;
     private WorldRegion $targetWorldRegion;
     private int $cooldownUntil;
@@ -20,6 +21,7 @@ class BombardmentCooldown
     ): self {
         $cooldown = new self();
         $cooldown->operationSlug = $operationSlug;
+        $cooldown->world = $worldRegion->getWorld();
         $cooldown->worldRegion = $worldRegion;
         $cooldown->targetWorldRegion = $targetWorldRegion;
         $cooldown->cooldownUntil = $cooldownUntil;
@@ -35,6 +37,11 @@ class BombardmentCooldown
     public function getOperationSlug(): string
     {
         return $this->operationSlug;
+    }
+
+    public function getWorld(): World
+    {
+        return $this->world;
     }
 
     public function getWorldRegion(): WorldRegion

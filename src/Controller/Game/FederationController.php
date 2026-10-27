@@ -161,10 +161,11 @@ final class FederationController extends BaseGameController
 
         $items = [];
         foreach ($federations as $federation) {
+            $general = $federation->getGeneral();
             $items[] = [
                 'id' => $federation->getId(),
                 'name' => $federation->getName(),
-                'founder' => $federation->getFounder()->getName(),
+                'general' => $general !== null ? $general->getName() : '',
                 'players' => count($federation->getPlayers()),
                 'regions' => $federation->getRegions(),
                 'netWorth' => $federation->getNetWorth(),

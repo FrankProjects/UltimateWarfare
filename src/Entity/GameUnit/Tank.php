@@ -27,20 +27,21 @@ final class Tank extends GameUnit
             description: '',
             gameUnitCategory: GameUnitCategory::TROOPS,
             behaviorClass: null,
-            cost: new Cost(cash: 5000, food: 1000, wood: 20, steel: 55),
+            cost: new Cost(cash: 5000, food: 500, wood: 20, steel: 55),
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
-            upkeep: new Upkeep(cash: 15, food: 5, wood: 0, steel: 0),
+            upkeep: new Upkeep(cash: 12, food: 4, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 1500,
-                armor: 10,
+                health: 145,
+                armor: 4,
                 travelSpeed: 200,
                 groundBattleStats: new GroundBattleStats(
-                    attack: 50,
+                    attack: 380,
                     attackSpeed: 130,
-                    defence: 55,
+                    defence: 200,
                     defenceSpeed: 135,
                 ),
             ),
+            population: 4,
         );
     }
 

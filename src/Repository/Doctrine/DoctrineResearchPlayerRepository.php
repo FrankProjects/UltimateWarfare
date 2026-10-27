@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\ResearchPlayer;
 use FrankProjects\UltimateWarfare\Repository\ResearchPlayerRepository;
@@ -14,15 +13,9 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
 {
     private EntityManagerInterface $entityManager;
 
-    /**
-     * @var EntityRepository <ResearchPlayer>
-     */
-    private EntityRepository $repository;
-
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->repository = $this->entityManager->getRepository(ResearchPlayer::class);
     }
 
     /**
@@ -44,26 +37,16 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
     /**
      * @return ResearchPlayer[]
      */
-    public function getAllNonActiveResearch(): array
-    {
-        return $this->repository->findBy(['active' => 0]);
-    }
-
-    /**
-     * @param Player $player
-     * @return ResearchPlayer[]
-     */
-    public function findFinishedByPlayer(Player $player): array
+    public function getNonActiveCompletedResearchByPlayer(Player $player, int $timestamp): array
     {
         return $this->entityManager->createQuery(
             'SELECT rp
               FROM ' . ResearchPlayer::class . ' rp
-              WHERE rp.player = :player AND rp.active = 1
-              ORDER BY rp.timestamp DESC'
-        )->setParameter(
-            'player',
-            $player
-        )->getResult();
+              WHERE rp.player = :player AND rp.active = 0 AND rp.completionTimestamp < :timestamp
+              ORDER BY rp.completionTimestamp ASC, rp.id ASC'
+        )->setParameter('player', $player)
+            ->setParameter('timestamp', $timestamp)
+            ->getResult();
     }
 
     /**
@@ -101,6 +84,19 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
         }
 
         return $levels;
+    }
+
+    public function getNextCompletionTimestampByPlayer(Player $player): ?int
+    {
+        /** @var int|string|null $next */
+        $next = $this->entityManager->createQuery(
+            'SELECT MIN(rp.completionTimestamp)
+              FROM ' . ResearchPlayer::class . ' rp
+              WHERE rp.player = :player AND rp.active = 0'
+        )->setParameter('player', $player)
+            ->getSingleScalarResult();
+
+        return $next !== null ? (int) $next : null;
     }
 
     public function remove(ResearchPlayer $researchPlayer): void

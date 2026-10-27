@@ -16,6 +16,7 @@ class Player
     private const int PRICE_PER_REGION = 10000;
     public const int FEDERATION_HIERARCHY_RECRUIT = 1;
     public const int FEDERATION_HIERARCHY_CAPTAIN = 3;
+    public const int FEDERATION_HIERARCHY_STAFF_GENERAL = 9;
     public const int FEDERATION_HIERARCHY_GENERAL = 10;
 
     private int $id;
@@ -55,6 +56,12 @@ class Player
     /** @var Collection<int, FederationApplication> */
     private Collection $federationApplications;
 
+    /** @var Collection<int, BattleSummary> */
+    private Collection $attackerBattleSummaries;
+
+    /** @var Collection<int, BattleSummary> */
+    private Collection $defenderBattleSummaries;
+
     private Income $income;
     private Notifications $notifications;
     private Resources $resources;
@@ -71,6 +78,8 @@ class Player
         $this->toMessages = new ArrayCollection();
         $this->playerResearch = new ArrayCollection();
         $this->federationApplications = new ArrayCollection();
+        $this->attackerBattleSummaries = new ArrayCollection();
+        $this->defenderBattleSummaries = new ArrayCollection();
         $this->income = new Income();
         $this->notifications = new Notifications();
         $this->resources = new Resources();
@@ -229,6 +238,38 @@ class Player
     public function setToMessages(Collection $toMessages): void
     {
         $this->toMessages = $toMessages;
+    }
+
+    /**
+     * @return Collection<int, BattleSummary>
+     */
+    public function getAttackerBattleSummaries(): Collection
+    {
+        return $this->attackerBattleSummaries;
+    }
+
+    /**
+     * @param Collection<int, BattleSummary> $attackerBattleSummaries
+     */
+    public function setAttackerBattleSummaries(Collection $attackerBattleSummaries): void
+    {
+        $this->attackerBattleSummaries = $attackerBattleSummaries;
+    }
+
+    /**
+     * @return Collection<int, BattleSummary>
+     */
+    public function getDefenderBattleSummaries(): Collection
+    {
+        return $this->defenderBattleSummaries;
+    }
+
+    /**
+     * @param Collection<int, BattleSummary> $defenderBattleSummaries
+     */
+    public function setDefenderBattleSummaries(Collection $defenderBattleSummaries): void
+    {
+        $this->defenderBattleSummaries = $defenderBattleSummaries;
     }
 
     /**

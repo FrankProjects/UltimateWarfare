@@ -24,9 +24,10 @@ final class MineField extends GameUnit
             image: 'gu_mine_field.jpg',
             netWorth: 0,
             timestamp: 3600,
-            description: 'Mine fields damage ground forces attacking this region. '
-                . 'Each level lays an additional layer of mines, increasing both '
-                . 'their ground defence and how much punishment they can absorb.',
+            description: 'Mine fields detonate on attacking troops before the battle starts, '
+                . 'piercing their armor. Detonated mines are spent and each detonation costs half of '
+                . 'the mine field, so repair it to re-arm. Mine Sweepers clear mines before they explode. '
+                . 'Each level lays an additional layer of mines.',
             gameUnitCategory: GameUnitCategory::DEFENSE_BUILDINGS,
             behaviorClass: null,
             cost: new Cost(cash: 5500, food: 0, wood: 0, steel: 1),
@@ -35,7 +36,7 @@ final class MineField extends GameUnit
             battleStats: new BattleStats(
                 health: 250,
                 armor: 1,
-                groundBattleStats: new GroundBattleStats(defence: 5, defenceSpeed: 500),
+                groundBattleStats: new GroundBattleStats(defence: 1000),
             ),
         );
     }

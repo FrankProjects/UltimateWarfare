@@ -17,9 +17,10 @@ final readonly class BomberAttackOperation extends Operation
             name: 'Bomber Attack',
             image: 'op_bomber_attack.jpg',
             cost: 15000,
-            description: "Send bombers to destroy enemy infrastructure. Each bomber destroys 5 special"
+            description: "Send bombers to destroy enemy infrastructure. Each bomber destroys 1 level of special"
                 . " buildings (train stations, airfields, harbors), distributed proportionally across"
-                . " what's available. On failure, you lose 5% of the deployed bombers."
+                . " what's available. Bombers in the region need 30 minutes to rearm afterwards."
+                . " On failure, you lose 5% of the deployed bombers."
                 . " The enemy always receives a report; your name is hidden on success.",
             enabled: true,
             difficulty: 0.5,
@@ -38,5 +39,10 @@ final readonly class BomberAttackOperation extends Operation
     public function getProcessorClass(): string
     {
         return BomberAttack::class;
+    }
+
+    public function hasCooldown(): bool
+    {
+        return true;
     }
 }

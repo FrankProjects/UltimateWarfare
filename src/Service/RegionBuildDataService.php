@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Service\Action\ConstructionActionService;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 
@@ -21,15 +22,18 @@ final class RegionBuildDataService
     private ConstructionActionService $constructionActionService;
     private GameUnitRegistry $gameUnitRegistry;
     private GameUnitBehaviorFactory $behaviorFactory;
+    private WorldRegionRepository $worldRegionRepository;
 
     public function __construct(
         ConstructionActionService $constructionActionService,
         GameUnitRegistry $gameUnitRegistry,
-        GameUnitBehaviorFactory $behaviorFactory
+        GameUnitBehaviorFactory $behaviorFactory,
+        WorldRegionRepository $worldRegionRepository
     ) {
         $this->constructionActionService = $constructionActionService;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->behaviorFactory = $behaviorFactory;
+        $this->worldRegionRepository = $worldRegionRepository;
     }
 
     /**
@@ -37,10 +41,12 @@ final class RegionBuildDataService
      */
     public function getBuildData(WorldRegion $worldRegion, Player $player): array
     {
-        $regionType = $worldRegion->getType();
-        $waterTypes = ['deep_water', 'water', 'shallow_water', 'sand'];
-        $isSandOrWater = in_array($regionType, $waterTypes, true);
-        $isSand = $regionType === 'sand';
+        $isWater = $worldRegion->isWater();
+        $isCoastal = $worldRegion->isCoastal($this->worldRegionRepository->findAdjacentRegions(
+            $worldRegion->getX(),
+            $worldRegion->getY(),
+            $worldRegion->getWorld()
+        ));
 
         // Detect relevant buildings in this region (units + constructions in progress)
         $hasBarrack = false;
@@ -71,12 +77,14 @@ final class RegionBuildDataService
             };
         }
 
-        // Determine available categories based on buildings
-        $availableCategories = [
-            GameUnitCategory::BUILDINGS,
-            GameUnitCategory::DEFENSE_BUILDINGS,
-            GameUnitCategory::SPECIAL_BUILDINGS,
-        ];
+        // Determine available categories based on buildings; water regions only allow Sea Mines
+        $availableCategories = $isWater
+            ? [GameUnitCategory::DEFENSE_BUILDINGS]
+            : [
+                GameUnitCategory::BUILDINGS,
+                GameUnitCategory::DEFENSE_BUILDINGS,
+                GameUnitCategory::SPECIAL_BUILDINGS,
+            ];
 
         if ($hasBarrack) {
             $availableCategories[] = GameUnitCategory::TROOPS;
@@ -104,7 +112,7 @@ final class RegionBuildDataService
         $constructionTimeLeft = [];
         foreach ($worldRegion->getConstructions() as $construction) {
             $key = $construction->getGameUnit()->value;
-            $left = max(0, ($construction->getTimestamp() + $construction->getDuration()) - time());
+            $left = max(0, $construction->getCompletionTimestamp() - time());
             $constructionData[$key] = ($constructionData[$key] ?? 0) + $construction->getNumber();
             $constructionTimeLeft[$key] = max($constructionTimeLeft[$key] ?? 0, $left);
         }
@@ -126,17 +134,22 @@ final class RegionBuildDataService
             foreach ($gameUnits as $gameUnit) {
                 $rowName = $gameUnit->getRowName();
 
-                // Filter harbor from special buildings when region is not sand
-                if ($gameUnitCategory === GameUnitCategory::SPECIAL_BUILDINGS && $rowName === 'harbor' && !$isSand) {
+                // Filter harbor from special buildings when region is not coastal
+                if ($gameUnitCategory === GameUnitCategory::SPECIAL_BUILDINGS && $rowName === 'harbor' && !$isCoastal) {
                     continue;
                 }
 
-                // Filter sea mines from defense buildings when region is not sand or water
+                // Filter sea mines from defense buildings when region is not coastal or water
                 if (
                     $gameUnitCategory === GameUnitCategory::DEFENSE_BUILDINGS
                     && $rowName === 'sea_mine'
-                    && !$isSandOrWater
+                    && !$isCoastal
+                    && !$isWater
                 ) {
+                    continue;
+                }
+
+                if ($isWater && $rowName !== 'sea_mine') {
                     continue;
                 }
 
@@ -180,6 +193,7 @@ final class RegionBuildDataService
                     'costWood' => $gameUnit->getCost()->getWood(),
                     'costSteel' => $gameUnit->getCost()->getSteel(),
                     'costFood' => $gameUnit->getCost()->getFood(),
+                    'costPopulation' => $gameUnit->getPopulation(),
                     'incomeCash' => $gameUnit->getIncome()->getCash(),
                     'incomeWood' => $gameUnit->getIncome()->getWood(),
                     'incomeSteel' => $gameUnit->getIncome()->getSteel(),
@@ -212,8 +226,9 @@ final class RegionBuildDataService
 
         return [
             'regionId' => $worldRegion->getId(),
-            'regionType' => $regionType,
+            'regionType' => $worldRegion->getType(),
             'spaceLeft' => $spaceLeft,
+            'population' => $worldRegion->getPopulation(),
             'categories' => $categories,
             'units' => $this->gameUnitRegistry->getRegionUnitSummary($worldRegion),
         ];

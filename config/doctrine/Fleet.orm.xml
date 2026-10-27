@@ -14,6 +14,13 @@
         <option name="unsigned">1</option>
       </options>
     </field>
+    <field name="path" type="json" column="path"/>
+    <field name="morale" type="smallint" column="morale">
+      <options>
+        <option name="unsigned">1</option>
+        <option name="default">100</option>
+      </options>
+    </field>
     <one-to-many field="fleetUnits" target-entity="FrankProjects\UltimateWarfare\Entity\FleetUnit" mapped-by="fleet"/>
     <many-to-one field="player" target-entity="FrankProjects\UltimateWarfare\Entity\Player" inversed-by="fleets">
       <join-columns>

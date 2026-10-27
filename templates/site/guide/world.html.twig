@@ -24,14 +24,19 @@
                 <li><b>Forest</b> &mdash; Standard land region.</li>
                 <li><b>Hills</b> &mdash; Standard land region.</li>
                 <li><b>Mountain</b> &mdash; Standard land region.</li>
-                <li><b>Sand</b> &mdash; Coastal region. Harbors and naval units can be placed here.</li>
+                <li><b>Sand</b> &mdash; Standard land region.</li>
                 <li><b>Shallow Water</b> &mdash; Water region.</li>
                 <li><b>Water</b> &mdash; Water region.</li>
                 <li><b>Deep Water</b> &mdash; Water region.</li>
             </ul>
             <p>
-                A region is considered <b>coastal</b> if it is a water or sand type, or if it is directly adjacent to a water or sand region.
-                Coastal regions are important for naval operations.
+                A region is considered <b>coastal</b> if it is a land region that shares a border with a water region.
+                Harbors can only be built on coastal regions, and ships can only attack water and coastal regions.
+            </p>
+            <p>
+                Water regions can't be bought. Send ships to open sea next to one of your regions and occupy it when they arrive.
+                You hold a water region only while you have units, a Sea Mine or a Sea Mine under construction on it; once the
+                last units leave or are destroyed it becomes open sea again. Sea Mines are the only thing you can build on water.
             </p>
         </div>
     </div>
@@ -51,7 +56,7 @@
                     <b>Enemy region:</b> Shows <a href="{{ url('Guide/Attack') }}">attack</a> options if you have units within range.
                 </li>
                 <li>
-                    <b>Unowned region:</b> You can buy this region to expand your empire. The cost increases with each region you already own.
+                    <b>Unowned region:</b> You can buy this land region to expand your empire. The cost increases with each region you already own. Open sea can only be claimed with ships.
                 </li>
             </ul>
         </div>

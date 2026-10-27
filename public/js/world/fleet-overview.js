@@ -52,6 +52,7 @@
         html += '<th class="text-center">To</th>';
         html += '<th class="text-center">Owner</th>';
         html += '<th class="text-start">Fleet</th>';
+        html += '<th class="text-center">Morale</th>';
         html += '<th class="text-center">Time Left</th>';
         html += '<th class="text-center">Actions</th>';
         html += '</tr>';
@@ -71,8 +72,9 @@
             let actionsHtml = '';
             if (!fleet.hasArrived) {
                 actionsHtml = '<button class="fleet-action-btn recall" data-id="' + fleet.id + '" data-action="recall">Recall</button>';
-            } else if (fleet.targetIsYours) {
-                actionsHtml = '<button class="fleet-action-btn reinforce" data-id="' + fleet.id + '" data-action="reinforce">Reinforce</button>';
+            } else if (fleet.targetIsYours || fleet.targetIsOpenSea) {
+                const reinforceLabel = fleet.targetIsOpenSea ? 'Occupy' : 'Reinforce';
+                actionsHtml = '<button class="fleet-action-btn reinforce" data-id="' + fleet.id + '" data-action="reinforce">' + reinforceLabel + '</button>';
                 actionsHtml += '<br><button class="fleet-action-btn recall fleet-action-btn-below" data-id="' + fleet.id + '" data-action="recall">Recall</button>';
             } else {
                 actionsHtml = '<button class="fleet-action-btn attack" data-id="' + fleet.id + '" data-action="attack">Attack</button>';
@@ -84,6 +86,7 @@
             html += '<td class="text-center">' + fleet.targetX + ', ' + fleet.targetY + '</td>';
             html += '<td class="text-center">' + (fleet.targetIsYours ? '<span class="text-own">You</span>' : escapeHtml(fleet.targetOwner || 'Nobody')) + '</td>';
             html += '<td class="fleet-overview-units">' + unitsHtml + '</td>';
+            html += '<td class="text-center">' + fleet.morale + '%</td>';
             html += '<td class="text-center">' + timeHtml + '</td>';
             html += '<td class="text-center">' + actionsHtml + '</td>';
             html += '</tr>';
@@ -126,19 +129,17 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                if (action === 'attack') {
+                    ResourceTicker.refresh();
+                }
 
                 if (window.WorldApp && WorldApp.worldMap) {
-                    // Remove fleet from worldmap fleet manager
-                    if (WorldApp.worldMap.fleetManager) {
-                        const fm = WorldApp.worldMap.fleetManager;
-                        fm.fleets = fm.fleets.filter(function (f) { return f.id !== fleetId; });
-                    }
-
-                    // Update region units on map if returned
-                    if (result.regionId && result.units) {
-                        WorldApp.worldMap.fleetManager.updateRegionUnits(result.regionId, result.units);
-                        // Unit counts changed, so cached build data of this region is outdated
-                        WorldBuild.invalidateCache(result.regionId);
+                    if (action === 'attack') {
+                        // Update the fleet and the target region on the map (ownership and units)
+                        WorldApp.worldMap.fleetManager.applyBattleResult(fleetId, result);
+                    } else {
+                        // Remove the fleet and update the region it landed on (which may become yours)
+                        WorldApp.worldMap.fleetManager.applyFleetLanded(fleetId, result);
                     }
 
                     WorldApp.worldMap.render();

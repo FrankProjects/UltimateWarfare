@@ -5,21 +5,70 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\MessageRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
+use FrankProjects\UltimateWarfare\Service\PopulationUpdaterService;
+use FrankProjects\UltimateWarfare\Util\ResourceAccrualCalculator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class StatisticsController extends BaseGameController
 {
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private GameUnitRegistry $gameUnitRegistry;
+    private ResourceAccrualCalculator $resourceAccrualCalculator;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
+    private MessageRepository $messageRepository;
+    private WorldRegionRepository $worldRegionRepository;
 
     public function __construct(
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
-        GameUnitRegistry $gameUnitRegistry
+        GameUnitRegistry $gameUnitRegistry,
+        ResourceAccrualCalculator $resourceAccrualCalculator,
+        PlayerStateUpdaterService $playerStateUpdaterService,
+        MessageRepository $messageRepository,
+        WorldRegionRepository $worldRegionRepository
     ) {
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->resourceAccrualCalculator = $resourceAccrualCalculator;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
+        $this->messageRepository = $messageRepository;
+        $this->worldRegionRepository = $worldRegionRepository;
+    }
+
+    /**
+     * Current resources and rates for the live resource ticker, plus when they next change by a completion
+     */
+    public function resourcesApi(): JsonResponse
+    {
+        $player = $this->getPlayer();
+        $now = time();
+        $resources = $this->resourceAccrualCalculator->project($player, $now);
+        $income = $player->getIncome();
+        $upkeep = $player->getUpkeep();
+
+        return new JsonResponse([
+            'success' => true,
+            'serverTime' => $now,
+            'resources' => [
+                'cash' => $resources->getCash(),
+                'wood' => $resources->getWood(),
+                'food' => $resources->getFood(),
+                'steel' => $resources->getSteel(),
+            ],
+            'rates' => [
+                'cash' => $income->getCash() - $upkeep->getCash(),
+                'wood' => $income->getWood() - $upkeep->getWood(),
+                'food' => $income->getFood() - $upkeep->getFood(),
+                'steel' => $income->getSteel() - $upkeep->getSteel(),
+            ],
+            'nextCompletion' => $this->playerStateUpdaterService->getNextCompletionTimestamp($player),
+            'unreadMessages' => $this->messageRepository->countUnreadMessagesToPlayer($player),
+        ]);
     }
 
     public function statisticsApi(): JsonResponse
@@ -28,7 +77,7 @@ final class StatisticsController extends BaseGameController
 
         $income = $player->getIncome();
         $upkeep = $player->getUpkeep();
-        $resources = $player->getResources();
+        $resources = $this->resourceAccrualCalculator->project($player, time());
 
         $warnings = [];
         $netFood = $income->getFood() - $upkeep->getFood();
@@ -129,6 +178,9 @@ final class StatisticsController extends BaseGameController
                     'steel' => $resources->getSteel(),
                     'food' => $resources->getFood(),
                     'regions' => count($player->getWorldRegions()),
+                    'population' => $this->worldRegionRepository->getPopulationSumByPlayer($player),
+                    'maxPopulation' => ($infraData[GameUnitEnum::HOUSE->value] ?? 0)
+                        * PopulationUpdaterService::POPULATION_PER_HOUSE,
                     'netWorth' => $player->getNetWorth(),
                 ],
                 'income' => [

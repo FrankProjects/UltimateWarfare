@@ -9,6 +9,7 @@ use FrankProjects\UltimateWarfare\Entity\Operation;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\BombardmentCooldownRepository;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
@@ -20,7 +21,7 @@ use RuntimeException;
 
 final class OperationService
 {
-    private const int BOMBARDMENT_COOLDOWN_SECONDS = 600;
+    private const int BOMBARDMENT_COOLDOWN_SECONDS = 1800;
 
     private ReportCreator $reportCreator;
     private NetWorthUpdaterService $netWorthUpdaterService;
@@ -32,6 +33,8 @@ final class OperationService
     private ConstructionRepository $constructionRepository;
     private BombardmentCooldownRepository $bombardmentCooldownRepository;
     private GameUnitRegistry $gameUnitRegistry;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
+    private EntityLockRepository $entityLockRepository;
 
     public function __construct(
         ReportCreator $reportCreator,
@@ -43,7 +46,9 @@ final class OperationService
         WorldRegionRepository $worldRegionRepository,
         ConstructionRepository $constructionRepository,
         BombardmentCooldownRepository $bombardmentCooldownRepository,
-        GameUnitRegistry $gameUnitRegistry
+        GameUnitRegistry $gameUnitRegistry,
+        PlayerStateUpdaterService $playerStateUpdaterService,
+        EntityLockRepository $entityLockRepository
     ) {
         $this->reportCreator = $reportCreator;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
@@ -55,6 +60,8 @@ final class OperationService
         $this->constructionRepository = $constructionRepository;
         $this->bombardmentCooldownRepository = $bombardmentCooldownRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
+        $this->entityLockRepository = $entityLockRepository;
     }
 
     /**
@@ -66,14 +73,30 @@ final class OperationService
         WorldRegion $playerRegion,
         int $amount
     ): array {
-        $this->ensureCanExecute($region, $operation, $playerRegion, $amount);
-        $this->hasWorldRegionGameUnitAmount($playerRegion, $operation, $amount);
-        $this->ensureNoBombardmentCooldown($playerRegion, $operation);
-
         $player = $playerRegion->getPlayer();
         if ($player === null) {
             throw new RuntimeException("Region has no owner");
         }
+
+        // The attacker is locked for the whole request; settle and lock the target player as well
+        $regionPlayer = $region->getPlayer();
+        if ($regionPlayer !== null) {
+            $this->playerStateUpdaterService->updateStateForPlayer($regionPlayer, time());
+        }
+
+        // A concurrent request may have taken one of the regions after we locked its owner
+        if (
+            !$this->entityLockRepository->lockForUpdate($playerRegion)
+            || $playerRegion->getPlayer() !== $player
+            || !$this->entityLockRepository->lockForUpdate($region)
+            || $region->getPlayer() !== $regionPlayer
+        ) {
+            throw new RuntimeException('A region changed owner, please try again.');
+        }
+
+        $this->ensureCanExecute($region, $operation, $playerRegion, $amount);
+        $this->hasWorldRegionGameUnitAmount($playerRegion, $operation, $amount);
+        $this->ensureNoBombardmentCooldown($playerRegion, $operation);
 
         $player->getResources()->addCash(-$operation->calculateCost($region, $amount));
         $this->playerRepository->save($player);
@@ -95,7 +118,6 @@ final class OperationService
 
         $this->createBombardmentCooldown($region, $operation, $playerRegion);
 
-        $regionPlayer = $region->getPlayer();
         if ($regionPlayer !== null) {
             $this->netWorthUpdaterService->updateNetWorthForPlayer($regionPlayer);
             $this->incomeUpdaterService->updateIncomeForPlayer($regionPlayer);

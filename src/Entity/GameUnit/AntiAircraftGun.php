@@ -27,7 +27,9 @@ final class AntiAircraftGun extends GameUnit
             netWorth: 0,
             timestamp: 14400,
             description: 'Anti aircraft guns defend this region against air, sea and ground '
-                . 'attacks. Each level adds more guns, increasing both defence and durability.',
+                . 'attacks. Against aircraft they fire flak before the battle starts, which ignores the '
+                . 'armor of bombers and escorts, while agile fighters take only half of it. Each level adds '
+                . 'more guns, increasing both defence and durability.',
             gameUnitCategory: GameUnitCategory::DEFENSE_BUILDINGS,
             behaviorClass: null,
             cost: new Cost(cash: 25000, food: 0, wood: 150, steel: 350),
@@ -36,7 +38,7 @@ final class AntiAircraftGun extends GameUnit
             battleStats: new BattleStats(
                 health: 1500,
                 armor: 2,
-                airBattleStats: new AirBattleStats(defence: 130, defenceSpeed: 900),
+                airBattleStats: new AirBattleStats(defence: 1200, defenceSpeed: 900),
                 seaBattleStats: new SeaBattleStats(defence: 80, defenceSpeed: 70),
                 groundBattleStats: new GroundBattleStats(defence: 70, defenceSpeed: 40),
             ),

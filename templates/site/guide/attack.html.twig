@@ -29,8 +29,7 @@
         <div class="uw-card-header">Attack Range</div>
         <div class="uw-card-body">
             <p>
-                Different unit types have different attack ranges measured in tiles.
-                Distance is calculated as the maximum of the horizontal and vertical distance between regions (diagonal movement counts as 1 tile).
+                Ground troops and ships travel region by region, aircraft fly in a straight line.
             </p>
             <table class="table">
                 <tr>
@@ -38,12 +37,8 @@
                     <th>Range</th>
                 </tr>
                 <tr>
-                    <td>Soldier, Sniper, Mine Sweeper</td>
-                    <td>1 tile</td>
-                </tr>
-                <tr>
-                    <td>Tank, Artillery</td>
-                    <td>2 tiles</td>
+                    <td>Soldier, Sniper, Mine Sweeper, Tank, Artillery</td>
+                    <td>Regions next to your regions. Troops march through your own connected regions to reach them.</td>
                 </tr>
                 <tr>
                     <td>Fighter</td>
@@ -59,11 +54,12 @@
                 </tr>
                 <tr>
                     <td>Naval Units</td>
-                    <td>1 tile (both source and target must be coastal)</td>
+                    <td>Water and coastal regions your ships can sail to through your own water and open sea</td>
                 </tr>
             </table>
             <p>
-                A region is considered <b>coastal</b> if it is a water or sand terrain type, or if it is directly adjacent to one.
+                Aircraft range is the maximum of the horizontal and vertical distance between regions (diagonal movement counts as 1 tile).
+                A region is considered <b>coastal</b> if it is a land region that shares a border with a water region. Ships sail from and to water and coastal regions.
             </p>
         </div>
     </div>
@@ -75,10 +71,10 @@
         <div class="uw-card-body">
             <ol>
                 <li>Click on an enemy region on the <a href="{{ url('Guide/World') }}">world map</a>.</li>
-                <li>The game shows you which of your regions have units within attack range.</li>
+                <li>The game shows you which of your regions have units that can reach the target.</li>
                 <li>Select a source region to attack from.</li>
                 <li>Choose which units to send.</li>
-                <li>Your attack fleet will travel to the target. Travel time depends on the distance between regions.</li>
+                <li>Your attack fleet will travel to the target. Travel time depends on the length of the route (the straight distance for aircraft) and the speed of the slowest unit in the fleet.</li>
                 <li>When the fleet arrives, the battle begins automatically.</li>
             </ol>
         </div>
@@ -114,6 +110,28 @@
                 Each unit type has attack and defense stats for each combat phase (air, sea, ground), as well as health and armor values.
                 The total power in a phase is the sum of all units' relevant attack or defense stat multiplied by their count.
                 Casualties are determined by dividing the opposing power by each unit type's effective health (health multiplied by armor).
+            </p>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="uw-card">
+        <div class="uw-card-header">Morale</div>
+        <div class="uw-card-body">
+            <p>
+                Constant fighting wears an army down. The units in a region share one <b>morale</b> (0 - 100%), as do the units of a fleet.
+                Units fight with <b>50% of their strength at 0% morale</b>, rising to full strength at 100%. Buildings have no morale.
+            </p>
+            <ul>
+                <li>An attacking fleet loses <b>10%</b> morale every battle, up to <b>40%</b> more for its casualties, and another <b>10%</b> when it loses the battle.</li>
+                <li>Defending units, including reinforcements, only lose morale for their casualties: up to <b>30%</b> when all of them die.</li>
+                <li>A region recovers <b>4% morale per hour</b>. Fleets don't recover while they are away.</li>
+                <li>A fleet leaves with the morale of its region. When it joins a region, their morale is averaged by the people crewing the units.</li>
+                <li>Newly trained units join the morale of their region.</li>
+            </ul>
+            <p>
+                Rest your armies between attacks, or attack from a region with fresh troops.
             </p>
         </div>
     </div>

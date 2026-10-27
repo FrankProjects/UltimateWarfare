@@ -25,7 +25,8 @@ final class RadarStation extends GameUnit
             netWorth: 10,
             timestamp: 36000,
             description: 'Radar stations can detect enemy troop movements. Each upgrade level '
-                . 'extends the radar vision range by one extra region.',
+                . 'extends the radar vision range by one extra region and gives the air defence of this '
+                . 'region an early warning: +10% defending air power per level.',
             gameUnitCategory: GameUnitCategory::SPECIAL_BUILDINGS,
             behaviorClass: null,
             cost: new Cost(cash: 50000, food: 0, wood: 2500, steel: 5000),

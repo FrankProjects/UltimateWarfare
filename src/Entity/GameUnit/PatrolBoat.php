@@ -30,17 +30,18 @@ final class PatrolBoat extends GameUnit
             description: '',
             gameUnitCategory: GameUnitCategory::NAVAL_UNITS,
             behaviorClass: NavalUnitBehavior::class,
-            cost: new Cost(cash: 4000, food: 1500, wood: 250, steel: 300),
+            cost: new Cost(cash: 4000, food: 1000, wood: 200, steel: 250),
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
-            upkeep: new Upkeep(cash: 200, food: 50, wood: 0, steel: 0),
+            upkeep: new Upkeep(cash: 60, food: 20, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 500,
-                armor: 25,
+                health: 245,
+                armor: 5,
                 travelSpeed: 100,
                 airBattleStats: new AirBattleStats(defence: 100, defenceSpeed: 50),
-                seaBattleStats: new SeaBattleStats(attack: 200, attackSpeed: 150, defence: 230, defenceSpeed: 160),
-                groundBattleStats: new GroundBattleStats(attack: 160, attackSpeed: 40),
+                seaBattleStats: new SeaBattleStats(attack: 800, attackSpeed: 160, defence: 900, defenceSpeed: 170),
+                groundBattleStats: new GroundBattleStats(attack: 60, attackSpeed: 40),
             ),
+            population: 10,
         );
     }
 

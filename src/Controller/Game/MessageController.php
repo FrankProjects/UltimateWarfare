@@ -13,6 +13,8 @@ use Throwable;
 
 final class MessageController extends BaseGameController
 {
+    private const int MESSAGES_PER_PAGE = 10;
+
     private MessageRepository $messageRepository;
     private MessageActionService $messageActionService;
 
@@ -52,15 +54,14 @@ final class MessageController extends BaseGameController
         }
     }
 
-    public function inboxApi(): JsonResponse
+    public function inboxApi(Request $request): JsonResponse
     {
         $player = $this->getPlayer();
+        $page = max(1, $request->query->getInt('page', 1));
 
-        if ($player->getNotifications()->getMessage()) {
-            $this->messageActionService->disableMessageNotification($player);
-        }
-
-        $messages = $this->messageRepository->findNonDeletedMessagesToPlayer($player);
+        $offset = ($page - 1) * self::MESSAGES_PER_PAGE;
+        $messages = $this->messageRepository->findNonDeletedMessagesToPlayer($player, self::MESSAGES_PER_PAGE, $offset);
+        $totalMessages = $this->messageRepository->countNonDeletedMessagesToPlayer($player);
 
         $messagesData = [];
         foreach ($messages as $message) {
@@ -78,13 +79,21 @@ final class MessageController extends BaseGameController
         return new JsonResponse([
             'success' => true,
             'messages' => $messagesData,
+            'pagination' => $this->getPagination($page, $totalMessages),
         ]);
     }
 
-    public function outboxApi(): JsonResponse
+    public function outboxApi(Request $request): JsonResponse
     {
         $player = $this->getPlayer();
-        $messages = $this->messageRepository->findNonDeletedMessagesFromPlayer($player);
+        $page = max(1, $request->query->getInt('page', 1));
+        $offset = ($page - 1) * self::MESSAGES_PER_PAGE;
+        $messages = $this->messageRepository->findNonDeletedMessagesFromPlayer(
+            $player,
+            self::MESSAGES_PER_PAGE,
+            $offset
+        );
+        $totalMessages = $this->messageRepository->countNonDeletedMessagesFromPlayer($player);
 
         $messagesData = [];
         foreach ($messages as $message) {
@@ -100,7 +109,21 @@ final class MessageController extends BaseGameController
         return new JsonResponse([
             'success' => true,
             'messages' => $messagesData,
+            'pagination' => $this->getPagination($page, $totalMessages),
         ]);
+    }
+
+    /**
+     * @return array{currentPage: int, totalPages: int, totalMessages: int, perPage: int}
+     */
+    private function getPagination(int $page, int $totalMessages): array
+    {
+        return [
+            'currentPage' => $page,
+            'totalPages' => (int) ceil($totalMessages / self::MESSAGES_PER_PAGE),
+            'totalMessages' => $totalMessages,
+            'perPage' => self::MESSAGES_PER_PAGE,
+        ];
     }
 
     public function readMessageApi(int $messageId): JsonResponse
@@ -124,6 +147,7 @@ final class MessageController extends BaseGameController
                     'date' => date('M d, Y H:i', $message->getTimestamp()),
                     'isAdmin' => $message->getAdminMessage(),
                 ],
+                'unreadMessages' => $this->messageRepository->countUnreadMessagesToPlayer($player),
             ]);
         } catch (Throwable $e) {
             return new JsonResponse([
@@ -160,11 +184,13 @@ final class MessageController extends BaseGameController
     public function deleteInboxMessageApi(int $messageId): JsonResponse
     {
         try {
-            $this->messageActionService->deleteMessageFromInbox($this->getPlayer(), $messageId);
+            $player = $this->getPlayer();
+            $this->messageActionService->deleteMessageFromInbox($player, $messageId);
 
             return new JsonResponse([
                 'success' => true,
-                'message' => 'Message deleted!'
+                'message' => 'Message deleted!',
+                'unreadMessages' => $this->messageRepository->countUnreadMessagesToPlayer($player),
             ]);
         } catch (Throwable $e) {
             return new JsonResponse([

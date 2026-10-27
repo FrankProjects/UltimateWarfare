@@ -9,9 +9,11 @@ use FrankProjects\UltimateWarfare\Entity\MarketItem;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\Player\Resources;
 use FrankProjects\UltimateWarfare\Entity\Report;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\MarketItemRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use RuntimeException;
 
 final class MarketActionService
@@ -19,15 +21,21 @@ final class MarketActionService
     private MarketItemRepository $marketItemRepository;
     private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
+    private EntityLockRepository $entityLockRepository;
 
     public function __construct(
         MarketItemRepository $marketItemRepository,
         PlayerRepository $playerRepository,
-        ReportRepository $reportRepository
+        ReportRepository $reportRepository,
+        PlayerStateUpdaterService $playerStateUpdaterService,
+        EntityLockRepository $entityLockRepository
     ) {
         $this->marketItemRepository = $marketItemRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
+        $this->entityLockRepository = $entityLockRepository;
     }
 
     public function buyOrder(Player $player, int $marketItemId): void
@@ -35,6 +43,14 @@ final class MarketActionService
         $this->ensureMarketEnabled($player);
 
         $marketItem = $this->getMarketItem($player, $marketItemId);
+
+        // The current player is locked for the whole request; settle and lock the other party as well
+        $this->playerStateUpdaterService->updateStateForPlayer($marketItem->getPlayer(), time());
+
+        // A concurrent request may have bought or cancelled this order in the meantime
+        if (!$this->entityLockRepository->lockForUpdate($marketItem)) {
+            throw new RuntimeException('Market order does not exist!');
+        }
 
         if ($marketItem->getType() !== MarketItem::TYPE_SELL) {
             throw new RuntimeException('Market order is not a buy order!');
@@ -83,6 +99,11 @@ final class MarketActionService
 
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
+        // A concurrent request may have bought or cancelled this order in the meantime
+        if (!$this->entityLockRepository->lockForUpdate($marketItem)) {
+            throw new RuntimeException('Market order does not exist!');
+        }
+
         if ($marketItem->getPlayer()->getId() !== $player->getId()) {
             throw new RuntimeException('You can not cancel orders that do not belong to you!\'');
         }
@@ -105,19 +126,30 @@ final class MarketActionService
 
         $marketItem = $this->getMarketItem($player, $marketItemId);
 
+        // The current player is locked for the whole request; settle and lock the other party as well
+        $this->playerStateUpdaterService->updateStateForPlayer($marketItem->getPlayer(), time());
+
+        // A concurrent request may have bought or cancelled this order in the meantime
+        if (!$this->entityLockRepository->lockForUpdate($marketItem)) {
+            throw new RuntimeException('Market order does not exist!');
+        }
+
         if ($marketItem->getType() !== MarketItem::TYPE_BUY) {
             throw new RuntimeException('Market order is not a sell order!');
         }
 
         $this->ensureMarketItemNotOwnedByPlayer($marketItem, $player);
 
-        $resources = $player->getResources();
+        $resources = $this->substractAndValidateGameResources(
+            $marketItem->getGameResource(),
+            $player->getResources(),
+            $marketItem->getAmount()
+        );
         $resources->setCash($resources->getCash() + $marketItem->getPrice());
-        $marketItemPlayer = $marketItem->getPlayer();
-        $marketItemPlayerResources = $marketItemPlayer->getResources();
-        $marketItemPlayerResources->setCash($marketItemPlayerResources->getCash() - $marketItem->getPrice());
 
-        $resources = $this->substractGameResources($marketItem, $resources);
+        // The buyer's cash was already taken when the buy order was created; they receive the resources
+        $marketItemPlayer = $marketItem->getPlayer();
+        $marketItemPlayerResources = $this->addGameResources($marketItem, $marketItemPlayer->getResources());
 
         $marketItemPlayerNotifications = $marketItemPlayer->getNotifications();
         $marketItemPlayerNotifications->setMarket(true);
@@ -221,25 +253,6 @@ final class MarketActionService
                 break;
             case GameResource::GAME_RESOURCE_STEEL:
                 $resources->setSteel($resources->getSteel() + $marketItem->getAmount());
-                break;
-            default:
-                throw new RuntimeException('Unknown resource type!');
-        }
-
-        return $resources;
-    }
-
-    private function substractGameResources(MarketItem $marketItem, Resources $resources): Resources
-    {
-        switch ($marketItem->getGameResource()) {
-            case GameResource::GAME_RESOURCE_WOOD:
-                $resources->setWood($resources->getWood() - $marketItem->getAmount());
-                break;
-            case GameResource::GAME_RESOURCE_FOOD:
-                $resources->setFood($resources->getFood() - $marketItem->getAmount());
-                break;
-            case GameResource::GAME_RESOURCE_STEEL:
-                $resources->setSteel($resources->getSteel() - $marketItem->getAmount());
                 break;
             default:
                 throw new RuntimeException('Unknown resource type!');

@@ -37,7 +37,6 @@ final class ResearchActionService
         $researchPlayer->setPlayer($player);
         $researchPlayer->setResearchSlug($research->getSlug());
         $researchPlayer->setLevel($targetLevel);
-        $researchPlayer->setTimestamp(time());
         $researchPlayer->setCompletionTimestamp(time() + $research->getTimestamp($targetLevel));
 
         $resources = $player->getResources();

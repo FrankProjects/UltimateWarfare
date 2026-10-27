@@ -16,6 +16,7 @@ class Report
     private int $timestamp;
     private string $report;
     private Player $player;
+    private ?BattleSummary $battleSummary = null;
 
     public function setId(int $id): void
     {
@@ -65,6 +66,16 @@ class Report
     public function setPlayer(Player $player): void
     {
         $this->player = $player;
+    }
+
+    public function getBattleSummary(): ?BattleSummary
+    {
+        return $this->battleSummary;
+    }
+
+    public function setBattleSummary(?BattleSummary $battleSummary): void
+    {
+        $this->battleSummary = $battleSummary;
     }
 
     public static function createForPlayer(Player $player, int $timestamp, int $type, string $message): Report

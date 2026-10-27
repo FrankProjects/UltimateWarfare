@@ -13,12 +13,15 @@ use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Service\Action\FederationBankActionService;
+use FrankProjects\UltimateWarfare\Tests\Service\CreatesPlayerStateUpdaterService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class FederationBankActionServiceTest extends TestCase
 {
+    use CreatesPlayerStateUpdaterService;
+
     private FederationBankActionService $service;
     private FederationRepository&MockObject $federationRepository;
     private FederationNewsRepository&MockObject $federationNewsRepository;
@@ -33,7 +36,8 @@ class FederationBankActionServiceTest extends TestCase
         $this->service = new FederationBankActionService(
             $this->federationRepository,
             $this->federationNewsRepository,
-            $this->playerRepository
+            $this->playerRepository,
+            $this->createEntityLockRepository()
         );
     }
 
@@ -81,6 +85,32 @@ class FederationBankActionServiceTest extends TestCase
     }
 
     // ========== DEPOSIT TESTS ==========
+
+    public function testDepositFailsWhenFederationCanNotBeLocked(): void
+    {
+        $service = new FederationBankActionService(
+            $this->federationRepository,
+            $this->federationNewsRepository,
+            $this->playerRepository,
+            $this->createEntityLockRepository(false)
+        );
+
+        $federation = $this->createFederation(5000, 2000, 1000, 1500);
+        $player = $this->createPlayer(1000, 500, 200, 300);
+        $player->method('getFederation')->willReturn($federation);
+
+        $this->federationRepository->expects(self::never())->method('save');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('You are not in a Federation!');
+
+        try {
+            $service->deposit($player, ['cash' => '400']);
+        } finally {
+            self::assertEquals(1000, $player->getResources()->getCash());
+            self::assertEquals(5000, $federation->getResources()->getCash());
+        }
+    }
 
     public function testDepositTransfersResources(): void
     {

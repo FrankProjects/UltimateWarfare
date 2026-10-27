@@ -16,15 +16,9 @@ interface ResearchPlayerRepository
     public function getNonActiveCompletedResearch(int $timestamp): array;
 
     /**
-     * @return ResearchPlayer[]
+     * @return ResearchPlayer[] Ordered by completion time
      */
-    public function getAllNonActiveResearch(): array;
-
-    /**
-     * @param Player $player
-     * @return ResearchPlayer[]
-     */
-    public function findFinishedByPlayer(Player $player): array;
+    public function getNonActiveCompletedResearchByPlayer(Player $player, int $timestamp): array;
 
     /**
      * @param Player $player
@@ -38,6 +32,8 @@ interface ResearchPlayerRepository
      * @return array<string, int>
      */
     public function getCompletedLevelsBySlug(Player $player): array;
+
+    public function getNextCompletionTimestampByPlayer(Player $player): ?int;
 
     public function remove(ResearchPlayer $researchPlayer): void;
 

@@ -6,9 +6,11 @@ namespace FrankProjects\UltimateWarfare\Repository\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\World;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
+use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 
 final class DoctrinePlayerRepository implements PlayerRepository
@@ -78,6 +80,44 @@ final class DoctrinePlayerRepository implements PlayerRepository
             ->getResult();
     }
 
+    /**
+     * @return Player[]
+     */
+    public function findWithPopulationBelowCapacityUpdatedBefore(int $timestamp, int $populationPerHouse): array
+    {
+        return $this->entityManager
+            ->createQuery(
+                'SELECT DISTINCT p
+              FROM ' . Player::class . ' p
+              JOIN ' . WorldRegion::class . ' wr ON wr.player = p
+              JOIN ' . WorldRegionStackableUnit::class . ' wrsu ON wrsu.worldRegion = wr
+              WHERE p.timestampUpdate < :timestamp
+                AND wrsu.gameUnit = :house
+                AND wr.population < wrsu.amount * :populationPerHouse'
+            )->setParameter('timestamp', $timestamp)
+            ->setParameter('house', GameUnitEnum::HOUSE)
+            ->setParameter('populationPerHouse', $populationPerHouse)
+            ->getResult();
+    }
+
+    /**
+     * @return Player[]
+     */
+    public function findWithoutFoodUpdatedBefore(int $timestamp): array
+    {
+        return $this->entityManager
+            ->createQuery(
+                'SELECT DISTINCT p
+              FROM ' . Player::class . ' p
+              JOIN ' . WorldRegion::class . ' wr ON wr.player = p
+              WHERE p.timestampUpdate < :timestamp
+                AND wr.population > 0
+                AND p.income.food < p.upkeep.food
+                AND p.resources.food + (p.income.food - p.upkeep.food) * (:timestamp - p.timestampUpdate) / 3600 <= 0'
+            )->setParameter('timestamp', $timestamp)
+            ->getResult();
+    }
+
     public function remove(Player $player): void
     {
         foreach ($player->getMarketItems() as $marketItem) {
@@ -124,17 +164,27 @@ final class DoctrinePlayerRepository implements PlayerRepository
             }
 
             $worldRegion->setName('');
+            $worldRegion->setPopulation(0);
+            $worldRegion->setMorale(100);
+            $worldRegion->setMoraleTimestamp(0);
             $worldRegion->setPlayer(null);
             $this->entityManager->persist($worldRegion);
         }
 
-        // XXX TODO: Do we want to keep messages so other players don't lose messages from their in/outbox?
         foreach ($player->getFromMessages() as $message) {
             $this->entityManager->remove($message);
         }
 
         foreach ($player->getToMessages() as $message) {
             $this->entityManager->remove($message);
+        }
+
+        foreach ($player->getAttackerBattleSummaries() as $battleSummary) {
+            $this->entityManager->remove($battleSummary);
+        }
+
+        foreach ($player->getDefenderBattleSummaries() as $battleSummary) {
+            $this->entityManager->remove($battleSummary);
         }
 
         $this->entityManager->remove($player);

@@ -13,6 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\ReportRepository;
+use FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService;
 use RuntimeException;
 
 final class FederationActionService
@@ -21,17 +22,20 @@ final class FederationActionService
     private FederationNewsRepository $federationNewsRepository;
     private PlayerRepository $playerRepository;
     private ReportRepository $reportRepository;
+    private PlayerStateUpdaterService $playerStateUpdaterService;
 
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
         PlayerRepository $playerRepository,
-        ReportRepository $reportRepository
+        ReportRepository $reportRepository,
+        PlayerStateUpdaterService $playerStateUpdaterService
     ) {
         $this->federationRepository = $federationRepository;
         $this->federationNewsRepository = $federationNewsRepository;
         $this->playerRepository = $playerRepository;
         $this->reportRepository = $reportRepository;
+        $this->playerStateUpdaterService = $playerStateUpdaterService;
     }
 
     public function createFederation(Player $player, string $federationName): void
@@ -74,6 +78,9 @@ final class FederationActionService
         if ($aidPlayer === null) {
             throw new RuntimeException("Aid player does not exist!");
         }
+
+        // The sender is locked for the whole request; settle and lock the receiver as well
+        $this->playerStateUpdaterService->updateStateForPlayer($aidPlayer, time());
 
         $aidPlayerFederation = $aidPlayer->getFederation();
         if ($aidPlayerFederation === null || $aidPlayerFederation->getId() !== $federation->getId()) {
@@ -265,6 +272,10 @@ final class FederationActionService
             throw new RuntimeException("You don't have permission to change ranks!");
         }
 
+        if ($player->getId() === $playerId) {
+            throw new RuntimeException("You can't change your own rank!");
+        }
+
         $changePlayer = $this->playerRepository->find($playerId);
         if ($changePlayer === null) {
             throw new RuntimeException("Player does not exist!");
@@ -275,35 +286,34 @@ final class FederationActionService
             throw new RuntimeException("Player is not in your Federation!");
         }
 
-        if ($role < 1 || $role > 10) {
+        if ($role < Player::FEDERATION_HIERARCHY_RECRUIT || $role > Player::FEDERATION_HIERARCHY_GENERAL) {
             throw new RuntimeException("Invalid role!");
         }
 
         $changePlayer->setFederationHierarchy($role);
         $this->playerRepository->save($changePlayer);
-        /**
-         * XXX TODO!
-         *
-         * if ($role == 10)
-         * $sql = $db->query("UPDATE player SET fedlvl = $rank WHERE id = $fed_player;");
-         * $sql2 = $db->query("UPDATE player SET fedlvl = 9 WHERE id = $player_id;");
-         *
-         * <table class="table text">
-         * <tr><td class="tabletop"><b>Changing Federation Owner</b></td></tr>
-         *
-         * <form action="" method="post" />
-         * <tr><td>
-         * <b>Are you sure you wanna do this?<br />
-         * By accepting this you will give the federation to another player,
-         * and will lower your rank to Staff General!<br /><br />
-         *
-         * <input type="hidden" name="rank" value="<?php echo"$rank"; ?>">
-         * <input type="hidden" name="player" value="<?php echo"$fed_player"; ?>">
-         * <br />
-         * <input type="submit" name="submit" value="Accept">
-         * </td></tr>
-         * </table>
-         */
+
+        if ($role === Player::FEDERATION_HIERARCHY_GENERAL) {
+            $this->transferFederationOwnership($player, $changePlayer, $federation);
+        }
+    }
+
+    /**
+     * A Federation has a single General; promoting another player to General
+     * hands over the Federation and demotes the current General to Staff General.
+     */
+    private function transferFederationOwnership(Player $player, Player $newOwner, Federation $federation): void
+    {
+        $player->setFederationHierarchy(Player::FEDERATION_HIERARCHY_STAFF_GENERAL);
+        $this->playerRepository->save($player);
+
+        $news = "{$player->getName()} has handed over the Federation to {$newOwner->getName()}.";
+        $federationNews = FederationNews::createForFederation($federation, $news);
+        $this->federationNewsRepository->save($federationNews);
+
+        $reportString = "{$player->getName()} has made you the General of Federation {$federation->getName()}";
+        $report = Report::createForPlayer($newOwner, time(), Report::TYPE_GENERAL, $reportString);
+        $this->reportRepository->save($report);
     }
 
     private function ensureFederationEnabled(Player $player): void

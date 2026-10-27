@@ -376,6 +376,13 @@ Game/Fleet/Attack/Api:
     requirements:
         fleetId: '\d+'
 
+Game/Api/BattleSummary:
+    path:      /game/api/battle-summary/{battleSummaryId}
+    controller: FrankProjects\UltimateWarfare\Controller\Game\BattleController::battleSummaryApi
+    methods: [GET]
+    requirements:
+        battleSummaryId: '\d+'
+
 Game/Fleet/Recall/Api:
     path:      /game/api/fleet/recall/{fleetId}
     controller: FrankProjects\UltimateWarfare\Controller\Game\FleetController::recallApi
@@ -389,6 +396,11 @@ Game/Fleet/Reinforce/Api:
     methods: [POST]
     requirements:
         fleetId: '\d+'
+
+Game/Api/Resources:
+    path:      /game/api/resources
+    controller: FrankProjects\UltimateWarfare\Controller\Game\StatisticsController::resourcesApi
+    methods: [GET]
 
 Game/Api/Statistics:
     path:      /game/api/statistics

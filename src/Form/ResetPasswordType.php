@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Form;
 
-use FrankProjects\UltimateWarfare\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /** @extends AbstractType<null> */
 class ResetPasswordType extends AbstractType
@@ -33,13 +32,13 @@ class ResetPasswordType extends AbstractType
                         'translation_domain' => 'register'
                     ],
                     'constraints' => [
+                        new NotBlank(),
                         new Length(
                             min: 8,
                             max: 4096,
                             minMessage: 'Password must have at least 8 characters',
                         ),
-                    ],
-                    'empty_data' => ''
+                    ]
                 ]
             )
             ->add(
@@ -50,14 +49,5 @@ class ResetPasswordType extends AbstractType
                     'translation_domain' => 'reset_password'
                 ]
             );
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults(
-            array(
-                'data_class' => User::class,
-            )
-        );
     }
 }

@@ -78,6 +78,8 @@
                     targetY: {{ fleet.targetY }},
                     targetRegionId: {{ fleet.targetRegionId }},
                     targetIsYours: {{ fleet.targetIsYours ? 'true' : 'false' }},
+                    targetIsOpenSea: {{ fleet.targetIsOpenSea ? 'true' : 'false' }},
+                    timestamp: {{ fleet.timestamp }},
                     timestampArrive: {{ fleet.timestampArrive }},
                     hasArrived: {{ fleet.hasArrived ? 'true' : 'false' }},
                     eta: {{ fleet.eta }},
@@ -86,6 +88,7 @@
                 }{% if not loop.last %},{% endif %}
                 {% endfor %}
             ],
+            detectedFleets: {{ detectedFleets|json_encode|raw }},
             playerBombardments: [
                 {% for bombardment in bombardments %}
                 {
@@ -102,6 +105,7 @@
     </script>
     <script src="{{ asset('js/world/notifications.js') }}"></script>
     <script src="{{ asset('js/world/api-fetch.js') }}"></script>
+    <script src="{{ asset('js/world/resource-ticker.js') }}"></script>
     <script src="{{ asset('js/world/messages.js') }}"></script>
     <script src="{{ asset('js/world/reports.js') }}"></script>
     <script src="{{ asset('js/world/research.js') }}"></script>

@@ -33,14 +33,14 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ConstructionProcessor:
+    FrankProjects\UltimateWarfare\Service\PlayerStateUpdaterService:
         arguments:
             $constructionTimeOverride: '%app.uw_construction_time_override%'
+            $researchTimeOverride: '%app.uw_research_time_override%'
 
-    FrankProjects\UltimateWarfare\Service\GameEngine\Processor\ResearchProcessor:
+    FrankProjects\UltimateWarfare\Service\PlayerState\ResearchCompleter:
         arguments:
             $researchRegistry: '@FrankProjects\UltimateWarfare\Repository\ResearchRegistry'
-            $researchTimeOverride: '%app.uw_research_time_override%'
 
     FrankProjects\UltimateWarfare\Form\CaptchaType:
         arguments:

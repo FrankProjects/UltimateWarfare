@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Service\Action;
 
+use FrankProjects\UltimateWarfare\Entity\Enum\FleetMovement;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitCategory;
 use FrankProjects\UltimateWarfare\Entity\Enum\GameUnitEnum;
 use FrankProjects\UltimateWarfare\Entity\Fleet;
@@ -12,11 +13,17 @@ use FrankProjects\UltimateWarfare\Entity\GameUnit;
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetRepository;
 use FrankProjects\UltimateWarfare\Repository\FleetUnitRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\FleetFactory;
+use FrankProjects\UltimateWarfare\Service\FleetRouteService;
+use FrankProjects\UltimateWarfare\Service\MoraleUpdaterService;
+use FrankProjects\UltimateWarfare\Service\WaterRegionUpdaterService;
+use FrankProjects\UltimateWarfare\Util\DistanceCalculator;
 use RuntimeException;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,6 +36,11 @@ final class FleetActionService
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private EntityManagerInterface $entityManager;
     private FleetFactory $fleetFactory;
+    private WorldRegionRepository $worldRegionRepository;
+    private EntityLockRepository $entityLockRepository;
+    private WaterRegionUpdaterService $waterRegionUpdaterService;
+    private FleetRouteService $fleetRouteService;
+    private MoraleUpdaterService $moraleUpdaterService;
 
     public function __construct(
         FleetRepository $fleetRepository,
@@ -36,7 +48,12 @@ final class FleetActionService
         GameUnitRegistry $gameUnitRegistry,
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         EntityManagerInterface $entityManager,
-        FleetFactory $fleetFactory
+        FleetFactory $fleetFactory,
+        WorldRegionRepository $worldRegionRepository,
+        EntityLockRepository $entityLockRepository,
+        WaterRegionUpdaterService $waterRegionUpdaterService,
+        FleetRouteService $fleetRouteService,
+        MoraleUpdaterService $moraleUpdaterService
     ) {
         $this->fleetRepository = $fleetRepository;
         $this->fleetUnitRepository = $fleetUnitRepository;
@@ -44,6 +61,11 @@ final class FleetActionService
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->entityManager = $entityManager;
         $this->fleetFactory = $fleetFactory;
+        $this->worldRegionRepository = $worldRegionRepository;
+        $this->entityLockRepository = $entityLockRepository;
+        $this->waterRegionUpdaterService = $waterRegionUpdaterService;
+        $this->fleetRouteService = $fleetRouteService;
+        $this->moraleUpdaterService = $moraleUpdaterService;
     }
 
     public function recall(int $fleetId, Player $player): WorldRegion
@@ -64,6 +86,9 @@ final class FleetActionService
             }
 
             $sourceRegion = $fleet->getWorldRegion();
+            // The water region the fleet left was released, so claim it again
+            $this->claimIfOpenSea($sourceRegion, $player);
+
             $targetPlayer = $sourceRegion->getPlayer();
             if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
                 throw new RuntimeException('You are not the owner of this region!');
@@ -98,10 +123,22 @@ final class FleetActionService
             }
 
             $targetRegion = $fleet->getTargetWorldRegion();
+            if ($targetRegion->isWater() && $fleet->getTimestampArrive() > time()) {
+                throw new RuntimeException('Fleet not arrived yet!');
+            }
+            $this->claimIfOpenSea($targetRegion, $player);
+
             $targetPlayer = $targetRegion->getPlayer();
 
             if ($targetPlayer === null || $targetPlayer->getId() !== $player->getId()) {
                 throw new RuntimeException('You are not the owner of this region!');
+            }
+
+            // The Airfield of the target region may have been destroyed while the aircraft were on their way
+            if ($this->hasAirUnits($fleet) && $targetRegion->getLeveledUnit(GameUnitEnum::AIRFIELD) === null) {
+                throw new RuntimeException(
+                    'Aircraft cannot land: this region no longer has an Airfield. Recall the fleet instead.'
+                );
             }
 
             $this->addFleetUnitsToWorldRegion($fleet, $targetRegion);
@@ -159,18 +196,164 @@ final class FleetActionService
             throw new RuntimeException('No game units selected to send!');
         }
 
-        $fleet = $this->fleetFactory->createForPlayer($player, $region, $targetRegion);
+        if ($targetRegion->isWater()) {
+            $this->validateWaterTarget($targetRegion, $player, $gameUnitsToSend);
+        }
+
+        $this->validateAirUnits($region, $targetRegion, $player, $gameUnitsToSend);
+
+        $movement = $this->fleetRouteService->getMovement(array_column($gameUnitsToSend, 'gameUnit'));
+        $path = $this->fleetRouteService->findRoute($region, $targetRegion, $player, $movement);
+        if ($path === null) {
+            throw new RuntimeException($movement === FleetMovement::NAVAL
+                ? "Your ships can't reach this region by water!"
+                : "Your units can't reach this region: it is not connected to this region through your own regions!");
+        }
+
+        $fleet = $this->fleetFactory->createForPlayer(
+            $player,
+            $region,
+            $targetRegion,
+            $this->getSlowestTravelSpeed($gameUnitsToSend),
+            $path,
+            $movement
+        );
+        // The region keeps its morale: splitting an army doesn't make it any fresher
+        $fleet->setMorale($this->moraleUpdaterService->project($region, time()));
         $this->fleetRepository->save($fleet);
 
         foreach ($gameUnitsToSend as $gameUnitData) {
             $this->addFleetUnitToFleet($region, $gameUnitData['gameUnit'], $gameUnitData['amount'], $fleet);
         }
 
+        $this->waterRegionUpdaterService->releaseIfUnoccupied($region);
+
         return $fleet;
+    }
+
+    /**
+     * Aircraft take off from an Airfield and only move to regions with an Airfield. An attack needs no
+     * Airfield on the target region, as aircraft never stay there but fly back to their source region.
+     *
+     * @param non-empty-list<array{gameUnit: GameUnit, amount: int}> $gameUnitsToSend
+     */
+    private function validateAirUnits(
+        WorldRegion $region,
+        WorldRegion $targetRegion,
+        Player $player,
+        array $gameUnitsToSend
+    ): void {
+        $hasAirUnits = false;
+        foreach ($gameUnitsToSend as $gameUnitData) {
+            if ($gameUnitData['gameUnit']->getGameUnitCategory() === GameUnitCategory::AIR_UNITS) {
+                $hasAirUnits = true;
+                break;
+            }
+        }
+
+        if ($hasAirUnits === false) {
+            return;
+        }
+
+        if ($region->getLeveledUnit(GameUnitEnum::AIRFIELD) === null) {
+            throw new RuntimeException(
+                'Aircraft cannot take off: this region has no Airfield. Build an Airfield here to move or '
+                . 'attack with these aircraft.'
+            );
+        }
+
+        $isAttack = $targetRegion->getPlayer() !== null && $targetRegion->getPlayer()->getId() !== $player->getId();
+        if (!$isAttack && $targetRegion->getLeveledUnit(GameUnitEnum::AIRFIELD) === null) {
+            throw new RuntimeException('Aircraft can only be moved to a region with an Airfield!');
+        }
+    }
+
+    /**
+     * Only ships sail onto water; open sea (unowned water) must be next to one of the player's regions
+     *
+     * @param non-empty-list<array{gameUnit: GameUnit, amount: int}> $gameUnitsToSend
+     */
+    private function validateWaterTarget(WorldRegion $targetRegion, Player $player, array $gameUnitsToSend): void
+    {
+        foreach ($gameUnitsToSend as $gameUnitData) {
+            if ($gameUnitData['gameUnit']->getGameUnitCategory() !== GameUnitCategory::NAVAL_UNITS) {
+                throw new RuntimeException('Only naval units can be sent to water!');
+            }
+        }
+
+        if ($targetRegion->getPlayer() !== null) {
+            return;
+        }
+
+        $adjacentRegions = $this->worldRegionRepository->findAdjacentRegions(
+            $targetRegion->getX(),
+            $targetRegion->getY(),
+            $targetRegion->getWorld()
+        );
+        foreach ($adjacentRegions as $adjacentRegion) {
+            if ($adjacentRegion->getPlayer()?->getId() === $player->getId()) {
+                return;
+            }
+        }
+
+        throw new RuntimeException('You can only sail to open sea next to one of your regions!');
+    }
+
+    /**
+     * Claims an unowned water region for the player; a region owned by somebody is left as it is
+     */
+    private function claimIfOpenSea(WorldRegion $worldRegion, Player $player): void
+    {
+        if (!$worldRegion->isWater() || $worldRegion->getPlayer() !== null) {
+            return;
+        }
+
+        // Another fleet may claim the same region concurrently; re-read it under a lock, claim() then refuses
+        // a region that was claimed in the meantime
+        if (!$this->entityLockRepository->lockForUpdate($worldRegion)) {
+            return;
+        }
+
+        $this->waterRegionUpdaterService->claim($worldRegion, $player);
+    }
+
+    /**
+     * A fleet moves at the speed of its slowest unit; units without a travel speed move at base speed.
+     *
+     * @param non-empty-list<array{gameUnit: GameUnit, amount: int}> $gameUnitsToSend
+     */
+    private function getSlowestTravelSpeed(array $gameUnitsToSend): int
+    {
+        $travelSpeeds = [];
+        foreach ($gameUnitsToSend as $gameUnitData) {
+            $travelSpeed = $gameUnitData['gameUnit']->getBattleStats()->getTravelSpeed();
+            $travelSpeeds[] = $travelSpeed > 0 ? $travelSpeed : DistanceCalculator::BASE_TRAVEL_SPEED;
+        }
+
+        return min($travelSpeeds);
+    }
+
+    private function hasAirUnits(Fleet $fleet): bool
+    {
+        foreach ($fleet->getFleetUnits() as $fleetUnit) {
+            $category = $this->gameUnitRegistry->find($fleetUnit->getGameUnit())->getGameUnitCategory();
+            if ($category === GameUnitCategory::AIR_UNITS) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function addFleetUnitsToWorldRegion(Fleet $fleet, WorldRegion $worldRegion): void
     {
+        $this->moraleUpdaterService->mergeIntoRegion(
+            $worldRegion,
+            $fleet->getMorale(),
+            $this->moraleUpdaterService->getCrew($fleet->getFleetUnits()),
+            time()
+        );
+
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
             $this->addFleetUnitToWorldRegion($fleetUnit, $worldRegion);
         }

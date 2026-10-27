@@ -24,45 +24,27 @@ class NavalUnitBehavior extends AbstractGameUnitBehavior
             return false;
         }
 
-        // Check 2: Must be adjacent to water
-        return $this->isAdjacentToWater($region);
+        // Check 2: Must be coastal
+        return $this->isCoastal($region);
     }
 
     public function getBuildRequirementDescription(): string
     {
-        return 'Requires a Harbor and must be adjacent to water';
+        return 'Requires a Harbor on a coastal region';
     }
 
-    private function isAdjacentToWater(WorldRegion $region): bool
+    private function isCoastal(WorldRegion $region): bool
     {
-        $adjacentRegions = $this->regionRepository->findAdjacentRegions(
+        return $region->isCoastal($this->regionRepository->findAdjacentRegions(
             $region->getX(),
             $region->getY(),
             $region->getWorld()
-        );
-
-        $waterTypes = [
-            WorldRegion::TYPE_DEEP_WATER,
-            WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER,
-        ];
-
-        foreach ($adjacentRegions as $adjacent) {
-            if (in_array($adjacent->getType(), $waterTypes, true)) {
-                return true;
-            }
-        }
-
-        return false;
+        ));
     }
 
     public function canMoveTo(WorldRegion $from, WorldRegion $to): bool
     {
         // Naval units can only move to water or coastal regions
-        $navalTypes = [
-            WorldRegion::TYPE_DEEP_WATER, WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER, WorldRegion::TYPE_SAND,
-        ];
-        return in_array($to->getType(), $navalTypes, true);
+        return $to->isWater() || $this->isCoastal($to);
     }
 }

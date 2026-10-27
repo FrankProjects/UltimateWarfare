@@ -6,7 +6,6 @@
     const statisticsModal = document.getElementById('statisticsModal');
     const statisticsTabs = document.getElementById('statisticsTabs');
     const statisticsContainer = document.getElementById('statisticsContainer');
-    const statisticsFooter = document.getElementById('statisticsFooter');
 
     let currentTab = 'overview';
     let cachedData = null;
@@ -93,20 +92,18 @@
             if (w.type === 'food') {
                 if (w.seconds === 0) {
                     html += '<strong>You don\'t have enough food to feed your Population</strong><br>';
-                    html += 'You will lose 30% of your population every hour!<br><br>';
-                    html += '<strong>You don\'t have enough food to feed your army</strong><br>';
-                    html += 'You will lose 10% of your army every hour!';
+                    html += 'You will lose 30% of your population every hour!';
                 } else {
                     html += 'You don\'t have enough food to feed your Population in <strong>' + formatNumber(w.seconds) + ' seconds from now!</strong><br>';
-                    html += 'Once you hit 0 food, you will lose 30% of your population and 10% of your army every hour!';
+                    html += 'Once you hit 0 food, you will lose 30% of your population every hour!';
                 }
             } else if (w.type === 'cash') {
                 if (w.seconds === 0) {
                     html += '<strong>You don\'t have enough cash to pay your army</strong><br>';
-                    html += 'You will lose 10% of your army every hour!';
+                    html += 'Your cash stays at 0 until your income exceeds your upkeep!';
                 } else {
                     html += 'You don\'t have enough cash to pay your army in <strong>' + formatNumber(w.seconds) + ' seconds from now!</strong><br>';
-                    html += 'Once you hit 0 cash, you will lose 10% of your army every hour!';
+                    html += 'Once you hit 0 cash, your cash stays at 0 until your income exceeds your upkeep!';
                 }
             }
             html += '</div>';
@@ -117,12 +114,12 @@
         html += '<tr><td class="uw-table-label">Wood</td><td>' + formatNumber(status.wood) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Steel</td><td>' + formatNumber(status.steel) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Food</td><td>' + formatNumber(status.food) + '</td></tr>';
+        html += '<tr><td class="uw-table-label">Population</td><td>' + formatNumber(status.population) + ' / ' + formatNumber(status.maxPopulation) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Regions</td><td>' + formatNumber(status.regions) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Net Worth</td><td>' + formatNumber(status.netWorth) + '</td></tr>';
         html += '</table>';
 
         statisticsContainer.innerHTML = html;
-        renderFooter();
     }
 
     function renderIncomeTab() {
@@ -150,7 +147,6 @@
         html += '</table>';
 
         statisticsContainer.innerHTML = html;
-        renderFooter();
     }
 
     function renderArmyTab() {
@@ -174,7 +170,6 @@
         }
 
         statisticsContainer.innerHTML = html;
-        renderFooter();
     }
 
     function renderInfrastructureTab() {
@@ -198,11 +193,6 @@
         }
 
         statisticsContainer.innerHTML = html;
-        renderFooter();
-    }
-
-    function renderFooter() {
-        statisticsFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
     }
 
     function escapeHtml(text) {

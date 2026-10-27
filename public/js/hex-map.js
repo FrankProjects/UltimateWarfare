@@ -128,6 +128,10 @@ class HexMap {
         this.fleetManager.setFleets(fleets);
     }
 
+    setDetectedFleets(fleets) {
+        this.fleetManager.setDetectedFleets(fleets);
+    }
+
     setBombardments(bombardments) {
         this.bombardmentManager.setBombardments(bombardments);
     }

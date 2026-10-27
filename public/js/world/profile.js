@@ -89,7 +89,7 @@
         html += '</table>';
 
         profileContainer.innerHTML = html;
-        profileFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
+        profileFooter.innerHTML = '';
     }
 
     function renderPasswordTab() {
@@ -104,7 +104,7 @@
         html += '</div>';
 
         profileContainer.innerHTML = html;
-        profileFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <button type="button" class="btn btn-primary" id="savePasswordBtn">Change Password</button>';
+        profileFooter.innerHTML = '<button type="button" class="btn btn-primary" id="savePasswordBtn">Change Password</button>';
         document.getElementById('savePasswordBtn').onclick = changePassword;
     }
 
@@ -158,15 +158,15 @@
             html += '<p class="text-muted-uw">You cannot surrender for the first 48 hours after joining a world.</p>';
             html += '</div>';
             profileContainer.innerHTML = html;
-            profileFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
+            profileFooter.innerHTML = '';
             return;
         }
 
-        if (profileData.isFederationFounder) {
-            html += '<p class="text-muted-uw">You cannot surrender while you are a Federation founder. Please disband your Federation first.</p>';
+        if (profileData.isFederationGeneral) {
+            html += '<p class="text-muted-uw">You cannot surrender while you are a Federation General. Please hand over or disband your Federation first.</p>';
             html += '</div>';
             profileContainer.innerHTML = html;
-            profileFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
+            profileFooter.innerHTML = '';
             return;
         }
 
@@ -177,7 +177,7 @@
         html += '</div>';
 
         profileContainer.innerHTML = html;
-        profileFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> <button type="button" class="btn btn-danger" id="surrenderBtn">Surrender</button>';
+        profileFooter.innerHTML = '<button type="button" class="btn btn-danger" id="surrenderBtn">Surrender</button>';
         document.getElementById('surrenderBtn').onclick = surrender;
     }
 

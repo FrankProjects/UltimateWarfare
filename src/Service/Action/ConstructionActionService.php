@@ -13,8 +13,10 @@ use FrankProjects\UltimateWarfare\Entity\WorldRegion;
 use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionStackableUnitRepository;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
+use FrankProjects\UltimateWarfare\Service\IncomeUpdaterService;
 use FrankProjects\UltimateWarfare\Service\NetWorthUpdaterService;
 use RuntimeException;
 
@@ -26,6 +28,8 @@ final class ConstructionActionService
     private WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository;
     private NetWorthUpdaterService $netWorthUpdaterService;
     private GameUnitBehaviorFactory $behaviorFactory;
+    private IncomeUpdaterService $incomeUpdaterService;
+    private WorldRegionRepository $worldRegionRepository;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
@@ -33,7 +37,9 @@ final class ConstructionActionService
         PlayerRepository $playerRepository,
         WorldRegionStackableUnitRepository $worldRegionStackableUnitRepository,
         NetWorthUpdaterService $netWorthUpdaterService,
-        GameUnitBehaviorFactory $behaviorFactory
+        GameUnitBehaviorFactory $behaviorFactory,
+        IncomeUpdaterService $incomeUpdaterService,
+        WorldRegionRepository $worldRegionRepository
     ) {
         $this->constructionRepository = $constructionRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
@@ -41,6 +47,8 @@ final class ConstructionActionService
         $this->worldRegionStackableUnitRepository = $worldRegionStackableUnitRepository;
         $this->netWorthUpdaterService = $netWorthUpdaterService;
         $this->behaviorFactory = $behaviorFactory;
+        $this->incomeUpdaterService = $incomeUpdaterService;
+        $this->worldRegionRepository = $worldRegionRepository;
     }
 
     /**
@@ -63,6 +71,7 @@ final class ConstructionActionService
         $priceCash = 0;
         $priceWood = 0;
         $priceSteel = 0;
+        $pricePopulation = 0;
         $totalBuild = 0;
         /** @var list<array{gameUnit: GameUnit, amount: int, duration: int}> $queue */
         $queue = [];
@@ -106,6 +115,7 @@ final class ConstructionActionService
             $priceCash = $priceCash + ($costMultiplier * $gameUnit->getCost()->getCash());
             $priceWood = $priceWood + ($costMultiplier * $gameUnit->getCost()->getWood());
             $priceSteel = $priceSteel + ($costMultiplier * $gameUnit->getCost()->getSteel());
+            $pricePopulation = $pricePopulation + ($costMultiplier * $gameUnit->getPopulation());
 
             if ($gameUnitCategory === GameUnitCategory::BUILDINGS) {
                 $totalBuild = $totalBuild + $amount;
@@ -135,6 +145,9 @@ final class ConstructionActionService
         if ($priceSteel > $resources->getSteel()) {
             throw new RuntimeException("You don't have enough steel to build that.");
         }
+        if ($pricePopulation > $region->getPopulation()) {
+            throw new RuntimeException("You don't have enough people in this region to train that.");
+        }
 
         if (count($queue) === 0) {
             throw new RuntimeException("You didn't select anything to build.");
@@ -146,6 +159,13 @@ final class ConstructionActionService
 
         $player->setResources($resources);
         $this->playerRepository->save($player);
+
+        // Units are crewed by people from the region they are trained in, which lowers the population income
+        if ($pricePopulation > 0) {
+            $region->setPopulation($region->getPopulation() - $pricePopulation);
+            $this->worldRegionRepository->save($region);
+            $this->incomeUpdaterService->updateIncomeForPlayer($player);
+        }
 
         // Constructions are only created once validation passed, as creating one adds it to the region
         foreach ($queue as $item) {
@@ -192,26 +212,39 @@ final class ConstructionActionService
     private function validateUnitAllowed(GameUnit $gameUnit, WorldRegion $region): void
     {
         $rowName = $gameUnit->getRowName();
-        $regionType = $region->getType();
 
         // Tanks require a Factory on this region
         if ($rowName === 'tank') {
             $this->requireLeveledBuilding($region, GameUnitEnum::FACTORY, 'a Factory');
         }
 
-        // Harbor can only be built on sand regions
-        if ($rowName === 'harbor' && $regionType !== WorldRegion::TYPE_SAND) {
-            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a sand region.");
+        // Harbors can only be built on coastal regions
+        if ($rowName === 'harbor' && !$this->isCoastal($region)) {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a coastal region.");
         }
 
         // Sea mines can only be built on coastal or water regions
-        $waterTypes = [
-            WorldRegion::TYPE_DEEP_WATER, WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER, WorldRegion::TYPE_SAND,
-        ];
-        if ($rowName === 'sea_mine' && !in_array($regionType, $waterTypes, true)) {
-            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a sand or water region.");
+        $isWater = $region->isWater();
+        if ($rowName === 'sea_mine' && !$isWater && !$this->isCoastal($region)) {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a coastal or water region.");
         }
+
+        // Water regions only allow Sea Mines
+        if ($isWater && $rowName !== 'sea_mine') {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: only Sea Mines can be built on water.");
+        }
+    }
+
+    /**
+     * A land region that shares a border with a water region
+     */
+    private function isCoastal(WorldRegion $region): bool
+    {
+        return $region->isCoastal($this->worldRegionRepository->findAdjacentRegions(
+            $region->getX(),
+            $region->getY(),
+            $region->getWorld()
+        ));
     }
 
     /**
@@ -301,6 +334,7 @@ final class ConstructionActionService
 
         if ($isRemoving === true) {
             $this->netWorthUpdaterService->updateNetWorthForPlayer($player);
+            $this->incomeUpdaterService->updateIncomeForPlayer($player);
         } else {
             throw new RuntimeException("You didn't select anything to remove.");
         }

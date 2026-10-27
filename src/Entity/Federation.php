@@ -12,7 +12,6 @@ class Federation
 {
     private int $id;
     private string $name = '';
-    private Player $founder;
     private string $leaderMessage = '';
     private int $regions = 0;
     private int $netWorth = 0;
@@ -54,16 +53,6 @@ class Federation
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setFounder(Player $founder): void
-    {
-        $this->founder = $founder;
-    }
-
-    public function getFounder(): Player
-    {
-        return $this->founder;
     }
 
     public function setLeaderMessage(string $leaderMessage): void
@@ -140,11 +129,21 @@ class Federation
         $this->resources = $resources;
     }
 
+    public function getGeneral(): ?Player
+    {
+        foreach ($this->players as $player) {
+            if ($player->getFederationHierarchy() === Player::FEDERATION_HIERARCHY_GENERAL) {
+                return $player;
+            }
+        }
+
+        return null;
+    }
+
     public static function createForPlayer(Player $player, string $name): Federation
     {
         $federation = new Federation();
         $federation->setName($name);
-        $federation->setFounder($player);
         $federation->setWorld($player->getWorld());
         $federation->setRegions(count($player->getWorldRegions()));
         $federation->setNetWorth($player->getNetWorth());

@@ -1,4 +1,9 @@
 /**
+ * Region types that can't be bought: ships claim them while stationed there (WorldRegion::WATER_TYPES)
+ */
+const WATER_TYPES = ['deep_water', 'water', 'shallow_water'];
+
+/**
  * TileRenderer - Handles rendering of hex map tiles with game-specific features
  * Uses pointy-top hexagons
  */
@@ -212,14 +217,14 @@ class TileRenderer {
         this.ctx.save();
 
         const terrainColors = {
-            deep_water: '#143278',
-            water: '#2350a5',
-            shallow_water: '#4696c3',
-            sand: '#d2be8c',
-            grassland: '#4b8c3c',
-            forest: '#235523',
-            hills: '#6e914b',
-            mountain: '#645f55',
+            deep_water: '#1e3d6b',
+            water: '#2c62a0',
+            shallow_water: '#4e9cc7',
+            sand: '#dcc790',
+            grassland: '#79aa4c',
+            forest: '#3f7a3e',
+            hills: '#a8a065',
+            mountain: '#8a8781',
         };
 
         if (region.hasOwner) {
@@ -276,6 +281,10 @@ class TileRenderer {
         this.ctx.lineWidth = 3;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
+        // Water is only held while units are stationed on it, so its border is dashed
+        if (WATER_TYPES.includes(region.type)) {
+            this.ctx.setLineDash([6, 6]);
+        }
 
         const verts = this.hexVertices;
 

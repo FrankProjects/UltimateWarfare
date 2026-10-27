@@ -34,6 +34,28 @@ interface WorldRegionRepository
      */
     public function getWorldGameUnitSumByPlayer(Player $player): array;
 
+    /**
+     * The player's regions with less population than their Houses can keep, with their amount of Houses
+     *
+     * @return list<array{WorldRegion, int}>
+     */
+    public function findBelowPopulationCapacityByPlayer(Player $player, int $populationPerHouse): array;
+
+    /**
+     * @return WorldRegion[] The player's regions with a population
+     */
+    public function findWithPopulationByPlayer(Player $player): array;
+
+    /**
+     * Total population of the player's regions; population changes must be flushed first
+     */
+    public function getPopulationSumByPlayer(Player $player): int;
+
+    /**
+     * @return WorldRegion[] Owned water regions without units, leveled units or constructions
+     */
+    public function findUnoccupiedOwnedWaterRegions(): array;
+
     public function getPreviousWorldRegionForPlayer(int $id, Player $player): ?WorldRegion;
 
     public function getNextWorldRegionForPlayer(int $id, Player $player): ?WorldRegion;
@@ -44,4 +66,13 @@ interface WorldRegionRepository
     public function findAdjacentRegions(int $x, int $y, World $world): array;
 
     public function save(WorldRegion $worldRegion): void;
+
+    /**
+     * Persist all given regions and flush once, in a single transaction
+     *
+     * @param WorldRegion[] $worldRegions
+     */
+    public function saveAll(array $worldRegions): void;
+
+    public function removeForWorld(World $world): void;
 }

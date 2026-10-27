@@ -403,7 +403,8 @@
                 if (remaining <= 0) {
                     clearInterval(timerInterval);
                     timerInterval = null;
-                    loadResearchTree();
+                    // Give the queue worker time to process the completed research
+                    setTimeout(loadResearchTree, ResourceTicker.completionDelaySeconds * 1000);
                     return;
                 }
                 el.setAttribute('data-remaining', remaining);
@@ -420,12 +421,8 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
-                if (result.newCash !== undefined) {
-                    const cashEl = document.getElementById('resourceCash');
-                    if (cashEl) {
-                        cashEl.textContent = formatNumber(result.newCash);
-                    }
-                }
+                ResourceTicker.set({ cash: result.newCash });
+                ResourceTicker.refresh();
                 loadResearchTree();
             } else {
                 showNotification(result.message, 'error');
@@ -442,6 +439,7 @@
 
             if (result.success) {
                 showNotification(result.message, 'success');
+                ResourceTicker.refresh();
                 loadResearchTree();
             } else {
                 showNotification(result.message, 'error');

@@ -3,15 +3,11 @@
   <entity name="FrankProjects\UltimateWarfare\Entity\ResearchPlayer" table="research_player">
     <indexes>
       <index name="player_id" columns="player_id"/>
+      <index name="active_completion_timestamp" columns="active,completion_timestamp"/>
     </indexes>
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="timestamp" type="integer" column="timestamp">
-      <options>
-        <option name="unsigned">1</option>
-      </options>
-    </field>
     <field name="active" type="boolean" column="active">
       <options>
         <option name="default">0</option>

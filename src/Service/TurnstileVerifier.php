@@ -21,6 +21,7 @@ final class TurnstileVerifier
     ) {
     }
 
+    #[\NoDiscard]
     public function verify(string $token, string $expectedAction): bool
     {
         if ($this->secretKey === '') {

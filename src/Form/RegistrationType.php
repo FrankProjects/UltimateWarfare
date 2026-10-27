@@ -55,6 +55,7 @@ class RegistrationType extends AbstractType
                 RepeatedType::class,
                 [
                     'type' => PasswordType::class,
+                    'mapped' => false,
                     'first_options' => [
                         'label' => 'label.password'
                     ],
@@ -62,13 +63,13 @@ class RegistrationType extends AbstractType
                         'label' => 'label.password_repeat'
                     ],
                     'constraints' => [
+                        new NotBlank(),
                         new Length(
                             min: 8,
                             max: 4096,
                             minMessage: 'Password must have at least 8 characters',
                         ),
-                    ],
-                    'empty_data' => ''
+                    ]
                 ]
             )
             ->add(

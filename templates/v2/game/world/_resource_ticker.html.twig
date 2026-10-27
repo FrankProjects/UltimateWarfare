@@ -1,4 +1,7 @@
-<div class="resource-ticker">
+{# Projected to now (stored resources are only written on sync); resource-ticker.js keeps them counting #}
+{% set now = 'now'|date('U') %}
+{% set currentResources = player_resources(player, now) %}
+<div class="resource-ticker" data-server-time="{{ now }}" data-next-completion="{{ player_next_completion(player) }}">
     {% set resources = [
         { name: 'Cash', icon: 'resource_cash.svg', key: 'cash' },
         { name: 'Wood', icon: 'resource_wood.svg', key: 'wood' },
@@ -7,11 +10,11 @@
     ] %}
 
     {% for res in resources %}
-        {% set amount = attribute(player.resources, res.key) %}
+        {% set amount = attribute(currentResources, res.key) %}
         {% set income = attribute(player.income, res.key) %}
         {% set upkeep = attribute(player.upkeep, res.key) %}
         {% set net = income - upkeep %}
-        <div class="resource-item">
+        <div class="resource-item" data-resource="{{ res.key }}" data-amount="{{ amount }}" data-rate="{{ net }}">
             <img src="{{ asset('images/icons/' ~ res.icon) }}" alt="{{ res.name }}" class="resource-icon">
             <div class="resource-details">
                 <span class="resource-amount">{{ amount|number_format(0, '.', ',') }}</span>

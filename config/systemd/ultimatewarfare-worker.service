@@ -1,0 +1,30 @@
+# Queue worker: completes construction and research a few seconds after they finish.
+#
+# Install (adjust User and WorkingDirectory to your server):
+#   sudo cp config/systemd/ultimatewarfare-worker.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now ultimatewarfare-worker
+#
+# After a deploy:  sudo systemctl restart ultimatewarfare-worker
+# Logs:            journalctl -u ultimatewarfare-worker -f
+#
+# The command exits after --time-limit (fresh process, no memory build-up) or on an error; systemd restarts it.
+# SIGTERM (systemctl stop/restart) lets the current run finish before exiting.
+
+[Unit]
+Description=Ultimate Warfare queue worker
+After=network.target mysql.service mariadb.service
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/ultimatewarfare
+Environment=APP_ENV=prod
+ExecStart=/usr/bin/php bin/console game:queue:work --interval=2 --time-limit=3600 --no-debug
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -7,6 +7,7 @@ namespace FrankProjects\UltimateWarfare\Service\Action;
 use FrankProjects\UltimateWarfare\Entity\FederationNews;
 use FrankProjects\UltimateWarfare\Entity\GameResource;
 use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Repository\EntityLockRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationNewsRepository;
 use FrankProjects\UltimateWarfare\Repository\FederationRepository;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
@@ -17,15 +18,18 @@ final class FederationBankActionService
     private FederationRepository $federationRepository;
     private FederationNewsRepository $federationNewsRepository;
     private PlayerRepository $playerRepository;
+    private EntityLockRepository $entityLockRepository;
 
     public function __construct(
         FederationRepository $federationRepository,
         FederationNewsRepository $federationNewsRepository,
-        PlayerRepository $playerRepository
+        PlayerRepository $playerRepository,
+        EntityLockRepository $entityLockRepository
     ) {
         $this->federationRepository = $federationRepository;
         $this->federationNewsRepository = $federationNewsRepository;
         $this->playerRepository = $playerRepository;
+        $this->entityLockRepository = $entityLockRepository;
     }
 
     /**
@@ -36,6 +40,11 @@ final class FederationBankActionService
         $this->ensureFederationEnabled($player);
         $federation = $player->getFederation();
         if ($federation === null) {
+            throw new RuntimeException("You are not in a Federation!");
+        }
+
+        // The player was reloaded under lock; make sure the federation is still theirs, then lock it too
+        if ($player->getFederation() !== $federation || !$this->entityLockRepository->lockForUpdate($federation)) {
             throw new RuntimeException("You are not in a Federation!");
         }
 
@@ -82,6 +91,11 @@ final class FederationBankActionService
 
         $federation = $player->getFederation();
         if ($federation === null) {
+            throw new RuntimeException("You are not in a Federation!");
+        }
+
+        // The player was reloaded under lock; make sure the federation is still theirs, then lock it too
+        if ($player->getFederation() !== $federation || !$this->entityLockRepository->lockForUpdate($federation)) {
             throw new RuntimeException("You are not in a Federation!");
         }
 

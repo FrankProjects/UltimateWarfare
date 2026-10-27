@@ -53,6 +53,18 @@
         <option name="default">0</option>
       </options>
     </field>
+    <field name="morale" type="smallint" column="morale">
+      <options>
+        <option name="unsigned">1</option>
+        <option name="default">100</option>
+      </options>
+    </field>
+    <field name="moraleTimestamp" type="integer" column="morale_timestamp">
+      <options>
+        <option name="unsigned">1</option>
+        <option name="default">0</option>
+      </options>
+    </field>
     <one-to-many field="worldRegionStackableUnits" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegionStackableUnit" mapped-by="worldRegion"/>
     <one-to-many field="worldRegionLeveledUnits" target-entity="FrankProjects\UltimateWarfare\Entity\WorldRegionLeveledUnit" mapped-by="worldRegion"/>
     <one-to-many field="constructions" target-entity="FrankProjects\UltimateWarfare\Entity\Construction" mapped-by="worldRegion"/>

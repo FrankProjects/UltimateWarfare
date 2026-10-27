@@ -64,4 +64,36 @@ class WorldRegionTest extends TestCase
 
         self::assertTrue($region->getConstructions()->isEmpty());
     }
+
+    public function testLandRegionNextToWaterIsCoastal(): void
+    {
+        $region = $this->createRegionOfType(WorldRegion::TYPE_HILLS);
+
+        self::assertTrue($region->isCoastal([
+            $this->createRegionOfType(WorldRegion::TYPE_GRASSLAND),
+            $this->createRegionOfType(WorldRegion::TYPE_DEEP_WATER),
+        ]));
+    }
+
+    public function testSandRegionWithoutWaterNeighborIsNotCoastal(): void
+    {
+        $region = $this->createRegionOfType(WorldRegion::TYPE_SAND);
+
+        self::assertFalse($region->isCoastal([$this->createRegionOfType(WorldRegion::TYPE_SAND)]));
+    }
+
+    public function testWaterRegionIsNotCoastal(): void
+    {
+        $region = $this->createRegionOfType(WorldRegion::TYPE_SHALLOW_WATER);
+
+        self::assertFalse($region->isCoastal([$this->createRegionOfType(WorldRegion::TYPE_WATER)]));
+    }
+
+    private function createRegionOfType(string $type): WorldRegion
+    {
+        $region = new WorldRegion();
+        $region->setType($type);
+
+        return $region;
+    }
 }

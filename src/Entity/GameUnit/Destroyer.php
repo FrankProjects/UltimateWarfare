@@ -30,17 +30,18 @@ final class Destroyer extends GameUnit
             description: '',
             gameUnitCategory: GameUnitCategory::NAVAL_UNITS,
             behaviorClass: NavalUnitBehavior::class,
-            cost: new Cost(cash: 25000, food: 10000, wood: 1250, steel: 2000),
+            cost: new Cost(cash: 25000, food: 5000, wood: 1000, steel: 1500),
             income: new Income(cash: 0, food: 0, wood: 0, steel: 0),
-            upkeep: new Upkeep(cash: 600, food: 300, wood: 0, steel: 0),
+            upkeep: new Upkeep(cash: 300, food: 80, wood: 0, steel: 0),
             battleStats: new BattleStats(
-                health: 2500,
-                armor: 35,
+                health: 800,
+                armor: 10,
                 travelSpeed: 100,
-                airBattleStats: new AirBattleStats(defence: 100, defenceSpeed: 50),
-                seaBattleStats: new SeaBattleStats(attack: 200, attackSpeed: 150, defence: 230, defenceSpeed: 160),
-                groundBattleStats: new GroundBattleStats(attack: 160, attackSpeed: 40),
+                airBattleStats: new AirBattleStats(defence: 1500, defenceSpeed: 150),
+                seaBattleStats: new SeaBattleStats(attack: 5000, attackSpeed: 150, defence: 5500, defenceSpeed: 160),
+                groundBattleStats: new GroundBattleStats(attack: 600, attackSpeed: 40),
             ),
+            population: 40,
         );
     }
 

@@ -11,7 +11,7 @@ final class ArtilleryBombardment extends OperationProcessor
 {
     private const float MILITARY_POWER_RATIO = 0.75;
     private const float BUILDING_POWER_RATIO = 0.25;
-    private const float DIMINISHING_RETURNS_FACTOR = 100.0;
+    private const float DIMINISHING_RETURNS_FACTOR = 5000.0;
     private const float MAX_DESTRUCTION_RATIO = 0.5;
 
     public function getFormula(): float

@@ -40,6 +40,104 @@
         });
     }
 
+    /**
+     * Mark a region as yours on the map (after buying or conquering it) and reveal its neighbors.
+     * units: the region's own unit summary, or null to keep the current units.
+     */
+    function applyRegionOwnership(regionId, units, newlyVisibleEnemyUnits) {
+        const worldMap = WorldApp.worldMap;
+        const region = WorldApp.worldRegions.find(function (r) { return r.id === regionId; });
+        if (region) {
+            region.hasOwner = true;
+            region.isYours = true;
+            region.ownerName = WorldApp.playerName;
+            if (units) region.units = units;
+        }
+
+        // Recalculate fog of war with new ownership
+        recalculateVisibility(WorldApp.worldRegions);
+
+        // Apply masked enemy unit data for newly visible neighbors
+        if (newlyVisibleEnemyUnits) {
+            Object.keys(newlyVisibleEnemyUnits).forEach(function (id) {
+                const sector = WorldApp.worldRegions.find(function (s) { return s.id === parseInt(id); });
+                if (sector && !sector.isYours) {
+                    sector.units = newlyVisibleEnemyUnits[id];
+                }
+            });
+        }
+
+        return worldMap.setSectors(WorldApp.worldRegions).then(function () { worldMap.render(); });
+    }
+
+    /**
+     * Mark a region as unowned on the map, after a water region lost its last units.
+     */
+    function applyRegionRelease(regionId) {
+        const worldMap = WorldApp.worldMap;
+        const region = WorldApp.worldRegions.find(function (r) { return r.id === regionId; });
+        if (region) {
+            region.hasOwner = false;
+            region.isYours = false;
+            region.ownerName = null;
+            region.units = [];
+        }
+
+        // Fleets heading there now sail to open sea
+        worldMap.fleetManager.updateFleetTargets(regionId, false);
+
+        recalculateVisibility(WorldApp.worldRegions);
+
+        return worldMap.setSectors(WorldApp.worldRegions).then(function () { worldMap.render(); });
+    }
+
+    // ===== Open Sea Modal =====
+    const openSeaModal = document.getElementById('openSeaModal');
+    const sendNavalShipsBtn = document.getElementById('sendNavalShipsBtn');
+    let selectedOpenSea = null;
+
+    /**
+     * Ships can only sail to open sea that shares a border with one of your regions
+     */
+    function isNextToYourRegion(region) {
+        const offsets = region.y % 2 === 0
+            ? [[-1, 0], [1, 0], [-1, -1], [0, -1], [-1, 1], [0, 1]]
+            : [[-1, 0], [1, 0], [0, -1], [1, -1], [0, 1], [1, 1]];
+
+        return offsets.some(function (offset) {
+            const x = region.x + offset[0];
+            const y = region.y + offset[1];
+            return WorldApp.worldRegions.some(function (r) { return r.isYours && r.x === x && r.y === y; });
+        });
+    }
+
+    function showOpenSeaModal(region) {
+        selectedOpenSea = region;
+        const imageUrl = imgBase + '/map/' + region.image;
+        const canReach = isNextToYourRegion(region);
+
+        document.getElementById('openSeaModalBody').innerHTML =
+            '<div class="region-info"><div class="region-image"><img src="' + imageUrl + '" alt="' + region.type + '"></div>' +
+            '<div class="region-details">' +
+            '<p><strong>Coordinates:</strong> ' + region.x + ', ' + region.y + '</p>' +
+            '<p><strong>Type:</strong> ' + region.type.replace(/_/g, ' ') + '</p>' +
+            '<p class="uw-actions">Open sea can\'t be bought. Send naval ships here and occupy it when they arrive; ' +
+            'it stays yours while you have units or Sea Mines on it.</p>' +
+            (canReach ? '' : '<p class="text-orange uw-hint-small">Your ships can only sail to open sea next to one of your regions.</p>') +
+            '</div></div>';
+        sendNavalShipsBtn.disabled = !canReach;
+        bootstrap.Modal.getOrCreateInstance(openSeaModal).show();
+    }
+
+    openSeaModal.addEventListener('hidden.bs.modal', function () { selectedOpenSea = null; });
+
+    sendNavalShipsBtn.onclick = function () {
+        if (!selectedOpenSea) return;
+        const target = selectedOpenSea;
+        bootstrap.Modal.getInstance(openSeaModal).hide();
+        WorldSendUnits.startSendToOpenSea(target);
+    };
+
     // ===== Buy Region Modal =====
     const modal = document.getElementById('buyRegionModal');
     const confirmBuyBtn = document.getElementById('confirmBuyBtn');
@@ -80,37 +178,14 @@
             const result = await response.json();
 
             if (result.success) {
-                const worldMap = WorldApp.worldMap;
-                const regionIndex = worldMap.sectors.findIndex(function (r) { return r.id === selectedRegion.id; });
-                if (regionIndex !== -1) {
-                    worldMap.sectors[regionIndex].hasOwner = true;
-                    worldMap.sectors[regionIndex].isYours = true;
-                    worldMap.sectors[regionIndex].ownerName = WorldApp.playerName;
-                }
+                applyRegionOwnership(selectedRegion.id, null, result.newlyVisibleEnemyUnits);
 
-                // Recalculate fog of war with new ownership
-                recalculateVisibility(WorldApp.worldRegions);
-
-                // Apply masked enemy unit data for newly visible neighbors
-                if (result.newlyVisibleEnemyUnits) {
-                    Object.keys(result.newlyVisibleEnemyUnits).forEach(function (id) {
-                        const sector = WorldApp.worldRegions.find(function (s) { return s.id === parseInt(id); });
-                        if (sector && !sector.isYours) {
-                            sector.units = result.newlyVisibleEnemyUnits[id];
-                        }
-                    });
-                }
-
-                if (result.newCash !== undefined) {
-                    const cashElements = document.querySelectorAll('.resource-amount');
-                    if (cashElements.length > 0) cashElements[0].textContent = result.newCash.toLocaleString('en-US');
-                }
+                ResourceTicker.set({ cash: result.newCash });
 
                 if (result.newRegionPrice !== undefined) {
                     currentRegionPrice = result.newRegionPrice;
                 }
 
-                worldMap.setSectors(WorldApp.worldRegions).then(function () { worldMap.render(); });
                 showNotification(result.message, 'success');
                 bootstrap.Modal.getInstance(modal).hide();
             } else {
@@ -317,12 +392,20 @@
 
     // ===== Default tile click handler =====
     WorldApp.defaultTileClick = function (region) {
-        if (!region.hasOwner) {
+        if (!region.hasOwner && WATER_TYPES.includes(region.type)) {
+            showOpenSeaModal(region);
+        } else if (!region.hasOwner) {
             showBuyRegionModal(region);
         } else if (region.isYours) {
             showYourRegionModal(region);
         } else {
             showEnemyRegionModal(region);
         }
+    };
+
+    // Expose globally
+    window.WorldModals = {
+        applyRegionOwnership: applyRegionOwnership,
+        applyRegionRelease: applyRegionRelease
     };
 })();

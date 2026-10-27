@@ -13,6 +13,7 @@ use FrankProjects\UltimateWarfare\Repository\ConstructionRepository;
 use FrankProjects\UltimateWarfare\Repository\GameUnitRegistry;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\WorldRegionLeveledUnitRepository;
+use FrankProjects\UltimateWarfare\Repository\WorldRegionRepository;
 use FrankProjects\UltimateWarfare\Service\GameUnit\GameUnitBehaviorFactory;
 use RuntimeException;
 
@@ -31,19 +32,22 @@ final class LeveledUnitActionService
     private PlayerRepository $playerRepository;
     private WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository;
     private GameUnitBehaviorFactory $behaviorFactory;
+    private WorldRegionRepository $worldRegionRepository;
 
     public function __construct(
         ConstructionRepository $constructionRepository,
         GameUnitRegistry $gameUnitRegistry,
         PlayerRepository $playerRepository,
         WorldRegionLeveledUnitRepository $worldRegionLeveledUnitRepository,
-        GameUnitBehaviorFactory $behaviorFactory
+        GameUnitBehaviorFactory $behaviorFactory,
+        WorldRegionRepository $worldRegionRepository
     ) {
         $this->constructionRepository = $constructionRepository;
         $this->gameUnitRegistry = $gameUnitRegistry;
         $this->playerRepository = $playerRepository;
         $this->worldRegionLeveledUnitRepository = $worldRegionLeveledUnitRepository;
         $this->behaviorFactory = $behaviorFactory;
+        $this->worldRegionRepository = $worldRegionRepository;
     }
 
     /**
@@ -132,20 +136,21 @@ final class LeveledUnitActionService
     private function validateBuildable(GameUnit $gameUnit, WorldRegion $region, Player $player): void
     {
         $rowName = $gameUnit->getRowName();
-        $regionType = $region->getType();
 
-        // Harbor can only be built on sand regions
-        if ($rowName === 'harbor' && $regionType !== WorldRegion::TYPE_SAND) {
-            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a sand region.");
+        // Harbors can only be built on coastal regions
+        if ($rowName === 'harbor' && !$this->isCoastal($region)) {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a coastal region.");
         }
 
         // Sea mines can only be built on coastal or water regions
-        $waterTypes = [
-            WorldRegion::TYPE_DEEP_WATER, WorldRegion::TYPE_WATER,
-            WorldRegion::TYPE_SHALLOW_WATER, WorldRegion::TYPE_SAND,
-        ];
-        if ($rowName === 'sea_mine' && !in_array($regionType, $waterTypes, true)) {
-            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a sand or water region.");
+        $isWater = $region->isWater();
+        if ($rowName === 'sea_mine' && !$isWater && !$this->isCoastal($region)) {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: requires a coastal or water region.");
+        }
+
+        // Water regions only allow Sea Mines
+        if ($isWater && $rowName !== 'sea_mine') {
+            throw new RuntimeException("Cannot build {$gameUnit->getName()}: only Sea Mines can be built on water.");
         }
 
         $behavior = $this->behaviorFactory->create($gameUnit);
@@ -161,6 +166,18 @@ final class LeveledUnitActionService
                 "Cannot build {$gameUnit->getName()}: requires {$gameUnit->getResearchName()} research"
             );
         }
+    }
+
+    /**
+     * A land region that shares a border with a water region
+     */
+    private function isCoastal(WorldRegion $region): bool
+    {
+        return $region->isCoastal($this->worldRegionRepository->findAdjacentRegions(
+            $region->getX(),
+            $region->getY(),
+            $region->getWorld()
+        ));
     }
 
     private function queueConstruction(WorldRegion $region, Player $player, GameUnit $gameUnit): void
