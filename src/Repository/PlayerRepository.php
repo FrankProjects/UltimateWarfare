@@ -35,12 +35,11 @@ interface PlayerRepository
     public function findWithPopulationBelowCapacityUpdatedBefore(int $timestamp, int $populationPerHouse): array;
 
     /**
-     * Players last updated before $timestamp with population left, who need more food than they produce and whose
-     * food has run out at $timestamp (approximately, at the income/upkeep rate since their last update)
+     * Players last updated before $timestamp with population left, who need more food than they produce
      *
      * @return Player[]
      */
-    public function findWithoutFoodUpdatedBefore(int $timestamp): array;
+    public function findWithFoodShortageUpdatedBefore(int $timestamp): array;
 
     public function remove(Player $player): void;
 

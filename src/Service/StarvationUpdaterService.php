@@ -93,9 +93,23 @@ final class StarvationUpdaterService
      */
     public function getPlayersWithStarvationDue(int $timestamp): array
     {
-        return $this->playerRepository->findWithoutFoodUpdatedBefore(
-            $this->populationUpdaterService->getLastTickTimestamp($timestamp)
-        );
+        $tickTimestamp = $this->populationUpdaterService->getLastTickTimestamp($timestamp);
+        $players = $this->playerRepository->findWithFoodShortageUpdatedBefore($tickTimestamp);
+
+        return array_values(array_filter(
+            $players,
+            fn (Player $player): bool => $this->hasFoodRunOutAt($player, $tickTimestamp)
+        ));
+    }
+
+    /**
+     * Whether the player's food has run out at $timestamp, at the income/upkeep rate since their last update
+     */
+    private function hasFoodRunOutAt(Player $player, int $timestamp): bool
+    {
+        $secondsSinceUpdate = $timestamp - $player->getTimestampUpdate();
+
+        return $player->getResources()->getFood() * 3600 + $this->getNetFood($player) * $secondsSinceUpdate <= 0;
     }
 
     private function getNetFood(Player $player): int
