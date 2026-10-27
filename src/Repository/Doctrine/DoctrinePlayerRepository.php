@@ -103,7 +103,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
     /**
      * @return Player[]
      */
-    public function findWithoutFoodUpdatedBefore(int $timestamp): array
+    public function findWithFoodShortageUpdatedBefore(int $timestamp): array
     {
         return $this->entityManager
             ->createQuery(
@@ -112,8 +112,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
               JOIN ' . WorldRegion::class . ' wr ON wr.player = p
               WHERE p.timestampUpdate < :timestamp
                 AND wr.population > 0
-                AND p.income.food < p.upkeep.food
-                AND p.resources.food + (p.income.food - p.upkeep.food) * (:timestamp - p.timestampUpdate) / 3600 <= 0'
+                AND p.income.food < p.upkeep.food'
             )->setParameter('timestamp', $timestamp)
             ->getResult();
     }
