@@ -17,6 +17,7 @@ class NavalUnitBehavior extends AbstractGameUnitBehavior
     ) {
     }
 
+    #[\Override]
     public function canBuild(WorldRegion $region, Player $player): bool
     {
         // Check 1: Must have Harbor
@@ -28,6 +29,7 @@ class NavalUnitBehavior extends AbstractGameUnitBehavior
         return $this->isCoastal($region);
     }
 
+    #[\Override]
     public function getBuildRequirementDescription(): string
     {
         return 'Requires a Harbor on a coastal region';
@@ -42,6 +44,7 @@ class NavalUnitBehavior extends AbstractGameUnitBehavior
         ));
     }
 
+    #[\Override]
     public function canMoveTo(WorldRegion $from, WorldRegion $to): bool
     {
         // Naval units can only move to water or coastal regions

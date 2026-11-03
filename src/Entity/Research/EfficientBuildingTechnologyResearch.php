@@ -55,6 +55,7 @@ final readonly class EfficientBuildingTechnologyResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'efficient-building-technology';

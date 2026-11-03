@@ -25,6 +25,7 @@ final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
         $this->repository = $this->entityManager->getRepository(UnbanRequest::class);
     }
 
+    #[\Override]
     public function find(int $id): ?UnbanRequest
     {
         return $this->repository->find($id);
@@ -33,28 +34,33 @@ final class DoctrineUnbanRequestRepository implements UnbanRequestRepository
     /**
      * @return UnbanRequest[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return $this->repository->findAll();
     }
 
+    #[\Override]
     public function findByUser(User $user): ?UnbanRequest
     {
         return $this->repository->findOneBy(['user' => $user]);
     }
 
+    #[\Override]
     public function remove(UnbanRequest $unbanRequest): void
     {
         $this->entityManager->remove($unbanRequest);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(UnbanRequest $unbanRequest): void
     {
         $this->entityManager->persist($unbanRequest);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function count(): int
     {
         return $this->repository->count();

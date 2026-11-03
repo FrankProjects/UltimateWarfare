@@ -36,6 +36,7 @@ class ConstructionActionServiceTest extends TestCase
     private ConstructionActionService $service;
     private ConstructionRepository&MockObject $constructionRepository;
 
+    #[\Override]
     protected function setUp(): void
     {
         // NetWorthUpdaterService and NetWorthCalculator are final; build real instances

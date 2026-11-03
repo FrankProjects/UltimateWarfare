@@ -20,6 +20,7 @@ final class FileModificationVersionStrategy implements VersionStrategyInterface
         $this->publicDir = $publicDir;
     }
 
+    #[\Override]
     public function getVersion(string $path): string
     {
         $file = $this->publicDir . '/' . ltrim($path, '/');
@@ -28,6 +29,7 @@ final class FileModificationVersionStrategy implements VersionStrategyInterface
         return $modificationTime === false ? '' : (string) $modificationTime;
     }
 
+    #[\Override]
     public function applyVersion(string $path): string
     {
         $version = $this->getVersion($path);

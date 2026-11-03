@@ -35,6 +35,7 @@ final class Airfield extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::AIRFIELD;

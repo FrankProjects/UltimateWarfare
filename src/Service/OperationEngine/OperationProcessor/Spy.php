@@ -10,6 +10,7 @@ use FrankProjects\UltimateWarfare\Service\OperationEngine\OperationProcessor;
 
 final class Spy extends OperationProcessor
 {
+    #[\Override]
     public function getFormula(): float
     {
         $spyLevel = $this->getAttackerResearchLevel('spy-technology');
@@ -24,11 +25,13 @@ final class Spy extends OperationProcessor
         return $probability - mt_rand(0, 1000) / 1000.0;
     }
 
+    #[\Override]
     public function processPreOperation(): void
     {
         // Do nothing
     }
 
+    #[\Override]
     public function processSuccess(): void
     {
         /** @var array<int, array<int, array{name: string, amount: int}>> $unitsByCategory */
@@ -88,6 +91,7 @@ final class Spy extends OperationProcessor
         }
     }
 
+    #[\Override]
     public function processFailed(): void
     {
         $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to spy"
@@ -97,6 +101,7 @@ final class Spy extends OperationProcessor
         $this->addFailure("Our spies were caught. The enemy's defenses spotted us and an alert has been raised.");
     }
 
+    #[\Override]
     public function processPostOperation(): void
     {
         $player = $this->getTargetRegionPlayer();

@@ -32,6 +32,7 @@ final readonly class ResearchTierResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'research-tier';

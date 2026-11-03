@@ -26,11 +26,13 @@ final readonly class SpyOperation extends Operation
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'spy';
     }
 
+    #[\Override]
     public function getProcessorClass(): string
     {
         return Spy::class;

@@ -131,6 +131,7 @@ final class PlayerRequestSubscriber extends AbstractUserSubscriber implements Ev
         return $player;
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

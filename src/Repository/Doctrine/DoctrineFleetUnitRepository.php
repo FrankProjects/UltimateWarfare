@@ -24,6 +24,7 @@ final class DoctrineFleetUnitRepository implements FleetUnitRepository
     /**
      * @return array<int, int>
      */
+    #[\Override]
     public function getAmountSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
@@ -45,12 +46,14 @@ final class DoctrineFleetUnitRepository implements FleetUnitRepository
         return $gameUnits;
     }
 
+    #[\Override]
     public function remove(FleetUnit $fleetUnit): void
     {
         $this->entityManager->remove($fleetUnit);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(FleetUnit $fleetUnit): void
     {
         $this->entityManager->persist($fleetUnit);

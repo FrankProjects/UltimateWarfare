@@ -23,12 +23,14 @@ class CreateWorldCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('Create world')
             ->setHelp('Create a new game world with basic settings');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(

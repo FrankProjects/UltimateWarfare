@@ -14,16 +14,19 @@ final class NavalBombardment extends OperationProcessor
     private const float DIMINISHING_RETURNS_FACTOR = 5000.0;
     private const float MAX_DESTRUCTION_RATIO = 0.5;
 
+    #[\Override]
     public function getFormula(): float
     {
         return 1.0;
     }
 
+    #[\Override]
     public function processPreOperation(): void
     {
         // Cruisers are not consumed — units remain in the region
     }
 
+    #[\Override]
     public function processSuccess(): void
     {
         $seaAttackStat = $this->getCruiserGroundAttack();
@@ -142,11 +145,13 @@ final class NavalBombardment extends OperationProcessor
         return $gameUnit->getBattleStats()->getGroundBattleStats()->getAttack();
     }
 
+    #[\Override]
     public function processFailed(): void
     {
         // Bombardment always succeeds — this should never be reached
     }
 
+    #[\Override]
     public function processPostOperation(): void
     {
         $player = $this->getTargetRegionPlayer();

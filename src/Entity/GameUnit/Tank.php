@@ -45,6 +45,7 @@ final class Tank extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::TANK;

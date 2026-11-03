@@ -21,6 +21,7 @@ class FleetRouteServiceTest extends TestCase
     private Player $enemy;
     private int $nextRegionId = 1;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->world = new World();

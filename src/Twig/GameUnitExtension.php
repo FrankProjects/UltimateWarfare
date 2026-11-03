@@ -17,6 +17,7 @@ class GameUnitExtension extends AbstractExtension
     ) {
     }
 
+    #[\Override]
     public function getFilters(): array
     {
         return [

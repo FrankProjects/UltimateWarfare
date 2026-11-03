@@ -15,6 +15,7 @@ use Throwable;
 #[AsCommand(name: 'game:maintenance:remove:admin')]
 class RemoveAdminCommand extends AbstractUserCommand
 {
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('Downgrade user from admin')
@@ -22,6 +23,7 @@ class RemoveAdminCommand extends AbstractUserCommand
             ->addArgument('username', InputArgument::REQUIRED, 'The username');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var string $username */

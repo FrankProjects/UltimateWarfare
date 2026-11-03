@@ -36,6 +36,7 @@ final class MissileFactory extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::MISSILE_FACTORY;

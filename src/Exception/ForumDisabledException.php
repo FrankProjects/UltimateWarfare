@@ -6,5 +6,6 @@ namespace FrankProjects\UltimateWarfare\Exception;
 
 final class ForumDisabledException extends \Exception
 {
+    #[\Override]
     protected $message = 'Forum is disabled!';
 }

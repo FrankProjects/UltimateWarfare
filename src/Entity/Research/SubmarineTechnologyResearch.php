@@ -24,6 +24,7 @@ final readonly class SubmarineTechnologyResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'submarine-technology';

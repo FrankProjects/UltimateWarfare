@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\PositiveOrZero;
 /** @extends AbstractType<null> */
 abstract class AbstractGameResourcesType extends AbstractType
 {
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

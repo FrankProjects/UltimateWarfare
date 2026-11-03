@@ -45,6 +45,7 @@ final class StrategicBomber extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::STRATEGIC_BOMBER;

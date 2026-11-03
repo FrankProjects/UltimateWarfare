@@ -33,6 +33,7 @@ final class Air extends BattlePhase
      */
     private array $escortLogged = [];
 
+    #[\Override]
     protected function beforeSpeedTiers(): void
     {
         $radar = $this->findDefenderLeveledUnit(GameUnitEnum::RADAR_STATION);
@@ -50,6 +51,7 @@ final class Air extends BattlePhase
     /**
      * Anti Aircraft Guns only strike once, when they fire flak before the speed tiers
      */
+    #[\Override]
     protected function firesInSpeedTiers(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): bool
     {
         return $defenderGameUnit->getGameUnit() !== GameUnitEnum::ANTI_AIRCRAFT_GUN;
@@ -60,6 +62,7 @@ final class Air extends BattlePhase
      *
      * @return ($action is 'defending' ? array<WorldRegionStackableUnit|WorldRegionLeveledUnit> : FleetUnit[])
      */
+    #[\Override]
     protected function processBattlePhase(
         int $volleyPower,
         array $gameUnits,
@@ -75,6 +78,7 @@ final class Air extends BattlePhase
     /**
      * Escorted bombers take reduced damage from aircraft fire, but not from flak
      */
+    #[\Override]
     protected function getIncomingPower(
         FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit,
         int $power,
@@ -90,6 +94,7 @@ final class Air extends BattlePhase
     /**
      * The Radar Station strengthens defending air power, scaled by its remaining health
      */
+    #[\Override]
     protected function getUnitDefensePower(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): int
     {
         $power = parent::getUnitDefensePower($defenderGameUnit);

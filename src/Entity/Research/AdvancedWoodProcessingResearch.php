@@ -54,6 +54,7 @@ final readonly class AdvancedWoodProcessingResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'advanced-wood-processing';

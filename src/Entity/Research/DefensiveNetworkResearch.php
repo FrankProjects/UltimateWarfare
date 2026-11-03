@@ -41,6 +41,7 @@ final readonly class DefensiveNetworkResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'defensive-network';

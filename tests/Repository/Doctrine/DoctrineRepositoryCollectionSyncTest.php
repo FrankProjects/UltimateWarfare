@@ -58,6 +58,7 @@ class DoctrineRepositoryCollectionSyncTest extends TestCase
 
         /** @var AbstractLazyCollection<int, WorldRegionStackableUnit> $lazyCollection */
         $lazyCollection = new class extends AbstractLazyCollection {
+            #[\Override]
             protected function doInitialize(): void
             {
                 $this->collection = new ArrayCollection();

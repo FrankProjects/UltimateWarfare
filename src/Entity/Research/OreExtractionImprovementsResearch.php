@@ -54,6 +54,7 @@ final readonly class OreExtractionImprovementsResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'ore-extraction-improvements';

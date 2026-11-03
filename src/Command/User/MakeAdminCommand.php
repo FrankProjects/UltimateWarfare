@@ -15,6 +15,7 @@ use Throwable;
 #[AsCommand(name: 'game:maintenance:make:admin')]
 class MakeAdminCommand extends AbstractUserCommand
 {
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('Upgrade user to admin')
@@ -22,6 +23,7 @@ class MakeAdminCommand extends AbstractUserCommand
             ->addArgument('username', InputArgument::REQUIRED, 'The username');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var string $username */

@@ -33,6 +33,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
+    #[\Override]
     public function find(int $id): ?Construction
     {
         return $this->repository->find($id);
@@ -42,11 +43,13 @@ final class DoctrineConstructionRepository implements ConstructionRepository
      * @param Player $player
      * @return Construction[]
      */
+    #[\Override]
     public function findByPlayer(Player $player): array
     {
         return $this->repository->findBy(['player' => $player]);
     }
 
+    #[\Override]
     public function getGameUnitConstructionSumByWorldRegionAndCategory(
         WorldRegion $worldRegion,
         GameUnitCategory $gameUnitCategory
@@ -75,6 +78,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
     /**
      * @return array<int, array<int, int>>
      */
+    #[\Override]
     public function getGameUnitConstructionSumByPlayerGroupedByRegion(Player $player): array
     {
         $results = $this->entityManager
@@ -95,6 +99,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         return $grouped;
     }
 
+    #[\Override]
     public function getGameUnitConstructionSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
@@ -119,6 +124,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
      * @param int $timestamp
      * @return Construction[]
      */
+    #[\Override]
     public function getCompletedConstructions(int $timestamp): array
     {
         /** @var Construction[] $completed */
@@ -136,6 +142,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
     /**
      * @return Construction[]
      */
+    #[\Override]
     public function getCompletedConstructionsByPlayer(Player $player, int $timestamp): array
     {
         /** @var Construction[] $completed */
@@ -152,6 +159,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         return $completed;
     }
 
+    #[\Override]
     public function getNextCompletionTimestampByPlayer(Player $player): ?int
     {
         /** @var int|string|null $next */
@@ -166,6 +174,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         return $next !== null ? (int) $next : null;
     }
 
+    #[\Override]
     public function remove(Construction $construction): void
     {
         // Keep an already loaded collection in sync; an unloaded one is fetched fresh from the database when accessed
@@ -179,6 +188,7 @@ final class DoctrineConstructionRepository implements ConstructionRepository
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Construction $construction): void
     {
         $this->entityManager->persist($construction);

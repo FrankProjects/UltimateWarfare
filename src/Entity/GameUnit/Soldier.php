@@ -40,6 +40,7 @@ final class Soldier extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::SOLDIER;

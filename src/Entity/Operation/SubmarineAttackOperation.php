@@ -29,16 +29,19 @@ final readonly class SubmarineAttackOperation extends Operation
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'submarine-attack';
     }
 
+    #[\Override]
     public function getProcessorClass(): string
     {
         return SubmarineAttack::class;
     }
 
+    #[\Override]
     public function hasCooldown(): bool
     {
         return true;

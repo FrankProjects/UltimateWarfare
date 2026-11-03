@@ -12,6 +12,7 @@ final class SubmarineAttack extends OperationProcessor
     protected const int SHIPS_KILLED_PER_SUBMARINE = 1;
     private const float BASE_SUCCESS = 0.70;
 
+    #[\Override]
     public function getFormula(): float
     {
         $rtLevel = $this->getAttackerResearchLevel('research-tier');
@@ -26,11 +27,13 @@ final class SubmarineAttack extends OperationProcessor
         return $probability - mt_rand(0, 1000) / 1000.0;
     }
 
+    #[\Override]
     public function processPreOperation(): void
     {
         // Do nothing
     }
 
+    #[\Override]
     public function processSuccess(): void
     {
         $ships = 0;
@@ -71,6 +74,7 @@ final class SubmarineAttack extends OperationProcessor
         }
     }
 
+    #[\Override]
     public function processFailed(): void
     {
         $submarinesLost = intval($this->amount * 0.05);
@@ -89,6 +93,7 @@ final class SubmarineAttack extends OperationProcessor
         $this->addToOperationLog("We failed our Submarine attack and lost {$submarinesLost} Submarines");
     }
 
+    #[\Override]
     public function processPostOperation(): void
     {
         $player = $this->getTargetRegionPlayer();

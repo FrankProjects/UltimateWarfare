@@ -13,6 +13,7 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 
 final class ApiAwareAuthenticationEntryPoint implements AuthenticationEntryPointInterface
 {
+    #[\Override]
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         if (str_starts_with($request->getPathInfo(), '/game/api/')) {

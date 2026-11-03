@@ -24,6 +24,7 @@ final readonly class ArtilleryBombardmentResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'special-operation-artillery-bombardment';

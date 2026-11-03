@@ -96,6 +96,7 @@ abstract class OperationProcessor implements OperationInterface
     /**
      * @return array<int, array<string, mixed>>
      */
+    #[\Override]
     public function execute(): array
     {
         $this->addToOperationLog("Launching operation {$this->operation->getName()}!");

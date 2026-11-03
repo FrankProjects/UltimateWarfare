@@ -24,6 +24,7 @@ final readonly class StrategicBomberAttackResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'special-operation-strategic-bomber-attack';

@@ -32,6 +32,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         $this->repository = $this->entityManager->getRepository(WorldRegion::class);
     }
 
+    #[\Override]
     public function find(int $id): ?WorldRegion
     {
         return $this->repository->find($id);
@@ -42,11 +43,13 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
      * @param Player|null $player
      * @return WorldRegion[]
      */
+    #[\Override]
     public function findByWorldAndPlayer(World $world, ?Player $player): array
     {
         return $this->repository->findBy(['world' => $world, 'player' => $player]);
     }
 
+    #[\Override]
     public function findByWorldXY(World $world, int $x, int $y): ?WorldRegion
     {
         return $this->repository->findOneBy(['world' => $world, 'x' => $x, 'y' => $y]);
@@ -55,6 +58,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     /**
      * @return WorldRegion[]
      */
+    #[\Override]
     public function findByPlayerWithUnitsAndConstructions(Player $player): array
     {
         // Separate fetch joins per collection, as joining them all at once multiplies the result rows
@@ -77,6 +81,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     /**
      * @return array<int, array<int, int>>
      */
+    #[\Override]
     public function getWorldGameUnitSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
@@ -101,6 +106,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     /**
      * @return list<array{WorldRegion, int}>
      */
+    #[\Override]
     public function findBelowPopulationCapacityByPlayer(Player $player, int $populationPerHouse): array
     {
         $results = $this->entityManager
@@ -127,6 +133,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     /**
      * @return WorldRegion[]
      */
+    #[\Override]
     public function findWithPopulationByPlayer(Player $player): array
     {
         return $this->entityManager
@@ -141,6 +148,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     /**
      * @return WorldRegion[]
      */
+    #[\Override]
     public function findUnoccupiedOwnedWaterRegions(): array
     {
         return $this->entityManager
@@ -162,6 +170,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->getResult();
     }
 
+    #[\Override]
     public function getPopulationSumByPlayer(Player $player): int
     {
         $total = $this->entityManager
@@ -175,6 +184,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         return is_numeric($total) ? (int) $total : 0;
     }
 
+    #[\Override]
     public function getPreviousWorldRegionForPlayer(int $id, Player $player): ?WorldRegion
     {
         return $this->entityManager
@@ -190,6 +200,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
             ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
+    #[\Override]
     public function getNextWorldRegionForPlayer(int $id, Player $player): ?WorldRegion
     {
         return $this->entityManager
@@ -209,6 +220,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
      * Find 6 hex neighbors (pointy-top, odd-r offset)
      * @return WorldRegion[]
      */
+    #[\Override]
     public function findAdjacentRegions(int $x, int $y, World $world): array
     {
         $neighbors = HexGrid::getNeighborCoordinates($x, $y);
@@ -236,6 +248,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         return $result;
     }
 
+    #[\Override]
     public function save(WorldRegion $worldRegion): void
     {
         $this->entityManager->persist($worldRegion);
@@ -245,6 +258,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
     /**
      * @param WorldRegion[] $worldRegions
      */
+    #[\Override]
     public function saveAll(array $worldRegions): void
     {
         foreach ($worldRegions as $worldRegion) {
@@ -254,6 +268,7 @@ final class DoctrineWorldRegionRepository implements WorldRegionRepository
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function removeForWorld(World $world): void
     {
         $this->entityManager->createQuery(

@@ -44,6 +44,7 @@ final class Fighter extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::FIGHTER;

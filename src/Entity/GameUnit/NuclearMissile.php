@@ -33,6 +33,7 @@ final class NuclearMissile extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::NUCLEAR_MISSILE;

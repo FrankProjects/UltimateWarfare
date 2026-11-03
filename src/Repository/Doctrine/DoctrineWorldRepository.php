@@ -24,6 +24,7 @@ final class DoctrineWorldRepository implements WorldRepository
         $this->repository = $this->entityManager->getRepository(World::class);
     }
 
+    #[\Override]
     public function find(int $id): ?World
     {
         return $this->repository->find($id);
@@ -32,6 +33,7 @@ final class DoctrineWorldRepository implements WorldRepository
     /**
      * @return World[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return $this->repository->findAll();
@@ -41,23 +43,27 @@ final class DoctrineWorldRepository implements WorldRepository
      * @param bool $public
      * @return World[]
      */
+    #[\Override]
     public function findByPublic(bool $public): array
     {
         return $this->repository->findBy(['public' => $public]);
     }
 
+    #[\Override]
     public function remove(World $world): void
     {
         $this->entityManager->remove($world);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(World $world): void
     {
         $this->entityManager->persist($world);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function refresh(World $world): void
     {
         $this->entityManager->refresh($world);

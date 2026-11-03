@@ -28,11 +28,13 @@ final class DoctrineTopicRepository implements TopicRepository
         $this->repository = $this->entityManager->getRepository(Topic::class);
     }
 
+    #[\Override]
     public function find(int $id): ?Topic
     {
         return $this->repository->find($id);
     }
 
+    #[\Override]
     public function getLastTopicByUser(User $user): ?Topic
     {
         return $this->entityManager->createQuery(
@@ -46,6 +48,7 @@ final class DoctrineTopicRepository implements TopicRepository
     /**
      * @return Topic[]
      */
+    #[\Override]
     public function getByCategorySortedByStickyAndDate(Category $category): array
     {
         return $this->entityManager->createQuery(
@@ -58,6 +61,7 @@ final class DoctrineTopicRepository implements TopicRepository
             ->getResult();
     }
 
+    #[\Override]
     public function getTopicCountByCategory(Category $category): int
     {
         return (int) $this->entityManager->createQuery(
@@ -67,6 +71,7 @@ final class DoctrineTopicRepository implements TopicRepository
             ->getSingleScalarResult();
     }
 
+    #[\Override]
     public function getLastTopicByCategory(Category $category): ?Topic
     {
         return $this->entityManager->createQuery(
@@ -77,12 +82,14 @@ final class DoctrineTopicRepository implements TopicRepository
             ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
+    #[\Override]
     public function remove(Topic $topic): void
     {
         $this->entityManager->remove($topic);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Topic $topic): void
     {
         $this->entityManager->persist($topic);

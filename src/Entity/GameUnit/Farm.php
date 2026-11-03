@@ -33,6 +33,7 @@ final class Farm extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::FARM;

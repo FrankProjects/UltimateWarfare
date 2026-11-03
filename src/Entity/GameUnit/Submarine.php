@@ -43,6 +43,7 @@ final class Submarine extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::SUBMARINE;

@@ -45,6 +45,7 @@ final class AntiAircraftGun extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::ANTI_AIRCRAFT_GUN;

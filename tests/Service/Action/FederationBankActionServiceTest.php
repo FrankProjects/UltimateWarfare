@@ -27,6 +27,7 @@ class FederationBankActionServiceTest extends TestCase
     private FederationNewsRepository&MockObject $federationNewsRepository;
     private PlayerRepository&MockObject $playerRepository;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->federationRepository = $this->createMock(FederationRepository::class);

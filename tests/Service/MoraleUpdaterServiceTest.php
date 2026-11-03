@@ -20,6 +20,7 @@ class MoraleUpdaterServiceTest extends TestCase
 
     private MoraleUpdaterService $service;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->service = new MoraleUpdaterService(new GameUnitRegistry());

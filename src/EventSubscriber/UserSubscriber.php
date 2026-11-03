@@ -81,6 +81,7 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         $event->setResponse($response);
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

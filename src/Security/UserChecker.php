@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class UserChecker implements UserCheckerInterface
 {
+    #[\Override]
     public function checkPreAuth(UserInterface $user): void
     {
     }
@@ -24,6 +25,7 @@ final class UserChecker implements UserCheckerInterface
     /**
      * Checked after the password is verified, so an unknown password can't reveal the account status.
      */
+    #[\Override]
     public function checkPostAuth(UserInterface $user, ?TokenInterface $token = null): void
     {
         if (!$user instanceof User) {

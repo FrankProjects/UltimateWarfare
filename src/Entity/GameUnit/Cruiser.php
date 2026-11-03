@@ -45,6 +45,7 @@ final class Cruiser extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::CRUISER;

@@ -23,6 +23,7 @@ final readonly class AdvancedOpticsResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'advanced-optics';

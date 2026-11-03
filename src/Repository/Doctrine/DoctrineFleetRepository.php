@@ -26,6 +26,7 @@ final class DoctrineFleetRepository implements FleetRepository
         $this->repository = $this->entityManager->getRepository(Fleet::class);
     }
 
+    #[\Override]
     public function findByIdAndPlayer(int $id, Player $player): ?Fleet
     {
         return $this->repository->findOneBy(['id' => $id, 'player' => $player]);
@@ -35,6 +36,7 @@ final class DoctrineFleetRepository implements FleetRepository
      * @param Player $player
      * @return Fleet[]
      */
+    #[\Override]
     public function findByPlayer(Player $player): array
     {
         return $this->repository->findBy(['player' => $player]);
@@ -43,6 +45,7 @@ final class DoctrineFleetRepository implements FleetRepository
     /**
      * @return Fleet[]
      */
+    #[\Override]
     public function findByWorldExcludingPlayer(World $world, Player $player): array
     {
         /** @var Fleet[] */
@@ -57,6 +60,7 @@ final class DoctrineFleetRepository implements FleetRepository
             ->getResult();
     }
 
+    #[\Override]
     public function remove(Fleet $fleet): void
     {
         foreach ($fleet->getFleetUnits() as $fleetUnit) {
@@ -67,6 +71,7 @@ final class DoctrineFleetRepository implements FleetRepository
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Fleet $fleet): void
     {
         $this->entityManager->persist($fleet);

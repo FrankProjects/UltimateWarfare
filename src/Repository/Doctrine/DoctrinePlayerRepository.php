@@ -28,11 +28,13 @@ final class DoctrinePlayerRepository implements PlayerRepository
         $this->repository = $this->entityManager->getRepository(Player::class);
     }
 
+    #[\Override]
     public function find(int $id): ?Player
     {
         return $this->repository->find($id);
     }
 
+    #[\Override]
     public function findByNameAndWorld(string $playerName, World $world): ?Player
     {
         return $this->repository->findOneBy(['name' => $playerName, 'world' => $world]);
@@ -43,6 +45,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
      * @param integer $limit
      * @return Player[]
      */
+    #[\Override]
     public function findByWorldAndRegions(World $world, $limit = 10): array
     {
         return $this->entityManager
@@ -65,6 +68,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
      * @param integer $limit
      * @return Player[]
      */
+    #[\Override]
     public function findByWorldAndNetWorth(World $world, $limit = 10): array
     {
         return $this->entityManager
@@ -83,6 +87,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
     /**
      * @return Player[]
      */
+    #[\Override]
     public function findWithPopulationBelowCapacityUpdatedBefore(int $timestamp, int $populationPerHouse): array
     {
         return $this->entityManager
@@ -103,6 +108,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
     /**
      * @return Player[]
      */
+    #[\Override]
     public function findWithFoodShortageUpdatedBefore(int $timestamp): array
     {
         return $this->entityManager
@@ -117,6 +123,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
             ->getResult();
     }
 
+    #[\Override]
     public function remove(Player $player): void
     {
         foreach ($player->getMarketItems() as $marketItem) {
@@ -190,6 +197,7 @@ final class DoctrinePlayerRepository implements PlayerRepository
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Player $player): void
     {
         $this->entityManager->persist($player);

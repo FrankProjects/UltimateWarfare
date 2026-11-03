@@ -45,6 +45,7 @@ final class PatrolBoat extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::PATROL_BOAT;

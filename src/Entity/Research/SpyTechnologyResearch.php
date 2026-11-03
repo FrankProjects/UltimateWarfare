@@ -56,6 +56,7 @@ final readonly class SpyTechnologyResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'spy-technology';
