@@ -427,6 +427,21 @@ a:hover {
     min-width: 0;
 }
 
+.guide-content .uw-card-body a:not([class]) {
+    color: #e0b85c;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: rgba(224, 184, 92, 0.5);
+    text-underline-offset: 3px;
+    transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+.guide-content .uw-card-body a:not([class]):hover,
+.guide-content .uw-card-body a:not([class]):focus-visible {
+    color: #ffd27a;
+    text-decoration-color: #ffd27a;
+}
+
 @media (max-width: 768px) {
     .guide-layout {
         flex-direction: column;
