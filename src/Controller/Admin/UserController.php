@@ -16,6 +16,8 @@ use Throwable;
 
 final class UserController extends AbstractController
 {
+    private const int USERS_PER_PAGE = 50;
+
     private UserRepository $userRepository;
     private UserActionService $userActionService;
 
@@ -100,17 +102,34 @@ final class UserController extends AbstractController
 
     public function list(Request $request): Response
     {
-        $user = match ($request->attributes->get('filter')) {
-            'banned' => $this->userRepository->findAllBanned(),
-            'email-unverified' => $this->userRepository->findAllEmailUnverified(),
-            'email-verified' => $this->userRepository->findAllEmailVerified(),
-            default => $this->userRepository->findAll(),
-        };
+        $filter = $request->attributes->getString('filter');
+        $sort = $request->query->getString('sort') === 'lastSeen' ? 'lastSeen' : 'signup';
+        $direction = $request->query->getString('direction') === 'asc' ? 'asc' : 'desc';
+
+        $totalUsers = $this->userRepository->countForAdminList($filter);
+        $totalPages = max(1, (int) ceil($totalUsers / self::USERS_PER_PAGE));
+        $page = min(max(1, $request->query->getInt('page', 1)), $totalPages);
+
+        $users = $this->userRepository->findForAdminList(
+            $filter,
+            $sort,
+            $direction,
+            self::USERS_PER_PAGE,
+            ($page - 1) * self::USERS_PER_PAGE
+        );
 
         return $this->render(
             'admin/user/list.html.twig',
             [
-                'users' => $user
+                'users' => $users,
+                'filter' => $filter,
+                'sort' => $sort,
+                'direction' => $direction,
+                'pagination' => [
+                    'currentPage' => $page,
+                    'totalPages' => $totalPages,
+                    'totalUsers' => $totalUsers,
+                ],
             ]
         );
     }

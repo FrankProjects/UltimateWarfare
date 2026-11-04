@@ -744,6 +744,11 @@ a:hover {
     background: #4a4a4a;
 }
 
+.uw-world-table th.sortable a {
+    color: inherit;
+    text-decoration: none;
+}
+
 .uw-world-table th.sortable::after {
     content: ' \25B4\25BE';
     font-size: 10px;

@@ -27,7 +27,7 @@ final class DashboardController extends AbstractController
         return $this->render(
             'admin/dashboard.html.twig',
             [
-                'userCount' => count($this->userRepository->findAll()),
+                'userCount' => $this->userRepository->countForAdminList(''),
                 'loggedInCount' => count($this->userRepository->findByLastSeenBetween($firstDateTime, $lastDateTime))
             ]
         );
