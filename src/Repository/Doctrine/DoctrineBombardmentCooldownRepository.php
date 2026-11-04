@@ -20,6 +20,7 @@ final class DoctrineBombardmentCooldownRepository implements BombardmentCooldown
         $this->entityManager = $entityManager;
     }
 
+    #[\Override]
     public function findActiveByWorldRegionAndOperation(
         WorldRegion $worldRegion,
         string $operationSlug
@@ -42,6 +43,7 @@ final class DoctrineBombardmentCooldownRepository implements BombardmentCooldown
     /**
      * @return BombardmentCooldown[]
      */
+    #[\Override]
     public function findActiveByPlayer(Player $player): array
     {
         return $this->entityManager->createQuery(
@@ -54,12 +56,14 @@ final class DoctrineBombardmentCooldownRepository implements BombardmentCooldown
             ->getResult();
     }
 
+    #[\Override]
     public function save(BombardmentCooldown $bombardmentCooldown): void
     {
         $this->entityManager->persist($bombardmentCooldown);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function removeExpired(): void
     {
         $this->entityManager->createQuery(
@@ -69,6 +73,7 @@ final class DoctrineBombardmentCooldownRepository implements BombardmentCooldown
             ->execute();
     }
 
+    #[\Override]
     public function removeForWorld(World $world): void
     {
         $this->entityManager->createQuery(

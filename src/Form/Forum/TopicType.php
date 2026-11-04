@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints\Length;
 /** @extends AbstractType<null> */
 class TopicType extends AbstractType
 {
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -69,6 +70,7 @@ class TopicType extends AbstractType
             );
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(

@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints\Range;
 /** @extends AbstractType<null> */
 class MapConfigurationType extends AbstractType
 {
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -153,6 +154,7 @@ class MapConfigurationType extends AbstractType
             );
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(

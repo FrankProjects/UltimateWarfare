@@ -23,6 +23,7 @@ class ResearchActionServiceTest extends TestCase
     private ResearchPlayerRepository&MockObject $researchPlayerRepository;
     private PlayerRepository&MockObject $playerRepository;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->researchRegistry = new ResearchRegistry();

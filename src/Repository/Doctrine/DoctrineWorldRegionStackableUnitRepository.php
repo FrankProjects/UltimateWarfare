@@ -33,6 +33,7 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
         $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
+    #[\Override]
     public function find(int $id): ?WorldRegionStackableUnit
     {
         return $this->repository->find($id);
@@ -42,6 +43,7 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
      * @param Player $player
      * @return array<int, array<string, int>>
      */
+    #[\Override]
     public function findAmountAndNetWorthByPlayer(Player $player): array
     {
         $results = $this->entityManager->createQuery(
@@ -72,6 +74,7 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
      * @param GameUnitCategory[] $gameUnitCategories
      * @return array<int, int>
      */
+    #[\Override]
     public function getGameUnitSumByPlayerAndGameUnitCategories(Player $player, array $gameUnitCategories): array
     {
         $unitIds = [];
@@ -108,6 +111,7 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
     /**
      * @return array<int, int>
      */
+    #[\Override]
     public function getAmountSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
@@ -129,6 +133,7 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
         return $gameUnits;
     }
 
+    #[\Override]
     public function remove(WorldRegionStackableUnit $worldRegionStackableUnit): void
     {
         // Keep an already loaded collection in sync; an unloaded one is fetched fresh from the database when accessed
@@ -142,6 +147,7 @@ final class DoctrineWorldRegionStackableUnitRepository implements WorldRegionSta
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(WorldRegionStackableUnit $worldRegionStackableUnit): void
     {
         $this->entityManager->persist($worldRegionStackableUnit);

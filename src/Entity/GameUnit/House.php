@@ -33,6 +33,7 @@ final class House extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::HOUSE;

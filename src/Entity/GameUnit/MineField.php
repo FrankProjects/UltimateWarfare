@@ -41,6 +41,7 @@ final class MineField extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::MINE_FIELD;

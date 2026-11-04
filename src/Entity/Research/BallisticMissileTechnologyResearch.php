@@ -24,6 +24,7 @@ final readonly class BallisticMissileTechnologyResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'ballistic-missile-technology';

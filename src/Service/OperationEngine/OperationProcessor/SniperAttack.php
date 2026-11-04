@@ -12,6 +12,7 @@ final class SniperAttack extends OperationProcessor
     protected const int SOLDIERS_KILLED_PER_SNIPER = 3;
     private const float BASE_SUCCESS = 0.78;
 
+    #[\Override]
     public function getFormula(): float
     {
         $rtLevel = $this->getAttackerResearchLevel('research-tier');
@@ -26,11 +27,13 @@ final class SniperAttack extends OperationProcessor
         return $probability - mt_rand(0, 1000) / 1000.0;
     }
 
+    #[\Override]
     public function processPreOperation(): void
     {
         // Do nothing
     }
 
+    #[\Override]
     public function processSuccess(): void
     {
         $soldiers = 0;
@@ -71,6 +74,7 @@ final class SniperAttack extends OperationProcessor
         }
     }
 
+    #[\Override]
     public function processFailed(): void
     {
         $snipersLost = intval($this->amount * 0.05);
@@ -89,6 +93,7 @@ final class SniperAttack extends OperationProcessor
         $this->addToOperationLog("We failed our Sniper attack and lost {$snipersLost} Snipers");
     }
 
+    #[\Override]
     public function processPostOperation(): void
     {
         $player = $this->getTargetRegionPlayer();

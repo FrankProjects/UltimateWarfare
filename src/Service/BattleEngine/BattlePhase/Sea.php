@@ -18,6 +18,7 @@ final class Sea extends BattlePhase
 {
     private const int MINES_CLEARED_PER_COUNTERMEASURES_SHIP = 25;
 
+    #[\Override]
     protected function beforeSpeedTiers(): void
     {
         $this->sweepMines(
@@ -31,6 +32,7 @@ final class Sea extends BattlePhase
     /**
      * Sea Mines only strike once, when they detonate before the speed tiers
      */
+    #[\Override]
     protected function firesInSpeedTiers(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): bool
     {
         return $defenderGameUnit->getGameUnit() !== GameUnitEnum::SEA_MINE;

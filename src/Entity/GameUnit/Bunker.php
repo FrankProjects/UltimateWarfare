@@ -40,6 +40,7 @@ final class Bunker extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::BUNKER;

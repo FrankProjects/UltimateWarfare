@@ -23,6 +23,7 @@ final class Ground extends BattlePhase
 
     private bool $bunkerShelterLogged = false;
 
+    #[\Override]
     protected function beforeSpeedTiers(): void
     {
         $this->sweepMines(GameUnitEnum::MINE_FIELD, GameUnitEnum::MINE_SWEEPER, self::MINES_CLEARED_PER_SWEEPER);
@@ -33,6 +34,7 @@ final class Ground extends BattlePhase
     /**
      * Mine Fields only strike once, when they detonate before the speed tiers
      */
+    #[\Override]
     protected function firesInSpeedTiers(WorldRegionStackableUnit|WorldRegionLeveledUnit $defenderGameUnit): bool
     {
         return $defenderGameUnit->getGameUnit() !== GameUnitEnum::MINE_FIELD;
@@ -41,6 +43,7 @@ final class Ground extends BattlePhase
     /**
      * Defending troops sheltered in the Bunker take reduced damage, up to the Bunker's capacity
      */
+    #[\Override]
     protected function getIncomingPower(
         FleetUnit|WorldRegionStackableUnit|WorldRegionLeveledUnit $gameUnit,
         int $power,

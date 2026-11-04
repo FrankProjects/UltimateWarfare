@@ -558,6 +558,7 @@ abstract class BattlePhase implements IBattlePhase
         throw new RuntimeException("Invalid BattleStats for {$this->name}");
     }
 
+    #[\Override]
     public function getAttackPower(): int
     {
         $power = 0;
@@ -568,6 +569,7 @@ abstract class BattlePhase implements IBattlePhase
         return $power;
     }
 
+    #[\Override]
     public function getDefensePower(): int
     {
         $power = 0;

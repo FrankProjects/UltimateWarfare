@@ -1,27 +1,39 @@
 {% extends 'admin.html.twig' %}
 
+{% macro sort_header(label, column, filter, query, sort, direction) %}
+    {% set nextDirection = sort == column and direction == 'desc' ? 'asc' : 'desc' %}
+    <th class="sortable{{ sort == column ? ' sort-' ~ direction : '' }}">
+        <a href="{{ path('Admin/User/List', query|merge({'filter': filter, 'sort': column, 'direction': nextDirection})) }}">{{ label }}</a>
+    </th>
+{% endmacro %}
+
 {% block title %}ADMIN - User list{% endblock title %}
 
 {% block content %}
+    {% import _self as macros %}
+    {% set query = {'sort': sort, 'direction': direction} %}
     <p class="text-center btn-group">
-        <a href="{{ path('Admin/User/List') }}" class="btn btn-primary {{ app.request.attributes.get('filter') == '' ? 'active' : '' }}">All</a>
-        <a href="{{ path('Admin/User/List', {'filter': 'email-verified'}) }}" class="btn btn-primary {{ app.request.attributes.get('filter') == 'email-verified' ? 'active' : '' }}">Email verified</a>
-        <a href="{{ path('Admin/User/List', {'filter': 'email-unverified'}) }}" class="btn btn-primary {{ app.request.attributes.get('filter') == 'email-unverified' ? 'active' : '' }}">Email unverified</a>
-        <a href="{{ path('Admin/User/List', {'filter': 'banned'}) }}" class="btn btn-primary {{ app.request.attributes.get('filter') == 'banned' ? 'active' : '' }}">Banned</a>
+        <a href="{{ path('Admin/User/List', query) }}" class="btn btn-primary {{ filter == '' ? 'active' : '' }}">All</a>
+        <a href="{{ path('Admin/User/List', query|merge({'filter': 'email-verified'})) }}" class="btn btn-primary {{ filter == 'email-verified' ? 'active' : '' }}">Email verified</a>
+        <a href="{{ path('Admin/User/List', query|merge({'filter': 'email-unverified'})) }}" class="btn btn-primary {{ filter == 'email-unverified' ? 'active' : '' }}">Email unverified</a>
+        <a href="{{ path('Admin/User/List', query|merge({'filter': 'banned'})) }}" class="btn btn-primary {{ filter == 'banned' ? 'active' : '' }}">Banned</a>
     </p>
     <div class="uw-card">
-        <div class="uw-card-header">User list</div>
+        <div class="uw-card-header">User list ({{ pagination.totalUsers }})</div>
         <div class="uw-card-body">
-            <table class="table text-center">
-                <tr>
-                    <td>Username</td>
-                    <td>Email</td>
-                    <td>Email verified</td>
-                    <td>Players</td>
-                    <td>Signup</td>
-                    <td>Last seen</td>
-                    <td>Action</td>
-                </tr>
+            <table class="table text-center uw-world-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Email verified</th>
+                        <th>Players</th>
+                        {{ macros.sort_header('Signup', 'signup', filter, query, sort, direction) }}
+                        {{ macros.sort_header('Last seen', 'lastSeen', filter, query, sort, direction) }}
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
                 {% for user in users %}
                     <tr>
                         <td class="text-break">
@@ -61,7 +73,26 @@
                         <td colspan="7">No users....</td>
                     </tr>
                 {% endfor %}
+                </tbody>
             </table>
+            {% if pagination.totalPages > 1 %}
+                {% set current = pagination.currentPage %}
+                <nav aria-label="User list pages">
+                    <ul class="pagination justify-content-center flex-wrap">
+                        <li class="page-item {{ current == 1 ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ path('Admin/User/List', query|merge({'filter': filter, 'page': current - 1})) }}">Previous</a>
+                        </li>
+                        {% for page in max(1, current - 3)..min(pagination.totalPages, current + 3) %}
+                            <li class="page-item {{ page == current ? 'active' : '' }}">
+                                <a class="page-link" href="{{ path('Admin/User/List', query|merge({'filter': filter, 'page': page})) }}">{{ page }}</a>
+                            </li>
+                        {% endfor %}
+                        <li class="page-item {{ current == pagination.totalPages ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ path('Admin/User/List', query|merge({'filter': filter, 'page': current + 1})) }}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

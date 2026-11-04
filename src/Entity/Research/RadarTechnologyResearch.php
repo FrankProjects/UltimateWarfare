@@ -24,6 +24,7 @@ final readonly class RadarTechnologyResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'radar-technology';

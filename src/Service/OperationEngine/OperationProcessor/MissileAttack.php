@@ -11,6 +11,7 @@ final class MissileAttack extends OperationProcessor
 {
     private const float BASE_SUCCESS = 0.62;
 
+    #[\Override]
     public function getFormula(): float
     {
         $rtLevel = $this->getAttackerResearchLevel('research-tier');
@@ -25,6 +26,7 @@ final class MissileAttack extends OperationProcessor
         return $probability - mt_rand(0, 1000) / 1000.0;
     }
 
+    #[\Override]
     public function processPreOperation(): void
     {
         foreach ($this->playerRegion->getWorldRegionStackableUnits() as $worldRegionStackableUnit) {
@@ -35,6 +37,7 @@ final class MissileAttack extends OperationProcessor
         }
     }
 
+    #[\Override]
     public function processSuccess(): void
     {
         $totalBuildings = 0;
@@ -82,6 +85,7 @@ final class MissileAttack extends OperationProcessor
         $this->addToOperationLog("You destroyed {$buildingsDestroyed} buildings!");
     }
 
+    #[\Override]
     public function processFailed(): void
     {
         $reportText = "{$this->getPlayerRegionPlayer()->getName()} tried to launch a missile attack"
@@ -93,6 +97,7 @@ final class MissileAttack extends OperationProcessor
         );
     }
 
+    #[\Override]
     public function processPostOperation(): void
     {
         $player = $this->getTargetRegionPlayer();

@@ -23,6 +23,7 @@ final readonly class NavalBombardmentResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'naval-bombardment';

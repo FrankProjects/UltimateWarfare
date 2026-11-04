@@ -25,11 +25,13 @@ final class DoctrineFederationRepository implements FederationRepository
         $this->repository = $this->entityManager->getRepository(Federation::class);
     }
 
+    #[\Override]
     public function findByIdAndWorld(int $id, World $world): ?Federation
     {
         return $this->repository->findOneBy(['id' => $id, 'world' => $world]);
     }
 
+    #[\Override]
     public function findByNameAndWorld(string $name, World $world): ?Federation
     {
         return $this->repository->findOneBy(['name' => $name, 'world' => $world]);
@@ -39,11 +41,13 @@ final class DoctrineFederationRepository implements FederationRepository
      * @param World $world
      * @return Federation[]
      */
+    #[\Override]
     public function findByWorldSortedByRegion(World $world): array
     {
         return $this->repository->findBy(['world' => $world], ['regions' => 'DESC']);
     }
 
+    #[\Override]
     public function remove(Federation $federation): void
     {
         foreach ($federation->getFederationApplications() as $application) {
@@ -64,6 +68,7 @@ final class DoctrineFederationRepository implements FederationRepository
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Federation $federation): void
     {
         $this->entityManager->persist($federation);

@@ -37,6 +37,7 @@ final class RadarStation extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::RADAR_STATION;

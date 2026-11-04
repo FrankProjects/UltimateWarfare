@@ -44,6 +44,7 @@ class QueueWorkerCommand extends Command implements SignalableCommandInterface
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('Process completed construction and research of all players');
@@ -64,6 +65,7 @@ class QueueWorkerCommand extends Command implements SignalableCommandInterface
         );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('once') === true) {
@@ -126,6 +128,7 @@ class QueueWorkerCommand extends Command implements SignalableCommandInterface
     /**
      * @return list<int>
      */
+    #[\Override]
     public function getSubscribedSignals(): array
     {
         // Without the pcntl extension the process is simply killed on stop
@@ -136,6 +139,7 @@ class QueueWorkerCommand extends Command implements SignalableCommandInterface
         return [\SIGTERM, \SIGINT];
     }
 
+    #[\Override]
     public function handleSignal(int $signal, int|false $previousExitCode = 0): int|false
     {
         // Finish the current pass (and its transactions) instead of being killed halfway

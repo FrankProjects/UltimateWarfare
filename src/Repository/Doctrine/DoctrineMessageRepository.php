@@ -25,6 +25,7 @@ final class DoctrineMessageRepository implements MessageRepository
         $this->repository = $this->entityManager->getRepository(Message::class);
     }
 
+    #[\Override]
     public function find(int $id): ?Message
     {
         return $this->repository->find($id);
@@ -36,6 +37,7 @@ final class DoctrineMessageRepository implements MessageRepository
      * @param int $offset
      * @return Message[]
      */
+    #[\Override]
     public function findNonDeletedMessagesToPlayer(Player $player, int $limit = 100, int $offset = 0): array
     {
         return $this->entityManager->createQuery(
@@ -51,6 +53,7 @@ final class DoctrineMessageRepository implements MessageRepository
             ->getResult();
     }
 
+    #[\Override]
     public function countNonDeletedMessagesToPlayer(Player $player): int
     {
         return (int) $this->entityManager->createQuery(
@@ -63,6 +66,7 @@ final class DoctrineMessageRepository implements MessageRepository
         )->getSingleScalarResult();
     }
 
+    #[\Override]
     public function countUnreadMessagesToPlayer(Player $player): int
     {
         return (int) $this->entityManager->createQuery(
@@ -84,6 +88,7 @@ final class DoctrineMessageRepository implements MessageRepository
      * @param int $offset
      * @return Message[]
      */
+    #[\Override]
     public function findNonDeletedMessagesFromPlayer(Player $player, int $limit = 100, int $offset = 0): array
     {
         return $this->entityManager->createQuery(
@@ -99,6 +104,7 @@ final class DoctrineMessageRepository implements MessageRepository
             ->getResult();
     }
 
+    #[\Override]
     public function countNonDeletedMessagesFromPlayer(Player $player): int
     {
         return (int) $this->entityManager->createQuery(
@@ -111,12 +117,14 @@ final class DoctrineMessageRepository implements MessageRepository
         )->getSingleScalarResult();
     }
 
+    #[\Override]
     public function remove(Message $message): void
     {
         $this->entityManager->remove($message);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Message $message): void
     {
         $this->entityManager->persist($message);

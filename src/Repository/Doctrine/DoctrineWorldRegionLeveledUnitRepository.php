@@ -32,6 +32,7 @@ final class DoctrineWorldRegionLeveledUnitRepository implements WorldRegionLevel
         $this->gameUnitRegistry = $gameUnitRegistry;
     }
 
+    #[\Override]
     public function find(int $id): ?WorldRegionLeveledUnit
     {
         return $this->repository->find($id);
@@ -41,6 +42,7 @@ final class DoctrineWorldRegionLeveledUnitRepository implements WorldRegionLevel
      * @param Player $player
      * @return array<int, array<string, int>>
      */
+    #[\Override]
     public function findLevelAndNetWorthByPlayer(Player $player): array
     {
         $results = $this->entityManager->createQuery(
@@ -69,6 +71,7 @@ final class DoctrineWorldRegionLeveledUnitRepository implements WorldRegionLevel
     /**
      * @return array<int, int>
      */
+    #[\Override]
     public function getLevelSumByPlayer(Player $player): array
     {
         $results = $this->entityManager
@@ -90,6 +93,7 @@ final class DoctrineWorldRegionLeveledUnitRepository implements WorldRegionLevel
         return $gameUnits;
     }
 
+    #[\Override]
     public function remove(WorldRegionLeveledUnit $worldRegionLeveledUnit): void
     {
         // Keep an already loaded collection in sync; an unloaded one is fetched fresh from the database when accessed
@@ -103,6 +107,7 @@ final class DoctrineWorldRegionLeveledUnitRepository implements WorldRegionLevel
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(WorldRegionLeveledUnit $worldRegionLeveledUnit): void
     {
         $this->entityManager->persist($worldRegionLeveledUnit);

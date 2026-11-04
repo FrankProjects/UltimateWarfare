@@ -12,6 +12,7 @@ use Uri\Rfc3986\Uri;
 
 final class ApiAwareAuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
+    #[\Override]
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): Response
     {
         $firewallName = $this->getFirewallName() ?? 'main';

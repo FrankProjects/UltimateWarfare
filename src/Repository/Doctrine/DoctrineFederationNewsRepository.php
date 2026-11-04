@@ -29,17 +29,20 @@ final class DoctrineFederationNewsRepository implements FederationNewsRepository
      * @param Federation $federation
      * @return FederationNews[]
      */
+    #[\Override]
     public function findByFederationSortedByTimestamp(Federation $federation): array
     {
         return $this->repository->findBy(['federation' => $federation], ['timestamp' => 'DESC']);
     }
 
+    #[\Override]
     public function remove(FederationNews $federationNews): void
     {
         $this->entityManager->remove($federationNews);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(FederationNews $federationNews): void
     {
         $this->entityManager->persist($federationNews);

@@ -213,8 +213,8 @@ final class ConstructionActionService
     {
         $rowName = $gameUnit->getRowName();
 
-        // Tanks require a Factory on this region
-        if ($rowName === 'tank') {
+        // Tanks and artillery require a Factory on this region
+        if (in_array($rowName, ['tank', 'artillery'], true)) {
             $this->requireLeveledBuilding($region, GameUnitEnum::FACTORY, 'a Factory');
         }
 

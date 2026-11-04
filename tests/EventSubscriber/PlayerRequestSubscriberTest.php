@@ -34,6 +34,7 @@ class PlayerRequestSubscriberTest extends TestCase
     private EntityManagerInterface&MockObject $entityManager;
     private Player $player;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->entityManager = $this->createMock(EntityManagerInterface::class);

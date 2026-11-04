@@ -1,5 +1,6 @@
 parameters:
   level: 10
+  checkMissingOverrideMethodAttribute: true
   paths:
     - src/
     - tests/

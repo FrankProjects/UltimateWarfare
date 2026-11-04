@@ -24,11 +24,13 @@ final class DoctrineBattleSummaryRepository implements BattleSummaryRepository
         $this->repository = $this->entityManager->getRepository(BattleSummary::class);
     }
 
+    #[\Override]
     public function find(int $id): ?BattleSummary
     {
         return $this->repository->find($id);
     }
 
+    #[\Override]
     public function save(BattleSummary $battleSummary): void
     {
         $this->entityManager->persist($battleSummary);

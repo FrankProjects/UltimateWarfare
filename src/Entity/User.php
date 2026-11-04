@@ -74,6 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     /**
      * {@inheritdoc}
      */
+    #[\Override]
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -115,6 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         }
     }
 
+    #[\Override]
     public function getPassword(): string
     {
         return $this->password;
@@ -143,6 +145,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         $this->username = $username;
     }
 
+    #[\Override]
     public function isEqualTo(UserInterface $user): bool
     {
         if (!$user instanceof User) {
@@ -366,6 +369,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         $this->postsEdited = $postsEdited;
     }
 
+    #[\Override]
     public function getUserIdentifier(): string
     {
         if ($this->username === '') {

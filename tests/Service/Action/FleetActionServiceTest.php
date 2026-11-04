@@ -41,6 +41,7 @@ class FleetActionServiceTest extends TestCase
     private WorldRegionRepository&MockObject $worldRegionRepository;
     private EntityManagerInterface&MockObject $entityManager;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->world = new World();

@@ -27,6 +27,7 @@ final class PlainPasswordFormTest extends TypeTestCase
     /**
      * @return array<\Symfony\Component\Form\FormExtensionInterface>
      */
+    #[\Override]
     protected function getExtensions(): array
     {
         $captchaType = new CaptchaType(

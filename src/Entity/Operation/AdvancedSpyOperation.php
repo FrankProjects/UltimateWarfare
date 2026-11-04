@@ -29,21 +29,25 @@ final readonly class AdvancedSpyOperation extends Operation
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'advanced-spy';
     }
 
+    #[\Override]
     public function getProcessorClass(): string
     {
         return AdvancedSpy::class;
     }
 
+    #[\Override]
     public function getCostType(): string
     {
         return self::COST_PER_TARGET_REGION;
     }
 
+    #[\Override]
     public function calculateCost(WorldRegion $targetRegion, int $amount): int
     {
         $targetPlayer = $targetRegion->getPlayer();

@@ -29,16 +29,19 @@ final readonly class NavalBombardmentOperation extends Operation
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'naval-bombardment';
     }
 
+    #[\Override]
     public function getProcessorClass(): string
     {
         return NavalBombardment::class;
     }
 
+    #[\Override]
     public function hasCooldown(): bool
     {
         return true;

@@ -12,24 +12,22 @@ interface UserRepository
     public function find(int $id): ?User;
 
     /**
+     * Users for the admin user list, filtered by status ('banned', 'email-verified', 'email-unverified'
+     * or '' for all).
+     *
+     * @param 'signup'|'lastSeen' $sort
+     * @param 'asc'|'desc' $direction
      * @return User[]
      */
-    public function findAll(): array;
+    public function findForAdminList(
+        string $filter,
+        string $sort,
+        string $direction,
+        int $limit,
+        int $offset
+    ): array;
 
-    /**
-     * @return User[]
-     */
-    public function findAllEmailUnverified(): array;
-
-    /**
-     * @return User[]
-     */
-    public function findAllBanned(): array;
-
-    /**
-     * @return User[]
-     */
-    public function findAllEmailVerified(): array;
+    public function countForAdminList(string $filter): int;
 
     public function findByEmailVerificationToken(string $emailVerificationToken): ?User;
 

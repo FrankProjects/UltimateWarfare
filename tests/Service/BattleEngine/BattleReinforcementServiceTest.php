@@ -22,6 +22,7 @@ class BattleReinforcementServiceTest extends TestCase
     private Player $defender;
     private WorldRegion $targetRegion;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->defender = new Player();

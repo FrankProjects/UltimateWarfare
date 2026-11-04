@@ -22,6 +22,7 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
      * @param int $timestamp
      * @return ResearchPlayer[]
      */
+    #[\Override]
     public function getNonActiveCompletedResearch(int $timestamp): array
     {
         return $this->entityManager->createQuery(
@@ -37,6 +38,7 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
     /**
      * @return ResearchPlayer[]
      */
+    #[\Override]
     public function getNonActiveCompletedResearchByPlayer(Player $player, int $timestamp): array
     {
         return $this->entityManager->createQuery(
@@ -53,6 +55,7 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
      * @param Player $player
      * @return ResearchPlayer[]
      */
+    #[\Override]
     public function findOngoingByPlayer(Player $player): array
     {
         return $this->entityManager->createQuery(
@@ -68,6 +71,7 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
     /**
      * @return array<string, int>
      */
+    #[\Override]
     public function getCompletedLevelsBySlug(Player $player): array
     {
         $levels = [];
@@ -86,6 +90,7 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
         return $levels;
     }
 
+    #[\Override]
     public function getNextCompletionTimestampByPlayer(Player $player): ?int
     {
         /** @var int|string|null $next */
@@ -99,12 +104,14 @@ final class DoctrineResearchPlayerRepository implements ResearchPlayerRepository
         return $next !== null ? (int) $next : null;
     }
 
+    #[\Override]
     public function remove(ResearchPlayer $researchPlayer): void
     {
         $this->entityManager->remove($researchPlayer);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(ResearchPlayer $researchPlayer): void
     {
         $this->entityManager->persist($researchPlayer);

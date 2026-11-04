@@ -15,6 +15,7 @@ use Throwable;
 #[AsCommand(name: 'game:user:send-register-mail')]
 class SendRegisterMailCommand extends AbstractUserCommand
 {
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('Send register email to user')
@@ -22,6 +23,7 @@ class SendRegisterMailCommand extends AbstractUserCommand
             ->addArgument('username', InputArgument::REQUIRED, 'The username');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var string $username */

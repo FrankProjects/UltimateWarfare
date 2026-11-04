@@ -28,11 +28,13 @@ final readonly class MissileAttackOperation extends Operation
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'missile-attack';
     }
 
+    #[\Override]
     public function getProcessorClass(): string
     {
         return MissileAttack::class;

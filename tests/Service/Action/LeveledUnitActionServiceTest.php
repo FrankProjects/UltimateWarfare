@@ -34,6 +34,7 @@ class LeveledUnitActionServiceTest extends TestCase
     private GameUnitBehaviorFactory&MockObject $behaviorFactory;
     private WorldRegionRepository&MockObject $worldRegionRepository;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->constructionRepository = $this->createMock(ConstructionRepository::class);

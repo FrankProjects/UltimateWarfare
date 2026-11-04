@@ -65,7 +65,7 @@ Doctrine ORM with XML mapping files in `config/doctrine/`. All entity relationsh
 
 ### Code Standards
 
-All PHP files use `declare(strict_types=1)`. PHPStan runs at level 10 with Symfony and Doctrine extensions. New code must pass both `phpcs` (PSR-12) and `phpstan` before merging.
+All PHP files use `declare(strict_types=1)`. PHPStan runs at level 10 with Symfony and Doctrine extensions. Methods and properties that override a parent or implement an interface must carry `#[\Override]` (enforced by PHPStan's `checkMissingOverrideMethodAttribute`). New code must pass both `phpcs` (PSR-12) and `phpstan` before merging.
 
 ### Environment
 

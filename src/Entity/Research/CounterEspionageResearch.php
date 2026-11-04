@@ -40,6 +40,7 @@ final readonly class CounterEspionageResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'counter-espionage';

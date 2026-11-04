@@ -48,7 +48,7 @@ final class RegionBuildDataService
             $worldRegion->getWorld()
         ));
 
-        // Detect relevant buildings in this region (units + constructions in progress)
+        // Detect relevant buildings in this region; buildings still under construction don't unlock anything yet
         $hasBarrack = false;
         $hasFactory = false;
         $hasAirfield = false;
@@ -57,17 +57,6 @@ final class RegionBuildDataService
 
         foreach ($worldRegion->getWorldRegionLeveledUnits() as $worldRegionLeveledUnit) {
             match ($worldRegionLeveledUnit->getGameUnit()) {
-                GameUnitEnum::BARRACK => $hasBarrack = true,
-                GameUnitEnum::FACTORY => $hasFactory = true,
-                GameUnitEnum::AIRFIELD => $hasAirfield = true,
-                GameUnitEnum::HARBOR => $hasHarbor = true,
-                GameUnitEnum::MISSILE_FACTORY => $hasMissileFactory = true,
-                default => null,
-            };
-        }
-
-        foreach ($worldRegion->getConstructions() as $construction) {
-            match ($construction->getGameUnit()) {
                 GameUnitEnum::BARRACK => $hasBarrack = true,
                 GameUnitEnum::FACTORY => $hasFactory = true,
                 GameUnitEnum::AIRFIELD => $hasAirfield = true,
@@ -157,8 +146,12 @@ final class RegionBuildDataService
                 $canBuild = $behavior->canBuild($worldRegion, $player);
                 $buildRequirement = '';
 
-                // Filter tanks from troops when no factory
-                if ($gameUnitCategory === GameUnitCategory::TROOPS && $rowName === 'tank' && !$hasFactory) {
+                // Tanks and artillery require a factory
+                if (
+                    $gameUnitCategory === GameUnitCategory::TROOPS
+                    && in_array($rowName, ['tank', 'artillery'], true)
+                    && !$hasFactory
+                ) {
                     $canBuild = false;
                     $buildRequirement = 'Requires a Factory';
                 }

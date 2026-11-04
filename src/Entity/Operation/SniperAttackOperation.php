@@ -29,16 +29,19 @@ final readonly class SniperAttackOperation extends Operation
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'sniper-attack';
     }
 
+    #[\Override]
     public function getProcessorClass(): string
     {
         return SniperAttack::class;
     }
 
+    #[\Override]
     public function hasCooldown(): bool
     {
         return true;

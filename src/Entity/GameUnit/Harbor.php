@@ -35,6 +35,7 @@ final class Harbor extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::HARBOR;

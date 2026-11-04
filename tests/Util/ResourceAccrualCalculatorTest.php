@@ -14,6 +14,7 @@ class ResourceAccrualCalculatorTest extends TestCase
 
     private ResourceAccrualCalculator $calculator;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->calculator = new ResourceAccrualCalculator();

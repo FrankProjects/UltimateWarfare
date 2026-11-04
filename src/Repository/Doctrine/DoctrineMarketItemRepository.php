@@ -25,6 +25,7 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
         $this->repository = $this->entityManager->getRepository(MarketItem::class);
     }
 
+    #[\Override]
     public function find(int $id): ?MarketItem
     {
         return $this->repository->find($id);
@@ -33,6 +34,7 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
     /**
      * @return MarketItem[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return $this->repository->findAll();
@@ -43,6 +45,7 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
      * @param string $type
      * @return MarketItem[]
      */
+    #[\Override]
     public function findByWorldMarketItemType(World $world, string $type): array
     {
         return $this->entityManager->createQuery(
@@ -57,12 +60,14 @@ final class DoctrineMarketItemRepository implements MarketItemRepository
             ->getResult();
     }
 
+    #[\Override]
     public function remove(MarketItem $marketItem): void
     {
         $this->entityManager->remove($marketItem);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(MarketItem $marketItem): void
     {
         $this->entityManager->persist($marketItem);

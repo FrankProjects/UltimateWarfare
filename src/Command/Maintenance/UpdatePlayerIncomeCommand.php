@@ -37,6 +37,7 @@ class UpdatePlayerIncomeCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('Update resource income of all players')
@@ -50,6 +51,7 @@ class UpdatePlayerIncomeCommand extends Command
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(

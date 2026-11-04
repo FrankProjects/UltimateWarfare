@@ -31,16 +31,19 @@ final readonly class BomberAttackOperation extends Operation
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'bomber-attack';
     }
 
+    #[\Override]
     public function getProcessorClass(): string
     {
         return BomberAttack::class;
     }
 
+    #[\Override]
     public function hasCooldown(): bool
     {
         return true;

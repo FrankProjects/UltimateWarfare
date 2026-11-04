@@ -11,16 +11,19 @@ use FrankProjects\UltimateWarfare\Service\GameUnit\AbstractGameUnitBehavior;
 
 class AirUnitBehavior extends AbstractGameUnitBehavior
 {
+    #[\Override]
     public function canBuild(WorldRegion $region, Player $player): bool
     {
         return $region->getLeveledUnit(GameUnitEnum::AIRFIELD) !== null;
     }
 
+    #[\Override]
     public function getBuildRequirementDescription(): string
     {
         return 'Requires an Airfield';
     }
 
+    #[\Override]
     public function canMoveTo(WorldRegion $from, WorldRegion $to): bool
     {
         // Air units can move anywhere

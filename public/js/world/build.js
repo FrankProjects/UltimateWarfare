@@ -411,9 +411,12 @@
             } else {
                 const constructionText = unit.inConstruction > 0 ? ' (' + unit.inConstruction + ')' : '';
                 statusHtml = '<div class="build-unit-owned">You have: ' + unit.owned + constructionText + '</div>';
-                actionHtml = '<div class="build-unit-input">' +
-                    '<input type="number" min="0" value="0" data-unit-id="' + unit.gameUnitEnum + '" class="form-control form-control-sm build-quantity-input">' +
-                '</div>';
+                // Locked units show their requirement instead of a quantity input
+                actionHtml = unit.canBuild
+                    ? '<div class="build-unit-input">' +
+                        '<input type="number" min="0" value="0" data-unit-id="' + unit.gameUnitEnum + '" class="form-control form-control-sm build-quantity-input">' +
+                    '</div>'
+                    : '';
             }
 
             card.innerHTML =
@@ -441,7 +444,6 @@
 
             const qtyInput = card.querySelector('.build-quantity-input');
             if (qtyInput) {
-                qtyInput.disabled = !unit.canBuild;
                 qtyInput.addEventListener('input', function (e) {
                     buildQuantities[parseInt(e.target.dataset.unitId)] = parseInt(e.target.value) || 0;
                 });

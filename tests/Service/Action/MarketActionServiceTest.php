@@ -26,6 +26,7 @@ class MarketActionServiceTest extends TestCase
     private PlayerRepository&MockObject $playerRepository;
     private World $world;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->marketItemRepository = $this->createMock(MarketItemRepository::class);

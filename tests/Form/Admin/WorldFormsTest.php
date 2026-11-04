@@ -22,6 +22,7 @@ final class WorldFormsTest extends TypeTestCase
     /**
      * @return array<\Symfony\Component\Form\FormExtensionInterface>
      */
+    #[\Override]
     protected function getExtensions(): array
     {
         return [

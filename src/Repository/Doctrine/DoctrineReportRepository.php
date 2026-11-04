@@ -26,6 +26,7 @@ final class DoctrineReportRepository implements ReportRepository
         $this->repository = $this->entityManager->getRepository(Report::class);
     }
 
+    #[\Override]
     public function find(int $id): ?Report
     {
         return $this->repository->find($id);
@@ -34,6 +35,7 @@ final class DoctrineReportRepository implements ReportRepository
     /**
      * @return Report[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return $this->repository->findAll();
@@ -45,6 +47,7 @@ final class DoctrineReportRepository implements ReportRepository
      * @param int $limit
      * @return Report[]
      */
+    #[\Override]
     public function findReportsByType(Player $player, int $type, int $limit = 100): array
     {
         return $this->entityManager->createQuery(
@@ -70,6 +73,7 @@ final class DoctrineReportRepository implements ReportRepository
      * @param int $limit
      * @return Report[]
      */
+    #[\Override]
     public function findReports(Player $player, int $limit = 100): array
     {
         return $this->entityManager->createQuery(
@@ -94,6 +98,7 @@ final class DoctrineReportRepository implements ReportRepository
      * @param int $offset
      * @return Report[]
      */
+    #[\Override]
     public function findReportsPaginated(Player $player, ?int $type, int $limit = 25, int $offset = 0): array
     {
         $qb = $this->entityManager->createQueryBuilder();
@@ -120,6 +125,7 @@ final class DoctrineReportRepository implements ReportRepository
      * @param int|null $type
      * @return int
      */
+    #[\Override]
     public function countReports(Player $player, ?int $type = null): int
     {
         $qb = $this->entityManager->createQueryBuilder();
@@ -138,12 +144,14 @@ final class DoctrineReportRepository implements ReportRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
+    #[\Override]
     public function remove(Report $report): void
     {
         $this->entityManager->remove($report);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Report $report): void
     {
         $this->entityManager->persist($report);

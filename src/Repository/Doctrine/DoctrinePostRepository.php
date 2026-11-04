@@ -26,11 +26,13 @@ final class DoctrinePostRepository implements PostRepository
         $this->repository = $this->entityManager->getRepository(Post::class);
     }
 
+    #[\Override]
     public function find(int $id): ?Post
     {
         return $this->repository->find($id);
     }
 
+    #[\Override]
     public function getLastPostByUser(User $user): ?Post
     {
         return $this->entityManager->createQuery(
@@ -41,12 +43,14 @@ final class DoctrinePostRepository implements PostRepository
             ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
+    #[\Override]
     public function remove(Post $post): void
     {
         $this->entityManager->remove($post);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Post $post): void
     {
         $this->entityManager->persist($post);

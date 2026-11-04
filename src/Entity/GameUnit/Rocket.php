@@ -33,6 +33,7 @@ final class Rocket extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::ROCKET;

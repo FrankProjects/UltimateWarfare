@@ -26,12 +26,14 @@ class ListWorldCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('List worlds')
             ->setHelp('List all game worlds');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(

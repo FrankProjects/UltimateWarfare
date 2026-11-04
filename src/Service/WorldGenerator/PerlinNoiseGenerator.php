@@ -16,6 +16,7 @@ class PerlinNoiseGenerator implements Generator
     /**
      * @return array <int, array<int, float>>
      */
+    #[\Override]
     public function generate(MapConfiguration $mapConfiguration): array
     {
         $this->initWorld($mapConfiguration);

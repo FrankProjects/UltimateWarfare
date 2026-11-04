@@ -41,6 +41,7 @@ final class SeaMine extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::SEA_MINE;

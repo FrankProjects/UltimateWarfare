@@ -24,6 +24,7 @@ final class DoctrineContactRepository implements ContactRepository
         $this->repository = $this->entityManager->getRepository(Contact::class);
     }
 
+    #[\Override]
     public function find(int $id): ?Contact
     {
         return $this->repository->find($id);
@@ -32,23 +33,27 @@ final class DoctrineContactRepository implements ContactRepository
     /**
      * @return Contact[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return $this->repository->findAll();
     }
 
+    #[\Override]
     public function remove(Contact $contact): void
     {
         $this->entityManager->remove($contact);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(Contact $contact): void
     {
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function count(): int
     {
         return $this->repository->count();

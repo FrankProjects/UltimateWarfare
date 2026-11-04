@@ -44,6 +44,7 @@ final class MineCountermeasuresShip extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::MINE_COUNTERMEASURES_SHIP;

@@ -25,17 +25,20 @@ final class DoctrineFederationApplicationRepository implements FederationApplica
         $this->repository = $this->entityManager->getRepository(FederationApplication::class);
     }
 
+    #[\Override]
     public function find(int $id): ?FederationApplication
     {
         return $this->repository->find($id);
     }
 
+    #[\Override]
     public function remove(FederationApplication $federationApplication): void
     {
         $this->entityManager->remove($federationApplication);
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function save(FederationApplication $federationApplication): void
     {
         $this->entityManager->persist($federationApplication);

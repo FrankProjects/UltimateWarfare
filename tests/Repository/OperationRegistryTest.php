@@ -16,6 +16,7 @@ class OperationRegistryTest extends TestCase
 {
     private OperationRegistry $registry;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->registry = new OperationRegistry();

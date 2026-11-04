@@ -36,6 +36,7 @@ final class Factory extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::FACTORY;

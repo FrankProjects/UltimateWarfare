@@ -54,6 +54,7 @@ class LocaleSubscriber implements EventSubscriberInterface
         $request->setLocale($this->defaultLocale);
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

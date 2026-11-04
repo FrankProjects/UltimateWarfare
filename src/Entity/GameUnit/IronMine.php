@@ -33,6 +33,7 @@ final class IronMine extends GameUnit
         );
     }
 
+    #[\Override]
     public function getGameUnitEnum(): GameUnitEnum
     {
         return GameUnitEnum::IRON_MINE;

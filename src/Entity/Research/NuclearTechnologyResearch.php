@@ -24,6 +24,7 @@ final readonly class NuclearTechnologyResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'nuclear-technology';

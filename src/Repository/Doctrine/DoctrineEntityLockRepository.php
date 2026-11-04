@@ -22,6 +22,7 @@ final class DoctrineEntityLockRepository implements EntityLockRepository
      * Unlike EntityManager::refresh(), which silently does nothing for a missing row, this detects
      * a row that was deleted by a concurrent request.
      */
+    #[\Override]
     public function lockForUpdate(object $entity): bool
     {
         $lockedEntity = $this->entityManager

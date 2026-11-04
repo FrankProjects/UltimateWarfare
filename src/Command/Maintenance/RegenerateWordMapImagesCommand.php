@@ -28,12 +28,14 @@ class RegenerateWordMapImagesCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('Regenerate all world map images')
             ->setHelp('Make sure all images are generated based on latest map generator');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(

@@ -23,6 +23,7 @@ final readonly class FactoryBlueprintResearch extends Research
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'factory-blueprint';

@@ -30,16 +30,19 @@ final readonly class ArtilleryBombardmentOperation extends Operation
         );
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'artillery-bombardment';
     }
 
+    #[\Override]
     public function getProcessorClass(): string
     {
         return ArtilleryBombardment::class;
     }
 
+    #[\Override]
     public function hasCooldown(): bool
     {
         return true;

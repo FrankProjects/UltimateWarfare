@@ -8,8 +8,10 @@ use DateTime;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
+use SortDirection;
 
 final class DoctrineUserRepository implements UserRepository
 {
@@ -26,58 +28,79 @@ final class DoctrineUserRepository implements UserRepository
         $this->repository = $this->entityManager->getRepository(User::class);
     }
 
+    #[\Override]
     public function find(int $id): ?User
     {
         return $this->repository->find($id);
     }
 
     /**
+     * @param 'signup'|'lastSeen' $sort
+     * @param 'asc'|'desc' $direction
      * @return User[]
      */
-    public function findAll(): array
-    {
-        return $this->repository->findAll();
+    #[\Override]
+    public function findForAdminList(
+        string $filter,
+        string $sort,
+        string $direction,
+        int $limit,
+        int $offset
+    ): array {
+        $field = $sort === 'lastSeen' ? 'u.lastSeenAt' : 'u.signedUpAt';
+        $order = $direction === 'asc' ? SortDirection::Ascending : SortDirection::Descending;
+
+        return $this->createAdminListQueryBuilder($filter)
+            ->orderBy($field, $order)
+            ->addOrderBy('u.id', $order)
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
     }
 
-    /**
-     * @return User[]
-     */
-    public function findAllEmailUnverified(): array
+    #[\Override]
+    public function countForAdminList(string $filter): int
     {
-        return $this->repository->findBy(['emailVerified' => 0]);
+        return (int) $this->createAdminListQueryBuilder($filter)
+            ->select('COUNT(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
-    /**
-     * @return User[]
-     */
-    public function findAllBanned(): array
+    private function createAdminListQueryBuilder(string $filter): QueryBuilder
     {
-        return $this->repository->findBy(['banned' => 1]);
+        $queryBuilder = $this->repository->createQueryBuilder('u');
+
+        match ($filter) {
+            'banned' => $queryBuilder->andWhere('u.banned = true'),
+            'email-verified' => $queryBuilder->andWhere('u.emailVerified = true'),
+            'email-unverified' => $queryBuilder->andWhere('u.emailVerified = false'),
+            default => null,
+        };
+
+        return $queryBuilder;
     }
 
-    /**
-     * @return User[]
-     */
-    public function findAllEmailVerified(): array
-    {
-        return $this->repository->findBy(['emailVerified' => 1]);
-    }
-
+    #[\Override]
     public function findByEmailVerificationToken(string $emailVerificationToken): ?User
     {
         return $this->repository->findOneBy(['emailVerificationToken' => $emailVerificationToken]);
     }
 
+    #[\Override]
     public function findByPasswordResetToken(string $passwordResetToken): ?User
     {
         return $this->repository->findOneBy(['passwordResetToken' => $passwordResetToken]);
     }
 
+    #[\Override]
     public function findByEmail(string $email): ?User
     {
         return $this->repository->findOneBy(['email' => $email]);
     }
 
+    #[\Override]
     public function findByUsername(string $username): ?User
     {
         return $this->repository->findOneBy(['username' => $username]);
@@ -88,6 +111,7 @@ final class DoctrineUserRepository implements UserRepository
      * @param DateTime $lastDateTime
      * @return User[]
      */
+    #[\Override]
     public function findByLastSeenBetween(DateTime $firstDateTime, DateTime $lastDateTime): array
     {
         return $this->repository->createQueryBuilder('u')
@@ -98,6 +122,7 @@ final class DoctrineUserRepository implements UserRepository
             ->getResult();
     }
 
+    #[\Override]
     public function loadUserByUsername(string $username): ?User
     {
         return $this->repository->createQueryBuilder('u')
@@ -110,11 +135,13 @@ final class DoctrineUserRepository implements UserRepository
     /**
      * @return User[]
      */
+    #[\Override]
     public function findByLastSeenIp(string $lastSeenIp): array
     {
         return $this->repository->findBy(['lastSeenIp' => $lastSeenIp]);
     }
 
+    #[\Override]
     public function save(User $user): void
     {
         $this->entityManager->persist($user);
