@@ -48,7 +48,7 @@ final class MailService
             ->html($this->generateMailBody('email/register.html.twig', $mailParameters))
             ->text($this->generateMailBody('email/register.txt.twig', $mailParameters));
 
-        $this->sendMail($message, $user->getEmail(), 'registration');
+        $this->sendMail($message, $user, 'registration');
     }
 
     public function sendPasswordResetMail(User $user, string $ipAddress): void
@@ -70,7 +70,7 @@ final class MailService
             ->to($user->getEmail())
             ->html($this->generateMailBody('email/passwordReset.html.twig', $mailParameters));
 
-        $this->sendMail($message, $user->getEmail(), 'password reset');
+        $this->sendMail($message, $user, 'password reset');
     }
 
     /**
@@ -85,15 +85,18 @@ final class MailService
         }
     }
 
-    private function sendMail(Email $message, string $email, string $type): void
+    /**
+     * Logs the user id, never the email address: logs must not contain personal data, so they need no retention.
+     */
+    private function sendMail(Email $message, User $user, string $type): void
     {
         try {
             $this->mailer->send($message);
-            $this->logger->info("Send a {$type} email to {$email}");
+            $this->logger->info("Sent a {$type} email to user {$user->getId()}");
         } catch (TransportExceptionInterface $e) {
-            $logMessage = "Send a {$type} email to {$email} failed";
-            $this->logger->error($logMessage);
-            throw new RuntimeException($logMessage);
+            // Not the exception message: SMTP errors can contain the recipient address
+            $this->logger->error("Sending a {$type} email to user {$user->getId()} failed (" . $e::class . ')');
+            throw new RuntimeException("Sending the {$type} email failed, please try again later.");
         }
     }
 }
