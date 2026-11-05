@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\EventSubscriber;
 
-use FrankProjects\UltimateWarfare\Repository\UserRepository;
+use FrankProjects\UltimateWarfare\Service\UserActivityUpdaterService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,16 +18,16 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 final class UserSubscriber extends AbstractUserSubscriber implements EventSubscriberInterface
 {
     private RouterInterface $router;
-    private UserRepository $userRepository;
+    private UserActivityUpdaterService $userActivityUpdaterService;
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
-        UserRepository $userRepository
+        UserActivityUpdaterService $userActivityUpdaterService
     ) {
         parent::__construct($tokenStorage);
         $this->router = $router;
-        $this->userRepository = $userRepository;
+        $this->userActivityUpdaterService = $userActivityUpdaterService;
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -42,9 +42,11 @@ final class UserSubscriber extends AbstractUserSubscriber implements EventSubscr
         }
 
         try {
-            $user->setLastSeenAt(new \DateTime());
-            $user->setLastSeenIp($event->getRequest()->getClientIp());
-            $this->userRepository->save($user);
+            $this->userActivityUpdaterService->updateActivity(
+                $user,
+                $event->getRequest()->getClientIp(),
+                new \DateTime()
+            );
         } catch (\Exception $e) {
         }
 

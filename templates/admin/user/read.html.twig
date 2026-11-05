@@ -138,27 +138,25 @@
     </div>
 
     <div class="uw-card">
-        <div class="uw-card-header">Possible multi accounts (same IP: {{ user.lastSeenIp ?? 'Unknown' }})</div>
+        <div class="uw-card-header">Possible multi accounts (shared an IP address in the last 3 months)</div>
         <div class="uw-card-body">
             <table class="table text-center">
                 {% if sameIpUsers|length > 0 %}
                     <tr>
                         <td>Username</td>
                         <td>Email</td>
-                        <td>Last seen</td>
+                        <td>Shared IPs</td>
+                        <td>Last seen on shared IP</td>
                         <td>Banned</td>
                     </tr>
                     {% for sameIpUser in sameIpUsers %}
                         <tr>
-                            <td><a href="{{ path('Admin/User/Read', {'userId': sameIpUser.id}) }}">{{ sameIpUser.username }}</a></td>
-                            <td>{{ sameIpUser.email }}</td>
+                            <td><a href="{{ path('Admin/User/Read', {'userId': sameIpUser.user.id}) }}">{{ sameIpUser.user.username }}</a></td>
+                            <td>{{ sameIpUser.user.email }}</td>
+                            <td>{{ sameIpUser.ips|join(', ') }}</td>
+                            <td>{{ sameIpUser.lastSeenAt|date("Y-m-d H:i:s") }}</td>
                             <td>
-                                {% if sameIpUser.lastSeenAt is not empty %}
-                                    {{ sameIpUser.lastSeenAt|date("Y-m-d H:i:s") }}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if sameIpUser.banned %}
+                                {% if sameIpUser.user.banned %}
                                     <span class="bad">Yes</span>
                                 {% else %}
                                     <span class="good">No</span>
@@ -168,7 +166,33 @@
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="4">No other users found with the same IP</td>
+                        <td colspan="5">No other users found with the same IP</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <div class="uw-card">
+        <div class="uw-card-header">IP history (last {{ ipLogs|length }} sessions)</div>
+        <div class="uw-card-body">
+            <table class="table text-center">
+                {% if ipLogs|length > 0 %}
+                    <tr>
+                        <td>IP</td>
+                        <td>First seen</td>
+                        <td>Last seen</td>
+                    </tr>
+                    {% for ipLog in ipLogs %}
+                        <tr>
+                            <td>{{ ipLog.ip }}</td>
+                            <td>{{ ipLog.firstSeenAt|date("Y-m-d H:i:s") }}</td>
+                            <td>{{ ipLog.lastSeenAt|date("Y-m-d H:i:s") }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3">No IP history</td>
                     </tr>
                 {% endif %}
             </table>

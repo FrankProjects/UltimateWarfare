@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FrankProjects\UltimateWarfare\Entity\UserIpLog" table="user_ip_log">
+    <indexes>
+      <index name="idx_user_ip_log_user_last_seen" columns="user_id,last_seen_at"/>
+      <index name="idx_user_ip_log_ip_last_seen" columns="ip,last_seen_at"/>
+      <index name="idx_user_ip_log_last_seen" columns="last_seen_at"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="ip" column="ip" length="45"/>
+    <field name="firstSeenAt" type="datetime" column="first_seen_at"/>
+    <field name="lastSeenAt" type="datetime" column="last_seen_at"/>
+    <many-to-one field="user" target-entity="FrankProjects\UltimateWarfare\Entity\User">
+      <join-columns>
+        <join-column name="user_id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

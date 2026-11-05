@@ -9,11 +9,6 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="posterIp" column="poster_ip" length="255">
-      <options>
-        <option name="fixed"/>
-      </options>
-    </field>
     <field name="createDateTime" type="datetime" column="create_date_time"/>
     <field name="content" type="text" column="content" length="65535">
       <options>

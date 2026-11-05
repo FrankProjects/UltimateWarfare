@@ -20,6 +20,9 @@ bin/console cache:clear
 bin/console game:queue:work
 bin/console game:queue:work --once
 
+# Privacy cleanup: deletes personal data past its retention period (run daily from cron)
+bin/console game:privacy:cleanup
+
 # Tests
 php bin/phpunit
 php bin/phpunit tests/Util/DistanceCalculatorTest.php   # Single test file
@@ -57,6 +60,7 @@ vendor/bin/phpstan analyse               # Static analysis (level 10)
 - **Radar**: a Radar Station reveals every region within a radius equal to its level (`RadarService::getCoverage()`) and detects enemy fleets (other players, not federation members) whose route crosses that area; the map draws them as red dotted lines with an ETA, without units or owner
 - **World map v2**: Interactive map in `public/js/world/` and `templates/v2/`; active development area
 - **Request transaction**: `PlayerRequestSubscriber` runs every state-changing (non-GET) player request in one DB transaction holding a row lock on the current player; it commits for responses < 400 and rolls back otherwise. Game actions must therefore be POST routes and report failures with a 4xx status. An action that also changes another player must call `PlayerStateUpdaterService::updateStateForPlayer()` on them first; shared rows (market orders, fleets, regions, federations) are locked with `EntityLockRepository::lockForUpdate()`
+- **IP log / privacy**: `UserActivityUpdaterService` (called from `UserSubscriber`) records each user's IP timeline in `UserIpLog` (one row per continuous stretch on one IP; new row on IP change or after 30 minutes idle) and throttles `User::lastSeenAt` writes; the admin user page lists accounts that shared an IP. `game:privacy:cleanup` deletes IP log rows after 3 months and unverified accounts after 30 days. Keep retention periods in sync with the privacy policy
 - **Income accrual**: Resources are stored as a checkpoint (`timestampUpdate`) plus the income/upkeep rate; `ResourceAccrualCalculator` accrues exactly. Recalculate the rate with `IncomeUpdaterService` after any change to units, regions or research; read current values for display with `project()` / the `player_resources()` Twig function
 
 ### Database

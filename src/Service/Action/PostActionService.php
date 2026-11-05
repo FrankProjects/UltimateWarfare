@@ -24,13 +24,12 @@ final class PostActionService
         $this->forumHelper = $forumHelper;
     }
 
-    public function create(Post $post, Topic $topic, User $user, string $ipAddress): void
+    public function create(Post $post, Topic $topic, User $user): void
     {
         $this->forumHelper->ensureNotForumBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
 
         $post->setTopic($topic);
-        $post->setPosterIp($ipAddress);
         $post->setCreateDateTime($this->forumHelper->getCurrentDateTime());
         $post->setUser($user);
 

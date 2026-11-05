@@ -4,11 +4,6 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="posterIp" column="poster_ip" length="255">
-      <options>
-        <option name="fixed"/>
-      </options>
-    </field>
     <field name="content" type="text" column="content" length="65535">
       <options>
         <option name="fixed"/>

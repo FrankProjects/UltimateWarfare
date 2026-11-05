@@ -9,7 +9,6 @@ use DateTime;
 class Post
 {
     private int $id;
-    private string $posterIp;
     private string $content;
     private DateTime $createDateTime;
     private bool $edited = false;
@@ -25,16 +24,6 @@ class Post
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function setPosterIp(string $posterIp): void
-    {
-        $this->posterIp = $posterIp;
-    }
-
-    public function getPosterIp(): string
-    {
-        return $this->posterIp;
     }
 
     public function setContent(string $content): void

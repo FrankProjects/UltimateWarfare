@@ -12,7 +12,6 @@ class Topic
 {
     private int $id;
     private string $title = '';
-    private string $posterIp;
     private string $content = '';
     private DateTime $createDateTime;
     private bool $sticky = false;
@@ -47,16 +46,6 @@ class Topic
     public function getTitle(): string
     {
         return $this->title;
-    }
-
-    public function setPosterIp(string $posterIp): void
-    {
-        $this->posterIp = $posterIp;
-    }
-
-    public function getPosterIp(): string
-    {
-        return $this->posterIp;
     }
 
     public function setSticky(bool $sticky): void
