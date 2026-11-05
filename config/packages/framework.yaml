@@ -11,6 +11,10 @@ framework:
         handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         cookie_secure: auto
         cookie_samesite: lax
+        # Expired sessions are only deleted by garbage collection, which php.ini disables on Debian/Ubuntu
+        # (session.gc_probability = 0); run it on 1% of requests so old sessions don't stay in the database
+        gc_probability: 1
+        gc_divisor: 100
 
     assets:
         version_strategy: FrankProjects\UltimateWarfare\Asset\FileModificationVersionStrategy
