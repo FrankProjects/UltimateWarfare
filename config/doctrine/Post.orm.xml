@@ -4,11 +4,6 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="posterIp" column="poster_ip" length="255">
-      <options>
-        <option name="fixed"/>
-      </options>
-    </field>
     <field name="content" type="text" column="content" length="65535">
       <options>
         <option name="fixed"/>
@@ -17,7 +12,7 @@
     <field name="createDateTime" type="datetime" column="create_date_time"/>
     <many-to-one field="user" target-entity="FrankProjects\UltimateWarfare\Entity\User" inversed-by="posts">
       <join-columns>
-        <join-column name="user_id" nullable="false"/>
+        <join-column name="user_id"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="editUser" target-entity="FrankProjects\UltimateWarfare\Entity\User" inversed-by="postsEdited">

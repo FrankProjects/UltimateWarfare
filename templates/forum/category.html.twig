@@ -22,13 +22,13 @@
                         {% else %}
                             <td class="text-start"><a href="{{ path('Forum/Topic', {'topicId': topic.id}) }}">{{ topic.title }}</a></td>
                         {% endif %}
-                        <td>{{ topic.user.username }}</td>
+                        <td>{{ topic.user.username ?? '[deleted user]' }}</td>
                         <td>{{ topic.posts|length }}</td>
                         {% set lastPost = topic.posts|last %}
                         {% if lastPost == null %}
-                            <td class="text-start">{{ topic.createDateTime|date("Y-m-d H:i:s") }} by {{ topic.user.username }}</td>
+                            <td class="text-start">{{ topic.createDateTime|date("Y-m-d H:i:s") }} by {{ topic.user.username ?? '[deleted user]' }}</td>
                         {% else %}
-                            <td class="text-start">{{ lastPost.createDateTime|date("Y-m-d H:i:s") }} by {{ lastPost.user.username }}</td>
+                            <td class="text-start">{{ lastPost.createDateTime|date("Y-m-d H:i:s") }} by {{ lastPost.user.username ?? '[deleted user]' }}</td>
                         {% endif %}
                     </tr>
                 {% endfor %}

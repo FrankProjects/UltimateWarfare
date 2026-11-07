@@ -24,13 +24,12 @@ final class PostActionService
         $this->forumHelper = $forumHelper;
     }
 
-    public function create(Post $post, Topic $topic, User $user, string $ipAddress): void
+    public function create(Post $post, Topic $topic, User $user): void
     {
         $this->forumHelper->ensureNotForumBanned($user);
         $this->forumHelper->ensureNoMassPost($user);
 
         $post->setTopic($topic);
-        $post->setPosterIp($ipAddress);
         $post->setCreateDateTime($this->forumHelper->getCurrentDateTime());
         $post->setUser($user);
 
@@ -57,7 +56,7 @@ final class PostActionService
 
     private function ensurePostPermissions(User $user, Post $post): void
     {
-        if ($user->getId() !== $post->getUser()->getId() && !$user->hasRole('ROLE_ADMIN')) {
+        if ($user->getId() !== $post->getUser()?->getId() && !$user->hasRole('ROLE_ADMIN')) {
             throw new RuntimeException('Not enough permissions!');
         }
     }

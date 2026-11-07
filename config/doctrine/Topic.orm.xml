@@ -9,11 +9,6 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="posterIp" column="poster_ip" length="255">
-      <options>
-        <option name="fixed"/>
-      </options>
-    </field>
     <field name="createDateTime" type="datetime" column="create_date_time"/>
     <field name="content" type="text" column="content" length="65535">
       <options>
@@ -33,7 +28,7 @@
     <one-to-many field="posts" target-entity="FrankProjects\UltimateWarfare\Entity\Post" mapped-by="topic"/>
     <many-to-one field="user" target-entity="FrankProjects\UltimateWarfare\Entity\User" inversed-by="topics">
       <join-columns>
-        <join-column name="user_id" nullable="false"/>
+        <join-column name="user_id"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="editUser" target-entity="FrankProjects\UltimateWarfare\Entity\User" inversed-by="topicsEdited">

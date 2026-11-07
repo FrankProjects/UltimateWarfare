@@ -23,9 +23,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     /** Set once the user clicked the verification link sent to their email address; required to log in */
     private bool $emailVerified = false;
     private string $password = '';
-    /** Updated on every request, not only on login */
+    /** Updated on requests (at most every few minutes, see UserActivityUpdaterService), not only on login */
     private ?DateTime $lastSeenAt = null;
-    private ?string $lastSeenIp = null;
     /** Random string sent to the user email address to verify it */
     private ?string $emailVerificationToken = null;
     /** Random string sent to the user email address to reset the password */
@@ -191,16 +190,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function setLastSeenAt(DateTime $lastSeenAt): void
     {
         $this->lastSeenAt = $lastSeenAt;
-    }
-
-    public function getLastSeenIp(): ?string
-    {
-        return $this->lastSeenIp;
-    }
-
-    public function setLastSeenIp(?string $lastSeenIp): void
-    {
-        $this->lastSeenIp = $lastSeenIp;
     }
 
     public function getEmailVerificationToken(): ?string

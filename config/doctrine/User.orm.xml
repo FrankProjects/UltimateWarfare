@@ -13,7 +13,6 @@
     </field>
     <field name="password" column="password" length="255"/>
     <field name="lastSeenAt" type="datetime" column="last_seen_at" nullable="true"/>
-    <field name="lastSeenIp" column="last_seen_ip" length="45" nullable="true"/>
     <field name="emailVerificationToken" column="email_verification_token" length="180" unique="true" nullable="true"/>
     <field name="passwordResetToken" column="password_reset_token" length="180" unique="true" nullable="true"/>
     <field name="passwordResetRequestedAt" type="datetime" column="password_reset_requested_at" nullable="true"/>

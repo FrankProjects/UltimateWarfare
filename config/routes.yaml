@@ -22,6 +22,11 @@ Admin/Contact/Remove:
     requirements:
         contactId: '\d+'
 
+Admin/MultiAccount/List:
+    path:      /admin/multi-accounts
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\MultiAccountController::list
+    methods:   [GET]
+
 Admin/ServerLogs:
     path:      /admin/server-logs
     controller: FrankProjects\UltimateWarfare\Controller\Admin\ServerLogsController::showLogs
@@ -98,6 +103,13 @@ Admin/User/MakeAdmin:
 Admin/User/RemoveAdmin:
     path:      /admin/user/remove-admin/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::removeAdmin
+    methods:   [POST]
+    requirements:
+        userId: '\d+'
+
+Admin/User/Delete:
+    path:      /admin/user/delete/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::delete
     methods:   [POST]
     requirements:
         userId: '\d+'
@@ -237,6 +249,11 @@ Game/Api/Profile/ChangePassword:
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::changePasswordApi
     methods: [POST]
 
+Game/Api/Profile/ExportData:
+    path:      /game/api/profile/export-data
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::exportDataApi
+    methods: [GET]
+
 Game/Api/Profile/Surrender:
     path:      /game/api/profile/surrender
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::surrenderApi
@@ -246,6 +263,11 @@ Game/Api/Worlds:
     path:      /game/api/worlds
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::worldsApi
     methods: [GET]
+
+Game/Account/Delete:
+    path:      /game/account/delete
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::deleteAccount
+    methods:   [GET, POST]
 
 Game/Banned:
     path:      /game/banned
@@ -804,6 +826,11 @@ Site/ResetPassword:
     path:      /reset-password
     controller: FrankProjects\UltimateWarfare\Controller\Site\ResetPasswordController::requestPasswordReset
     methods:   [GET, POST]
+
+Site/Privacy:
+    path:      /privacy
+    controller: FrankProjects\UltimateWarfare\Controller\Site\SiteController::privacy
+    methods:   [GET]
 
 Site/Register:
     path:      /register

@@ -2,8 +2,8 @@
     <div class="uw-card-body">
         <div class="row">
             <div class="col-3">
-                <div>Name: {{ post.user.username }}</div>
-                {% if 'ROLE_ADMIN' in post.user.roles %}
+                <div>Name: {{ post.user.username ?? '[deleted user]' }}</div>
+                {% if post.user is not null and 'ROLE_ADMIN' in post.user.roles %}
                     <p><b>Forum Moderator</b></p>
                 {% endif %}
                 <div>
@@ -17,7 +17,7 @@
                     <br/><br/><i> Last edited by: {{ post.editUser.username }}</i>
                 {% endif %}
 
-                {% if user != null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}
+                {% if user != null and post.user is not null and post.user.id == user.id or is_granted('ROLE_ADMIN') %}
                     <br/>
                     <br/>
                     <form method="POST" action="{{ path('Forum/Post/Remove', {'postId': post.id}) }}" class="d-inline">

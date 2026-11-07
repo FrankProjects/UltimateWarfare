@@ -1,0 +1,38 @@
+{% extends 'site.html.twig' %}
+
+{% block title %}Ultimate Warfare - Privacy{% endblock title %}
+
+{% block content %}
+    <div class="uw-card">
+        <div class="uw-card-header">Privacy</div>
+        <div class="uw-card-body">
+            <p>
+                Ultimate Warfare is a free, <a href="https://github.com/FrankProjects/UltimateWarfare">open source</a>
+                hobby project by Frank Schreuder, part of <a href="https://frankprojects.com">FrankProjects</a>.
+                We store as little personal data as possible and never share or sell it.
+                Questions or requests: use the <a href="{{ path('Site/Contact') }}">contact form</a>.
+            </p>
+
+            <h3>What we store and why</h3>
+            <ul>
+                <li><b>Account:</b> username, email address and password (hashed), needed to give you access to the game. Kept until you delete your account; accounts that never verified their email address are deleted after 30 days.</li>
+                <li><b>IP addresses:</b> which IP address you play from and when, to detect cheating with multiple accounts, in the interest of fair play for all players. Kept for 3 months.</li>
+                <li><b>Contact form:</b> your name, email address and message, to answer you. Deleted once handled.</li>
+            </ul>
+            <p>
+                The sign-up and contact forms use Cloudflare Turnstile to block bots, which receives your IP address.
+                The only cookie is a session cookie that keeps you logged in; there is no tracking or analytics.
+            </p>
+
+            <h3>Your rights</h3>
+            <ul>
+                <li>Download your account data and IP history under Account Info in your profile.</li>
+                <li>Delete your account under Danger Zone in your profile. This removes your account, your empires and your IP history; your forum posts stay, without your name. Banned accounts can't be deleted while banned.</li>
+                <li>Other questions about your data: use the <a href="{{ path('Site/Contact') }}">contact form</a>.</li>
+                <li>You can file a complaint with your local data protection authority.</li>
+            </ul>
+
+            <p><i>Last updated: November 2026</i></p>
+        </div>
+    </div>
+{% endblock %}

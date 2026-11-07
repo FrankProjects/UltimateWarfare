@@ -9,7 +9,12 @@ use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use FrankProjects\UltimateWarfare\Entity\Player;
+use FrankProjects\UltimateWarfare\Entity\Post;
+use FrankProjects\UltimateWarfare\Entity\Topic;
+use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
 use FrankProjects\UltimateWarfare\Entity\User;
+use FrankProjects\UltimateWarfare\Entity\UserIpLog;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use SortDirection;
 
@@ -132,13 +137,30 @@ final class DoctrineUserRepository implements UserRepository
             ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
-    /**
-     * @return User[]
-     */
     #[\Override]
-    public function findByLastSeenIp(string $lastSeenIp): array
+    public function removeUnverifiedSignedUpBefore(DateTime $dateTime): int
     {
-        return $this->repository->findBy(['lastSeenIp' => $lastSeenIp]);
+        $removed = $this->entityManager->createQuery(
+            'DELETE FROM ' . User::class . ' u
+             WHERE u.emailVerified = false
+             AND u.signedUpAt < :dateTime
+             AND NOT EXISTS (SELECT p FROM ' . Player::class . ' p WHERE p.user = u)
+             AND NOT EXISTS (SELECT t FROM ' . Topic::class . ' t WHERE t.user = u OR t.editUser = u)
+             AND NOT EXISTS (SELECT po FROM ' . Post::class . ' po WHERE po.user = u OR po.editUser = u)
+             AND NOT EXISTS (SELECT ur FROM ' . UnbanRequest::class . ' ur WHERE ur.user = u)
+             AND NOT EXISTS (SELECT l FROM ' . UserIpLog::class . ' l WHERE l.user = u)'
+        )
+            ->setParameter('dateTime', $dateTime)
+            ->execute();
+
+        return $removed;
+    }
+
+    #[\Override]
+    public function remove(User $user): void
+    {
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
     }
 
     #[\Override]

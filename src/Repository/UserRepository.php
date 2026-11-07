@@ -47,9 +47,14 @@ interface UserRepository
     public function loadUserByUsername(string $username): ?User;
 
     /**
-     * @return User[]
+     * Removes accounts that never verified their email address, signed up before the given date
+     * and have no players, forum topics, posts, unban request or IP log rows.
+     *
+     * @return int Number of removed users
      */
-    public function findByLastSeenIp(string $lastSeenIp): array;
+    public function removeUnverifiedSignedUpBefore(DateTime $dateTime): int;
+
+    public function remove(User $user): void;
 
     public function save(User $user): void;
 }

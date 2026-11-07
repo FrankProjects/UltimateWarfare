@@ -6,9 +6,14 @@ namespace FrankProjects\UltimateWarfare\Controller\Game;
 
 use FrankProjects\UltimateWarfare\Entity\Player;
 use FrankProjects\UltimateWarfare\Entity\UnbanRequest;
+use FrankProjects\UltimateWarfare\Entity\User;
 use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
+use FrankProjects\UltimateWarfare\Service\Action\UserActionService;
+use FrankProjects\UltimateWarfare\Service\UserDataExportService;
+use RuntimeException;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,13 +23,69 @@ final class UserController extends BaseGameController
 {
     private UserRepository $userRepository;
     private UnbanRequestRepository $unbanRequestRepository;
+    private UserActionService $userActionService;
 
     public function __construct(
         UserRepository $userRepository,
-        UnbanRequestRepository $unbanRequestRepository
+        UnbanRequestRepository $unbanRequestRepository,
+        UserActionService $userActionService
     ) {
         $this->userRepository = $userRepository;
         $this->unbanRequestRepository = $unbanRequestRepository;
+        $this->userActionService = $userActionService;
+    }
+
+    public function deleteAccount(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        Security $security
+    ): Response {
+        $user = $this->getGameUser();
+        $error = null;
+
+        if ($request->isMethod(Request::METHOD_POST)) {
+            $error = $this->getDeleteAccountError($request, $passwordHasher, $user);
+
+            if ($error === null) {
+                try {
+                    $this->userActionService->deleteUser($user);
+                } catch (RuntimeException $e) {
+                    $error = $e->getMessage();
+                }
+            }
+
+            if ($error === null) {
+                $security->logout(false);
+                $this->addFlash('success', 'Your account has been deleted.');
+                return $this->redirectToRoute('Site/Homepage');
+            }
+        }
+
+        // An error status rolls back the request transaction (PlayerRequestSubscriber)
+        return $this->render(
+            'game/deleteAccount.html.twig',
+            [
+                'user' => $user,
+                'error' => $error,
+            ],
+            new Response(null, $error === null ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY)
+        );
+    }
+
+    private function getDeleteAccountError(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        User $user
+    ): ?string {
+        if (!$this->isCsrfTokenValid('delete_account', (string) $request->request->get('_token'))) {
+            return 'Invalid CSRF token, please try again.';
+        }
+
+        if (!$passwordHasher->isPasswordValid($user, (string) $request->request->get('password'))) {
+            return 'Wrong password!';
+        }
+
+        return null;
     }
 
     public function banned(Request $request): Response
@@ -79,6 +140,23 @@ final class UserController extends BaseGameController
                 'isFederationGeneral' => $isFederationGeneral,
             ]
         ]);
+    }
+
+    /**
+     * "Download my data" (GDPR right of access); not available to banned users (UserSubscriber blocks the API).
+     */
+    public function exportDataApi(UserDataExportService $userDataExportService): JsonResponse
+    {
+        $user = $this->getGameUser();
+
+        $response = new JsonResponse(
+            $userDataExportService->export($user),
+            Response::HTTP_OK,
+            ['Content-Disposition' => 'attachment; filename="ultimate-warfare-data.json"']
+        );
+        $response->setEncodingOptions(JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        return $response;
     }
 
     public function surrenderApi(

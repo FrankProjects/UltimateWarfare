@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace FrankProjects\UltimateWarfare\Controller\Admin;
 
+use DateTime;
 use FrankProjects\UltimateWarfare\Entity\User;
+use FrankProjects\UltimateWarfare\Repository\UserIpLogRepository;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Service\Action\UserActionService;
 use RuntimeException;
@@ -17,15 +19,19 @@ use Throwable;
 final class UserController extends AbstractController
 {
     private const int USERS_PER_PAGE = 50;
+    private const int IP_LOGS_SHOWN = 50;
 
     private UserRepository $userRepository;
+    private UserIpLogRepository $userIpLogRepository;
     private UserActionService $userActionService;
 
     public function __construct(
         UserRepository $userRepository,
+        UserIpLogRepository $userIpLogRepository,
         UserActionService $userActionService
     ) {
         $this->userRepository = $userRepository;
+        $this->userIpLogRepository = $userIpLogRepository;
         $this->userActionService = $userActionService;
     }
 
@@ -49,8 +55,7 @@ final class UserController extends AbstractController
         if (!$user->isBanned()) {
             $this->addFlash('error', 'User is not banned');
         } else {
-            $user->setBanned(false);
-            $this->userRepository->save($user);
+            $this->userActionService->unban($user);
             $this->addFlash('success', 'User unbanned!');
         }
 
@@ -160,25 +165,78 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
+    /**
+     * For account deletion requests that reach us by email or the contact form.
+     */
+    public function delete(Request $request, int $userId): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('admin_user_delete_' . $userId, (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token');
+            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
+        }
+
+        try {
+            $user = $this->getUserObject($userId);
+            if ($user->hasRole(User::ROLE_ADMIN)) {
+                throw new RuntimeException('Remove the admin role before deleting this user');
+            }
+
+            if ((string) $request->request->get('confirmUsername') !== $user->getUsername()) {
+                throw new RuntimeException('Type the username to confirm the deletion');
+            }
+
+            $username = $user->getUsername();
+            $this->userActionService->deleteUser($user);
+            $this->addFlash('success', "User {$username} deleted!");
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
+        }
+
+        return $this->redirectToRoute('Admin/User/List');
+    }
+
     public function read(int $userId): Response
     {
         $user = $this->getUserObject($userId);
-
-        $sameIpUsers = [];
-        if ($user->getLastSeenIp() !== null) {
-            $sameIpUsers = array_filter(
-                $this->userRepository->findByLastSeenIp($user->getLastSeenIp()),
-                static fn (User $other): bool => $other->getId() !== $user->getId()
-            );
-        }
 
         return $this->render(
             'admin/user/read.html.twig',
             [
                 'user' => $user,
-                'sameIpUsers' => $sameIpUsers,
+                'ipLogs' => $this->userIpLogRepository->findByUser($user, self::IP_LOGS_SHOWN),
+                'sameIpUsers' => $this->getSameIpUsers($user),
             ]
         );
+    }
+
+    /**
+     * Other users that used an IP address of this user, with the shared addresses and when they last used one.
+     *
+     * @return array<int, array{user: User, ips: array<int, string>, lastSeenAt: DateTime}>
+     */
+    private function getSameIpUsers(User $user): array
+    {
+        $sameIpUsers = [];
+        foreach ($this->userIpLogRepository->findOfOtherUsersSharingIpWith($user) as $userIpLog) {
+            $otherUser = $userIpLog->getUser();
+            $otherUserId = $otherUser->getId();
+
+            if (!isset($sameIpUsers[$otherUserId])) {
+                // Rows are ordered by lastSeenAt descending, so the first row is the most recent one
+                $sameIpUsers[$otherUserId] = [
+                    'user' => $otherUser,
+                    'ips' => [],
+                    'lastSeenAt' => $userIpLog->getLastSeenAt(),
+                ];
+            }
+
+            if (!in_array($userIpLog->getIp(), $sameIpUsers[$otherUserId]['ips'], true)) {
+                $sameIpUsers[$otherUserId]['ips'][] = $userIpLog->getIp();
+            }
+        }
+
+        return array_values($sameIpUsers);
     }
 
     private function getUserObject(int $userId): User

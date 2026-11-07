@@ -12,13 +12,13 @@ class Topic
 {
     private int $id;
     private string $title = '';
-    private string $posterIp;
     private string $content = '';
     private DateTime $createDateTime;
     private bool $sticky = false;
     private bool $closed = false;
     private Category $category;
-    private User $user;
+    /** Null once the author deleted their account; the content is kept */
+    private ?User $user = null;
     private ?User $editUser = null;
 
     /** @var Collection<int, Post> */
@@ -47,16 +47,6 @@ class Topic
     public function getTitle(): string
     {
         return $this->title;
-    }
-
-    public function setPosterIp(string $posterIp): void
-    {
-        $this->posterIp = $posterIp;
-    }
-
-    public function getPosterIp(): string
-    {
-        return $this->posterIp;
     }
 
     public function setSticky(bool $sticky): void
@@ -104,12 +94,12 @@ class Topic
         return $this->category->value;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(User $user): void
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }
@@ -119,7 +109,7 @@ class Topic
         return $this->editUser;
     }
 
-    public function setEditUser(User $editUser): void
+    public function setEditUser(?User $editUser): void
     {
         $this->editUser = $editUser;
     }

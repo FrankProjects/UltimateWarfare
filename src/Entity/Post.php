@@ -9,12 +9,12 @@ use DateTime;
 class Post
 {
     private int $id;
-    private string $posterIp;
     private string $content;
     private DateTime $createDateTime;
     private bool $edited = false;
     private Topic $topic;
-    private User $user;
+    /** Null once the author deleted their account; the content is kept */
+    private ?User $user = null;
     private ?User $editUser = null;
 
     public function setId(int $id): void
@@ -25,16 +25,6 @@ class Post
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function setPosterIp(string $posterIp): void
-    {
-        $this->posterIp = $posterIp;
-    }
-
-    public function getPosterIp(): string
-    {
-        return $this->posterIp;
     }
 
     public function setContent(string $content): void
@@ -77,12 +67,12 @@ class Post
         $this->topic = $topic;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(User $user): void
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }

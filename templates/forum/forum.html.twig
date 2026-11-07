@@ -23,7 +23,7 @@
                         {% if lastTopic == null %}
                             <td class="text-start">No topics yet</td>
                         {% else %}
-                            <td class="text-start">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.user.username }}</td>
+                            <td class="text-start">{{ lastTopic.createDateTime|date("Y-m-d H:i:s") }} by {{ lastTopic.user.username ?? '[deleted user]' }}</td>
                         {% endif %}
                     </tr>
                 {% endfor %}
