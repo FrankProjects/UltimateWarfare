@@ -28,6 +28,8 @@ interface UserIpLogRepository
 
     public function save(UserIpLog $userIpLog): void;
 
+    public function removeByUser(User $user): void;
+
     /**
      * @return int Number of removed rows
      */

@@ -156,6 +156,7 @@
 
         if (!profileData.canSurrender) {
             html += '<p class="text-muted-uw">You cannot surrender for the first 48 hours after joining a world.</p>';
+            html += deleteAccountHtml();
             html += '</div>';
             profileContainer.innerHTML = html;
             profileFooter.innerHTML = '';
@@ -164,6 +165,7 @@
 
         if (profileData.isFederationGeneral) {
             html += '<p class="text-muted-uw">You cannot surrender while you are a Federation General. Please hand over or disband your Federation first.</p>';
+            html += deleteAccountHtml();
             html += '</div>';
             profileContainer.innerHTML = html;
             profileFooter.innerHTML = '';
@@ -174,11 +176,19 @@
         html += '<div class="uw-field"><label class="uw-label">Confirm Password</label>';
         html += '<input type="password" id="surrenderPassword" class="form-control"></div>';
         html += '<div id="surrenderMessage" class="profile-message"></div>';
+        html += deleteAccountHtml();
         html += '</div>';
 
         profileContainer.innerHTML = html;
         profileFooter.innerHTML = '<button type="button" class="btn btn-danger" id="surrenderBtn">Surrender</button>';
         document.getElementById('surrenderBtn').onclick = surrender;
+    }
+
+    function deleteAccountHtml() {
+        let html = '<h3 class="text-negative">Delete Account</h3>';
+        html += '<p class="text-muted-uw">Permanently delete your account and all your empires in every world.</p>';
+        html += '<a class="btn btn-danger" href="/game/account/delete">Delete account</a>';
+        return html;
     }
 
     function surrender() {

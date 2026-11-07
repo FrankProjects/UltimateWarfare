@@ -77,6 +77,16 @@ final class DoctrineUserIpLogRepository implements UserIpLogRepository
     }
 
     #[\Override]
+    public function removeByUser(User $user): void
+    {
+        $this->entityManager->createQuery(
+            'DELETE FROM ' . UserIpLog::class . ' l WHERE l.user = :user'
+        )
+            ->setParameter('user', $user)
+            ->execute();
+    }
+
+    #[\Override]
     public function removeLastSeenBefore(DateTime $dateTime): int
     {
         $removed = $this->entityManager->createQuery(

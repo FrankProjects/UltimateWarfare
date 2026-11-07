@@ -166,6 +166,37 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
     }
 
+    /**
+     * For account deletion requests that reach us by email or the contact form.
+     */
+    public function delete(Request $request, int $userId): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('admin_user_delete_' . $userId, (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token');
+            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
+        }
+
+        try {
+            $user = $this->getUserObject($userId);
+            if ($user->hasRole(User::ROLE_ADMIN)) {
+                throw new RuntimeException('Remove the admin role before deleting this user');
+            }
+
+            if ((string) $request->request->get('confirmUsername') !== $user->getUsername()) {
+                throw new RuntimeException('Type the username to confirm the deletion');
+            }
+
+            $username = $user->getUsername();
+            $this->userActionService->deleteUser($user);
+            $this->addFlash('success', "User {$username} deleted!");
+        } catch (Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('Admin/User/Read', ['userId' => $userId]);
+        }
+
+        return $this->redirectToRoute('Admin/User/List');
+    }
+
     public function read(int $userId): Response
     {
         $user = $this->getUserObject($userId);

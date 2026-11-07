@@ -1,0 +1,30 @@
+{% extends 'noBarBase.html.twig' %}
+
+{% block title %}Ultimate Warfare - Delete account{% endblock title %}
+
+{% block content %}
+    <form action="{{ path('Game/Account/Delete') }}" method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete_account') }}">
+        <div class="uw-card">
+            <div class="uw-card-header">Delete account</div>
+            <div class="uw-card-body">
+                <p>This permanently deletes your account <b>{{ user.username }}</b> ({{ user.email }}). This cannot be undone.</p>
+                <ul>
+                    <li>All your empires are removed from every world.</li>
+                    <li>Your forum topics and posts stay, but are no longer linked to you; they show as "[deleted user]".</li>
+                </ul>
+
+                {% if error is not null %}
+                    <p class="bad">{{ error }}</p>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="delete-account-password" class="form-label">Confirm with your password</label>
+                    <input type="password" id="delete-account-password" name="password" class="form-control" required autocomplete="current-password">
+                </div>
+
+                <button class="btn btn-danger" type="submit">Delete my account</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

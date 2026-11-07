@@ -113,6 +113,15 @@
                                 </form>
                             </p>
                         {% endif %}
+                        {% if 'ROLE_ADMIN' not in user.roles and not user.banned %}
+                            <p>
+                                <form method="POST" action="{{ path('Admin/User/Delete', {'userId': user.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('admin_user_delete_' ~ user.id) }}">
+                                    <input type="text" name="confirmUsername" class="form-control d-inline w-auto" placeholder="Type the username to confirm" required>
+                                    <button type="submit" class="btn btn-danger">Delete user permanently</button>
+                                </form>
+                            </p>
+                        {% endif %}
                     </td>
                 </tr>
             </table>

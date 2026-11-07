@@ -17,7 +17,8 @@ class Topic
     private bool $sticky = false;
     private bool $closed = false;
     private Category $category;
-    private User $user;
+    /** Null once the author deleted their account; the content is kept */
+    private ?User $user = null;
     private ?User $editUser = null;
 
     /** @var Collection<int, Post> */
@@ -93,12 +94,12 @@ class Topic
         return $this->category->value;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(User $user): void
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }
@@ -108,7 +109,7 @@ class Topic
         return $this->editUser;
     }
 
-    public function setEditUser(User $editUser): void
+    public function setEditUser(?User $editUser): void
     {
         $this->editUser = $editUser;
     }

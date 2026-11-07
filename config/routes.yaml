@@ -102,6 +102,13 @@ Admin/User/RemoveAdmin:
     requirements:
         userId: '\d+'
 
+Admin/User/Delete:
+    path:      /admin/user/delete/{userId}
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::delete
+    methods:   [POST]
+    requirements:
+        userId: '\d+'
+
 Admin/User/Read:
     path:      /admin/user/read/{userId}
     controller: FrankProjects\UltimateWarfare\Controller\Admin\UserController::read
@@ -246,6 +253,11 @@ Game/Api/Worlds:
     path:      /game/api/worlds
     controller: FrankProjects\UltimateWarfare\Controller\Game\WorldController::worldsApi
     methods: [GET]
+
+Game/Account/Delete:
+    path:      /game/account/delete
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::deleteAccount
+    methods:   [GET, POST]
 
 Game/Banned:
     path:      /game/banned

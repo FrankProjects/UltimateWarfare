@@ -54,5 +54,7 @@ interface UserRepository
      */
     public function removeUnverifiedSignedUpBefore(DateTime $dateTime): int;
 
+    public function remove(User $user): void;
+
     public function save(User $user): void;
 }

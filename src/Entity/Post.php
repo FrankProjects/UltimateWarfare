@@ -13,7 +13,8 @@ class Post
     private DateTime $createDateTime;
     private bool $edited = false;
     private Topic $topic;
-    private User $user;
+    /** Null once the author deleted their account; the content is kept */
+    private ?User $user = null;
     private ?User $editUser = null;
 
     public function setId(int $id): void
@@ -66,12 +67,12 @@ class Post
         $this->topic = $topic;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(User $user): void
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }

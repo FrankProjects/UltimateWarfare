@@ -30,8 +30,8 @@
         <div class="uw-card-body">
             <div class="row">
                 <div class="col-3">
-                    <div>{{ 'label.name'|trans }}: {{ topic.user.username }}</div>
-                    {% if 'ROLE_ADMIN' in topic.user.roles %}
+                    <div>{{ 'label.name'|trans }}: {{ topic.user.username ?? '[deleted user]' }}</div>
+                    {% if topic.user is not null and 'ROLE_ADMIN' in topic.user.roles %}
                         <p><b>Forum Moderator</b></p>
                     {% endif %}
                     <div>
@@ -46,7 +46,7 @@
                         <br/><br/><i> Last edited by: {{ topic.editUser.username }}</i>
                     {% endif %}
 
-                    {% if user != null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}
+                    {% if user != null and topic.user is not null and user.id == topic.user.id or is_granted('ROLE_ADMIN') %}
                         <br />
                         <br />
                         <form method="POST" action="{{ path('Forum/Topic/Remove', {'topicId': topic.id}) }}" class="d-inline">

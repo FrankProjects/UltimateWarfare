@@ -157,6 +157,13 @@ final class DoctrineUserRepository implements UserRepository
     }
 
     #[\Override]
+    public function remove(User $user): void
+    {
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+    }
+
+    #[\Override]
     public function save(User $user): void
     {
         $this->entityManager->persist($user);
