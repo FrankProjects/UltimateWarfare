@@ -59,6 +59,17 @@ final class UserActionService
         $this->userRepository->save($user);
     }
 
+    public function unban(User $user): void
+    {
+        $user->setBanned(false);
+        $this->userRepository->save($user);
+
+        $unbanRequest = $this->unbanRequestRepository->findByUser($user);
+        if ($unbanRequest !== null) {
+            $this->unbanRequestRepository->remove($unbanRequest);
+        }
+    }
+
     /**
      * Permanently deletes the account and its personal data (GDPR right to erasure): all players (as on
      * surrender), the unban request and the IP log. Forum topics and posts are kept without author.

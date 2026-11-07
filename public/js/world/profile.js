@@ -87,9 +87,10 @@
         html += '<tr><td class="uw-table-label">Account Type</td><td>' + escapeHtml(profileData.accountType) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Status</td><td class="' + statusClass + '">' + status + '</td></tr>';
         html += '</table>';
+        html += '<p class="text-muted-uw">Download all personal data we store about you as a JSON file.</p>';
 
         profileContainer.innerHTML = html;
-        profileFooter.innerHTML = '';
+        profileFooter.innerHTML = '<a class="btn btn-primary" href="/game/api/profile/export-data" download>Download my data</a>';
     }
 
     function renderPasswordTab() {

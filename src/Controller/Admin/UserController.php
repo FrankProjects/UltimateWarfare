@@ -55,8 +55,7 @@ final class UserController extends AbstractController
         if (!$user->isBanned()) {
             $this->addFlash('error', 'User is not banned');
         } else {
-            $user->setBanned(false);
-            $this->userRepository->save($user);
+            $this->userActionService->unban($user);
             $this->addFlash('success', 'User unbanned!');
         }
 

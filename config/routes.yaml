@@ -244,6 +244,11 @@ Game/Api/Profile/ChangePassword:
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::changePasswordApi
     methods: [POST]
 
+Game/Api/Profile/ExportData:
+    path:      /game/api/profile/export-data
+    controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::exportDataApi
+    methods: [GET]
+
 Game/Api/Profile/Surrender:
     path:      /game/api/profile/surrender
     controller: FrankProjects\UltimateWarfare\Controller\Game\UserController::surrenderApi

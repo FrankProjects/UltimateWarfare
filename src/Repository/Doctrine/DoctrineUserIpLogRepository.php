@@ -40,7 +40,7 @@ final class DoctrineUserIpLogRepository implements UserIpLogRepository
      * @return UserIpLog[]
      */
     #[\Override]
-    public function findByUser(User $user, int $limit): array
+    public function findByUser(User $user, ?int $limit = null): array
     {
         return $this->entityManager->createQuery(
             'SELECT l FROM ' . UserIpLog::class . ' l

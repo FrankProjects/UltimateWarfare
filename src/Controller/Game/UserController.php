@@ -11,6 +11,7 @@ use FrankProjects\UltimateWarfare\Repository\PlayerRepository;
 use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
 use FrankProjects\UltimateWarfare\Repository\UserRepository;
 use FrankProjects\UltimateWarfare\Service\Action\UserActionService;
+use FrankProjects\UltimateWarfare\Service\UserDataExportService;
 use RuntimeException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -139,6 +140,23 @@ final class UserController extends BaseGameController
                 'isFederationGeneral' => $isFederationGeneral,
             ]
         ]);
+    }
+
+    /**
+     * "Download my data" (GDPR right of access); not available to banned users (UserSubscriber blocks the API).
+     */
+    public function exportDataApi(UserDataExportService $userDataExportService): JsonResponse
+    {
+        $user = $this->getGameUser();
+
+        $response = new JsonResponse(
+            $userDataExportService->export($user),
+            Response::HTTP_OK,
+            ['Content-Disposition' => 'attachment; filename="ultimate-warfare-data.json"']
+        );
+        $response->setEncodingOptions(JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        return $response;
     }
 
     public function surrenderApi(

@@ -17,7 +17,7 @@ interface UserIpLogRepository
      *
      * @return UserIpLog[]
      */
-    public function findByUser(User $user, int $limit): array;
+    public function findByUser(User $user, ?int $limit = null): array;
 
     /**
      * Log rows of other users that used any IP address the user used, most recent first.

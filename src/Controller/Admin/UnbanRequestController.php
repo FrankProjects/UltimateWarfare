@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FrankProjects\UltimateWarfare\Controller\Admin;
 
 use FrankProjects\UltimateWarfare\Repository\UnbanRequestRepository;
-use FrankProjects\UltimateWarfare\Repository\UserRepository;
+use FrankProjects\UltimateWarfare\Service\Action\UserActionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,14 +13,14 @@ use Symfony\Component\HttpFoundation\Response;
 final class UnbanRequestController extends AbstractController
 {
     private UnbanRequestRepository $unbanRequestRepository;
-    private UserRepository $userRepository;
+    private UserActionService $userActionService;
 
     public function __construct(
         UnbanRequestRepository $unbanRequestRepository,
-        UserRepository $userRepository
+        UserActionService $userActionService
     ) {
         $this->unbanRequestRepository = $unbanRequestRepository;
-        $this->userRepository = $userRepository;
+        $this->userActionService = $userActionService;
     }
 
     public function list(): Response
@@ -54,11 +54,7 @@ final class UnbanRequestController extends AbstractController
             return $this->redirectToRoute('Admin/UnbanRequest/List', [], 302);
         }
 
-        $user = $unbanRequest->getUser();
-        $user->setBanned(false);
-
-        $this->userRepository->save($user);
-        $this->unbanRequestRepository->remove($unbanRequest);
+        $this->userActionService->unban($unbanRequest->getUser());
         $this->addFlash('success', 'User unbanned!!');
         return $this->redirectToRoute('Admin/UnbanRequest/List', [], 302);
     }

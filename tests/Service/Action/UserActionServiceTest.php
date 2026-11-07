@@ -106,6 +106,17 @@ class UserActionServiceTest extends TestCase
         self::assertSame([], $this->calls);
     }
 
+    public function testUnbanLiftsBanAndRemovesUnbanRequest(): void
+    {
+        $user = new User();
+        $user->setBanned(true);
+
+        $this->createService(new UnbanRequest())->unban($user);
+
+        self::assertFalse($user->isBanned());
+        self::assertSame(['saveUser', 'removeUnbanRequest'], $this->calls);
+    }
+
     private function createPlayer(User $user, int $federationHierarchy): Player
     {
         $world = new World();
@@ -124,6 +135,7 @@ class UserActionServiceTest extends TestCase
     {
         $userRepository = self::createStub(UserRepository::class);
         $userRepository->method('remove')->willReturnCallback(fn () => $this->calls[] = 'removeUser');
+        $userRepository->method('save')->willReturnCallback(fn () => $this->calls[] = 'saveUser');
 
         $playerRepository = self::createStub(PlayerRepository::class);
         $playerRepository->method('remove')->willReturnCallback(fn () => $this->calls[] = 'removePlayer');
