@@ -1,5 +1,5 @@
 /**
- * Profile modal logic (account info, password change).
+ * Profile modal logic (account info, password change, personal data, surrender).
  * Depends on: notifications.js
  */
 (function () {
@@ -29,7 +29,8 @@
         const tabs = [
             { id: 'info', name: 'Account Info' },
             { id: 'password', name: 'Password' },
-            { id: 'danger', name: 'Danger Zone' }
+            { id: 'data', name: 'Your Data' },
+            { id: 'surrender', name: 'Surrender' }
         ];
 
         tabs.forEach(function (tab) {
@@ -71,8 +72,10 @@
             renderInfoTab();
         } else if (currentTab === 'password') {
             renderPasswordTab();
-        } else if (currentTab === 'danger') {
-            renderDangerTab();
+        } else if (currentTab === 'data') {
+            renderDataTab();
+        } else if (currentTab === 'surrender') {
+            renderSurrenderTab();
         }
     }
 
@@ -87,10 +90,9 @@
         html += '<tr><td class="uw-table-label">Account Type</td><td>' + escapeHtml(profileData.accountType) + '</td></tr>';
         html += '<tr><td class="uw-table-label">Status</td><td class="' + statusClass + '">' + status + '</td></tr>';
         html += '</table>';
-        html += '<p class="text-muted-uw">Download all personal data we store about you as a JSON file.</p>';
 
         profileContainer.innerHTML = html;
-        profileFooter.innerHTML = '<a class="btn btn-primary" href="/game/api/profile/export-data" download>Download my data</a>';
+        profileFooter.innerHTML = '';
     }
 
     function renderPasswordTab() {
@@ -151,45 +153,49 @@
         }
     }
 
-    function renderDangerTab() {
-        let html = '<div class="profile-form">';
-        html += '<h3 class="text-negative">Danger Zone</h3>';
+    function renderDataTab() {
+        let html = '<div class="uw-panel">';
+        html += '<h4 class="uw-section-title">Download my data</h4>';
+        html += '<p class="text-muted-uw">Download all personal data we store about you (account details and IP log) as a JSON file.</p>';
+        html += '<a class="uw-btn" href="/game/api/profile/export-data" download>Download my data</a>';
+        html += '</div>';
 
-        if (!profileData.canSurrender) {
-            html += '<p class="text-muted-uw">You cannot surrender for the first 48 hours after joining a world.</p>';
-            html += deleteAccountHtml();
-            html += '</div>';
-            profileContainer.innerHTML = html;
-            profileFooter.innerHTML = '';
-            return;
-        }
-
-        if (profileData.isFederationGeneral) {
-            html += '<p class="text-muted-uw">You cannot surrender while you are a Federation General. Please hand over or disband your Federation first.</p>';
-            html += deleteAccountHtml();
-            html += '</div>';
-            profileContainer.innerHTML = html;
-            profileFooter.innerHTML = '';
-            return;
-        }
-
-        html += '<p class="text-muted-uw">Surrendering will permanently delete your empire from this world. This action cannot be undone.</p>';
-        html += '<div class="uw-field"><label class="uw-label">Confirm Password</label>';
-        html += '<input type="password" id="surrenderPassword" class="form-control"></div>';
-        html += '<div id="surrenderMessage" class="profile-message"></div>';
-        html += deleteAccountHtml();
+        html += '<div class="uw-panel uw-panel-danger">';
+        html += '<h4 class="uw-section-title text-negative">Delete account</h4>';
+        html += '<p class="text-muted-uw">Permanently delete your account, your empires in every world and your personal data. '
+            + 'Your forum posts are kept as "[deleted user]". This action cannot be undone.</p>';
+        html += '<a class="uw-btn uw-btn-danger" href="/game/account/delete">Delete account</a>';
         html += '</div>';
 
         profileContainer.innerHTML = html;
-        profileFooter.innerHTML = '<button type="button" class="btn btn-danger" id="surrenderBtn">Surrender</button>';
-        document.getElementById('surrenderBtn').onclick = surrender;
+        profileFooter.innerHTML = '';
     }
 
-    function deleteAccountHtml() {
-        let html = '<h3 class="text-negative">Delete Account</h3>';
-        html += '<p class="text-muted-uw">Permanently delete your account and all your empires in every world.</p>';
-        html += '<a class="btn btn-danger" href="/game/account/delete">Delete account</a>';
-        return html;
+    function renderSurrenderTab() {
+        let html = '<div class="uw-panel uw-panel-danger">';
+        html += '<h4 class="uw-section-title text-negative">Surrender empire</h4>';
+        html += '<p class="text-muted-uw">Surrendering gives up your empire in this world: all your regions, units and resources are removed. '
+            + 'Your account stays, so you can join this or another world again with a new empire. This action cannot be undone.</p>';
+
+        if (!profileData.canSurrender) {
+            html += '<p class="text-negative">You cannot surrender for the first 48 hours after joining a world.</p>';
+        } else if (profileData.isFederationGeneral) {
+            html += '<p class="text-negative">You cannot surrender while you are a Federation General. Please hand over or disband your Federation first.</p>';
+        } else {
+            html += '<div class="profile-form profile-form-left">';
+            html += '<div class="uw-field"><label class="uw-label" for="surrenderPassword">Confirm Password</label>';
+            html += '<input type="password" id="surrenderPassword" class="form-control"></div>';
+            html += '<div id="surrenderMessage" class="profile-message"></div>';
+            html += '<button type="button" class="uw-btn uw-btn-danger uw-btn-spaced" id="surrenderBtn">Surrender</button>';
+            html += '</div>';
+        }
+        html += '</div>';
+
+        profileContainer.innerHTML = html;
+        profileFooter.innerHTML = '';
+
+        const surrenderBtn = document.getElementById('surrenderBtn');
+        if (surrenderBtn) surrenderBtn.onclick = surrender;
     }
 
     function surrender() {

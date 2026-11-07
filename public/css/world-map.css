@@ -437,6 +437,15 @@ body {
     background: #a08365;
 }
 
+a.uw-btn {
+    display: inline-block;
+    text-decoration: none;
+}
+
+a.uw-btn:hover {
+    color: #f3e6c1;
+}
+
 .construction-cancel-btn {
     background: #c44;
     color: #f3e6c1;
@@ -1919,8 +1928,12 @@ body {
     margin: 0 auto;
 }
 
-.profile-form h3 {
-    margin-top: 0;
+.profile-form-left {
+    margin: 0;
+}
+
+#profileFooter:empty {
+    display: none;
 }
 
 .profile-message {
