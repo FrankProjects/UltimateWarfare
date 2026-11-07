@@ -69,6 +69,48 @@ final class DoctrineUserIpLogRepository implements UserIpLogRepository
             ->getResult();
     }
 
+    /**
+     * @return array<int, array{0: UserIpLog, 1: UserIpLog}>
+     */
+    #[\Override]
+    public function findSessionPairsOnSameIp(int $maxGapSeconds): array
+    {
+        /** @var array<int, array{aId: int|string, bId: int|string}> $idPairs */
+        $idPairs = $this->entityManager->createQuery(
+            'SELECT a.id AS aId, b.id AS bId FROM ' . UserIpLog::class . ' a
+             JOIN ' . UserIpLog::class . ' b WITH b.ip = a.ip AND IDENTITY(b.user) > IDENTITY(a.user)
+             WHERE a.firstSeenAt <= DATE_ADD(b.lastSeenAt, :maxGap, \'second\')
+             AND b.firstSeenAt <= DATE_ADD(a.lastSeenAt, :maxGap, \'second\')'
+        )
+            ->setParameter('maxGap', $maxGapSeconds)
+            ->getScalarResult();
+
+        if ($idPairs === []) {
+            return [];
+        }
+
+        $ids = array_unique(array_merge(array_column($idPairs, 'aId'), array_column($idPairs, 'bId')));
+
+        /** @var UserIpLog[] $userIpLogs */
+        $userIpLogs = $this->entityManager->createQuery(
+            'SELECT l, u FROM ' . UserIpLog::class . ' l JOIN l.user u WHERE l.id IN (:ids)'
+        )
+            ->setParameter('ids', $ids)
+            ->getResult();
+
+        $userIpLogsById = [];
+        foreach ($userIpLogs as $userIpLog) {
+            $userIpLogsById[$userIpLog->getId()] = $userIpLog;
+        }
+
+        $sessionPairs = [];
+        foreach ($idPairs as $idPair) {
+            $sessionPairs[] = [$userIpLogsById[(int) $idPair['aId']], $userIpLogsById[(int) $idPair['bId']]];
+        }
+
+        return $sessionPairs;
+    }
+
     #[\Override]
     public function save(UserIpLog $userIpLog): void
     {

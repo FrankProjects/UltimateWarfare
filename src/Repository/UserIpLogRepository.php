@@ -26,6 +26,14 @@ interface UserIpLogRepository
      */
     public function findOfOtherUsersSharingIpWith(User $user): array;
 
+    /**
+     * Pairs of sessions of two different users on the same IP address that overlap in time or are at most
+     * $maxGapSeconds apart. The session of the user with the lowest id comes first.
+     *
+     * @return array<int, array{0: UserIpLog, 1: UserIpLog}>
+     */
+    public function findSessionPairsOnSameIp(int $maxGapSeconds): array;
+
     public function save(UserIpLog $userIpLog): void;
 
     public function removeByUser(User $user): void;

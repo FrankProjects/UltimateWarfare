@@ -22,6 +22,11 @@ Admin/Contact/Remove:
     requirements:
         contactId: '\d+'
 
+Admin/MultiAccount/List:
+    path:      /admin/multi-accounts
+    controller: FrankProjects\UltimateWarfare\Controller\Admin\MultiAccountController::list
+    methods:   [GET]
+
 Admin/ServerLogs:
     path:      /admin/server-logs
     controller: FrankProjects\UltimateWarfare\Controller\Admin\ServerLogsController::showLogs

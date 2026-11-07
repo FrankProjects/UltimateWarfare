@@ -1,0 +1,46 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}ADMIN - Multi accounts{% endblock title %}
+
+{% block content %}
+    <div class="uw-card">
+        <div class="uw-card-header">Possible multi accounts ({{ pairs|length }})</div>
+        <div class="uw-card-body">
+            <p>
+                Accounts that used the same IP address in the last 3 months, either at the same time (overlapping)
+                or right after each other (adjacent, within 30 minutes). Households, schools and mobile networks
+                share IP addresses too: check the user pages before banning.
+            </p>
+            <table class="table text-center">
+                {% if pairs|length > 0 %}
+                    <tr>
+                        <td>User</td>
+                        <td>User</td>
+                        <td>Overlapping sessions</td>
+                        <td>Adjacent sessions</td>
+                        <td>Shared IPs</td>
+                        <td>Last shared</td>
+                    </tr>
+                    {% for pair in pairs %}
+                        <tr>
+                            {% for user in [pair.userA, pair.userB] %}
+                                <td>
+                                    <a href="{{ path('Admin/User/Read', {'userId': user.id}) }}">{{ user.username }}</a>
+                                    {% if user.banned %}<span class="bad">(banned)</span>{% endif %}
+                                </td>
+                            {% endfor %}
+                            <td>{{ pair.overlappingSessions }}</td>
+                            <td>{{ pair.adjacentSessions }}</td>
+                            <td>{{ pair.sharedIps|join(', ') }}</td>
+                            <td>{{ pair.lastSharedAt ? pair.lastSharedAt|date("Y-m-d H:i:s") }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>No accounts found that shared an IP address</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
